@@ -1,0 +1,3 @@
+/home/pi/Documents/Workspace/sn3d-project/CMakeFiles/rebuild_cache.dir
+/home/pi/Documents/Workspace/sn3d-project/CMakeFiles/edit_cache.dir
+/home/pi/Documents/Workspace/sn3d-project/CMakeFiles/Source.dir
