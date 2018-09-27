@@ -1,5 +1,3 @@
-reated by https://www.gitignore.io/api/eclipse
-
 ### Eclipse ###
 
 .metadata
@@ -54,8 +52,8 @@ local.properties
 
 #CMake Untrack Files
 CMakeFiles/
-CMakeCach.txt
-cmake-install.cmake
+CMakeCache.txt
+cmake_install.cmake
 
 
 .cproject
