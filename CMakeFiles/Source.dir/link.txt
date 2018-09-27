@@ -1,1 +1,0 @@
-/usr/bin/cc     CMakeFiles/Source.dir/APP/main.c.o CMakeFiles/Source.dir/MODUELS/MODUEL_HW_UART.c.o CMakeFiles/Source.dir/MODUELS/serial.c.o  -o build/Source -rdynamic 
