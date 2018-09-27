@@ -14,7 +14,7 @@
 
 
 
-#define BYTE_SIZE SERIAL_COMM_READ_BYTE_8
+#define BYTE_SIZE SERIAL_COMM_RX_BYTE_8
 #define BAUD_RATE  SERIAL_COMM_BAUD_RATE_9600
 #define UART_DEVICE "/dev/serial0"
 #define UART_FLAGS  O_RDWR | O_NOCTTY | O_NONBLOCK
@@ -29,7 +29,6 @@ void* MODUELS_DISPLAY_SerialMonitor()
 
     while(1)
     {
-        pthread_mutex_lock(&ptm_Display);
         if(SERIAL_COMM_rx_uart(uartID, BYTE_SIZE, rx_buffer_Display))
         {
             //byte data
@@ -45,7 +44,6 @@ void* MODUELS_DISPLAY_SerialMonitor()
 
             i = 0;
         }
-        pthread_mutex_unlock(&ptm_Display);
     }
 
     return 0;
@@ -61,12 +59,12 @@ void MODUELS_DISPLAY_Serial_Init(void)
   int rc1;
   pthread_t ptDisplay;
 
-  uartID = SERIAL_COMM_init(UART_DEVICE, UART_FLAGS);
+  uartID = SERIAL_COMM_init_interface(UART_DEVICE, UART_FLAGS);
 
-  SERIAL_COMM_set_interface_attribs (uartID, BAUD_RATE, 0);
-  SERIAL_COMM_set_blocking (uartID, 0);
+  SERIAL_COMM_set_interface_attribs(uartID, BAUD_RATE, 0);
+  SERIAL_COMM_set_blocking(uartID, 1);
 
-  sleep(3);
+  sleep(1);
 
   if (pthread_mutex_init(&ptm_Display, NULL) != 0)
   {
@@ -88,5 +86,5 @@ void MODUELS_DISPLAY_Serial_Init(void)
 
 void MODUELS_DISPLAY_Serial_Uninit(void)
 {
-  close(uartID);
+    close(uartID);
 }

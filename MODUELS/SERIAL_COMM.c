@@ -4,10 +4,34 @@
  *  Created on: Sep 18, 2018
  *      Author: bato
  */
-
+#include <MODUELS.h>
 #include <SERIAL_COMM.h>
 
-int SERIAL_COMM_init(const char *fileName, int oflags)
+//pthread_mutex_t ptm_Serial = PTHREAD_MUTEX_INITIALIZER;
+
+/*
+int SERIAL_COMM_init(void)
+{
+  if (pthread_mutex_init(&ptm_Serial, NULL) != 0)
+  {
+      printf("\n mutex init failed\n");
+  }
+  return 0;
+}
+*/
+//OPEN THE UART
+        //The flags (defined in fcntl.h):
+        //      Access modes (use 1 of these):
+        //              O_RDONLY - Open for reading only.
+        //              O_RDWR - Open for reading and writing.
+        //              O_WRONLY - Open for writing only.
+        //
+        //      O_NDELAY / O_NONBLOCK (same function) - Enables nonblocking mode. When set read requests on the file can return immediately with a failure status
+        //                                                                                      if there is no input immediately available (instead of blocking). Likewise, write requests can also return
+        //                                                                                      immediately with a failure status if the output can't be written immediately.
+        //
+        //      O_NOCTTY - When set and path identifies a terminal device, open() shall not cause the terminal device to become the controlling terminal for the process.
+int SERIAL_COMM_init_interface(const char *fileName, int oflags)
 {
   int uartID = 0;
 
@@ -28,20 +52,20 @@ int SERIAL_COMM_init(const char *fileName, int oflags)
 
   return uartID;
 }
-int SERIAL_COMM_set_interface_attribs(int fd, int speed, int parity)
+int SERIAL_COMM_set_interface_attribs(int uartID, int baud_rate, int parity)
 {
     struct termios tty;
     memset (&tty, 0, sizeof tty);
 
-    if (tcgetattr (fd, &tty) != 0)
+    if (tcgetattr (uartID, &tty) != 0)
     {
         printf ("error %d from tcgetattr\n", errno);
         fflush(stdout);
         return -1;
     }
 
-    cfsetospeed (&tty, speed);
-    cfsetispeed (&tty, speed);
+    cfsetospeed(&tty, baud_rate);
+    cfsetispeed(&tty, baud_rate);
 
     tty.c_cflag = (tty.c_cflag & ~CSIZE) | CS8;     // 8-bit chars
     // disable IGNBRK for mismatched speed tests; otherwise receive break
@@ -51,7 +75,7 @@ int SERIAL_COMM_set_interface_attribs(int fd, int speed, int parity)
                                     // no canonical processing
     tty.c_oflag = 0;                // no remapping, no delays
     tty.c_cc[VMIN]  = 0;            // read doesn't block
-    tty.c_cc[VTIME] = 5;            // 0.5 seconds read timeout
+    tty.c_cc[VTIME] = 10;            // 0.5 seconds read timeou
 
     tty.c_iflag &= ~(IXON | IXOFF | IXANY); // shut off xon/xoff ctrl
 
@@ -62,7 +86,7 @@ int SERIAL_COMM_set_interface_attribs(int fd, int speed, int parity)
     tty.c_cflag &= ~CSTOPB;
     //tty.c_cflag &= ~CRTSCTS;
 
-    if(tcsetattr(fd, TCSANOW, &tty) != 0)
+    if(tcsetattr(uartID, TCSANOW, &tty) != 0)
     {
         return -1;
     }
@@ -70,12 +94,12 @@ int SERIAL_COMM_set_interface_attribs(int fd, int speed, int parity)
     return 0;
 }
 
-void SERIAL_COMM_set_blocking (int fd, int should_block)
+void SERIAL_COMM_set_blocking(int uartID, int should_block)
 {
     struct termios tty;
     memset (&tty, 0, sizeof tty);
 
-    if (tcgetattr(fd, &tty) != 0)
+    if (tcgetattr(uartID, &tty) != 0)
     {
         printf("error %d from tggetattr\n", errno);
         fflush(stdout);
@@ -83,33 +107,52 @@ void SERIAL_COMM_set_blocking (int fd, int should_block)
     }
 
     tty.c_cc[VMIN]  = should_block ? 1 : 0;
-    tty.c_cc[VTIME] = 10;            // 0.5 seconds read timeout
+    tty.c_cc[VTIME] = 10;
 
-    if (tcsetattr(fd, TCSANOW, &tty) != 0)
+    if (tcsetattr(uartID, TCSANOW, &tty) != 0)
     {
         printf("error %d setting term attributes\n", errno);
         fflush(stdout);
     }
 }
-void SERIAL_COMM_tx_uart(int uartID, int bytes_size, unsigned char* tx_buffer)
-{
 
+void SERIAL_COMM_tx_uart(int uartID, char* tx_buffer, int txOption)
+{
+    int count = 0;
+
+    if (uartID != -1)
+    {
+        count = write(uartID, tx_buffer, sizeof(tx_buffer) + txOption);
+
+        if (count < 0)
+        {
+            printf("UART TX error\n");
+            fflush(stdout);
+        }
+    }
 }
 
 int SERIAL_COMM_rx_uart(int uartID, int byte_size, unsigned char* buffer)
 {
     int bufferStatus = 0;
 
-    unsigned char rx_buffer[255];
+    unsigned char rx_buffer[SERIAL_COMM_BUFFER_SIZE];
     static int rx_length = 0;
     static int buffer_length = 0;
     int i = 0;
 
+    //pthread_mutex_lock(&ptm_Serial);
+
     if(uartID != -1)
     {
+        //Init Static Variables
+        rx_length = 0;
+        buffer_length = 0;
+
+        //Start Reading Serial Data
         while(1)
         {
-            rx_length = read(uartID, (void*)rx_buffer, ((byte_size == SERIAL_COMM_READ_REALTIME) ? 255 : byte_size));
+            rx_length = read(uartID, (void*)rx_buffer, ((byte_size == SERIAL_COMM_RX_REALTIME) ? 255 : byte_size));
 
             if(rx_length < 0)
             {
@@ -117,6 +160,8 @@ int SERIAL_COMM_rx_uart(int uartID, int byte_size, unsigned char* buffer)
             }
             else if(rx_length == SERIAL_COMM_NO_DATA)
             {
+                rx_length = 0;
+                buffer_length = 0;
                 //No data waiting
             }
             else
@@ -126,7 +171,7 @@ int SERIAL_COMM_rx_uart(int uartID, int byte_size, unsigned char* buffer)
                     buffer[buffer_length++] = rx_buffer[i];
                 }
 
-                if(byte_size == SERIAL_COMM_READ_REALTIME)
+                if(byte_size == SERIAL_COMM_RX_REALTIME)
                 {
                     buffer_length = rx_length;
                 }
@@ -135,6 +180,7 @@ int SERIAL_COMM_rx_uart(int uartID, int byte_size, unsigned char* buffer)
                     buffer_length = byte_size;
                 }
 
+                //Finished.
                 if(buffer_length >= byte_size)
                 {
                     buffer[buffer_length] = '\0';
@@ -151,6 +197,8 @@ int SERIAL_COMM_rx_uart(int uartID, int byte_size, unsigned char* buffer)
   {
       printf("error read UART\n");
   }
+
+  //pthread_mutex_unlock(&ptm_Serial);
 
   return bufferStatus;
 }

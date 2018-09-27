@@ -19,5 +19,14 @@
 
 int main(void)
 {
-   MODUELS_HW_UART_demo();
+  /* Init */
+  MODUELS_DISPLAY_Serial_Init();
+  MODUELS_3D_PRINTER_Serial_Init();
+
+
+
+  while(1)
+  {
+      //Working
+  }
 }

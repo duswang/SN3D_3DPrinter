@@ -23,24 +23,29 @@
 
 #include <errno.h>
 
-extern int SERIAL_COMM_init(const char *fileName, int oflags);
-extern int SERIAL_COMM_set_interface_attribs(int uartID, int baudRate, int parity);
+extern int  SERIAL_COMM_init(void);
+extern int  SERIAL_COMM_init_interface(const char *fileName, int oflags);
+extern int  SERIAL_COMM_set_interface_attribs(int uartID, int baudRate, int parity);
 extern void SERIAL_COMM_set_blocking(int uartID, int should_block);
 
-extern int SERIAL_COMM_rx_uart(int uartID, int bytes_size, unsigned char* rx_buffer);
-extern void SERIAL_COMM_tx_uart(int uartID, int bytes_size, unsigned char* tx_buffer);
+extern int  SERIAL_COMM_rx_uart(int uartID, int bytes_size, unsigned char* rx_buffer);
+extern void SERIAL_COMM_tx_uart(int uartID, char* tx_buffer, int txOption);
 
 
 
-#define SERIAL_COMM_BAUD_RATE_9600 9600
-#define SERIAL_COMM_BAUD_RATE_19200 19200
-#define SERIAL_COMM_BAUD_RATE_115200 115200
+#define SERIAL_COMM_BAUD_RATE_9600 B9600
+#define SERIAL_COMM_BAUD_RATE_19200 B19200
+#define SERIAL_COMM_BAUD_RATE_115200 B115200
 
-#define SERIAL_COMM_READ_REALTIME 0
-#define SERIAL_COMM_READ_BYTE_4 4
-#define SERIAL_COMM_READ_BYTE_8 8
-#define SERIAL_COMM_READ_BYTE_16 16
-#define SERIAL_COMM_READ_BYTE_32 32
+#define SERIAL_COMM_RX_REALTIME 0
+#define SERIAL_COMM_RX_BYTE_4 4
+#define SERIAL_COMM_RX_BYTE_8 8
+#define SERIAL_COMM_RX_BYTE_16 16
+#define SERIAL_COMM_RX_BYTE_32 32
+
+#define SERIAL_COMM_TX_NORMAL 0
+#define SERIAL_COMM_TX_WITH_NULL -1
+
 
 #define SERIAL_COMM_NO_DATA 0
 #define SERIAL_COMM_ON_DATA 1
