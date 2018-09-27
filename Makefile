@@ -150,59 +150,86 @@ APP/main.c.s:
 	$(MAKE) -f CMakeFiles/Source.dir/build.make CMakeFiles/Source.dir/APP/main.c.s
 .PHONY : APP/main.c.s
 
-MODUELS/MODUEL_HW_UART.o: MODUELS/MODUEL_HW_UART.c.o
+MODUELS/MODUEL_3D_PRINTER.o: MODUELS/MODUEL_3D_PRINTER.c.o
 
-.PHONY : MODUELS/MODUEL_HW_UART.o
-
-# target to build an object file
-MODUELS/MODUEL_HW_UART.c.o:
-	$(MAKE) -f CMakeFiles/Source.dir/build.make CMakeFiles/Source.dir/MODUELS/MODUEL_HW_UART.c.o
-.PHONY : MODUELS/MODUEL_HW_UART.c.o
-
-MODUELS/MODUEL_HW_UART.i: MODUELS/MODUEL_HW_UART.c.i
-
-.PHONY : MODUELS/MODUEL_HW_UART.i
-
-# target to preprocess a source file
-MODUELS/MODUEL_HW_UART.c.i:
-	$(MAKE) -f CMakeFiles/Source.dir/build.make CMakeFiles/Source.dir/MODUELS/MODUEL_HW_UART.c.i
-.PHONY : MODUELS/MODUEL_HW_UART.c.i
-
-MODUELS/MODUEL_HW_UART.s: MODUELS/MODUEL_HW_UART.c.s
-
-.PHONY : MODUELS/MODUEL_HW_UART.s
-
-# target to generate assembly for a file
-MODUELS/MODUEL_HW_UART.c.s:
-	$(MAKE) -f CMakeFiles/Source.dir/build.make CMakeFiles/Source.dir/MODUELS/MODUEL_HW_UART.c.s
-.PHONY : MODUELS/MODUEL_HW_UART.c.s
-
-MODUELS/serial.o: MODUELS/serial.c.o
-
-.PHONY : MODUELS/serial.o
+.PHONY : MODUELS/MODUEL_3D_PRINTER.o
 
 # target to build an object file
-MODUELS/serial.c.o:
-	$(MAKE) -f CMakeFiles/Source.dir/build.make CMakeFiles/Source.dir/MODUELS/serial.c.o
-.PHONY : MODUELS/serial.c.o
+MODUELS/MODUEL_3D_PRINTER.c.o:
+	$(MAKE) -f CMakeFiles/Source.dir/build.make CMakeFiles/Source.dir/MODUELS/MODUEL_3D_PRINTER.c.o
+.PHONY : MODUELS/MODUEL_3D_PRINTER.c.o
 
-MODUELS/serial.i: MODUELS/serial.c.i
+MODUELS/MODUEL_3D_PRINTER.i: MODUELS/MODUEL_3D_PRINTER.c.i
 
-.PHONY : MODUELS/serial.i
+.PHONY : MODUELS/MODUEL_3D_PRINTER.i
 
 # target to preprocess a source file
-MODUELS/serial.c.i:
-	$(MAKE) -f CMakeFiles/Source.dir/build.make CMakeFiles/Source.dir/MODUELS/serial.c.i
-.PHONY : MODUELS/serial.c.i
+MODUELS/MODUEL_3D_PRINTER.c.i:
+	$(MAKE) -f CMakeFiles/Source.dir/build.make CMakeFiles/Source.dir/MODUELS/MODUEL_3D_PRINTER.c.i
+.PHONY : MODUELS/MODUEL_3D_PRINTER.c.i
 
-MODUELS/serial.s: MODUELS/serial.c.s
+MODUELS/MODUEL_3D_PRINTER.s: MODUELS/MODUEL_3D_PRINTER.c.s
 
-.PHONY : MODUELS/serial.s
+.PHONY : MODUELS/MODUEL_3D_PRINTER.s
 
 # target to generate assembly for a file
-MODUELS/serial.c.s:
-	$(MAKE) -f CMakeFiles/Source.dir/build.make CMakeFiles/Source.dir/MODUELS/serial.c.s
-.PHONY : MODUELS/serial.c.s
+MODUELS/MODUEL_3D_PRINTER.c.s:
+	$(MAKE) -f CMakeFiles/Source.dir/build.make CMakeFiles/Source.dir/MODUELS/MODUEL_3D_PRINTER.c.s
+.PHONY : MODUELS/MODUEL_3D_PRINTER.c.s
+
+MODUELS/MODUEL_DISPLAY.o: MODUELS/MODUEL_DISPLAY.c.o
+
+.PHONY : MODUELS/MODUEL_DISPLAY.o
+
+# target to build an object file
+MODUELS/MODUEL_DISPLAY.c.o:
+	$(MAKE) -f CMakeFiles/Source.dir/build.make CMakeFiles/Source.dir/MODUELS/MODUEL_DISPLAY.c.o
+.PHONY : MODUELS/MODUEL_DISPLAY.c.o
+
+MODUELS/MODUEL_DISPLAY.i: MODUELS/MODUEL_DISPLAY.c.i
+
+.PHONY : MODUELS/MODUEL_DISPLAY.i
+
+# target to preprocess a source file
+MODUELS/MODUEL_DISPLAY.c.i:
+	$(MAKE) -f CMakeFiles/Source.dir/build.make CMakeFiles/Source.dir/MODUELS/MODUEL_DISPLAY.c.i
+.PHONY : MODUELS/MODUEL_DISPLAY.c.i
+
+MODUELS/MODUEL_DISPLAY.s: MODUELS/MODUEL_DISPLAY.c.s
+
+.PHONY : MODUELS/MODUEL_DISPLAY.s
+
+# target to generate assembly for a file
+MODUELS/MODUEL_DISPLAY.c.s:
+	$(MAKE) -f CMakeFiles/Source.dir/build.make CMakeFiles/Source.dir/MODUELS/MODUEL_DISPLAY.c.s
+.PHONY : MODUELS/MODUEL_DISPLAY.c.s
+
+MODUELS/SERIAL_COMM.o: MODUELS/SERIAL_COMM.c.o
+
+.PHONY : MODUELS/SERIAL_COMM.o
+
+# target to build an object file
+MODUELS/SERIAL_COMM.c.o:
+	$(MAKE) -f CMakeFiles/Source.dir/build.make CMakeFiles/Source.dir/MODUELS/SERIAL_COMM.c.o
+.PHONY : MODUELS/SERIAL_COMM.c.o
+
+MODUELS/SERIAL_COMM.i: MODUELS/SERIAL_COMM.c.i
+
+.PHONY : MODUELS/SERIAL_COMM.i
+
+# target to preprocess a source file
+MODUELS/SERIAL_COMM.c.i:
+	$(MAKE) -f CMakeFiles/Source.dir/build.make CMakeFiles/Source.dir/MODUELS/SERIAL_COMM.c.i
+.PHONY : MODUELS/SERIAL_COMM.c.i
+
+MODUELS/SERIAL_COMM.s: MODUELS/SERIAL_COMM.c.s
+
+.PHONY : MODUELS/SERIAL_COMM.s
+
+# target to generate assembly for a file
+MODUELS/SERIAL_COMM.c.s:
+	$(MAKE) -f CMakeFiles/Source.dir/build.make CMakeFiles/Source.dir/MODUELS/SERIAL_COMM.c.s
+.PHONY : MODUELS/SERIAL_COMM.c.s
 
 # Help Target
 help:
@@ -216,12 +243,15 @@ help:
 	@echo "... APP/main.o"
 	@echo "... APP/main.i"
 	@echo "... APP/main.s"
-	@echo "... MODUELS/MODUEL_HW_UART.o"
-	@echo "... MODUELS/MODUEL_HW_UART.i"
-	@echo "... MODUELS/MODUEL_HW_UART.s"
-	@echo "... MODUELS/serial.o"
-	@echo "... MODUELS/serial.i"
-	@echo "... MODUELS/serial.s"
+	@echo "... MODUELS/MODUEL_3D_PRINTER.o"
+	@echo "... MODUELS/MODUEL_3D_PRINTER.i"
+	@echo "... MODUELS/MODUEL_3D_PRINTER.s"
+	@echo "... MODUELS/MODUEL_DISPLAY.o"
+	@echo "... MODUELS/MODUEL_DISPLAY.i"
+	@echo "... MODUELS/MODUEL_DISPLAY.s"
+	@echo "... MODUELS/SERIAL_COMM.o"
+	@echo "... MODUELS/SERIAL_COMM.i"
+	@echo "... MODUELS/SERIAL_COMM.s"
 .PHONY : help
 
 
