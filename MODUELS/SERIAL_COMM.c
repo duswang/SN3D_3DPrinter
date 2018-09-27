@@ -5,9 +5,30 @@
  *      Author: bato
  */
 
-#include <serial.h>
+#include <SERIAL_COMM.h>
 
-int set_interface_attribs(int fd, int speed, int parity)
+int SERIAL_COMM_init(const char *fileName, int oflags)
+{
+  int uartID = 0;
+
+  /* open the device */
+  uartID = open(fileName, O_RDWR | O_NOCTTY | O_NONBLOCK);
+  if (uartID == 0)
+  {
+      perror(fileName);
+      printf("Failed to init %s \n", fileName);
+      fflush(stdout);
+      exit(-1);
+  }
+  else
+  {
+      printf("Completed to init %s \n", fileName);
+      fflush(stdout);
+  }
+
+  return uartID;
+}
+int SERIAL_COMM_set_interface_attribs(int fd, int speed, int parity)
 {
     struct termios tty;
     memset (&tty, 0, sizeof tty);
@@ -39,7 +60,7 @@ int set_interface_attribs(int fd, int speed, int parity)
     tty.c_cflag &= ~(PARENB | PARODD);      // shut off parity
     tty.c_cflag |= parity;
     tty.c_cflag &= ~CSTOPB;
-    tty.c_cflag &= ~CRTSCTS;
+    //tty.c_cflag &= ~CRTSCTS;
 
     if(tcsetattr(fd, TCSANOW, &tty) != 0)
     {
@@ -49,7 +70,7 @@ int set_interface_attribs(int fd, int speed, int parity)
     return 0;
 }
 
-void set_blocking (int fd, int should_block)
+void SERIAL_COMM_set_blocking (int fd, int should_block)
 {
     struct termios tty;
     memset (&tty, 0, sizeof tty);
@@ -62,7 +83,7 @@ void set_blocking (int fd, int should_block)
     }
 
     tty.c_cc[VMIN]  = should_block ? 1 : 0;
-    tty.c_cc[VTIME] = 5;            // 0.5 seconds read timeout
+    tty.c_cc[VTIME] = 10;            // 0.5 seconds read timeout
 
     if (tcsetattr(fd, TCSANOW, &tty) != 0)
     {
@@ -70,27 +91,31 @@ void set_blocking (int fd, int should_block)
         fflush(stdout);
     }
 }
-// 0 - live
-unsigned char rx_uart(int fd, int byte_size)
+void SERIAL_COMM_tx_uart(int uartID, int bytes_size, unsigned char* tx_buffer)
 {
-    unsigned char rx_buffer[32];
-    unsigned char buffer[32];
 
-    int rx_length = 0;
-    int buffer_length = 0;
+}
+
+int SERIAL_COMM_rx_uart(int uartID, int byte_size, unsigned char* buffer)
+{
+    int bufferStatus = 0;
+
+    unsigned char rx_buffer[255];
+    static int rx_length = 0;
+    static int buffer_length = 0;
     int i = 0;
 
-    if(fd != -1)
+    if(uartID != -1)
     {
         while(1)
         {
-            rx_length = read(fd, (void*)rx_buffer, ((byte_size == 0) ? 31 : byte_size));
+            rx_length = read(uartID, (void*)rx_buffer, ((byte_size == SERIAL_COMM_READ_REALTIME) ? 255 : byte_size));
 
             if(rx_length < 0)
             {
                 //An error occured (will occur if there are no bytes)
             }
-            else if(rx_length == 0)
+            else if(rx_length == SERIAL_COMM_NO_DATA)
             {
                 //No data waiting
             }
@@ -101,17 +126,22 @@ unsigned char rx_uart(int fd, int byte_size)
                     buffer[buffer_length++] = rx_buffer[i];
                 }
 
-                if(byte_size == 0)
+                if(byte_size == SERIAL_COMM_READ_REALTIME)
                 {
-
+                    buffer_length = rx_length;
                 }
-                else
+                else if(buffer_length >= byte_size)
                 {
-
+                    buffer_length = byte_size;
                 }
 
-                rx_buffer[rx_length] = '\0';
-                printf("%i bytes read : %d\n", rx_length, (int)rx_buffer);
+                if(buffer_length >= byte_size)
+                {
+                    buffer[buffer_length] = '\0';
+                    buffer_length = 0;
+                    bufferStatus = 1;
+                    break;
+                }
             }
 
             fflush(stdout);
@@ -122,5 +152,5 @@ unsigned char rx_uart(int fd, int byte_size)
       printf("error read UART\n");
   }
 
-  return 0xff;
+  return bufferStatus;
 }
