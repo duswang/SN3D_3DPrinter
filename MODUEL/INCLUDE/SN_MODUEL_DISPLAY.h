@@ -1,13 +1,13 @@
 /*
- * MODUEL_DISPLAY.h
+ * SN_MODUEL_DISPLAY.h
  *
  *  Created on: Sep 18, 2018
  *      Author: bato
  */
 
-#ifndef MODUEL_DISPLAY_H_
-#define MODUEL_DISPLAY_H_
+#ifndef SN_MODUEL_DISPLAY
+#define SN_MODUEL_DISPLAY
 
 extern void MODUELS_DISPLAY_Serial_demo(void);
 
-#endif /* MODUEL_HW_UART_H_ */
+#endif /* SN_MODUEL_DISPLAY */

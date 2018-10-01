@@ -1,24 +1,13 @@
 /*
- * serial.c
+ * SN_SYS_SERIAL_COMM.c
  *
  *  Created on: Sep 18, 2018
  *      Author: bato
  */
-#include <MODUELS.h>
-#include <SERIAL_COMM.h>
 
-//pthread_mutex_t ptm_Serial = PTHREAD_MUTEX_INITIALIZER;
+#include "SN_API.h"
+#include "SN_SYS_SERIAL_COMM.h"
 
-/*
-int SERIAL_COMM_init(void)
-{
-  if (pthread_mutex_init(&ptm_Serial, NULL) != 0)
-  {
-      printf("\n mutex init failed\n");
-  }
-  return 0;
-}
-*/
 //OPEN THE UART
         //The flags (defined in fcntl.h):
         //      Access modes (use 1 of these):
@@ -31,28 +20,28 @@ int SERIAL_COMM_init(void)
         //                                                                                      immediately with a failure status if the output can't be written immediately.
         //
         //      O_NOCTTY - When set and path identifies a terminal device, open() shall not cause the terminal device to become the controlling terminal for the process.
-int SERIAL_COMM_init_interface(const char *fileName, int oflags)
+int SN_SYS_SERIAL_COMM_init_interface(const char *fileName, int oflags)
 {
   int uartID = 0;
 
   /* open the device */
   uartID = open(fileName, O_RDWR | O_NOCTTY | O_NONBLOCK);
-  if (uartID == 0)
+  if (uartID != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
+  {
+      printf("Completed to init %s \n", fileName);
+      fflush(stdout);
+  }
+  else
   {
       perror(fileName);
       printf("Failed to init %s \n", fileName);
       fflush(stdout);
       exit(-1);
   }
-  else
-  {
-      printf("Completed to init %s \n", fileName);
-      fflush(stdout);
-  }
 
   return uartID;
 }
-int SERIAL_COMM_set_interface_attribs(int uartID, int baud_rate, int parity)
+int SN_SYS_SERIAL_COMM_set_interface_attribs(int uartID, int baud_rate, int parity)
 {
     struct termios tty;
     memset (&tty, 0, sizeof tty);
@@ -94,7 +83,7 @@ int SERIAL_COMM_set_interface_attribs(int uartID, int baud_rate, int parity)
     return 0;
 }
 
-void SERIAL_COMM_set_blocking(int uartID, int should_block)
+void SN_SYS_SERIAL_COMM_set_blocking(int uartID, int should_block)
 {
     struct termios tty;
     memset (&tty, 0, sizeof tty);
@@ -116,11 +105,11 @@ void SERIAL_COMM_set_blocking(int uartID, int should_block)
     }
 }
 
-void SERIAL_COMM_tx_uart(int uartID, char* tx_buffer, int txOption)
+void SN_SYS_SERIAL_COMM_tx_uart(int uartID, char* tx_buffer, int txOption)
 {
     int count = 0;
 
-    if (uartID != -1)
+    if (uartID != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
     {
         count = write(uartID, tx_buffer, sizeof(tx_buffer) + txOption);
 
@@ -132,18 +121,18 @@ void SERIAL_COMM_tx_uart(int uartID, char* tx_buffer, int txOption)
     }
 }
 
-int SERIAL_COMM_rx_uart(int uartID, int byte_size, unsigned char* buffer)
+int SN_SYS_SERIAL_COMM_rx_uart(int uartID, int byte_size, unsigned char* buffer)
 {
     int bufferStatus = 0;
 
-    unsigned char rx_buffer[SERIAL_COMM_BUFFER_SIZE];
+    unsigned char rx_buffer[SN_SYS_SERIAL_COMM_BUFFER_SIZE];
     static int rx_length = 0;
     static int buffer_length = 0;
     int i = 0;
 
     //pthread_mutex_lock(&ptm_Serial);
 
-    if(uartID != -1)
+    if(uartID != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
     {
         //Init Static Variables
         rx_length = 0;
@@ -152,13 +141,13 @@ int SERIAL_COMM_rx_uart(int uartID, int byte_size, unsigned char* buffer)
         //Start Reading Serial Data
         while(1)
         {
-            rx_length = read(uartID, (void*)rx_buffer, ((byte_size == SERIAL_COMM_RX_REALTIME) ? 255 : byte_size));
+            rx_length = read(uartID, (void*)rx_buffer, ((byte_size == SN_SYS_SERIAL_COMM_RX_REALTIME) ? 255 : byte_size));
 
             if(rx_length < 0)
             {
                 //An error occured (will occur if there are no bytes)
             }
-            else if(rx_length == SERIAL_COMM_NO_DATA)
+            else if(rx_length == SN_SYS_SERIAL_COMM_NO_DATA)
             {
                 rx_length = 0;
                 buffer_length = 0;
@@ -171,7 +160,7 @@ int SERIAL_COMM_rx_uart(int uartID, int byte_size, unsigned char* buffer)
                     buffer[buffer_length++] = rx_buffer[i];
                 }
 
-                if(byte_size == SERIAL_COMM_RX_REALTIME)
+                if(byte_size == SN_SYS_SERIAL_COMM_RX_REALTIME)
                 {
                     buffer_length = rx_length;
                 }
