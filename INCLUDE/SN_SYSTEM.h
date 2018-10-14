@@ -8,9 +8,19 @@
 #ifndef INCLUDE_SN_SYSTEM_H_
 #define INCLUDE_SN_SYSTEM_H_
 
-#include "SN_SYS_SERIAL_COMM.h"
+/** Message Queue **/
 #include "SN_SYS_MESSAGE_Q.h"
+/** Timer **/
+#include "SN_SYS_TIMER.h"
 
-extern int SN_SYSTEM_SendApplMessage(event_id evtId, uint32_t evtValue);
+/** Serial **/
+#include "SN_SYS_SERIAL_COMM.h"
+/* Serial Command */
+#include "SN_SYS_SERIAL_NEXTION.h"
+#include "SN_SYS_SERIAL_GCODE.h"
+
+/** USB Driver **/
+#include "SN_SYS_USB_DRIVER.h"
+
 
 #endif /* SN_SYSTEM */

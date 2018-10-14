@@ -8,6 +8,159 @@
 #include "SN_API.h"
 #include "SN_SYS_SERIAL_COMM.h"
 
+/** System **/
+/* Thread */
+pthread_mutex_t ptmSerial = PTHREAD_MUTEX_INITIALIZER;
+pthread_t       ptSerial;
+
+/** Global Variables **/
+
+/** Static Funtions **/
+/* system */
+static void* sSerialThread();
+
+/* hdlr */
+static int   sSerial_RX_Hdlr(sysSerialId serialId);
+
+/* local */
+static int   sSerialInterfaceInit(const char *device, int oflags);
+static int   sSerialinterfaceSetattribs(int uartID, int baud_rate, int parity);
+static void  sSerialSetBlocking(int uartID, int should_block);
+
+static void  sSerialOpen(sysSerialId serialId);
+static void  sSerialClose(sysSerialId serialId);
+
+/* Globla Variables */
+sysSerialQ serialQ[SERIAL_Q_SIZE];
+
+int SN_SYS_SerialInit(void)
+{
+    int i = 0;
+    int retValue = 0;
+
+    for(i = 0; i < SERIAL_Q_SIZE; i++)
+    {
+        serialQ[i].serialId = NULL;
+        serialQ[i].isAvailable = false;
+        serialQ[i].serialStatus = SN_SYS_SERIAL_COMM_NONE_SET;
+    }
+
+    if (pthread_mutex_init(&ptmSerial, NULL) != 0)
+    {
+        printf("\n mutex init failed\n");
+    }
+
+    if((retValue = pthread_create(&ptSerial, NULL, sSerialThread, NULL)))
+    {
+        printf("Thread Creation Fail %d\n", retValue);
+        fflush(stdout);
+    }
+
+    return retValue;
+}
+
+sysSerialId SN_SYS_SerialCreate(const sysSerialDef_t* serialDef, void* pfCallBack)
+{
+    sysSerialId serialId = malloc(sizeof(struct sys_serial_id));
+
+    serialId->_serialDef  = serialDef;
+    serialId->pfSerialCallBack  = pfCallBack;
+
+    serialId->uartId = sSerialInterfaceInit(serialDef->device, serialDef->oflags);
+
+    if(serialId->uartId != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
+    {
+        sSerialinterfaceSetattribs(serialId->uartId, serialDef->baudRate, 0);
+        sSerialSetBlocking(serialId->uartId, 1);
+    }
+
+    sSerialOpen(serialId);
+
+    return serialId;
+}
+
+int SN_SYS_SerialRemove(sysSerialId serialId)
+{
+    if(serialId == NULL)
+    {
+        return -1;
+    }
+
+
+    sSerialClose(serialId);
+
+    return 0;
+}
+
+char* SN_SYS_SerialRx(sysSerialId serialId)
+{
+    char* retBuffer = NULL;
+
+    if(serialId == NULL)
+    {
+        return NULL;
+    }
+
+    pthread_mutex_lock(&ptmSerial);
+    retBuffer = serialId->_serialDef->buffer;
+    pthread_mutex_unlock(&ptmSerial);
+
+    return retBuffer;
+}
+
+
+int SN_SYS_SerialTx(sysSerialId serialId, char* buffer, size_t bufferSize)
+{
+    int count = 0;
+    char* CarriageReturn = "\r\n";
+
+    if(serialId == NULL)
+    {
+        return -1;
+    }
+
+    if (serialId->uartId != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
+    {
+        printf("TX DATA => %s\n", buffer); fflush(stdout);
+
+        count = write(serialId->uartId, buffer, bufferSize - 1);
+
+        if (count < 0)
+        {
+            printf("UART TX error\n");
+            fflush(stdout);
+        }
+
+        count = write(serialId->uartId, CarriageReturn, (ssize_t)2);
+
+        if (count < 0)
+        {
+            printf("UART TX error\n");
+            fflush(stdout);
+        }
+    }
+
+    return 0;
+}
+
+static void* sSerialThread()
+{
+    int serialIndex = 0;
+
+    while(1)
+    {
+        for(serialIndex = 0; serialIndex < SERIAL_Q_SIZE; serialIndex++)
+        {
+            if(serialQ[serialIndex].isAvailable && (serialQ[serialIndex].serialStatus != SN_SYS_SERIAL_COMM_BUSY))
+            {
+                sSerial_RX_Hdlr(serialQ[serialIndex].serialId);
+            }
+        }
+    }
+
+    return 0;
+}
+
 //OPEN THE UART
         //The flags (defined in fcntl.h):
         //      Access modes (use 1 of these):
@@ -20,28 +173,28 @@
         //                                                                                      immediately with a failure status if the output can't be written immediately.
         //
         //      O_NOCTTY - When set and path identifies a terminal device, open() shall not cause the terminal device to become the controlling terminal for the process.
-int SN_SYS_SERIAL_COMM_init_interface(const char *fileName, int oflags)
+static int sSerialInterfaceInit(const char *device, int oflags)
 {
   int uartID = 0;
 
   /* open the device */
-  uartID = open(fileName, O_RDWR | O_NOCTTY | O_NONBLOCK);
+  uartID = open(device, O_RDWR | O_NOCTTY | O_NONBLOCK);
   if (uartID != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
   {
-      printf("Completed to init %s \n", fileName);
+      printf("Completed to init %s \n", device);
       fflush(stdout);
   }
   else
   {
-      perror(fileName);
-      printf("Failed to init %s \n", fileName);
+      perror(device);
+      printf("Failed to init %s \n", device);
       fflush(stdout);
       exit(-1);
   }
 
   return uartID;
 }
-int SN_SYS_SERIAL_COMM_set_interface_attribs(int uartID, int baud_rate, int parity)
+static int sSerialinterfaceSetattribs(int uartID, int baud_rate, int parity)
 {
     struct termios tty;
     memset (&tty, 0, sizeof tty);
@@ -83,7 +236,7 @@ int SN_SYS_SERIAL_COMM_set_interface_attribs(int uartID, int baud_rate, int pari
     return 0;
 }
 
-void SN_SYS_SERIAL_COMM_set_blocking(int uartID, int should_block)
+static void sSerialSetBlocking(int uartID, int should_block)
 {
     struct termios tty;
     memset (&tty, 0, sizeof tty);
@@ -105,34 +258,50 @@ void SN_SYS_SERIAL_COMM_set_blocking(int uartID, int should_block)
     }
 }
 
-void SN_SYS_SERIAL_COMM_tx_uart(int uartID, char* tx_buffer, int txOption)
+static void sSerialOpen(sysSerialId serialId)
 {
-    int count = 0;
+    int i = 0;
 
-    if (uartID != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
+    for(i = 0; i < SERIAL_Q_SIZE; i++)
     {
-        count = write(uartID, tx_buffer, sizeof(tx_buffer) + txOption);
-
-        if (count < 0)
+        if(!serialQ[i].isAvailable)
         {
-            printf("UART TX error\n");
-            fflush(stdout);
+            serialQ[i].serialId = serialId;
+            serialQ[i].isAvailable = true;
+            serialQ[i].serialStatus = SN_SYS_SERIAL_COMM_WAITING;
         }
     }
 }
 
-int SN_SYS_SERIAL_COMM_rx_uart(int uartID, int byte_size, unsigned char* buffer)
+static void sSerialClose(sysSerialId serialId)
 {
-    int bufferStatus = 0;
+    int i = 0;
 
-    unsigned char rx_buffer[SN_SYS_SERIAL_COMM_BUFFER_SIZE];
+    for(i = 0; i < SERIAL_Q_SIZE; i++)
+    {
+        if(serialQ[i].serialId == serialId && serialQ[i].isAvailable)
+        {
+            serialQ[i].serialId = NULL;
+            serialQ[i].isAvailable = false;
+            serialQ[i].serialStatus = SN_SYS_SERIAL_COMM_NONE_SET;
+
+            break;
+        }
+    }
+
+    free(serialId);
+}
+
+static int sSerial_RX_Hdlr(sysSerialId serialId)
+{
+    char rx_buffer[SN_SYS_SERIAL_COMM_BUFFER_SIZE];
     static int rx_length = 0;
     static int buffer_length = 0;
     int i = 0;
 
-    //pthread_mutex_lock(&ptm_Serial);
+    pthread_mutex_lock(&ptmSerial);
 
-    if(uartID != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
+    if(serialId->uartId != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
     {
         //Init Static Variables
         rx_length = 0;
@@ -141,13 +310,13 @@ int SN_SYS_SERIAL_COMM_rx_uart(int uartID, int byte_size, unsigned char* buffer)
         //Start Reading Serial Data
         while(1)
         {
-            rx_length = read(uartID, (void*)rx_buffer, ((byte_size == SN_SYS_SERIAL_COMM_RX_REALTIME) ? 255 : byte_size));
+            rx_length = read(serialId->uartId, (void*)rx_buffer, ((serialId->_serialDef->rxByteSize == SN_SYS_SERIAL_COMM_RX_REALTIME) ? 255 : serialId->_serialDef->rxByteSize));
 
             if(rx_length < 0)
             {
                 //An error occured (will occur if there are no bytes)
             }
-            else if(rx_length == SN_SYS_SERIAL_COMM_NO_DATA)
+            else if(rx_length == 0)
             {
                 rx_length = 0;
                 buffer_length = 0;
@@ -157,24 +326,23 @@ int SN_SYS_SERIAL_COMM_rx_uart(int uartID, int byte_size, unsigned char* buffer)
             {
                 for(i = 0; i < rx_length; i++)
                 {
-                    buffer[buffer_length++] = rx_buffer[i];
+                    serialId->_serialDef->buffer[buffer_length++] = rx_buffer[i];
                 }
 
-                if(byte_size == SN_SYS_SERIAL_COMM_RX_REALTIME)
+                if(serialId->_serialDef->rxByteSize == SN_SYS_SERIAL_COMM_RX_REALTIME)
                 {
                     buffer_length = rx_length;
                 }
-                else if(buffer_length >= byte_size)
+                else if(buffer_length >= serialId->_serialDef->rxByteSize)
                 {
-                    buffer_length = byte_size;
+                    buffer_length = serialId->_serialDef->rxByteSize;
                 }
 
                 //Finished.
-                if(buffer_length >= byte_size)
+                if(buffer_length >= serialId->_serialDef->rxByteSize)
                 {
-                    buffer[buffer_length] = '\0';
+                    serialId->_serialDef->buffer[buffer_length] = '\0';
                     buffer_length = 0;
-                    bufferStatus = 1;
                     break;
                 }
             }
@@ -187,7 +355,9 @@ int SN_SYS_SERIAL_COMM_rx_uart(int uartID, int byte_size, unsigned char* buffer)
       printf("error read UART\n");
   }
 
-  //pthread_mutex_unlock(&ptm_Serial);
+  pthread_mutex_unlock(&ptmSerial);
 
-  return bufferStatus;
+  serialId->pfSerialCallBack();
+
+  return 0;
 }

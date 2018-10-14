@@ -8,12 +8,18 @@
 #include "SN_API.h"
 #include "SN_SYS_MESSAGE_Q.h"
 
+/** Static Define **/
 
-key_t SN_SYS_MessageInit(sysMessageQId *msgQId, key_t keyId, int32_t mtype)
+/** System **/
+
+/** Global Variables **/
+
+/** Static Funtions **/
+int SN_SYS_MessageQInit(sysMessageQId *msgQId)
 {
-    msgQId->mtype = mtype;
 
-    msgQId->keyId = msgget(keyId, IPC_CREAT | 0666);
+    msgQId->keyId = msgget(IPC_PRIVATE, IPC_CREAT | 0666);
+    msgQId->mtype = msgQId->keyId;
 
     if(msgQId->keyId == -1)
     {
@@ -22,12 +28,20 @@ key_t SN_SYS_MessageInit(sysMessageQId *msgQId, key_t keyId, int32_t mtype)
         exit(1);
     }
 
-    return msgQId->keyId;
+    return 0;
 }
-int SN_SYS_MessagePut(sysMessageQId *msgQId, event_id evtId, uint32_t value)
+
+int SN_SYS_MessageQRemove(sysMessageQId *msgQId)
 {
-    msgQId->mevt.evt_id = evtId;
-    msgQId->mevt.value  = value;
+    msgctl(msgQId->keyId, IPC_RMID, 0);
+
+    return 0;
+}
+
+int SN_SYS_MessagePut(sysMessageQId *msgQId, event_id_t evtId, event_msg_t evtMessage)
+{
+    msgQId->mevt.evt_id   = evtId;
+    msgQId->mevt.evt_msg  = evtMessage;
 
     if((msgsnd(msgQId->keyId, (void *)msgQId, sizeof(sysMessageQId), IPC_NOWAIT) == -1))
     {
@@ -38,17 +52,24 @@ int SN_SYS_MessagePut(sysMessageQId *msgQId, event_id evtId, uint32_t value)
     return 0;
 }
 
+
 general_evt_t SN_SYS_MessageGet(sysMessageQId *msgQId)
 {
     sysMessageQId buffer;
 
     if((msgrcv(msgQId->keyId, (void *)msgQId, sizeof(sysMessageQId), msgQId->mtype, 0) == -1))
     {
-        perror("msgrcv error : ");
-        exit(0);
+        if (errno == EINTR)
+        {
+            msgQId->mevt.evt_id = APP_EVT_ID_IGNORE;
+        }
+        else
+        {
+            perror("msgrcv error : ");
+            exit(0);
+        }
     }
 
     return msgQId->mevt;
 }
-
 

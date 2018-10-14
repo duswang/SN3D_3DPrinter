@@ -7,30 +7,54 @@
 
 #include "APPS.h"
 
-int APP_Main(general_evt_t evt)
+/** Global Variables **/
+static app_state_t gAppState = APP_STATE_INIT;
+
+SN_STATUS APP_Main(general_evt_t evt)
 {
-    uint16_t evtId = 0;
-    uint16_t evtValue = 0;
+    SN_STATUS retStatus = SN_STATUS_OK;
+    app_state_t tAppState;
 
-    //@DEBUG
-    printf("get APP Message.\n");
-    fflush(stdout);
-
-    switch(evtId)
+    switch(tAppState)
     {
-        case 0:
-            APP_WAITING_EvtHdlr(evtValue);
+        case APP_STATE_WAITING:
+            APP_WAITING_EvtHdlr(evt);
             break;
-        case 1:
-            APP_CONTROL_EvtHdlr(evtValue);
+        case APP_STATE_CONTROL:
+            APP_CONTROL_EvtHdlr(evt);
             break;
+        case APP_STATE_FILE_SELECT:
+            APP_FILE_SELECT_EvtHdlr(evt);
+            break;
+        case APP_STATE_PRINTING:
+            APP_PRINTING_EvtHdlr(evt);
+            break;
+        case APP_STATE_PAUSE:
+            APP_PAUSE_EvtHdlr(evt);
+            break;
+        case APP_STATE_SETUP:
+        case APP_STATE_INIT:
+            APP_INIT_EvtHdlr(evt);
+            break;
+
         default:
             break;
     }
-    return 0;
+    return retStatus;
 }
 
 void APP_Init(void)
 {
-
+    /** Enter Waiting **/
 }
+
+app_state_t  APP_GetAppState(void)
+{
+    return gAppState;
+}
+
+void APP_SetAppState(app_state_t tAppState)
+{
+    gAppState = tAppState;
+}
+

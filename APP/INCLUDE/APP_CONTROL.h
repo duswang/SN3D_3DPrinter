@@ -8,6 +8,6 @@
 #ifndef APP_INCLUDE_APP_CONTROL_H_
 #define APP_INCLUDE_APP_CONTROL_H_
 
-extern int APP_CONTROL_EvtHdlr(uint32_t evtCode);
+extern int APP_CONTROL_EvtHdlr(general_evt_t evt);
 
 #endif /* APP_INCLUDE_APP_CONTROL_H_ */

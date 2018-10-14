@@ -1,2 +1,0 @@
-# SN3D Project
-

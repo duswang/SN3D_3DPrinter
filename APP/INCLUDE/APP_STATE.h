@@ -21,6 +21,11 @@ typedef enum
 } app_state_t;
 
 
-
+extern SN_STATUS APP_STATE_EnterStateWaiting(void);
+extern SN_STATUS APP_STATE_EnterStateControl(void);
+extern SN_STATUS APP_STATE_EnterStateFileSelect(void);
+extern SN_STATUS APP_STATE_EnterStatePrinting(void);
+extern SN_STATUS APP_STATE_EnterStatePause(void);
+extern SN_STATUS APP_STATE_EnterStateInit(void);
 
 #endif /* APP_APP_STATE_H_ */

@@ -8,13 +8,61 @@
 #ifndef MODUEL_INCLUDE_SN_MODUEL_FILE_SYSTEM_H_
 #define MODUEL_INCLUDE_SN_MODUEL_FILE_SYSTEM_H_
 
+/** Static Define **/
+//@TODO: TO LIST DATA STRUCTURE
+#define MAX_PAGE_SIZE   6
+#define MAX_ITEM_SIZE   6
+#define MAX_OPTION_SIZE 6
 
-#define MSG_FILE_SYSTEM_DETECTED    0
-#define MSG_FILE_SYSTEM_READ        1
-#define MSG_FILE_SYSTEM_UPDATE      2
-#define MSG_FILE_SYSTEM_WAITING     3
-#define MSG_FILE_SYSTEM_RESERVE     4
+#define FILENAME_SIZE 256
+#define FILENAME_EXT  "cws"
 
-#define MSG_VALUE_FILE_SYSTEM_NONE 0
+//@DEBUG
+#define USB_PATH        "/Volumes/USB_0/"
+#define TEMP_FILE_PATH  "../tempFile/"
+#define TEMP_FILE_NAME  "test"
+#define DEVICE_NAME     "POLARIS 500"
+
+/* Module Message */
+typedef enum {
+    MSG_FILE_SYSTEM_USB_MOUNT = 0,
+    MSG_FILE_SYSTEM_USB_UNMOUNT,
+    MSG_FILE_SYSTEM_READ,
+    MSG_FILE_SYSTEM_UPDATE,
+    MSG_FILE_SYSTEM_WAITING,
+    MSG_FILE_SYSTEM_RESERVE
+} evtFileSystem_t;
+
+
+typedef struct file_system_option {
+    char name[FILENAME_SIZE];
+} fsOption_t;
+
+typedef struct file_system_item {
+    char name[FILENAME_SIZE];
+} fsItem_t;
+
+typedef struct file_system_page {
+    fsItem_t item[MAX_ITEM_SIZE];
+    uint32_t itemCnt;
+} fsPage_t;
+
+typedef struct file_system_target {
+    uint32_t item_index;
+    uint32_t page_index;
+} fsTarget_t;
+
+typedef struct file_system {
+    fsTarget_t  target;
+    fsOption_t  option[MAX_OPTION_SIZE];
+    fsPage_t    page[MAX_PAGE_SIZE];
+    uint32_t    pageCnt;
+} fs_t;
+
+typedef struct moduel_file_system {
+    fs_t                     fs;
+    printInfo_t       printInfo;
+    machineInfo_t   machineInfo;
+} moduleFileSystem_t;
 
 #endif /* MODUEL_INCLUDE_SN_MODUEL_FILE_SYSTEM_H_ */
