@@ -45,13 +45,13 @@ SN_STATUS APP_STATE_EnterStateFileSelect(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-
     pageIndex   = 0;
     itemIndex   = 0;
     optionIndex = 0;
 
     SN_MODUEL_DISPLAY_FileSelectUpdate();
 
+    printf("APP STATE => APP_STATE_FILE_SELECT\n"); fflush(stdout);
     APP_SetAppState(APP_STATE_FILE_SELECT);
 
     return retStatus;
@@ -103,8 +103,8 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                     itemIndex = msgNXId.value;
                     break;
                 case NX_ID_FILE_SELECT_BUTTON_PRINT_START:
-                    SN_MODUEL_3D_PRINTER_Start(0, 0);
                     APP_STATE_EnterStatePrinting();
+                    SN_MODUEL_3D_PRINTER_Start(0, 0);
                     break;
                 default:
                     break;

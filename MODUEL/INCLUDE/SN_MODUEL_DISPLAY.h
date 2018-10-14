@@ -12,7 +12,14 @@
 #define BYTE_SIZE SN_SYS_SERIAL_COMM_RX_BYTE_8
 #define BAUD_RATE  SN_SYS_SERIAL_COMM_BAUD_RATE_9600
 
+
+#if(APPLE)
+#define UART_DEVICE "/dev/cu.usbmodem1421"
+#else
 #define UART_DEVICE "/dev/serial0"
+#endif
+
+
 #define UART_OFLAGS  O_RDWR | O_NOCTTY | O_NONBLOCK
 
 /** Module Messgae **/

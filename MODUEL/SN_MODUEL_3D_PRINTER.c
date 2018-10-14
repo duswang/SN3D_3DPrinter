@@ -64,10 +64,8 @@ SN_STATUS SN_MODUEL_3D_PRINTER_Z_HOMING(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    if(module3DPrinter.state != DEVICE_BUSY)
-    {
-        s3DPrinter_HW_Homming();
-    }
+    s3DPrinter_HW_MotorInit();
+    s3DPrinter_HW_Homming();
 
     return retStatus;
 }
@@ -76,13 +74,16 @@ SN_STATUS SN_MODUEL_3D_PRINTER_Z_UP(float mm)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    if(module3DPrinter.state != DEVICE_BUSY)
+    if((module3DPrinter.state != DEVICE_BUSY) && (module3DPrinter.state != DEVICE_HOMING))
     {
         sGcodeParser_ZMove(module3DPrinter.gcodeLiftUp,     \
                 (float)mm, \
                 (float)0, \
                 (float)DEFAULT_FEEDRATE,
                 true);
+
+        s3DPrinter_HW_MotorInit();
+        SN_SYS_SerialTx(serialId3DPrinter, module3DPrinter.gcodeLiftUp, sizeof(module3DPrinter.gcodeLiftUp));
     }
 
     return retStatus;
@@ -92,13 +93,16 @@ SN_STATUS SN_MODUEL_3D_PRINTER_Z_DOWN(float mm)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    if(module3DPrinter.state != DEVICE_BUSY)
+    if((module3DPrinter.state != DEVICE_BUSY) && (module3DPrinter.state != DEVICE_HOMING))
     {
-        sGcodeParser_ZMove(module3DPrinter.gcodeLiftUp,     \
+        sGcodeParser_ZMove(module3DPrinter.gcodeLiftDown,     \
                 (float)mm, \
                 (float)0, \
                 (float)DEFAULT_FEEDRATE,
                 false);
+
+        s3DPrinter_HW_MotorInit();
+        SN_SYS_SerialTx(serialId3DPrinter, module3DPrinter.gcodeLiftDown, sizeof(module3DPrinter.gcodeLiftDown));
     }
 
     return retStatus;
@@ -149,24 +153,26 @@ SN_STATUS SN_MODUEL_3D_PRINTER_Init(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-  /** MESSAGE Q INIT **/
+    /** MESSAGE Q INIT **/
     SN_SYS_MessageQInit(&msgQId3DPrinter);
 
     serialId3DPrinter = SN_SYS_SerialCreate(sysSerial(3DPrinterSerial),s3DPrinter_callback);
 
     if (pthread_mutex_init(&ptm3DPrinter, NULL) != 0)
     {
-        printf("\n mutex init failed\n");
+        printf("\n mutex init failed\n"); fflush(stdout);
     }
 
     if((retStatus = pthread_create(&pt3DPrinter, NULL, s3DPrinterThread, NULL)))
-  {
-        printf("Thread Creation Fail %d\n", retStatus);
-        fflush(stdout);
-  }
+    {
+        printf("Thread Creation Fail %d\n", retStatus); fflush(stdout);
+    }
+    else
+    {
+        printf("Start Serial Monitor %s\n", UART_DEVICE); fflush(stdout);
+    }
 
     /** Module Init **/
-    module3DPrinter.nextEvent = MSG_3D_PRINTER_NONE;
     module3DPrinter.state = DEVICE_NONE;
 
     s3DPrinter_HW_MotorInit();
@@ -189,15 +195,22 @@ static void*  s3DPrinter_callback()
 
     if(strstr(buffer, RESPONSE_OK) != NULL)
     {
-        if(module3DPrinter.nextEvent != MSG_3D_PRINTER_NONE)
+        switch(module3DPrinter.state)
         {
-            s3DPrinterMessagePut(module3DPrinter.nextEvent, 0);
-            module3DPrinter.nextEvent = MSG_3D_PRINTER_NONE;
+            case DEVICE_INIT:
+              s3DPrinterMessagePut(MSG_3D_PRINTER_PRINTING_FIRST_SLICE, 0);
+              break;
+            case DEVICE_HOMING:
+              s3DPrinterMessagePut(MSG_3D_PRINTER_STANDBY, 0);
+              break;
+            default:
+              s3DPrinterMessagePut(MSG_3D_PRINTER_GET_RESPONSE, 0);
+              break;
         }
-        else
-        {
-            s3DPrinterMessagePut(MSG_3D_PRINTER_GET_RESPONSE, 0);
-        }
+    }
+    else
+    {
+        /** Unknown Command **/
     }
 
     return 0;
@@ -214,7 +227,7 @@ static void* s3DPrinterThread()
         switch(evt.evt_id)
         {
             case MSG_3D_PRINTER_PRINTING_INIT:
-                printf("3D Printer Init\n");
+                printf("3D Printing Start.\n"); fflush(stdout);
                 s3DPrinter_HW_Init();
                 break;
             case MSG_3D_PRINTER_PRINTING_FIRST_SLICE:
@@ -228,30 +241,28 @@ static void* s3DPrinterThread()
                 break;
             case MSG_3D_PRINTER_PRINTING_PAUSE:
                 s3DPrinter_HW_Pause();
+                //SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, 0);
                 break;
             case MSG_3D_PRINTER_PRINTING_RESUME:
                 s3DPrinter_HW_Resume();
                 break;
             case MSG_3D_PRINTER_PRINTING_STOP:
                 s3DPrinter_HW_Stop();
-                SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, 0);
+                //SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, 0);
                 break;
             case MSG_3D_PRINTER_PRINTING_FINISH:
                 printf("PRINTING FINISH-!\n");
                 s3DPrinter_HW_Finish();
-                SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, 0);
+                SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, APP_EVT_MSG_3D_PRINTER_PRINTING_FINISH);
                 break;
             case MSG_3D_PRINTER_HOMMING:
-                if(module3DPrinter.prevEvent == MSG_3D_PRINTER_PRINTING_INIT)
-                {
-                    module3DPrinter.nextEvent = MSG_3D_PRINTER_PRINTING_FIRST_SLICE;
-                }
                 s3DPrinter_HW_Homming();
                 break;
             case MSG_3D_PRINTER_SEND_COMMAND:
                 break;
             case MSG_3D_PRINTER_GET_RESPONSE:
-
+              printf("Response\n"); fflush(stdout);
+              //SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, APP_EVT_MSG_3D_PRINTER_REPONSE_OK);
                 break;
             case MSG_3D_PRINTER_STANDBY:
                 module3DPrinter.state = DEVICE_STANDBY;
@@ -259,9 +270,6 @@ static void* s3DPrinterThread()
             default:
                 break;
         }
-
-        module3DPrinter.prevEvent = evt.evt_id;
-
     }
 
   return 0;
@@ -269,9 +277,18 @@ static void* s3DPrinterThread()
 
 static void s3DPrinter_HW_Homming(void)
 {
-    if(module3DPrinter.state != DEVICE_BUSY)
+    if((module3DPrinter.state != DEVICE_BUSY) && (module3DPrinter.state != DEVICE_HOMING))
     {
-        module3DPrinter.state = DEVICE_INIT;
+        if(module3DPrinter.state != DEVICE_INIT)
+        {
+            module3DPrinter.state = DEVICE_HOMING;
+            printf("BASIC HOMING START.\n"); fflush(stdout);
+        }
+        else
+        {
+            module3DPrinter.state = DEVICE_INIT;
+            printf("HOMING START.\n"); fflush(stdout);
+        }
 
         SN_SYS_SerialTx(serialId3DPrinter, GCODE_HOMING, sizeof(GCODE_HOMING));
     }
@@ -312,6 +329,9 @@ static void s3DPrinter_HW_Init(void)
         SN_MODUEL_IMAGE_VIEWER_CLEAR();
 
         s3DPrinterMessagePut(MSG_3D_PRINTER_HOMMING, 0);
+
+        /** NEED FIX **/
+        s3DPrinter_HW_FirstSlice();
     }
 }
 
@@ -334,17 +354,20 @@ static void s3DPrinter_HW_Finish(void)
     /** Motor Uninit **/
     s3DPrinter_HW_MotorUninit();
 
+    SN_MODUEL_IMAGE_VIEWER_CLEAR();
+
     SN_MODULE_FILE_SYSTEM_PrintInfoUninit();
 
     module3DPrinter.sliceIndex = 0;
     strcpy(module3DPrinter.gcodeLiftUp,   GCODE_LIFT_UNINIT);
     strcpy(module3DPrinter.gcodeLiftDown, GCODE_LIFT_UNINIT);
+
+    /** TEST **/
+    SDL_Delay(5000);
 }
 
 static void s3DPrinter_HW_FirstSlice(void)
 {
-    module3DPrinter.state = DEVICE_INIT;
-
     /** Motor Init **/
     s3DPrinter_HW_MotorInit();
 
@@ -356,14 +379,14 @@ static void s3DPrinter_HW_Slice(void)
     uint32_t exposureTime = 0;
 
     /** One Cylce Start **/
-    if(module3DPrinter.state != DEVICE_PAUSE)
+    if((module3DPrinter.state != DEVICE_PAUSE) && (module3DPrinter.state != DEVICE_STOP))
     {
         module3DPrinter.state = DEVICE_BUSY;
 
         /** Slice **/
         SN_MODUEL_IMAGE_VIEWER_UPDATE(module3DPrinter.sliceIndex);
+
         SN_SYS_SerialTx(serialId3DPrinter, GCODE_LCD_ON, sizeof(GCODE_LCD_ON));
-        //@ImageBlack Function Here
 
         if(module3DPrinter.sliceIndex < module3DPrinter.printInfo.printParameter.bottomLayerNumber)
         {
@@ -384,6 +407,7 @@ static void s3DPrinter_HW_Lift(void)
     SN_SYS_SerialTx(serialId3DPrinter, GCODE_LCD_OFF, sizeof(GCODE_LCD_OFF));
     SN_MODUEL_IMAGE_VIEWER_CLEAR();
 
+    //s3DPrinter_HW_MotorInit(); /** NEED TEST **/
     SN_SYS_SerialTx(serialId3DPrinter, module3DPrinter.gcodeLiftUp, sizeof(module3DPrinter.gcodeLiftUp));
     SN_SYS_SerialTx(serialId3DPrinter, module3DPrinter.gcodeLiftDown, sizeof(module3DPrinter.gcodeLiftDown));
 
@@ -424,14 +448,12 @@ static void s3DPrinter_HW_Resume(void)
 
 static void s3DPrinter_HW_Stop(void)
 {
-    if(module3DPrinter.state == DEVICE_BUSY || module3DPrinter.state == DEVICE_PAUSE)
+    if((module3DPrinter.state == DEVICE_BUSY) || (module3DPrinter.state == DEVICE_PAUSE))
     {
         module3DPrinter.state = DEVICE_STOP;
 
-        /** Stop Timer **/
         /** Stop Device **/
-
-        s3DPrinterMessagePut(MSG_3D_PRINTER_PRINTING_STOP, 0);
+        s3DPrinter_HW_Finish();
     }
 }
 

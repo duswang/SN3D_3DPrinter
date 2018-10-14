@@ -40,6 +40,7 @@ SN_STATUS APP_STATE_EnterStateInit(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
+    printf("APP STATE => APP_STATE_INIT\n"); fflush(stdout);
     APP_SetAppState(APP_STATE_INIT);
 
     return retStatus;

@@ -26,7 +26,7 @@ typedef union Nextion_message {
 
     Nextion Display Command.
 
-    [page] [id] [num] [value]          32bit
+    [page] [TYPE] [ID] [value]       32bit
 
     [reserve] [endCode[][][]]        32bit
 
@@ -34,70 +34,74 @@ typedef union Nextion_message {
 
 #define NX_ENDCODE 0xFFFFFFFF
 
-/*** COMMON COMMAND ***/
+/**** COMMON COMMAND ****/
+/** PAGE **/
 typedef enum
 {
-    NX_PAGE_WAITING = 1,
-    NX_PAGE_CONTROl,
-    NX_PAGE_FILE_SELECT,
-    NX_PAGE_PRINTING,
-    NX_PAGE_PAUSE,
-    NX_PAGE_SETUP,
-    NX_PAGE_INIT,
+    NX_PAGE_WAITING             = 0x01,
+    NX_PAGE_CONTROl             = 0x02,
+    NX_PAGE_FILE_SELECT         = 0x03,
+    NX_PAGE_PRINTING            = 0x04,
+    NX_PAGE_PAUSE               = 0x05,
+    NX_PAGE_SETUP               = 0x06,
+    NX_PAGE_INIT                = 0x07,
     NX_PAGE_NONE
 } nx_page_t;
 
+/** TYPE **/
 typedef enum
 {
-    NX_TYPE_BUTTON = 1,
-    NX_TYPE_TOGGLE,
-    NX_TYPE_SCREEN_TOUCH,
+    NX_TYPE_BUTTON              = 0x01,
+    NX_TYPE_TOGGLE              = 0x02,
+    NX_TYPE_SCREEN_TOUCH        = 0x03,
+    NX_TYPE_NOTIFY              = 0x04,
     NX_TYPE_NONE
 } nx_type_t;
 
+/** ID  **/
 typedef enum
 {
-    NX_ID_BUTTON_HOME = 0x1F,
-    NX_ID_BUTTON_PRINT,
-    NX_ID_BUTTON_YES,
-    NX_ID_BUTTON_NO,
+    NX_ID_BUTTON_HOME           = 0x1F,
+    NX_ID_BUTTON_PRINT          = 0x2F,
+    NX_ID_BUTTON_YES            = 0x3F,
+    NX_ID_BUTTON_NO             = 0x4F,
     NX_ID_NONE
 } nx_id_t;
 
 typedef enum
 {
-    NX_VALUE_NOT_USED = 0x00
+    NX_VALUE_NOT_USED           = 0x00
 } nx_value_t;
 
-/*** ID COMMAND ***/
+/*** ID :: PAGE ***/
 
 typedef enum
 {
     NX_ID_WAITING_BUTTON_PRINT   = 0x01,
     NX_ID_WAITING_BUTTON_CONTROL,
-} nx_waiting_id;
+} nx_waiting_id_t;
 
 typedef enum
 {
-    NX_ID_FILE_SELECT_BUTTON_OPTION_UP   = 0x01,
-    NX_ID_FILE_SELECT_BUTTON_OPTION_DOWN,
-    NX_ID_FILE_SELECT_BUTTON_PAGE_UP,
-    NX_ID_FILE_SELECT_BUTTON_PAGE_DOWN,
-    NX_ID_FILE_SELECT_BUTTON_FILE_SELECT,
-    NX_ID_FILE_SELECT_BUTTON_PRINT_START
-} nx_file_select_id;
+    NX_ID_FILE_SELECT_BUTTON_OPTION_UP          = 0x01,
+    NX_ID_FILE_SELECT_BUTTON_OPTION_DOWN        = 0x02,
+    NX_ID_FILE_SELECT_BUTTON_PAGE_UP            = 0x03,
+    NX_ID_FILE_SELECT_BUTTON_PAGE_DOWN          = 0x04,
+    NX_ID_FILE_SELECT_BUTTON_FILE_SELECT        = 0x05,
+    NX_ID_FILE_SELECT_BUTTON_PRINT_START        = 0x06
+} nx_file_select_id_t;
 
 typedef enum
 {
     NX_ID_PRINTING_BUTTON_PAUSE   = 0x01,
     NX_ID_PRINTING_BUTTON_STOP,
-} nx_printing_id;
+} nx_printing_id_t;
 
 typedef enum
 {
     NX_ID_PAUSE_BUTTON_RESUME   = 0x01,
     NX_ID_PAUSE_BUTTON_STOP,
-} nx_pause_id;
+} nx_pause_id_t;
 
 
 typedef enum
@@ -105,12 +109,24 @@ typedef enum
     NX_ID_CONTROL_BUTTON_Z_UP   = 0x01,
     NX_ID_CONTROL_BUTTON_Z_DOWN,
     NX_ID_CONTROL_BUTTON_Z_HOMMING
-} nx_control_id;
+} nx_control_id_t;
 
 typedef enum
 {
     NX_ID_INIT_BUTTON_RESERVE   = 0x01,
-} nx_init_id;
+} nx_init_id_t;
+
+/** VALUE :: PAGE **/
+
+typedef enum
+{
+    NX_VALUE_CONTROL_Z_000_1_MM  = 0x01,
+    NX_VALUE_CONTROL_Z_001_0_MM,
+    NX_VALUE_CONTROL_Z_005_0_MM,
+    NX_VALUE_CONTROL_Z_010_0_MM,
+    NX_VALUE_CONTROL_Z_050_0_MM,
+    NX_VALUE_CONTROL_Z_100_0_MM
+} nx_control_value_t;
 
 
 #endif /* SN_SYS_SERIAL_NEXTION_ */

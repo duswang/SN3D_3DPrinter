@@ -40,6 +40,7 @@ SN_STATUS APP_STATE_EnterStateWaiting(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
+    printf("APP STATE => APP_STATE_WAITING\n"); fflush(stdout);
     APP_SetAppState(APP_STATE_WAITING);
 
     return retStatus;
@@ -60,6 +61,9 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
     /** Message parsing **/
     msgNXId.NXmessage[0] = evtMessage;
     msgNXId.NXmessage[1] = NX_ENDCODE;
+
+    //DEBUG
+    printf("%d %d %d\n", msgNXId.type, msgNXId.id, msgNXId.value); fflush(stdout);
 
     switch(msgNXId.type)
     {

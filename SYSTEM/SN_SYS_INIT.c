@@ -43,7 +43,7 @@ int main(void)
     SN_MODUEL_IMAGE_VIEWER_Init();
 
     /** DISPLAY INIT      - NOPE **/
-    //SN_MODUEL_DISPLAY_Init();
+    SN_MODUEL_DISPLAY_Init();
 
     /** 3D PRINTER INIT   - NOPE **/
     SN_MODUEL_3D_PRINTER_Init();
@@ -94,7 +94,7 @@ static SN_STATUS sSN_SYSTEM_Init(void)
     SN_SYS_MessageQInit(&msgQIdApp);
 
     //@DEMO
-    SN_SYS_TimerCreate(&testTimerId, 5000, TestTiemrCallBack_1);
+    //SN_SYS_TimerCreate(&testTimerId, 5000, TestTiemrCallBack_1);
 
     return retStatus;
 }
@@ -103,6 +103,7 @@ SN_STATUS SN_SYSTEM_SendAppMessage(event_id_t evtId, event_msg_t evtMessage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
+    printf("MSG MODULE => APP\n"); fflush(stdout);
     retStatus = SN_SYS_MessagePut(&msgQIdApp, evtId, evtMessage);
 
     return retStatus;

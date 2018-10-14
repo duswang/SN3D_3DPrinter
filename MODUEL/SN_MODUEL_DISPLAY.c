@@ -28,13 +28,14 @@ static void* sDisplaySerial_callback();
 
 static void sDisplayMessagePut(event_id_t evtDisplay_t, event_msg_t evtMessage);
 
-
-
 SN_STATUS SN_MODUEL_DISPLAY_Init(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-  serialIdDisplay = SN_SYS_SerialCreate(sysSerial(DisplaySerial), sDisplaySerial_callback);
+    /** MESSAGE Q INIT **/
+    SN_SYS_MessageQInit(&msgQIdDisplay);
+
+    serialIdDisplay = SN_SYS_SerialCreate(sysSerial(DisplaySerial), sDisplaySerial_callback);
 
     if (pthread_mutex_init(&ptmDisplay, NULL) != 0)
     {
@@ -82,16 +83,15 @@ static void* sDisplaySerial_callback()
     char* buffer = SN_SYS_SerialRx(serialIdDisplay);
     msgNX_t msgNXId;
 
-
+    printf("DATA RX <= "); fflush(stdout);
     while(i < BYTE_SIZE)
     {
-        msgNXId.NXmessage8bit[(BYTE_SIZE - 1) - i] = buffer[i];
-        printf(" 0x%02x", msgNXId.NXmessage8bit[(BYTE_SIZE - 1) - i]);
+        msgNXId.NXmessage8bit[i] = buffer[i];
+        printf("0x%02x ", msgNXId.NXmessage8bit[i]);
         i++;
     }
 
-    printf("\n");
-    fflush(stdout);
+    printf("\n"); fflush(stdout);
 
     sDisplayMessagePut(MSG_DISPLAY_DATA_RX, msgNXId.NXmessage[0]);
 

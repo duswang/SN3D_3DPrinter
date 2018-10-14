@@ -31,7 +31,7 @@ set(LIBRARY_PATH ${PRJ_ROOT_PATH}/LIBRARY)
 
 
 # Cmkae Module #
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PRJ_ROOT_PATH}/cmake/")
+set(CMAKE_MODULE_PATH "${PRJ_ROOT_PATH}/cmake/")
 
 # Library #
 find_package(SDL2 REQUIRED)

@@ -41,9 +41,15 @@
 #include <signal.h>
 
 /**** Library ****/
+#if(APPLE)
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <libusb-1.0/libusb.h>
+#else
+#include <SDL.h>
+#include <SDL_image.h>
+#include <libusb-1.0/libusb.h>
+#endif
 #include <zip.h>
 
 /**** Local Library ****/

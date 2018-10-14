@@ -40,6 +40,7 @@ SN_STATUS APP_STATE_EnterStatePause(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
+    printf("APP STATE => APP_STATE_PAUSE\n"); fflush(stdout);
     APP_SetAppState(APP_STATE_PAUSE);
 
     return retStatus;
@@ -77,9 +78,11 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                 /* IN PAGE BUTTONS */
                 case NX_ID_PAUSE_BUTTON_RESUME:
                     SN_MODUEL_3D_PRINTER_Resume();
+                    APP_STATE_EnterStatePrinting();
                     break;
                 case NX_ID_PAUSE_BUTTON_STOP:
                     SN_MODUEL_3D_PRINTER_Stop();
+                    APP_STATE_EnterStateWaiting();
                     break;
                 default:
                     break;

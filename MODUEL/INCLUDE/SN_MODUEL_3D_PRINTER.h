@@ -12,13 +12,14 @@
 #define BYTE_SIZE SN_SYS_SERIAL_COMM_RX_REALTIME
 #define BAUD_RATE SN_SYS_SERIAL_COMM_BAUD_RATE_115200
 
-#define FIRST_SLICE_DELAY_TIME 5000 //ms ( 5sec )
+#define FIRST_SLICE_DELAY_TIME 5000 + (10000)//ms ( 5sec )
 
-#if(0)
-#define UART_DEVICE "/dev/ttyACM0"
-#else
+#if(APPLE)
 #define UART_DEVICE "/dev/cu.usbmodem1421"
+#else
+#define UART_DEVICE "/dev/ttyACM0"
 #endif
+
 #define UART_OFLAGS  (O_RDWR | O_NOCTTY | O_NONBLOCK)
 
 /** Module Message **/
@@ -46,15 +47,12 @@ typedef enum {
     DEVICE_STOP,
     DEVICE_FINISH,
     DEVICE_BUSY,
+    DEVICE_HOMING,
     DEVICE_IDLE,
     DEVICE_NONE
 } deviceState_t;
 
 typedef struct moduel_3d_printer {
-    /** Thread **/
-    event_id_t  prevEvent;
-    event_id_t  nextEvent;
-
     deviceState_t   state;
 
     /** Print **/

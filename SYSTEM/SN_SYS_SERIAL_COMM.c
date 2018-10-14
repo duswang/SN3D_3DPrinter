@@ -308,7 +308,7 @@ static int sSerial_RX_Hdlr(sysSerialId serialId)
         buffer_length = 0;
 
         //Start Reading Serial Data
-        while(1)
+        while(true)
         {
             rx_length = read(serialId->uartId, (void*)rx_buffer, ((serialId->_serialDef->rxByteSize == SN_SYS_SERIAL_COMM_RX_REALTIME) ? 255 : serialId->_serialDef->rxByteSize));
 

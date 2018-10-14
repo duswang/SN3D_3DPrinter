@@ -67,7 +67,7 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemI
 
     /** Parameter **/
     /* Base Paramter */
-    moduleFileSystem.printInfo.printParameter.layerThickness    = 0.05000;//mm
+    moduleFileSystem.printInfo.printParameter.layerThickness          = 0.05000;//mm
 
     /* Bottom Layer */
     moduleFileSystem.printInfo.printParameter.bottomLayerExposureTime = 5000;    //ms
@@ -81,11 +81,11 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemI
     moduleFileSystem.printInfo.printParameter.liftFeedRate            =   150.00;//mm/s
 
     /** Target **/
-    moduleFileSystem.printInfo.printTarget.sourceFilePath       = USB_PATH;
-    moduleFileSystem.printInfo.printTarget.tempFilePath         = TEMP_FILE_PATH;
-    moduleFileSystem.printInfo.printTarget.tempFileName         = TEMP_FILE_NAME;
+    moduleFileSystem.printInfo.printTarget.sourceFilePath             = USB_PATH;
+    moduleFileSystem.printInfo.printTarget.tempFilePath               = TEMP_FILE_PATH;
+    moduleFileSystem.printInfo.printTarget.tempFileName               = TEMP_FILE_NAME;
 
-    moduleFileSystem.printInfo.printTarget.slice                = 637;
+    moduleFileSystem.printInfo.printTarget.slice                      = 637;
 
     return retStatus;
 }

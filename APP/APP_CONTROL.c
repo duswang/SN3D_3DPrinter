@@ -13,6 +13,8 @@ static SN_STATUS s3DPrinterHdlr(event_msg_t evtMessage);
 static SN_STATUS sDisplayHdlr(event_msg_t evtMessage);
 static SN_STATUS sFileSystemHdlr(event_msg_t evtMessage);
 static SN_STATUS sImageViewerHdlr(event_msg_t evtMessage);
+/* Util */
+static float sGetZmmFromValue(uint8_t nxValue);
 
 int APP_CONTROL_EvtHdlr(general_evt_t evt)
 {
@@ -40,6 +42,7 @@ SN_STATUS APP_STATE_EnterStateControl(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
+    printf("APP STATE => APP_STATE_CONTROL\n"); fflush(stdout);
     APP_SetAppState(APP_STATE_CONTROL);
 
     return retStatus;
@@ -76,10 +79,11 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                     break;
                 /* IN PAGE BUTTONS */
                 case NX_ID_CONTROL_BUTTON_Z_UP:
-                    SN_MODUEL_3D_PRINTER_Z_UP(msgNXId.value);
+                    SN_MODUEL_3D_PRINTER_Z_UP(sGetZmmFromValue(msgNXId.value));
                     break;
                 case NX_ID_CONTROL_BUTTON_Z_DOWN:
-                    SN_MODUEL_3D_PRINTER_Z_DOWN(msgNXId.value);
+
+                    SN_MODUEL_3D_PRINTER_Z_DOWN(sGetZmmFromValue(msgNXId.value));
                     break;
                 case NX_ID_CONTROL_BUTTON_Z_HOMMING:
                     SN_MODUEL_3D_PRINTER_Z_HOMING();
@@ -112,3 +116,32 @@ static SN_STATUS sImageViewerHdlr(event_msg_t evtMessage)
     return retStatus;
 }
 
+static float sGetZmmFromValue(uint8_t nxValue)
+{
+    switch(nxValue)
+    {
+        case NX_VALUE_CONTROL_Z_000_1_MM:
+            return 0.1;
+          break;
+        case NX_VALUE_CONTROL_Z_001_0_MM:
+            return 1.0;
+          break;
+        case NX_VALUE_CONTROL_Z_005_0_MM:
+            return 5.0;
+          break;
+        case NX_VALUE_CONTROL_Z_010_0_MM:
+            return 10.0;
+          break;
+        case NX_VALUE_CONTROL_Z_050_0_MM:
+            return 50.0;
+          break;
+        case NX_VALUE_CONTROL_Z_100_0_MM:
+            return 100.0;
+          break;
+        default:
+            return 0.0;
+          break;
+    }
+
+    return 0;
+}
