@@ -87,6 +87,8 @@ set(
 	${SYSTEM_PATH}/SN_SYS_TIMER.c
 )
 
+# Executable #
+add_executable(Project ${Source})
 
 # CFlags  #
 target_compile_options(Project PRIVATE ${CMAKE_CXX_FLAGS})
@@ -94,9 +96,6 @@ target_compile_definitions(Project PRIVATE BOOST_ERROR_CODE_HEADER_ONLY)
 
 # Library #
 target_link_libraries(Project pthread usb-1.0 ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${LIBZIP_LIBRARIES})
-
-# Executable #
-add_executable(Project ${Source})
 
 
 ###### Message #######
