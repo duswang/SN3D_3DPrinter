@@ -1,17 +1,22 @@
 # SN3D Project
 
-# CMakeList Tutorial
+This is the code for 3D Printer ( SN3D ). it Running on RBP3B+ or OSX( not Support Nextiond Display )
 
-# External Library
+## Makefile
 
-	libusb
-	
-	SDL2
-	SDL2_Image
+This Project use cmake so you need install cmake program
 
-# Compile Type
+## CMake Basic Commands
 
-	APPLE
-	
-	LINUX
+	1.`$ rm -rf CMakeFiles/ cmake_install.cmake CMakeCache.txt`
+	2.`$ cmake CMakeLits.txt`
+
+## CMake make 
+
+# External Library List
+
+	libusb - `https://libzip.org/`
+	libzip - ` `
+	SDL2   - ` `
+	SDL2_Image - ` `
 	
