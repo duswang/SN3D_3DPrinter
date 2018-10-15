@@ -21,7 +21,7 @@ static moduleFileSystem_t moduleFileSystem;
 
 /** Static Functions **/
 /* callback */
-static void* USBEvent_callback(int evt);
+static void*       USBEvent_callback(int evt);
 
 /* System */
 static void        sFileSystemMessagePut(evtFileSystem_t evtId, event_msg_t evtMessage);
@@ -31,8 +31,13 @@ static void*       sFileSystemThread();
 static SN_STATUS   sFileSystemRead(void);
 static void        sFileSystemPrint(void);
 
-static SN_STATUS   sCreateTempFile(uint32_t pageIndex, uint32_t itemIndex);
-static SN_STATUS   sRemoveTempFile(void);
+static SN_STATUS   sReadGCodeFile(char* srcPath);
+
+/* Util*/
+static SN_STATUS   sCopyFile(char* srcPath, char* desPath);
+static SN_STATUS   sMoveTempFile(char* srcPath, char* desPath);
+static SN_STATUS   sRemoveTempFile(char* filePath);
+static SN_STATUS   sCreateTempFile(char* srcPath, char* desPath);
 
 /* Util */
 static const char* sGetFilenameExt(const char *filename);
@@ -58,34 +63,56 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemI
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
+    char srcPath[50];
+    char desPath[50];
+
     //sPrintInfoRead();
+
+    sprintf(srcPath,"%s%s.%s",  USB_PATH, \
+                                moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, \
+                                FILENAME_EXT); fflush(stdout);
+
+    sprintf(desPath,"%s%s.%s",TEMP_FILE_PATH, TEMP_FILE_NAME, FILENAME_EXT); fflush(stdout);
+
+    printf("%s\n", srcPath); fflush(stdout);
+    printf("%s\n", desPath); fflush(stdout);
+
+
+    sRemoveTempFile(TEMP_FILE_PATH);
+    sCopyFile(srcPath, desPath);
+    sCreateTempFile(desPath, TEMP_FILE_PATH);
+    sMoveTempFile(EXTRACTED_TEMP_FILE_PATH, TEMP_FILE_PATH);
+
+    sprintf(srcPath,"%s%s.%s", TEMP_FILE_PATH, \
+                               moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, \
+                               CONFIG_FILENAME_EXT); fflush(stdout);
     //@DEBUG
-    //sCreateTempFile(pageIndex, itemIndex);
+    sReadGCodeFile(srcPath);
 
-
-    moduleFileSystem.printInfo.isInit = true;
 
     /** Parameter **/
     /* Base Paramter */
     moduleFileSystem.printInfo.printParameter.layerThickness          = 0.05000;//mm
 
     /* Bottom Layer */
-    moduleFileSystem.printInfo.printParameter.bottomLayerExposureTime = 5000;    //ms
-    moduleFileSystem.printInfo.printParameter.bottomLayerNumber       =    7;    //layer
+    moduleFileSystem.printInfo.printParameter.bottomLayerExposureTime =    5000;    //ms
+    moduleFileSystem.printInfo.printParameter.bottomLayerNumber       =       7;    //layer
     moduleFileSystem.printInfo.printParameter.bottomLiftFeedRate      =  150.00; //mm/s
 
     /* Normal Layer */
-    moduleFileSystem.printInfo.printParameter.layerExposureTime       =  8000;   //ms
-    moduleFileSystem.printInfo.printParameter.liftTime                =  7200;   //ms
-    moduleFileSystem.printInfo.printParameter.liftDistance            =     7;   //mm
+    moduleFileSystem.printInfo.printParameter.layerExposureTime       =    8000;   //ms
+    moduleFileSystem.printInfo.printParameter.liftTime                =    7200;   //ms
+    moduleFileSystem.printInfo.printParameter.liftDistance            =       7;   //mm
     moduleFileSystem.printInfo.printParameter.liftFeedRate            =   150.00;//mm/s
 
     /** Target **/
     moduleFileSystem.printInfo.printTarget.sourceFilePath             = USB_PATH;
     moduleFileSystem.printInfo.printTarget.tempFilePath               = TEMP_FILE_PATH;
-    moduleFileSystem.printInfo.printTarget.tempFileName               = TEMP_FILE_NAME;
+    moduleFileSystem.printInfo.printTarget.tempFileName               = moduleFileSystem.fs.page[pageIndex].item[itemIndex].name;
 
     moduleFileSystem.printInfo.printTarget.slice                      = 637;
+
+    moduleFileSystem.printInfo.isInit = true;
 
     return retStatus;
 }
@@ -119,7 +146,7 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoUninit(void)
     if(moduleFileSystem.printInfo.isInit)
     {
         moduleFileSystem.printInfo.isInit = false;
-        sRemoveTempFile();
+        sRemoveTempFile(TEMP_FILE_PATH);
     }
 
     return retStatus;
@@ -249,86 +276,307 @@ static void safe_create_dir(const char *dir)
     }
 }
 
-SN_STATUS sCreateTempFile(uint32_t pageIndex, uint32_t itemIndex)
+SN_STATUS sCopyFile(char* srcPath, char* desPath)
+{
+    FILE* src = fopen(srcPath, "rb");
+    FILE* des = fopen(desPath, "wb");
+    char buf[100];
+    int readCnt = 0;
+
+    if(src == NULL)
+    {
+        printf("src fail open file\n");
+    }
+
+    if(des ==NULL)
+    {
+        printf("des fail open file\n");
+    }
+
+    while(true)
+    {
+        readCnt = fread((void*)buf, 1, sizeof(buf), src);
+
+        if(readCnt < sizeof(buf))
+        {
+            if(feof(src)!=0)
+            {
+                fwrite((void*)buf, 1, readCnt, des);
+                printf("COPY PRINT FILE TO TEMP FOLDER-!\n");
+                break;
+            }
+            else
+            {
+                printf("fail\n");
+                break;
+            }
+        }
+        fwrite((void*)buf,1, sizeof(buf), des);
+    }
+
+    fclose(src);
+    fclose(des);
+
+    return SN_STATUS_OK;
+}
+
+SN_STATUS sMoveTempFile(char* srcPath, char* desPath)
+{
+    DIR *d = opendir(srcPath);
+    size_t path_len = strlen(srcPath);
+    size_t desPath_len = strlen(desPath);
+
+    int r = -1;
+
+    if(d)
+    {
+        struct dirent *p;
+
+        r = 0;
+
+        while(!r &&(p=readdir(d)))
+        {
+            int r2 = -1;
+            char *buf;
+            char *desBuf;
+            size_t len;
+            size_t lenDes;
+
+            if(!strcmp(p->d_name, ".") || !strcmp(p->d_name, ".."))
+            {
+                continue;
+            }
+
+            if(strstr(p->d_name, ".") == NULL)
+            {
+                continue;
+            }
+
+
+            len    =    path_len + strlen(p->d_name) + 2;
+            lenDes = desPath_len + strlen(p->d_name) + 2;
+            buf    = malloc(len);
+            desBuf = malloc(lenDes);
+
+            if(buf)
+            {
+                struct stat statbuf;
+
+                snprintf(buf, len,"%s%s", srcPath, p->d_name);
+                snprintf(desBuf, lenDes, "%s%s", desPath, p->d_name);
+                if(!stat(buf, &statbuf))
+                {
+                    r2 = rename(buf, desBuf);
+                    printf("from : %s to : %s\n", buf, desBuf); fflush(stdout);
+                }
+
+                free(buf);
+            }
+
+            r = r2;
+        }
+        closedir(d);
+    }
+    else
+    {
+        printf("fail\n"); fflush(stdout);
+    }
+
+    if(!r)
+    {
+        //r = rmdir(filePath);
+    }
+
+    return SN_STATUS_OK;
+}
+
+SN_STATUS sRemoveTempFile(char* filePath)
+{
+    DIR *d = opendir(filePath);
+    size_t path_len = strlen(filePath);
+    int r = -1;
+
+    if(d)
+    {
+        struct dirent *p;
+
+        r = 0;
+
+        while(!r &&(p=readdir(d)))
+        {
+            int r2 = -1;
+            char *buf;
+            size_t len;
+
+            if(!strcmp(p->d_name, ".") || !strcmp(p->d_name, ".."))
+            {
+                continue;
+            }
+
+            len = path_len + strlen(p->d_name) + 2;
+            buf = malloc(len);
+
+            if(buf)
+            {
+                struct stat statbuf;
+
+                snprintf(buf, len,"%s%s", filePath, p->d_name);
+
+                if(!stat(buf, &statbuf))
+                {
+                    if(S_ISDIR(statbuf.st_mode))
+                    {
+                        r2 = sRemoveTempFile(buf);
+                        printf("remove : %s\n", buf); fflush(stdout);
+                    }
+                    else
+                    {
+                        r2 = unlink(buf);
+                        printf("remove : %s\n", buf); fflush(stdout);
+                    }
+                }
+
+                free(buf);
+            }
+            r = r2;
+        }
+        printf("Remove Temp File-!\n"); fflush(stdout);
+        closedir(d);
+    }
+    else
+    {
+        printf("fail\n"); fflush(stdout);
+    }
+
+    if(!r)
+    {
+        /** DON'T DELECT TEMPFILE DIR ONLY FILE **/
+        //r = rmdir(filePath);
+    }
+
+    return SN_STATUS_OK;
+}
+
+SN_STATUS sCreateTempFile(char* srcPath, char* desPath)
 {
 
     struct zip *za;
     struct zip_file *zf;
     struct zip_stat sb;
 
-    char* fromPath;
-    char* toPath;
-    char buf[100];
+    char buf[1000];
 
     int err;
     int i, len;
     int fd;
     long long sum;
 
-    sprintf(fromPath,"%s%s.%s/",moduleFileSystem.printInfo.printTarget.sourceFilePath, moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, FILENAME_EXT);
-    //sprintf(toPath  ,"%s%s.%s",PRINT_FILE_PATH, PRINT_FILE_NAME, FILENAME_EXT);
-
-    puts(fromPath); fflush(stdout);
-
-    if ((za = zip_open(fromPath, 0, &err)) == NULL)
+    if ((za = zip_open(srcPath, 0, &err)) == NULL)
     {
             zip_error_to_str(buf, sizeof(buf), err, errno);
-            fprintf(stderr, "can't open zip archive `%s': %s/n",fromPath, buf);
+            fprintf(stderr, "can't open zip archive `%s': %s/n",srcPath, buf); fflush(stdout);
             return 1;
     }
 
     for (i = 0; i < zip_get_num_entries(za, 0); i++)
     {
-            if (zip_stat_index(za, i, 0, &sb) == 0) {
-                printf("==================/n");
-                len = strlen(sb.name); fflush(stdout);
-                printf("Name: [%s], ", sb.name);
-                printf("Size: [%llu], ", sb.size);
-                printf("mtime: [%u]/n", (unsigned int)sb.mtime);
-                if (sb.name[len - 1] == '/') {
-                    safe_create_dir(sb.name);
-                } else {
-                    zf = zip_fopen_index(za, i, 0);
-                    if (!zf) {
-                        fprintf(stderr, "boese, boese/n");
-                        exit(100);
-                    }
+        if (zip_stat_index(za, i, 0, &sb) == 0)
+        {
+            printf("==================/n");
 
-                    fd = open(sb.name, O_RDWR | O_TRUNC | O_CREAT, 0644);
-                    if (fd < 0) {
-                        fprintf(stderr, "boese, boese/n");
-                        exit(101);
-                    }
+            len = strlen(sb.name); fflush(stdout);
 
-                    sum = 0;
-                    while (sum != sb.size) {
-                        len = zip_fread(zf, buf, 100);
-                        if (len < 0) {
-                            fprintf(stderr, "boese, boese/n");
-                            exit(102);
-                        }
-                        write(fd, buf, len);
-                        sum += len;
-                    }
-                    close(fd);
-                    zip_fclose(zf);
+            printf("Name: [%s], ", sb.name);
+            printf("Size: [%llu], ", sb.size);
+            printf("mtime: [%u]/n", (unsigned int)sb.mtime);
+
+            if (sb.name[len - 1] == '/')
+            {
+                safe_create_dir(sb.name);
+            }
+            else
+            {
+                zf = zip_fopen_index(za, i, 0);
+
+                if (!zf) {
+                    fprintf(stderr, "boese, boese/n");
+                    exit(100);
                 }
-            } else {
-                printf("File[%s] Line[%d]/n", __FILE__, __LINE__);
+
+                fd = open(sb.name, O_RDWR | O_TRUNC | O_CREAT, 0644);
+
+                if (fd < 0) {
+                    fprintf(stderr, "boese, boese/n");
+                    exit(101);
+                }
+
+                sum = 0;
+
+                while (sum != sb.size)
+                {
+                    len = zip_fread(zf, buf, 1000);
+                    if (len < 0)
+                    {
+                      fprintf(stderr, "boese, boese/n");
+                      exit(102);
+                    }
+                    write(fd, buf, len);
+                    sum += len;
+                }
+
+                close(fd);
+                zip_fclose(zf);
             }
         }
+        else
+        {
+              printf("File[%s] Line[%d]/n", __FILE__, __LINE__);
+        }
+    }
 
-    if (zip_close(za) == -1) {
-        fprintf(stderr, "can't close zip archive `%s'/n", toPath);
+    if (zip_close(za) == -1)
+    {
+        fprintf(stderr, "can't close zip archive `%s'/n", srcPath);
         return 1;
     }
 
-    return 0;
+    printf("UNZIP PRINTT(TEMP) FILE-!\n"); fflush(stdout);
+
+    return SN_STATUS_OK;
 }
 
-static SN_STATUS sRemoveTempFile(void)
+static SN_STATUS sReadGCodeFile(char* srcPath)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+    FILE* GCodeFile;
+    char* line = NULL;
+    size_t  len;
+    ssize_t read;
+    int i = 0;
+
+    printf("%s\n", srcPath);
+
+    GCodeFile = fopen(srcPath, "r");
+
+    if(GCodeFile != NULL)
+    {
+        return SN_STATUS_INVALID_PARAM;
+    }
+
+    while((read = getline(&line, &len, GCodeFile)) != -1)
+    {
+        printf("%d :: %s\n", i, line); fflush(stdout);
+        i++;
+    }
+
+    fclose(GCodeFile);
+
+    printf("%d :: %s\n", i, line); fflush(stdout);
+
+    if(line)
+    {
+        free(line);
+    }
 
     return retStatus;
 }

@@ -17,10 +17,20 @@
 #define FILENAME_SIZE 256
 #define FILENAME_EXT  "cws"
 
+#define CONFIG_FILENAME_EXT "gcode"
+
 //@DEBUG
+#if(APPLE)
 #define USB_PATH        "/Volumes/USB_0/"
+#else
+#define USB_PATH        "/media/pi/USB_0/"
+#endif
+
+#define EXTRACTED_TEMP_FILE_PATH "../build/"
 #define TEMP_FILE_PATH  "../tempFile/"
 #define TEMP_FILE_NAME  "test"
+
+
 #define DEVICE_NAME     "POLARIS 500"
 
 /* Module Message */

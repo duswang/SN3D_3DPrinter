@@ -8,7 +8,7 @@
   <PlatformTemp>75</PlatformTemp>
   <ExportSVG>0</ExportSVG>
   <Export>True</Export>
-  <ExportPNG>True</ExportPNG>
+  <ExportPNG>False</ExportPNG>
   <XOffset>0</XOffset>
   <YOffset>0</YOffset>
   <Direction>Bottom_Up</Direction>

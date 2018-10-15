@@ -25,7 +25,7 @@ void check_error_sdl_img(bool check, const char* message);
 // Load an image from "fname" and return an SDL_Texture with the content of the image
 SDL_Texture* load_texture(const char* fname, SDL_Renderer *renderer);
 
-#if(1)
+#if(0)
 SN_STATUS SN_MODUEL_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
@@ -105,7 +105,7 @@ SN_STATUS SN_MODUEL_IMAGE_VIEWER_Init(void)
     moduleImageViewer.window = SDL_CreateWindow("SN3D", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
             moduleImageViewer.machineInfo.deviceParameter.weight, \
             moduleImageViewer.machineInfo.deviceParameter.height, \
-            SDL_WINDOW_OPENGL);
+            SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL);
 
     check_error_sdl(moduleImageViewer.window == NULL, "Unable to create window");
 
