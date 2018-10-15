@@ -22,7 +22,7 @@ set(VERSION_MAJOR 0)
 set(VERSION_MINOR 1)
 
 
-# Paths
+# Paths #
 set(PRJ_ROOT_PATH .)
 set(APP_PATH ${PRJ_ROOT_PATH}/APP)
 set(MODUEL_PATH ${PRJ_ROOT_PATH}/MODUEL)
@@ -40,7 +40,6 @@ find_package(libzip REQUIRED)
 
 # Build Option #
 set (CMAKE_CXX_STANDARD 11)
-#set (CMAKE_CXX_FLAGS -D_POSIX_C_SOURCE=199309L)
 
 # Output Set
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PRJ_ROOT_PATH}/build)
@@ -53,7 +52,6 @@ include_directories(
 	${APP_PATH}/INCLUDE
 	${MODUEL_PATH}/INCLUDE
 	${SYSTEM_PATH}/INCLUDE
-	${LIBRARY_PATH}/libusbp/include
 )
 # Include - Library
 include_directories(
@@ -61,8 +59,7 @@ include_directories(
 	${SDL2_IMAGE_INCLUDE_DIRS}
 	${LIBZIP_INCLUDE_DIRS}
 )
-# Build Target
-
+# Build Target #
 set(
 	# Target Name #
 	Source
@@ -90,17 +87,19 @@ set(
 	${SYSTEM_PATH}/SN_SYS_TIMER.c
 )
 
-add_executable(Project ${Source})
 
-# CFlags 
+# CFlags  #
 target_compile_options(Project PRIVATE ${CMAKE_CXX_FLAGS})
 target_compile_definitions(Project PRIVATE BOOST_ERROR_CODE_HEADER_ONLY)
 
-# Library
+# Library #
 target_link_libraries(Project pthread usb-1.0 ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${LIBZIP_LIBRARIES})
 
+# Executable #
+add_executable(Project ${Source})
 
-# Message
+
+###### Message #######
 message("Project Name   :: SN3D Project.")
 message("Version        :: ${VERSION_MAJOR}.${VERSION_MINOR}v")
 message("Build Set      :: ${CMAKE_BUILD_TYPE}")
