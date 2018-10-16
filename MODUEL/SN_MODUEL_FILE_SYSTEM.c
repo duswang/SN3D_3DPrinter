@@ -37,7 +37,7 @@ static SN_STATUS   sReadGCodeFile(char* srcPath);
 static SN_STATUS   sCopyFile(char* srcPath, char* desPath);
 static SN_STATUS   sMoveTempFile(char* srcPath, char* desPath);
 static SN_STATUS   sRemoveTempFile(char* filePath);
-static SN_STATUS   sCreateTempFile(char* srcPath, char* desPath);
+static SN_STATUS   sExtractTempFile(char* srcPath, char* desPath);
 
 /* Util */
 static const char* sGetFilenameExt(const char *filename);
@@ -72,15 +72,13 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemI
                                 moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, \
                                 FILENAME_EXT); fflush(stdout);
 
-    sprintf(desPath,"%s%s.%s",TEMP_FILE_PATH, TEMP_FILE_NAME, FILENAME_EXT); fflush(stdout);
-
-    printf("%s\n", srcPath); fflush(stdout);
-    printf("%s\n", desPath); fflush(stdout);
-
+    sprintf(desPath,"%s%s.%s",TEMP_FILE_PATH, \
+                                moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, \
+                                FILENAME_EXT); fflush(stdout);
 
     sRemoveTempFile(TEMP_FILE_PATH);
     sCopyFile(srcPath, desPath);
-    sCreateTempFile(desPath, TEMP_FILE_PATH);
+    sExtractTempFile(desPath, TEMP_FILE_PATH);
     sMoveTempFile(EXTRACTED_TEMP_FILE_PATH, TEMP_FILE_PATH);
 
     sprintf(srcPath,"%s%s.%s", TEMP_FILE_PATH, \
@@ -88,7 +86,6 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemI
                                CONFIG_FILENAME_EXT); fflush(stdout);
     //@DEBUG
     sReadGCodeFile(srcPath);
-
 
     /** Parameter **/
     /* Base Paramter */
@@ -110,7 +107,7 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemI
     moduleFileSystem.printInfo.printTarget.tempFilePath               = TEMP_FILE_PATH;
     moduleFileSystem.printInfo.printTarget.tempFileName               = moduleFileSystem.fs.page[pageIndex].item[itemIndex].name;
 
-    moduleFileSystem.printInfo.printTarget.slice                      = 637;
+    moduleFileSystem.printInfo.printTarget.slice                      =     637;
 
     moduleFileSystem.printInfo.isInit = true;
 
@@ -302,7 +299,7 @@ SN_STATUS sCopyFile(char* srcPath, char* desPath)
             if(feof(src)!=0)
             {
                 fwrite((void*)buf, 1, readCnt, des);
-                printf("COPY PRINT FILE TO TEMP FOLDER-!\n");
+                printf("MAKE TEMP FILE.\n"); fflush(stdout);
                 break;
             }
             else
@@ -367,7 +364,6 @@ SN_STATUS sMoveTempFile(char* srcPath, char* desPath)
                 if(!stat(buf, &statbuf))
                 {
                     r2 = rename(buf, desBuf);
-                    printf("from : %s to : %s\n", buf, desBuf); fflush(stdout);
                 }
 
                 free(buf);
@@ -385,7 +381,9 @@ SN_STATUS sMoveTempFile(char* srcPath, char* desPath)
     if(!r)
     {
         //r = rmdir(filePath);
+        printf("REPLACE TEMP FILE.\n"); fflush(stdout);
     }
+
 
     return SN_STATUS_OK;
 }
@@ -427,12 +425,10 @@ SN_STATUS sRemoveTempFile(char* filePath)
                     if(S_ISDIR(statbuf.st_mode))
                     {
                         r2 = sRemoveTempFile(buf);
-                        printf("remove : %s\n", buf); fflush(stdout);
                     }
                     else
                     {
                         r2 = unlink(buf);
-                        printf("remove : %s\n", buf); fflush(stdout);
                     }
                 }
 
@@ -440,7 +436,7 @@ SN_STATUS sRemoveTempFile(char* filePath)
             }
             r = r2;
         }
-        printf("Remove Temp File-!\n"); fflush(stdout);
+        printf("REMOVE TEMP FILE.\n"); fflush(stdout);
         closedir(d);
     }
     else
@@ -450,14 +446,13 @@ SN_STATUS sRemoveTempFile(char* filePath)
 
     if(!r)
     {
-        /** DON'T DELECT TEMPFILE DIR ONLY FILE **/
-        //r = rmdir(filePath);
+
     }
 
     return SN_STATUS_OK;
 }
 
-SN_STATUS sCreateTempFile(char* srcPath, char* desPath)
+SN_STATUS sExtractTempFile(char* srcPath, char* desPath)
 {
 
     struct zip *za;
@@ -482,13 +477,13 @@ SN_STATUS sCreateTempFile(char* srcPath, char* desPath)
     {
         if (zip_stat_index(za, i, 0, &sb) == 0)
         {
-            printf("==================/n");
+            //printf("==================/n");
 
             len = strlen(sb.name); fflush(stdout);
 
-            printf("Name: [%s], ", sb.name);
-            printf("Size: [%llu], ", sb.size);
-            printf("mtime: [%u]/n", (unsigned int)sb.mtime);
+            //printf("Name: [%s], ", sb.name);
+            //printf("Size: [%llu], ", sb.size);
+            //printf("mtime: [%u]/n", (unsigned int)sb.mtime);
 
             if (sb.name[len - 1] == '/')
             {
@@ -530,7 +525,7 @@ SN_STATUS sCreateTempFile(char* srcPath, char* desPath)
         }
         else
         {
-              printf("File[%s] Line[%d]/n", __FILE__, __LINE__);
+              //printf("File[%s] Line[%d]/n", __FILE__, __LINE__);
         }
     }
 
@@ -540,7 +535,7 @@ SN_STATUS sCreateTempFile(char* srcPath, char* desPath)
         return 1;
     }
 
-    printf("UNZIP PRINTT(TEMP) FILE-!\n"); fflush(stdout);
+    printf("EXTRACT TEMP FILE.\n"); fflush(stdout);
 
     return SN_STATUS_OK;
 }
@@ -554,12 +549,11 @@ static SN_STATUS sReadGCodeFile(char* srcPath)
     ssize_t read;
     int i = 0;
 
-    printf("%s\n", srcPath);
-
     GCodeFile = fopen(srcPath, "r");
 
     if(GCodeFile != NULL)
     {
+        printf("open gcode file faild.\n");
         return SN_STATUS_INVALID_PARAM;
     }
 

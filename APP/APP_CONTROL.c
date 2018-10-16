@@ -45,6 +45,8 @@ SN_STATUS APP_STATE_EnterStateControl(void)
     printf("APP STATE => APP_STATE_CONTROL\n"); fflush(stdout);
     APP_SetAppState(APP_STATE_CONTROL);
 
+    SN_MODUEL_3D_PRINTER_MOTOR_INIT();
+
     return retStatus;
 }
 

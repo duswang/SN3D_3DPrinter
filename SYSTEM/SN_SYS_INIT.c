@@ -103,7 +103,7 @@ SN_STATUS SN_SYSTEM_SendAppMessage(event_id_t evtId, event_msg_t evtMessage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    printf("MSG MODULE => APP\n"); fflush(stdout);
+    //printf("MSG MODULE => APP\n"); fflush(stdout);
     retStatus = SN_SYS_MessagePut(&msgQIdApp, evtId, evtMessage);
 
     return retStatus;

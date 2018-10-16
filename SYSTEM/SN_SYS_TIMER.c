@@ -13,8 +13,8 @@
 pthread_mutex_t ptmTimer = PTHREAD_MUTEX_INITIALIZER;
 
 /** Global Variables **/
-int guiNumTSR;
-sysTimerQ_t aTSR[MAX_NUM_OF_TSR];
+static int guiNumTSR;
+static sysTimerQ_t aTSR[MAX_NUM_OF_TSR];
 
 /** Global Variables **/
 
@@ -134,7 +134,7 @@ static void sCallBackTSR()
     uint8_t idxTSR;
     struct timespec tickNow;
 
-    pthread_mutex_lock(&ptmTimer);
+
 
     for (idxTSR = 0; idxTSR < MAX_NUM_OF_TSR; idxTSR++)
     {
@@ -143,6 +143,9 @@ static void sCallBackTSR()
             (sDiffTick(aTSR[idxTSR].tickRequested, tickNow) >= ((aTSR[idxTSR].msDuration))))
         {
             (void)(aTSR[idxTSR].pfTSRCallBack)();
+
+            pthread_mutex_lock(&ptmTimer);
+
             aTSR[idxTSR].isOccupied = false;
             aTSR[idxTSR].tickRequested.tv_sec = 0;
             aTSR[idxTSR].tickRequested.tv_nsec = 0;
@@ -153,6 +156,8 @@ static void sCallBackTSR()
                 guiNumTSR--;
             }
             aTSR[idxTSR].pfTSRCallBack = NULL;
+
+            pthread_mutex_unlock(&ptmTimer);
         }
     }
 
@@ -160,8 +165,6 @@ static void sCallBackTSR()
     {
         sTimerStop();
     }
-
-    pthread_mutex_unlock(&ptmTimer);
 }
 
 static void sTimerStart(void)

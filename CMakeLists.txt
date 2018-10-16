@@ -9,18 +9,19 @@
 #
 #
 
+######################## Base Info Setting ########################
 # Header #
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required(VERSION 2.6)
 
-set (CMAKE_CXX_STANDARD 11)
-set (CMAKE_CXX_STANDARD_REQUIRED TRUE)
-set (CMAKE_CXX_EXTENSIONS FALSE)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+set(CMAKE_CXX_EXTENSIONS FALSE)
 
 # Project Info  #
-project (sn3d_project)
+project(sn3d_project)
+
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 1)
-
 
 # Paths #
 set(PRJ_ROOT_PATH .)
@@ -29,39 +30,37 @@ set(MODUEL_PATH ${PRJ_ROOT_PATH}/MODUEL)
 set(SYSTEM_PATH ${PRJ_ROOT_PATH}/SYSTEM)
 set(LIBRARY_PATH ${PRJ_ROOT_PATH}/LIBRARY)
 
+# Output Paths #
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PRJ_ROOT_PATH}/build)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PRJ_ROOT_PATH}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PRJ_ROOT_PATH}/lib)
+
 
 # Cmkae Module #
 set(CMAKE_MODULE_PATH "${PRJ_ROOT_PATH}/cmake/")
 
+################### Library & Source & Include Setting ###################
 # Library #
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(libzip REQUIRED)
 
-# Build Option #
-set (CMAKE_CXX_STANDARD 11)
-
-# Output Set
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PRJ_ROOT_PATH}/build)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PRJ_ROOT_PATH}/lib)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PRJ_ROOT_PATH}/lib)
-
-# Include
+# Include - Local #
 include_directories( 
 	${PRJ_ROOT_PATH}/INCLUDE
 	${APP_PATH}/INCLUDE
 	${MODUEL_PATH}/INCLUDE
 	${SYSTEM_PATH}/INCLUDE
 )
-# Include - Library
+# Include - Library #
 include_directories(
 	${SDL2_INCLUDE_DIRS}
 	${SDL2_IMAGE_INCLUDE_DIRS}
 	${LIBZIP_INCLUDE_DIRS}
 )
-# Build Target #
+# Source #
 set(
-	# Target Name #
+	# Sources Name #
 	Source
  
 	# Applications #
@@ -87,25 +86,75 @@ set(
 	${SYSTEM_PATH}/SN_SYS_TIMER.c
 )
 
-# Executable #
-add_executable(Project ${Source})
-
-# CFlags  #
-target_compile_options(Project PRIVATE ${CMAKE_CXX_FLAGS})
-target_compile_definitions(Project PRIVATE BOOST_ERROR_CODE_HEADER_ONLY)
-
 # Library #
-target_link_libraries(Project pthread usb-1.0 ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${LIBZIP_LIBRARIES})
+set(
+	# Library Name #
+	Library
+	
+	# ptrhead # 
+	pthread 
+	
+	# libusb #
+	usb-1.0
+	
+	# libzip #
+	${LIBZIP_LIBRARIES}
+	
+	# SDL # 
+	${SDL2_LIBRARIES} 
+	${SDL2_IMAGE_LIBRARIES}
+)
 
+# Flags #
+set(
+	# Flags Name #
+	CMAKE_CXX_FLAGS
+	
+	
+)
 
-###### Message #######
-message("Project Name   :: SN3D Project.")
-message("Version        :: ${VERSION_MAJOR}.${VERSION_MINOR}v")
-message("Build Set      :: ${CMAKE_BUILD_TYPE}")
-message("Build Target   :: ${CMAKE_BUILD_TARGET}")
-message("Build Option   :: C${CMAKE_CXX_STANDARD} STANDARD ")
-message("Flags(DEBUG)   :: CMAKE_CXX_FLAGS_DEBUG is ${CMAKE_CXX_FLAGS_DEBUG}")
-message("Flags(RELEASE) :: CMAKE_CXX_FLAGS_RELEASE is ${CMAKE_CXX_FLAGS_RELEASE}")
-message("Flags          :: CMAKE_CXX_FLAGS is ${CMAKE_CXX_FLAGS}")
+# Config #
 
+set(
+	# Config Name #
+	Config
+	
+	# IMAGE #
+	-DIMAGE_VIEWER_IS_ON=false
+	-DIMAGE_VIEWER_IS_FULL_SCREEN=false
 
+    # 3D PRINTER #
+    -DPRINTER_RX_DEBUG=true
+    -DPRINTER_TX_DEBUG=false
+    
+    # DISPLAY #
+    -DDISPLAY_RX_DEBUG=false
+    -DDISPLAY_TX_DEBUG=false
+    
+)
+################### Target Setting ###################
+# Install exe file #
+add_executable(exe ${Source})
+
+# Compile Option  #
+target_compile_options(exe PRIVATE ${CMAKE_CXX_FLAGS})
+
+# Compile Cong #
+target_compile_definitions(exe PRIVATE ${Config} BOOST_ERROR_CODE_HEADER_ONLY)
+
+# Link Library  #
+target_link_libraries(exe ${Library})
+
+################### CMakeLists.txt Done ###################
+
+################### Messgae ###################
+message("###########################################")
+message("#")
+message("# Project Name   :: SN3D Project.")
+message("# exe File       :: ./build/exe")
+message("# Version        :: ${VERSION_MAJOR}.${VERSION_MINOR}v")
+message("# Build Option   :: C ${CMAKE_CXX_STANDARD} STANDARD ")
+message("# Flags          :: ${CMAKE_CXX_FLAGS}")
+message("# Configs        :: ${Config}")
+message("#")
+message("###########################################")

@@ -41,18 +41,23 @@
 #include <signal.h>
 
 /**** Library ****/
-#if(APPLE)
+#ifdef __APPLE__
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <libusb-1.0/libusb.h>
-#else
+#endif
+
+#ifdef linux
 #include <SDL.h>
 #include <SDL_image.h>
 #include <libusb-1.0/libusb.h>
 #endif
+
 #include <zip.h>
 
 /**** Local Library ****/
+#include "SN_ERROR.h"
+
 #include "SN_SYSTEM.h"
 #include "SN_SYSTEM_MESSAGES.h"
 
@@ -63,22 +68,7 @@ typedef int bool;
 #define false 0
 #endif
 
-/* * * * * * * * * Error Codes * * * * * * * * * **/
-#define SN_STATUS           uint16_t
-
-#define SN_STATUS_BASE      0
-
-#define SN_STATUS_OK                        (SN_STATUS_BASE + 0)
-#define SN_STATUS_TIMEOUT                   (SN_STATUS_BASE + 1)
-#define SN_STATUS_INVALID_PARAM             (SN_STATUS_BASE + 2)
-#define SN_STATUS_NOT_SUPPORTED             (SN_STATUS_BASE + 3)
-#define SN_STATUS_OUT_OF_MEM                (SN_STATUS_BASE + 4)
-#define SN_STATUS_NOT_INITIALIZED           (SN_STATUS_BASE + 5)
-#define SN_STATUS_ALREADY_INITIALIZED       (SN_STATUS_BASE + 6)
-#define SN_STATUS_RESOURCE_NOT_AVAILABLE    (SN_STATUS_BASE + 7)
-#define SN_STATUS_NOT_OK                    (SN_STATUS_BASE + 8)       /* Unknown or undefined reason */
-
-/* * * * * * * * * * * Global Struct * * * * * * * * * */
+/* * * * * * * * * * * Global Structure * * * * * * * * * */
 typedef struct print_prameter {
     float    layerThickness;            //0.05000 mm
 
@@ -148,6 +138,7 @@ extern SN_STATUS SN_MODUEL_3D_PRINTER_Pause(void);
 extern SN_STATUS SN_MODUEL_3D_PRINTER_Resume(void);
 
 /*** Control Functions ***/
+extern SN_STATUS SN_MODUEL_3D_PRINTER_MOTOR_INIT(void);
 extern SN_STATUS SN_MODUEL_3D_PRINTER_Z_HOMING(void);
 extern SN_STATUS SN_MODUEL_3D_PRINTER_Z_UP(float mm);
 extern SN_STATUS SN_MODUEL_3D_PRINTER_Z_DOWN(float mm);

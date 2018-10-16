@@ -19,19 +19,18 @@
 
 #define CONFIG_FILENAME_EXT "gcode"
 
-//@DEBUG
-#if(APPLE)
-#define USB_PATH        "/Volumes/USB_0/"
-#else
-#define USB_PATH        "/media/pi/USB_0/"
+#ifdef __APPLE__
+#define USB_PATH              "/Volumes/USB_0/"
 #endif
 
-#define EXTRACTED_TEMP_FILE_PATH "../build/"
-#define TEMP_FILE_PATH  "../tempFile/"
-#define TEMP_FILE_NAME  "test"
+#ifdef linux
+#define USB_PATH             "/media/pi/USB_0/"
+#endif
 
+#define EXTRACTED_TEMP_FILE_PATH    "../build/"
+#define TEMP_FILE_PATH           "../tempFile/"
 
-#define DEVICE_NAME     "POLARIS 500"
+#define DEVICE_NAME               "POLARIS 500"
 
 /* Module Message */
 typedef enum {

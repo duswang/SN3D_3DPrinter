@@ -13,6 +13,7 @@
 #define GCODE_INTT_POSITION     "G91"
 #define GCODE_INIT_MOTOR        "M17"
 
+#define GCODE_DEVICE_STOP       "M0"
 #define GCODE_UNINIT_POSITION   "G1 Z10 F150"
 #define GCODE_UNINIT_MOTOR      "M18"
 
@@ -28,5 +29,6 @@
 
 
 #define RESPONSE_OK             "ok"
+#define INIT_OK                 "Plan Buffer Size"
 
 #endif /* APP_COMMANDS_H_ */

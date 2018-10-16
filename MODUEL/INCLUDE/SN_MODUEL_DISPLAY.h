@@ -9,16 +9,17 @@
 #define SN_MODUEL_DISPLAY
 
 /** Static Define **/
-#define BYTE_SIZE SN_SYS_SERIAL_COMM_RX_BYTE_8
-#define BAUD_RATE  SN_SYS_SERIAL_COMM_BAUD_RATE_9600
+#define BYTE_SIZE   SN_SYS_SERIAL_COMM_RX_BYTE_8
+#define BAUD_RATE   SN_SYS_SERIAL_COMM_BAUD_RATE_9600
+#define RETURN_MODE SN_SYS_SERIAL_COMM_TX_NEW_LINE_RETURN
 
-
-#if(APPLE)
+#ifdef __APPLE__
 #define UART_DEVICE "/dev/cu.usbmodem1421"
-#else
-#define UART_DEVICE "/dev/serial0"
 #endif
 
+#ifdef linux
+#define UART_DEVICE "/dev/serial0"
+#endif
 
 #define UART_OFLAGS  O_RDWR | O_NOCTTY | O_NONBLOCK
 

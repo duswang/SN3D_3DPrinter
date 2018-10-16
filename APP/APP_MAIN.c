@@ -18,7 +18,7 @@ SN_STATUS APP_Main(general_evt_t evt)
 
     tAppState = APP_GetAppState();
 
-    printf("MSG APP <= MODULE\n"); fflush(stdout);
+    //printf("MSG APP <= MODULE\n"); fflush(stdout);
 
     switch(tAppState)
     {

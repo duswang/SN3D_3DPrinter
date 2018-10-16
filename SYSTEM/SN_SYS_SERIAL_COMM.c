@@ -10,109 +10,156 @@
 
 /** System **/
 /* Thread */
-pthread_mutex_t ptmSerial = PTHREAD_MUTEX_INITIALIZER;
-pthread_t       ptSerial;
+
+
+pthread_mutex_t ptmSerial[MAX_NUM_OF_SERIAL] = { \
+                                  PTHREAD_MUTEX_INITIALIZER, \
+                                  PTHREAD_MUTEX_INITIALIZER, \
+                                  PTHREAD_MUTEX_INITIALIZER, \
+                                  PTHREAD_MUTEX_INITIALIZER };
+pthread_mutex_t ptmSerialArray  = PTHREAD_MUTEX_INITIALIZER;
+pthread_t       ptSerial[MAX_NUM_OF_SERIAL];
 
 /** Global Variables **/
 
 /** Static Funtions **/
 /* system */
-static void* sSerialThread();
 
 /* hdlr */
-static int   sSerial_RX_Hdlr(sysSerialId serialId);
+static SN_STATUS  sSerial_RX_Hdlr_r(sysSerialId serialId);
 
 /* local */
-static int   sSerialInterfaceInit(const char *device, int oflags);
-static int   sSerialinterfaceSetattribs(int uartID, int baud_rate, int parity);
-static void  sSerialSetBlocking(int uartID, int should_block);
-
-static void  sSerialOpen(sysSerialId serialId);
-static void  sSerialClose(sysSerialId serialId);
+static uint32_t   sSerialInterfaceInit(const char *device, uint32_t oflags);
+static uint32_t   sSerialinterfaceSetattribs(uint32_t uartID, uint32_t baud_rate, uint32_t parity);
+static void       sSerialSetBlocking(uint32_t uartID, bool should_block);
 
 /* Globla Variables */
-sysSerialQ serialQ[SERIAL_Q_SIZE];
+static uint32_t guiNumSerial;
+static sysSerialQ aSerial[MAX_NUM_OF_SERIAL];
+
+/* Thread Functions Def */
+sysSerialThreadFuncdef(0)
+sysSerialThreadFuncdef(1)
+sysSerialThreadFuncdef(2)
+sysSerialThreadFuncdef(3)
+//sysSerialThreadFuncdef(num) - CHECK => ( num < MAX_NUM_OF_SERIAL )
+
+void* (*pfSerialThreadFunc[MAX_NUM_OF_SERIAL])()     = { \
+                                  sysSerialThreadFunc(0), \
+                                  sysSerialThreadFunc(1), \
+                                  sysSerialThreadFunc(2), \
+                                  sysSerialThreadFunc(3)  \
+                                  //sysSerialThreadFunc(num) - CHECK => ( num < MAX_NUM_OF_SERIAL )
+                          };
 
 int SN_SYS_SerialInit(void)
 {
     int i = 0;
     int retValue = 0;
 
-    for(i = 0; i < SERIAL_Q_SIZE; i++)
-    {
-        serialQ[i].serialId = NULL;
-        serialQ[i].isAvailable = false;
-        serialQ[i].serialStatus = SN_SYS_SERIAL_COMM_NONE_SET;
-    }
-
-    if (pthread_mutex_init(&ptmSerial, NULL) != 0)
+    if (pthread_mutex_init(&ptmSerialArray, NULL) != 0)
     {
         printf("\n mutex init failed\n");
     }
 
-    if((retValue = pthread_create(&ptSerial, NULL, sSerialThread, NULL)))
+    for(i = 0; i < MAX_NUM_OF_SERIAL; i++)
     {
-        printf("Thread Creation Fail %d\n", retValue);
-        fflush(stdout);
+        aSerial[i].isAvailable = false;
+        aSerial[i]._serialId    = NULL;
     }
 
     return retValue;
 }
 
-sysSerialId SN_SYS_SerialCreate(const sysSerialDef_t* serialDef, void* pfCallBack)
+sysSerialId SN_SYS_SerialCreate(const sysSerialDef_t* serialDef, void* (*pfCallBack)(char*))
 {
+    uint32_t idxSerial = 0;
+    SN_STATUS retStatus = SN_STATUS_OK;
     sysSerialId serialId = malloc(sizeof(struct sys_serial_id));
 
-    serialId->_serialDef  = serialDef;
-    serialId->pfSerialCallBack  = pfCallBack;
-
-    serialId->uartId = sSerialInterfaceInit(serialDef->device, serialDef->oflags);
-
-    if(serialId->uartId != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
+    if(guiNumSerial == (MAX_NUM_OF_SERIAL - 1))
     {
-        sSerialinterfaceSetattribs(serialId->uartId, serialDef->baudRate, 0);
-        sSerialSetBlocking(serialId->uartId, 1);
+        free(serialId);
+        return NULL;
     }
 
-    sSerialOpen(serialId);
+    pthread_mutex_lock(&ptmSerialArray);
+
+    for (idxSerial = 0; idxSerial < MAX_NUM_OF_SERIAL; idxSerial++)
+    {
+        if (!aSerial[idxSerial].isAvailable)
+        {
+            aSerial[idxSerial].isAvailable = true;
+
+            serialId->_serialDef           = serialDef;
+            serialId->pfSerialCallBack     = pfCallBack;
+            serialId->uartId               = sSerialInterfaceInit(serialDef->device, serialDef->oflags);
+
+            if(serialId->uartId != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
+            {
+                sSerialinterfaceSetattribs(serialId->uartId, serialDef->baudRate, 0);
+                sSerialSetBlocking(serialId->uartId, true);
+            }
+
+            aSerial[idxSerial]._serialId = serialId;
+
+            guiNumSerial++;
+
+            if (pthread_mutex_init(&ptmSerial[idxSerial], NULL) != 0)
+            {
+                printf("\n mutex init failed\n");
+            }
+
+            if((retStatus = pthread_create(&ptSerial[idxSerial], NULL, pfSerialThreadFunc[idxSerial], NULL)))
+            {
+                printf("Thread Creation Fail %d\n", retStatus);
+                fflush(stdout);
+            }
+
+
+            break;
+        }
+    }
+    pthread_mutex_unlock(&ptmSerialArray);
 
     return serialId;
 }
 
-int SN_SYS_SerialRemove(sysSerialId serialId)
+SN_STATUS SN_SYS_SerialRemove(sysSerialId serialId)
 {
-    if(serialId == NULL)
-    {
-        return -1;
-    }
-
-
-    sSerialClose(serialId);
-
-    return 0;
-}
-
-char* SN_SYS_SerialRx(sysSerialId serialId)
-{
-    char* retBuffer = NULL;
+    SN_STATUS retStatus = SN_STATUS_OK;
+    int i = 0;
 
     if(serialId == NULL)
     {
-        return NULL;
+        return SN_STATUS_INVALID_PARAM;
     }
 
-    pthread_mutex_lock(&ptmSerial);
-    retBuffer = serialId->_serialDef->buffer;
-    pthread_mutex_unlock(&ptmSerial);
+    pthread_mutex_lock(&ptmSerialArray);
 
-    return retBuffer;
+    for(i = 0; i < MAX_NUM_OF_SERIAL; i++)
+    {
+        if((aSerial[i].isAvailable) && (aSerial[i]._serialId->uartId == serialId->uartId))
+        {
+            aSerial[i].isAvailable = false;
+
+            free(aSerial[i]._serialId);
+
+            if(guiNumSerial != 0)
+            {
+                guiNumSerial--;
+            }
+        }
+    }
+
+    pthread_mutex_unlock(&ptmSerialArray);
+
+    return retStatus;
 }
-
 
 int SN_SYS_SerialTx(sysSerialId serialId, char* buffer, size_t bufferSize)
 {
     int count = 0;
-    char* CarriageReturn = "\r\n";
 
     if(serialId == NULL)
     {
@@ -121,40 +168,29 @@ int SN_SYS_SerialTx(sysSerialId serialId, char* buffer, size_t bufferSize)
 
     if (serialId->uartId != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
     {
+#if(PRINTER_TX_DEBUG)
         printf("TX DATA => %s\n", buffer); fflush(stdout);
-
+#endif
         count = write(serialId->uartId, buffer, bufferSize - 1);
 
+        switch(serialId->_serialDef->returnMode)
+        {
+            case SN_SYS_SERIAL_COMM_TX_RETURN:
+                break;
+            case SN_SYS_SERIAL_COMM_TX_CARRIAGE_RETURN:
+                count = write(serialId->uartId, CARRIAGE_RETURN, RETURN_SIZE);
+                break;
+            case SN_SYS_SERIAL_COMM_TX_NEW_LINE_RETURN:
+                count = write(serialId->uartId, NEW_LINE_RETURN, RETURN_SIZE);
+                break;
+            default:
+                break;
+        }
+
         if (count < 0)
         {
             printf("UART TX error\n");
             fflush(stdout);
-        }
-
-        count = write(serialId->uartId, CarriageReturn, (ssize_t)2);
-
-        if (count < 0)
-        {
-            printf("UART TX error\n");
-            fflush(stdout);
-        }
-    }
-
-    return 0;
-}
-
-static void* sSerialThread()
-{
-    int serialIndex = 0;
-
-    while(1)
-    {
-        for(serialIndex = 0; serialIndex < SERIAL_Q_SIZE; serialIndex++)
-        {
-            if(serialQ[serialIndex].isAvailable && (serialQ[serialIndex].serialStatus != SN_SYS_SERIAL_COMM_BUSY))
-            {
-                sSerial_RX_Hdlr(serialQ[serialIndex].serialId);
-            }
         }
     }
 
@@ -162,40 +198,46 @@ static void* sSerialThread()
 }
 
 //OPEN THE UART
-        //The flags (defined in fcntl.h):
-        //      Access modes (use 1 of these):
-        //              O_RDONLY - Open for reading only.
-        //              O_RDWR - Open for reading and writing.
-        //              O_WRONLY - Open for writing only.
-        //
-        //      O_NDELAY / O_NONBLOCK (same function) - Enables nonblocking mode. When set read requests on the file can return immediately with a failure status
-        //                                                                                      if there is no input immediately available (instead of blocking). Likewise, write requests can also return
-        //                                                                                      immediately with a failure status if the output can't be written immediately.
-        //
-        //      O_NOCTTY - When set and path identifies a terminal device, open() shall not cause the terminal device to become the controlling terminal for the process.
-static int sSerialInterfaceInit(const char *device, int oflags)
+//The flags (defined in fcntl.h):
+//      Access modes (use 1 of these):
+//              O_RDONLY - Open for reading only.
+//              O_RDWR - Open for reading and writing.
+//              O_WRONLY - Open for writing only.
+//
+//      O_NDELAY / O_NONBLOCK (same function) - Enables nonblocking mode. When set read requests on the file can return immediately with a failure status
+//                                                                                      if there is no input immediately available (instead of blocking). Likewise, write requests can also return
+//                                                                                      immediately with a failure status if the output can't be written immediately.
+//
+//      O_NOCTTY - When set and path identifies a terminal device, open() shall not cause the terminal device to become the controlling terminal for the process.
+static uint32_t sSerialInterfaceInit(const char *device, uint32_t oflags)
 {
-  int uartID = 0;
+    uint32_t uartID = 0;
 
-  /* open the device */
-  uartID = open(device, O_RDWR | O_NOCTTY | O_NONBLOCK);
-  if (uartID != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
-  {
-      printf("Completed to init %s \n", device);
-      fflush(stdout);
-  }
-  else
-  {
-      perror(device);
-      printf("Failed to init %s \n", device);
-      fflush(stdout);
-      exit(-1);
-  }
+    /* open the device */
+    uartID = open(device, O_RDWR | O_NOCTTY | O_NONBLOCK);
+    if (uartID != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
+    {
+        printf("Completed to Open %s \n", device);
+        fflush(stdout);
+    }
+    else
+    {
+        perror(device);
+        printf("Failed to Open %s \n", device);
+        fflush(stdout);
+        exit(-1);
+    }
 
-  return uartID;
+    return uartID;
 }
-static int sSerialinterfaceSetattribs(int uartID, int baud_rate, int parity)
+static uint32_t sSerialinterfaceSetattribs(uint32_t uartID, uint32_t baud_rate, uint32_t parity)
 {
+    if (uartID == SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
+    {
+        printf("Invaild uart id. \n"); fflush(stdout);
+        exit(-1);
+    }
+
     struct termios tty;
     memset (&tty, 0, sizeof tty);
 
@@ -236,7 +278,7 @@ static int sSerialinterfaceSetattribs(int uartID, int baud_rate, int parity)
     return 0;
 }
 
-static void sSerialSetBlocking(int uartID, int should_block)
+static void sSerialSetBlocking(uint32_t uartID, bool should_block)
 {
     struct termios tty;
     memset (&tty, 0, sizeof tty);
@@ -258,106 +300,71 @@ static void sSerialSetBlocking(int uartID, int should_block)
     }
 }
 
-static void sSerialOpen(sysSerialId serialId)
-{
-    int i = 0;
-
-    for(i = 0; i < SERIAL_Q_SIZE; i++)
-    {
-        if(!serialQ[i].isAvailable)
-        {
-            serialQ[i].serialId = serialId;
-            serialQ[i].isAvailable = true;
-            serialQ[i].serialStatus = SN_SYS_SERIAL_COMM_WAITING;
-        }
-    }
-}
-
-static void sSerialClose(sysSerialId serialId)
-{
-    int i = 0;
-
-    for(i = 0; i < SERIAL_Q_SIZE; i++)
-    {
-        if(serialQ[i].serialId == serialId && serialQ[i].isAvailable)
-        {
-            serialQ[i].serialId = NULL;
-            serialQ[i].isAvailable = false;
-            serialQ[i].serialStatus = SN_SYS_SERIAL_COMM_NONE_SET;
-
-            break;
-        }
-    }
-
-    free(serialId);
-}
-
-static int sSerial_RX_Hdlr(sysSerialId serialId)
+/** reentrant fucntions **/
+static SN_STATUS sSerial_RX_Hdlr_r(sysSerialId serialId)
 {
     char rx_buffer[SN_SYS_SERIAL_COMM_BUFFER_SIZE];
-    static int rx_length = 0;
-    static int buffer_length = 0;
     int i = 0;
 
-    pthread_mutex_lock(&ptmSerial);
+
 
     if(serialId->uartId != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
     {
-        //Init Static Variables
-        rx_length = 0;
-        buffer_length = 0;
+        serialId->state.rx_length = 0;
+        serialId->state.buffer_length = 0;
 
         //Start Reading Serial Data
         while(true)
         {
-            rx_length = read(serialId->uartId, (void*)rx_buffer, ((serialId->_serialDef->rxByteSize == SN_SYS_SERIAL_COMM_RX_REALTIME) ? 255 : serialId->_serialDef->rxByteSize));
+            serialId->state.rx_length = read(serialId->uartId, (void*)rx_buffer, ((serialId->_serialDef->rxByteSize == SN_SYS_SERIAL_COMM_RX_REALTIME) ? 255 : serialId->_serialDef->rxByteSize));
 
-            if(rx_length < 0)
+            if(serialId->state.rx_length < 0)
             {
                 //An error occured (will occur if there are no bytes)
             }
-            else if(rx_length == 0)
+            else if(serialId->state.rx_length == 0)
             {
-                rx_length = 0;
-                buffer_length = 0;
+                serialId->state.rx_length = 0;
+                serialId->state.buffer_length = 0;
                 //No data waiting
             }
             else
             {
-                for(i = 0; i < rx_length; i++)
+                for(i = 0; i < serialId->state.rx_length; i++)
                 {
-                    serialId->_serialDef->buffer[buffer_length++] = rx_buffer[i];
+                    serialId->_serialDef->buffer[serialId->state.buffer_length++] = rx_buffer[i];
                 }
 
                 if(serialId->_serialDef->rxByteSize == SN_SYS_SERIAL_COMM_RX_REALTIME)
                 {
-                    buffer_length = rx_length;
+                    serialId->state.buffer_length = serialId->state.rx_length;
                 }
-                else if(buffer_length >= serialId->_serialDef->rxByteSize)
+                else if(serialId->state.buffer_length >= serialId->_serialDef->rxByteSize)
                 {
-                    buffer_length = serialId->_serialDef->rxByteSize;
+                    serialId->state.buffer_length = serialId->_serialDef->rxByteSize;
                 }
 
                 //Finished.
-                if(buffer_length >= serialId->_serialDef->rxByteSize)
+                if(serialId->state.buffer_length >= serialId->_serialDef->rxByteSize)
                 {
-                    serialId->_serialDef->buffer[buffer_length] = '\0';
-                    buffer_length = 0;
+                    serialId->_serialDef->buffer[serialId->state.buffer_length] = '\0';
+                    serialId->state.rx_length = 0;
+                    serialId->state.buffer_length = 0;
+
+                    serialId->pfSerialCallBack(serialId->_serialDef->buffer);
+
+                    serialId->_serialDef->buffer[0] = '\0';
                     break;
                 }
             }
 
             fflush(stdout);
-      }
-  }
-  else
-  {
-      printf("error read UART\n");
-  }
+        }
+    }
+    else
+    {
+        printf("error read UART\n");
+    }
 
-  pthread_mutex_unlock(&ptmSerial);
-
-  serialId->pfSerialCallBack();
-
-  return 0;
+    return SN_STATUS_OK;
 }

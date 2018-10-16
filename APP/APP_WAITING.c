@@ -62,9 +62,6 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
     msgNXId.NXmessage[0] = evtMessage;
     msgNXId.NXmessage[1] = NX_ENDCODE;
 
-    //DEBUG
-    printf("%d %d %d\n", msgNXId.type, msgNXId.id, msgNXId.value); fflush(stdout);
-
     switch(msgNXId.type)
     {
         case NX_TYPE_BUTTON:
