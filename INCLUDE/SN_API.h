@@ -69,6 +69,38 @@ typedef int bool;
 #endif
 
 /* * * * * * * * * * * Global Structure * * * * * * * * * */
+#define MAX_PAGE_SIZE   10
+#define MAX_ITEM_SIZE   5
+#define MAX_OPTION_SIZE 5
+
+#define FILENAME_SIZE        256
+
+typedef struct file_system_option {
+    char name[FILENAME_SIZE];
+} fsOption_t;
+
+typedef struct file_system_item {
+    char name[FILENAME_SIZE];
+} fsItem_t;
+
+typedef struct file_system_page {
+    fsItem_t item[MAX_ITEM_SIZE];
+    uint32_t itemCnt;
+} fsPage_t;
+
+typedef struct file_system_target {
+    uint32_t item_index;
+    uint32_t page_index;
+} fsTarget_t;
+
+typedef struct file_system {
+    fsTarget_t  target;
+    fsOption_t  option[MAX_OPTION_SIZE];
+    fsPage_t    page[MAX_PAGE_SIZE];
+    uint32_t    pageCnt;
+    bool        isItemExist;
+} fs_t;
+
 typedef struct print_prameter {
     float    layerThickness;            //0.05000 mm
 
@@ -100,6 +132,7 @@ typedef struct machine_prameter {
     uint32_t height;             //MACHINE Height
 } machineParm_t;
 
+
 typedef struct machine_info {
     char* machineName;      //PARARIS 500
 } machineTarget_t;
@@ -121,31 +154,36 @@ typedef struct machine {
 extern SN_STATUS SN_SYSTEM_SendAppMessage(event_id_t evtId, event_msg_t evtMessage);
 
 /**** DISPLAY MODULE ****/
-extern SN_STATUS SN_MODUEL_DISPLAY_Init(void);
-extern SN_STATUS SN_MODUEL_DISPLAY_Uninit(void);
+extern SN_STATUS SN_MODULE_DISPLAY_Init(void);
+extern SN_STATUS SN_MODULE_DISPLAY_Uninit(void);
 
-extern SN_STATUS SN_MODUEL_DISPLAY_PrintingUpdate(void);
-extern SN_STATUS SN_MODUEL_DISPLAY_FileSelectUpdate(void);
+extern SN_STATUS SN_MODULE_DISPLAY_EnterState(nx_page_t state);
+
+extern SN_STATUS SN_MODULE_DISPLAY_PrintingUpdate(void);
+extern SN_STATUS SN_MODULE_DISPLAY_FileSelectUpdate(uint32_t page);
 
 /**** 3D PRINTER MODULE ****/
-extern SN_STATUS SN_MODUEL_3D_PRINTER_Init(void);
-extern SN_STATUS SN_MODUEL_3D_PRINTER_Uninit(void);
+extern SN_STATUS SN_MODULE_3D_PRINTER_Init(void);
+extern SN_STATUS SN_MODULE_3D_PRINTER_Uninit(void);
 
 /*** Printing Functions ***/
-extern SN_STATUS SN_MODUEL_3D_PRINTER_Start(uint32_t pageIndex, uint32_t itemIndex);
-extern SN_STATUS SN_MODUEL_3D_PRINTER_Stop(void);
-extern SN_STATUS SN_MODUEL_3D_PRINTER_Pause(void);
-extern SN_STATUS SN_MODUEL_3D_PRINTER_Resume(void);
+extern SN_STATUS SN_MODULE_3D_PRINTER_Start(uint32_t pageIndex, uint32_t itemIndex);
+extern SN_STATUS SN_MODULE_3D_PRINTER_Stop(void);
+extern SN_STATUS SN_MODULE_3D_PRINTER_Pause(void);
+extern SN_STATUS SN_MODULE_3D_PRINTER_Resume(void);
 
 /*** Control Functions ***/
-extern SN_STATUS SN_MODUEL_3D_PRINTER_MOTOR_INIT(void);
-extern SN_STATUS SN_MODUEL_3D_PRINTER_Z_HOMING(void);
-extern SN_STATUS SN_MODUEL_3D_PRINTER_Z_UP(float mm);
-extern SN_STATUS SN_MODUEL_3D_PRINTER_Z_DOWN(float mm);
+extern SN_STATUS SN_MODULE_3D_PRINTER_MOTOR_INIT(void);
+extern SN_STATUS SN_MODULE_3D_PRINTER_Z_HOMING(void);
+extern SN_STATUS SN_MODULE_3D_PRINTER_Z_UP(float mm);
+extern SN_STATUS SN_MODULE_3D_PRINTER_Z_DOWN(float mm);
 
 /**** FILE SYSTEM MODULE ****/
-extern SN_STATUS SN_MODUEL_FILE_SYSTEM_Init(void);
-extern SN_STATUS SN_MODUEL_FILE_SYSTEM_Uninit(void);
+extern SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void);
+extern SN_STATUS SN_MODULE_FILE_SYSTEM_Uninit(void);
+
+extern SN_STATUS SN_MODULE_FILE_SYSTEM_Get(fs_t* pFs);
+extern SN_STATUS SN_MODULE_FILE_SYSTEM_Update(void);
 
 extern SN_STATUS SN_MODULE_FILE_SYSTEM_MachineInfoInit(void);
 extern SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemIndex);
@@ -156,10 +194,10 @@ extern machineInfo_t SN_MODULE_FILE_SYSTEM_MachineInfoGet(void);
 extern printInfo_t   SN_MODULE_FILE_SYSTEM_PrintInfoGet(void);
 
 /**** IMAGE VIEWR MODULE ****/
-extern SN_STATUS SN_MODUEL_IMAGE_VIEWER_Init(void);
-extern SN_STATUS SN_MODUEL_IMAGE_VIEWER_Destroy(void);
-extern SN_STATUS SN_MODUEL_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex);
-extern SN_STATUS SN_MODUEL_IMAGE_VIEWER_CLEAR(void);
+extern SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void);
+extern SN_STATUS SN_MODULE_IMAGE_VIEWER_Destroy(void);
+extern SN_STATUS SN_MODULE_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex);
+extern SN_STATUS SN_MODULE_IMAGE_VIEWER_CLEAR(void);
 
 
 

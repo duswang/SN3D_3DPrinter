@@ -15,7 +15,8 @@ typedef union Nextion_message {
            uint8_t type;
            uint8_t id;
            uint8_t value;
-           uint8_t endCode[4];
+           uint8_t command;
+           uint8_t endcode[3];
    };
    uint8_t  NXmessage8bit[8];
    uint32_t NXmessage[2];
@@ -24,17 +25,63 @@ typedef union Nextion_message {
 /** Nextion Display UART Message **/
 /* * * * * * * * * * * * * * * * * * * * * * * *
 
-    Nextion Display Command.
+    Nextion Display TX Command.
 
     [page] [TYPE] [ID] [value]       32bit
 
     [reserve] [endCode[][][]]        32bit
 
  * * * * * * * * * * * * * * * * * * * * * * * */
+#define NX_PAGE_BOOT_COMMAND        "page Boot"
+#define NX_PAGE_WAITING_COMMAND     "page Waiting"
+#define NX_PAGE_CONTROL_COMMAND     "page Control"
+#define NX_PAGE_FILE_SYSTEM_COMMAND "page FileSelect"
+#define NX_PAGE_PRINTING_COMMAND    "page Print"
+#define NX_PAGE_LOADING_COMMAND     "page Loading"
 
-#define NX_ENDCODE 0xFFFFFFFF
+#define NX_COMMAND_RESET            "rest"
 
-/**** COMMON COMMAND ****/
+/* * * * * * * * * * * * * * * * * * * * * * * *
+
+    Nextion Display RX EVENT.
+
+    [Command]                        8bit
+
+    [page] [TYPE] [ID] [value]       32bit
+
+    [endCode[][][]]                  24bit
+
+ * * * * * * * * * * * * * * * * * * * * * * * */
+/** RX DATA HEAD COMMAND **/
+typedef enum
+{
+    /* RESPONSE */
+    NX_COMMAND_FINISHED                 = 0x01,
+    /* EVT */
+    NX_COMMAND_EVT_LAUNCHED             = 0x88,
+    NX_COMMAND_EVT_UPGRADED             = 0x89,
+    NX_COMMAND_EVT_TOUCH_HEAD           = 0x65,
+    NX_COMMAND_EVT_POSITIOn_HEAD        = 0x67,
+    NX_COMMAND_EVT_SLEEP_POSITION_HEAD  = 0x68,
+
+    /* SN MESSAGE HEAD */
+    NX_COMMAND_SN_MESSAGE_HEAD          = 0xF0,
+
+    /* REQUEST VALUE HEAD */
+    NX_COMMAND_CURRENT_PAGE_ID_HEAD     = 0x66,
+    NX_COMMAND_STRING_HEAD              = 0x70,
+    NX_COMMAND_NUMBER_HEAD              = 0x71,
+    /* ERROR */
+    NX_COMMAND_INVALID_CMD              = 0x00,
+    NX_COMMAND_INVALID_COMPONET_ID      = 0x02,
+    NX_COMMAND_INVALID_PAGE_ID          = 0x03,
+    NX_COMMAND_INVALID_PICTURE_ID       = 0x04,
+    NX_COMMAND_INVALID_FONT_ID          = 0x05,
+    NX_COMMAND_INVALID_BAUD             = 0x11,
+    NX_COMMAND_INVALID_VARIABLE         = 0x1A,
+    NX_COMMAND_INVALID_OPERATION        = 0x1B
+}nx_command_t;
+
 /** PAGE **/
 typedef enum
 {
@@ -46,7 +93,7 @@ typedef enum
     NX_PAGE_SETUP               = 0x06,
     NX_PAGE_INIT                = 0x07,
     NX_PAGE_NONE
-} nx_page_t;
+} nx_page_t; /* It Need to sync ref : 'app_state_t' */
 
 /** TYPE **/
 typedef enum

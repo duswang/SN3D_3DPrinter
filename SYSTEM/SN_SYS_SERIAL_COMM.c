@@ -33,6 +33,9 @@ static uint32_t   sSerialInterfaceInit(const char *device, uint32_t oflags);
 static uint32_t   sSerialinterfaceSetattribs(uint32_t uartID, uint32_t baud_rate, uint32_t parity);
 static void       sSerialSetBlocking(uint32_t uartID, bool should_block);
 
+static bool       sSerial_RX_Parsing_NotCustom(sysSerialId serialId);
+static bool       sSerial_RX_Parsing_NextionsDisplay(sysSerialId serialId);
+
 /* Globla Variables */
 static uint32_t guiNumSerial;
 static sysSerialQ aSerial[MAX_NUM_OF_SERIAL];
@@ -175,16 +178,21 @@ int SN_SYS_SerialTx(sysSerialId serialId, char* buffer, size_t bufferSize)
 
         switch(serialId->_serialDef->returnMode)
         {
-            case SN_SYS_SERIAL_COMM_TX_RETURN:
-                break;
-            case SN_SYS_SERIAL_COMM_TX_CARRIAGE_RETURN:
-                count = write(serialId->uartId, CARRIAGE_RETURN, RETURN_SIZE);
-                break;
-            case SN_SYS_SERIAL_COMM_TX_NEW_LINE_RETURN:
-                count = write(serialId->uartId, NEW_LINE_RETURN, RETURN_SIZE);
-                break;
-            default:
-                break;
+        case SN_SYS_SERIAL_COMM_TX_RETURN:
+            break;
+        case SN_SYS_SERIAL_COMM_TX_CARRIAGE_RETURN:
+            count = write(serialId->uartId, CARRIAGE_RETURN, RETURN_SIZE);
+            break;
+        case SN_SYS_SERIAL_COMM_TX_NEW_LINE_RETURN:
+            count = write(serialId->uartId, NEW_LINE_RETURN, RETURN_SIZE);
+            break;
+        case SN_SYS_SERIAL_COMM_TX_NX_RETURN:
+            count = write(serialId->uartId, NX_RETURN, RETURN_SIZE);
+            count = write(serialId->uartId, NX_RETURN, RETURN_SIZE);
+            count = write(serialId->uartId, NX_RETURN, RETURN_SIZE);
+            break;
+        default:
+            break;
         }
 
         if (count < 0)
@@ -215,12 +223,7 @@ static uint32_t sSerialInterfaceInit(const char *device, uint32_t oflags)
 
     /* open the device */
     uartID = open(device, O_RDWR | O_NOCTTY | O_NONBLOCK);
-    if (uartID != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
-    {
-        printf("Completed to Open %s \n", device);
-        fflush(stdout);
-    }
-    else
+    if (uartID == SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
     {
         perror(device);
         printf("Failed to Open %s \n", device);
@@ -300,70 +303,140 @@ static void sSerialSetBlocking(uint32_t uartID, bool should_block)
     }
 }
 
-/** reentrant fucntions **/
-static SN_STATUS sSerial_RX_Hdlr_r(sysSerialId serialId)
+
+static bool sSerial_RX_Parsing_NextionsDisplay(sysSerialId serialId)
 {
     char rx_buffer[SN_SYS_SERIAL_COMM_BUFFER_SIZE];
     int i = 0;
+    bool rxDone = false;
 
+    serialId->state.rx_length = read(serialId->uartId, (void*)rx_buffer, ((serialId->_serialDef->rxByteSize == SN_SYS_SERIAL_COMM_RX_REALTIME) ? 255 : serialId->_serialDef->rxByteSize));
 
-
-    if(serialId->uartId != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
+    if(serialId->state.rx_length < 0)
+    {
+        //An error occured (will occur if there are no bytes)
+    }
+    else if(serialId->state.rx_length == 0)
     {
         serialId->state.rx_length = 0;
         serialId->state.buffer_length = 0;
-
-        //Start Reading Serial Data
-        while(true)
+        //No data waiting
+    }
+    else
+    {
+        for(i = 0; i < serialId->state.rx_length; i++)
         {
-            serialId->state.rx_length = read(serialId->uartId, (void*)rx_buffer, ((serialId->_serialDef->rxByteSize == SN_SYS_SERIAL_COMM_RX_REALTIME) ? 255 : serialId->_serialDef->rxByteSize));
+            serialId->_serialDef->buffer[serialId->state.buffer_length++] = rx_buffer[i];
 
-            if(serialId->state.rx_length < 0)
+
+            if(rx_buffer[i] == 0xFF)
             {
-                //An error occured (will occur if there are no bytes)
+                serialId->state.endCodeChk++;
             }
-            else if(serialId->state.rx_length == 0)
+        }
+
+        //Finished.
+        if(serialId->state.endCodeChk >= 3)
+        {
+            serialId->_serialDef->buffer[serialId->state.buffer_length] = '\0';
+            serialId->state.rx_length     = 0;
+            serialId->state.buffer_length = 0;
+            serialId->state.endCodeChk    = 0;
+
+            serialId->pfSerialCallBack(serialId->_serialDef->buffer);
+
+            serialId->_serialDef->buffer[0] = '\0';
+
+            rxDone = true;
+        }
+    }
+
+    return rxDone;
+}
+
+static bool sSerial_RX_Parsing_NotCustom(sysSerialId serialId)
+{
+    char rx_buffer[SN_SYS_SERIAL_COMM_BUFFER_SIZE];
+    int i = 0;
+    bool rxDone = false;
+
+    serialId->state.rx_length = read(serialId->uartId, (void*)rx_buffer, ((serialId->_serialDef->rxByteSize == SN_SYS_SERIAL_COMM_RX_REALTIME) ? 255 : serialId->_serialDef->rxByteSize));
+
+    if(serialId->state.rx_length < 0)
+    {
+        //An error occured (will occur if there are no bytes)
+    }
+    else if(serialId->state.rx_length == 0)
+    {
+        serialId->state.rx_length     = 0;
+        serialId->state.buffer_length = 0;
+        serialId->state.endCodeChk    = 0;
+        //No data waiting
+    }
+    else
+    {
+        for(i = 0; i < serialId->state.rx_length; i++)
+        {
+            serialId->_serialDef->buffer[serialId->state.buffer_length++] = rx_buffer[i];
+        }
+
+        if(serialId->_serialDef->rxByteSize == SN_SYS_SERIAL_COMM_RX_REALTIME)
+        {
+            serialId->state.buffer_length = serialId->state.rx_length;
+        }
+        else if(serialId->state.buffer_length >= serialId->_serialDef->rxByteSize)
+        {
+            serialId->state.buffer_length = serialId->_serialDef->rxByteSize;
+        }
+
+        //Finished.
+        if(serialId->state.buffer_length >= serialId->_serialDef->rxByteSize)
+        {
+            serialId->_serialDef->buffer[serialId->state.buffer_length] = '\0';
+            serialId->state.rx_length = 0;
+            serialId->state.buffer_length = 0;
+
+            serialId->pfSerialCallBack(serialId->_serialDef->buffer);
+
+            serialId->_serialDef->buffer[0] = '\0';
+
+            rxDone = true;
+        }
+    }
+
+    return rxDone;
+}
+
+/** reentrant fucntions **/
+static SN_STATUS sSerial_RX_Hdlr_r(sysSerialId serialId)
+{
+    bool rxDone = false;
+
+    serialId->state.rx_length = 0;
+    serialId->state.buffer_length = 0;
+    serialId->state.endCodeChk = 0;
+
+    if(serialId->uartId != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
+    {
+        while(!rxDone)
+        {
+            switch(serialId->_serialDef->returnMode)
             {
-                serialId->state.rx_length = 0;
-                serialId->state.buffer_length = 0;
-                //No data waiting
+            case SN_SYS_SERIAL_COMM_TX_NX_RETURN:
+                rxDone = sSerial_RX_Parsing_NextionsDisplay(serialId);
+                break;
+            case SN_SYS_SERIAL_COMM_TX_RETURN:
+            case SN_SYS_SERIAL_COMM_TX_CARRIAGE_RETURN:
+            case SN_SYS_SERIAL_COMM_TX_NEW_LINE_RETURN:
+            default:
+                rxDone= sSerial_RX_Parsing_NotCustom(serialId);
+                break;
             }
-            else
-            {
-                for(i = 0; i < serialId->state.rx_length; i++)
-                {
-                    serialId->_serialDef->buffer[serialId->state.buffer_length++] = rx_buffer[i];
-                }
-
-                if(serialId->_serialDef->rxByteSize == SN_SYS_SERIAL_COMM_RX_REALTIME)
-                {
-                    serialId->state.buffer_length = serialId->state.rx_length;
-                }
-                else if(serialId->state.buffer_length >= serialId->_serialDef->rxByteSize)
-                {
-                    serialId->state.buffer_length = serialId->_serialDef->rxByteSize;
-                }
-
-                //Finished.
-                if(serialId->state.buffer_length >= serialId->_serialDef->rxByteSize)
-                {
-                    serialId->_serialDef->buffer[serialId->state.buffer_length] = '\0';
-                    serialId->state.rx_length = 0;
-                    serialId->state.buffer_length = 0;
-
-                    serialId->pfSerialCallBack(serialId->_serialDef->buffer);
-
-                    serialId->_serialDef->buffer[0] = '\0';
-                    break;
-                }
-            }
-
-            fflush(stdout);
         }
     }
     else
     {
-        printf("error read UART\n");
+        printf("error read UART\n"); fflush(stdout);
     }
 
     return SN_STATUS_OK;

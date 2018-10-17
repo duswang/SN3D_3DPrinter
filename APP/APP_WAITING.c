@@ -42,6 +42,7 @@ SN_STATUS APP_STATE_EnterStateWaiting(void)
 
     printf("APP STATE => APP_STATE_WAITING\n"); fflush(stdout);
     APP_SetAppState(APP_STATE_WAITING);
+    SN_MODULE_DISPLAY_EnterState(APP_STATE_WAITING);
 
     return retStatus;
 }
@@ -60,7 +61,6 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
 
     /** Message parsing **/
     msgNXId.NXmessage[0] = evtMessage;
-    msgNXId.NXmessage[1] = NX_ENDCODE;
 
     switch(msgNXId.type)
     {
@@ -76,7 +76,7 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                     break;
                 /* IN PAGE BUTTONS */
                 case NX_ID_WAITING_BUTTON_PRINT:
-                    APP_STATE_EnterStateFileSelect();
+                    SN_MODULE_FILE_SYSTEM_Update();
                     break;
                 case NX_ID_WAITING_BUTTON_CONTROL:
                     APP_STATE_EnterStateControl();
@@ -99,6 +99,16 @@ static SN_STATUS sFileSystemHdlr(event_msg_t evtMessage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
+    switch(evtMessage)
+    {
+    case APP_EVT_MSG_FILE_SYSTEM_READ_DONE:
+        break;
+    case APP_EVT_MSG_FILE_SYSTEM_UPDATE_DONE:
+        APP_STATE_EnterStateFileSelect();
+        break;
+    default :
+        break;
+    }
     return retStatus;
 }
 

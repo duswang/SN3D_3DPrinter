@@ -8,6 +8,7 @@
 #include "APPS.h"
 
 /** Global Variables **/
+static fs_t     fs;
 static uint32_t pageIndex;
 static uint32_t itemIndex;
 static uint32_t optionIndex;
@@ -45,14 +46,17 @@ SN_STATUS APP_STATE_EnterStateFileSelect(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
+    printf("APP STATE => APP_STATE_FILE_SELECT\n"); fflush(stdout);
+    APP_SetAppState(APP_STATE_FILE_SELECT);
+    SN_MODULE_DISPLAY_EnterState(APP_STATE_FILE_SELECT);
+
     pageIndex   = 0;
     itemIndex   = 0;
     optionIndex = 0;
 
-    SN_MODUEL_DISPLAY_FileSelectUpdate();
 
-    printf("APP STATE => APP_STATE_FILE_SELECT\n"); fflush(stdout);
-    APP_SetAppState(APP_STATE_FILE_SELECT);
+    SN_MODULE_FILE_SYSTEM_Get(&fs);
+    SN_MODULE_DISPLAY_FileSelectUpdate(pageIndex);
 
     return retStatus;
 }
@@ -72,7 +76,6 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
 
     /** Message parsing **/
     msgNXId.NXmessage[0] = evtMessage;
-    msgNXId.NXmessage[1] = NX_ENDCODE;
 
     switch(msgNXId.type)
     {
@@ -88,23 +91,21 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                     break;
                     /* IN PAGE BUTTONS */
                 case NX_ID_FILE_SELECT_BUTTON_OPTION_UP:
-                    SN_MODUEL_DISPLAY_FileSelectUpdate();
                     break;
                 case NX_ID_FILE_SELECT_BUTTON_OPTION_DOWN:
-                    SN_MODUEL_DISPLAY_FileSelectUpdate();
                     break;
                 case NX_ID_FILE_SELECT_BUTTON_PAGE_UP:
-                    SN_MODUEL_DISPLAY_FileSelectUpdate();
+                    SN_MODULE_DISPLAY_FileSelectUpdate(pageIndex);
                     break;
                 case NX_ID_FILE_SELECT_BUTTON_PAGE_DOWN:
-                    SN_MODUEL_DISPLAY_FileSelectUpdate();
+                    SN_MODULE_DISPLAY_FileSelectUpdate(pageIndex);
                     break;
                 case NX_ID_FILE_SELECT_BUTTON_FILE_SELECT:
                     itemIndex = msgNXId.value;
                     break;
                 case NX_ID_FILE_SELECT_BUTTON_PRINT_START:
                     APP_STATE_EnterStatePrinting();
-                    SN_MODUEL_3D_PRINTER_Start(0, 0);
+                    SN_MODULE_3D_PRINTER_Start(pageIndex, (msgNXId.value - 1));
                     break;
                 default:
                     break;

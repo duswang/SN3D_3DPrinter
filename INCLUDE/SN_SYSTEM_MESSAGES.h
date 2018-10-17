@@ -49,13 +49,16 @@ typedef enum {
 
 /** Module App Message **/
 typedef enum {
-    APP_EVT_MSG_3D_PRINTER_REPONSE_OK      = 0x0001,
-    APP_EVT_MSG_3D_PRINTER_PRINTING_FINISH = 0x0002,
-    APP_EVT_MSG_3D_PRINTER_NONE            = 0xFF01
+    APP_EVT_MSG_3D_PRINTER_HOMING_DONE           = 0x0001,
+    APP_EVT_MSG_3D_PRINTER_PRINTING_FINISH       = 0x0002,
+    APP_EVT_MSG_3D_PRINTER_RAMPS_BOARD_INIT_DONE = 0x0003,
+    APP_EVT_MSG_3D_PRINTER_NONE                  = 0xFF01
 } evtAppMsg_3DPrinter_t;
 
 typedef enum {
-    APP_EVT_FILE_SYSTEM_NONE        = 0xFF01
+    APP_EVT_MSG_FILE_SYSTEM_READ_DONE            = 0x0001,
+    APP_EVT_MSG_FILE_SYSTEM_UPDATE_DONE          = 0x0002,
+    APP_EVT_FILE_SYSTEM_NONE                     = 0xFF01
 } evtAppMsg_FileSystem_t;
 
 typedef enum {

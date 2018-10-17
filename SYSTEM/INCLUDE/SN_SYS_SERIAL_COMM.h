@@ -14,6 +14,7 @@
 typedef struct sys_serial_stat {
   int buffer_length;
   int rx_length;
+  int endCodeChk;
   int mode;
 } sysSerialStat_t;
 
@@ -74,7 +75,8 @@ typedef struct sys_serial_q {
 
 #define SN_SYS_SERIAL_COMM_TX_RETURN          0
 #define SN_SYS_SERIAL_COMM_TX_CARRIAGE_RETURN 1
-#define SN_SYS_SERIAL_COMM_TX_NEW_LINE_RETURN  2
+#define SN_SYS_SERIAL_COMM_TX_NEW_LINE_RETURN 2
+#define SN_SYS_SERIAL_COMM_TX_NX_RETURN       3
 
 #define SN_SYS_SERIAL_COMM_BUFFER_SIZE 255
 
@@ -86,6 +88,8 @@ typedef struct sys_serial_q {
 
 #define CARRIAGE_RETURN "\r"
 #define NEW_LINE_RETURN "\n"
+#define NX_RETURN       "ÿ"
+
 #define RETURN_SIZE     1
 /** Functions **/
 extern int         SN_SYS_SerialInit (void);

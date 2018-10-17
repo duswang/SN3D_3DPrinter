@@ -42,6 +42,7 @@ SN_STATUS APP_STATE_EnterStateInit(void)
 
     printf("APP STATE => APP_STATE_INIT\n"); fflush(stdout);
     APP_SetAppState(APP_STATE_INIT);
+    SN_MODULE_DISPLAY_EnterState(APP_STATE_INIT);
 
     return retStatus;
 }
@@ -49,7 +50,14 @@ SN_STATUS APP_STATE_EnterStateInit(void)
 static SN_STATUS s3DPrinterHdlr(event_msg_t evtMessage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-
+    switch(evtMessage)
+    {
+    case APP_EVT_MSG_3D_PRINTER_RAMPS_BOARD_INIT_DONE:
+        APP_STATE_EnterStateWaiting();
+        break;
+    default:
+        break;
+    }
     return retStatus;
 }
 
@@ -60,7 +68,6 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
 
     /** Message parsing **/
     msgNXId.NXmessage[0] = evtMessage;
-    msgNXId.NXmessage[1] = NX_ENDCODE;
 
     switch(msgNXId.type)
     {

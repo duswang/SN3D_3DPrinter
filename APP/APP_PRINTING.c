@@ -42,6 +42,7 @@ SN_STATUS APP_STATE_EnterStatePrinting(void)
 
     printf("APP STATE => APP_STATE_PRINTING\n"); fflush(stdout);
     APP_SetAppState(APP_STATE_PRINTING);
+    SN_MODULE_DISPLAY_EnterState(APP_STATE_PRINTING);
 
     return retStatus;
 }
@@ -51,6 +52,16 @@ static SN_STATUS s3DPrinterHdlr(event_msg_t evtMessage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
+    switch(evtMessage)
+    {
+    case APP_EVT_MSG_3D_PRINTER_HOMING_DONE:
+        break;
+    case APP_EVT_MSG_3D_PRINTER_PRINTING_FINISH:
+        APP_STATE_EnterStateWaiting();
+        break;
+    default:
+        break;
+    }
     return retStatus;
 }
 
@@ -61,7 +72,6 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
 
     /** Message parsing **/
     msgNXId.NXmessage[0] = evtMessage;
-    msgNXId.NXmessage[1] = NX_ENDCODE;
 
     switch(msgNXId.type)
     {
@@ -77,11 +87,11 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                     break;
                 /* IN PAGE BUTTONS */
                 case NX_ID_PRINTING_BUTTON_PAUSE:
-                    SN_MODUEL_3D_PRINTER_Pause();
+                    SN_MODULE_3D_PRINTER_Pause();
                     APP_STATE_EnterStatePause();
                     break;
                 case NX_ID_PRINTING_BUTTON_STOP:
-                    SN_MODUEL_3D_PRINTER_Stop();
+                    SN_MODULE_3D_PRINTER_Stop();
                     APP_STATE_EnterStateWaiting();
                     break;
                 default:

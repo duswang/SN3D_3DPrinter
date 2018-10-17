@@ -37,16 +37,16 @@ int main(void)
     sSN_SYSTEM_Init();
 
     /** FILE SYSTEM INIT  - IT MUST BE FIRST **/
-    SN_MODUEL_FILE_SYSTEM_Init();
+    SN_MODULE_FILE_SYSTEM_Init();
 
     /** IMAGE VIEWER INIT - IT NEED MACHINE INFO FROM "FILE SYSTEM" FOR INIT **/
-    SN_MODUEL_IMAGE_VIEWER_Init();
+    SN_MODULE_IMAGE_VIEWER_Init();
 
     /** DISPLAY INIT      - NOPE **/
-    SN_MODUEL_DISPLAY_Init();
+    SN_MODULE_DISPLAY_Init();
 
     /** 3D PRINTER INIT   - NOPE **/
-    SN_MODUEL_3D_PRINTER_Init();
+    SN_MODULE_3D_PRINTER_Init();
 
     APP_Init();
 
@@ -76,7 +76,7 @@ int main(void)
 
 void TestTiemrCallBack_1(void)
 {
-    SN_MODUEL_3D_PRINTER_Start(0, 0);
+    SN_MODULE_3D_PRINTER_Start(0, 0);
 }
 
 static SN_STATUS sSN_SYSTEM_Init(void)
