@@ -73,28 +73,26 @@ int main(void)
 
 }
 
-
-void TestTiemrCallBack_1(void)
-{
-    SN_MODULE_3D_PRINTER_Start(0, 0);
-}
-
 static SN_STATUS sSN_SYSTEM_Init(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     sysTimerId_t testTimerId;
+  
+    sysMessageQId msgTest; //@DEBUG
+  
+    /** @DEBUG **/
+    SN_SYS_MessageQInit(&msgTest);
 
+    SDL_Delay(5000);
+
+    /** APP Message Q Init **/
+    SN_SYS_MessageQInit(&msgQIdApp);
+    
     /** Timer Init **/
     SN_SYS_TimerInit();
 
     /** Serial Init **/
     SN_SYS_SerialInit();
-
-    /** APP Message Q Init **/
-    SN_SYS_MessageQInit(&msgQIdApp);
-
-    //@DEMO
-    //SN_SYS_TimerCreate(&testTimerId, 5000, TestTiemrCallBack_1);
 
     return retStatus;
 }

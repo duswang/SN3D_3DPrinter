@@ -65,9 +65,9 @@ int SN_SYS_TimerCreate(sysTimerId_t* pIdTSR, int msDuration, void* pfTSR)
     {
         if (!aTSR[idxTSR].isOccupied)
         {
-            aTSR[idxTSR].isOccupied = true;
+            aTSR[idxTSR].isOccupied    = true;
             clock_gettime(CLOCK_REALTIME, &aTSR[idxTSR].tickRequested);
-            aTSR[idxTSR].msDuration = msDuration;
+            aTSR[idxTSR].msDuration    = msDuration;
             aTSR[idxTSR].pfTSRCallBack = pfTSR;
 
             srand(aTSR[idxTSR].tickRequested.tv_nsec + idxTSR);
@@ -129,22 +129,22 @@ int SN_SYS_TimerCancle(sysTimerId_t* pIdTSR)
 
     return 0;
 }
+
 static void sCallBackTSR()
 {
     uint8_t idxTSR;
     struct timespec tickNow;
 
-
+    pthread_mutex_lock(&ptmTimer);
 
     for (idxTSR = 0; idxTSR < MAX_NUM_OF_TSR; idxTSR++)
     {
         clock_gettime(CLOCK_REALTIME, &tickNow);
         if ((aTSR[idxTSR].isOccupied) && (aTSR[idxTSR].pfTSRCallBack != NULL) &&
             (sDiffTick(aTSR[idxTSR].tickRequested, tickNow) >= ((aTSR[idxTSR].msDuration))))
-        {
-            (void)(aTSR[idxTSR].pfTSRCallBack)();
+    	{
 
-            pthread_mutex_lock(&ptmTimer);
+            (void)(aTSR[idxTSR].pfTSRCallBack)();
 
             aTSR[idxTSR].isOccupied = false;
             aTSR[idxTSR].tickRequested.tv_sec = 0;
@@ -157,9 +157,11 @@ static void sCallBackTSR()
             }
             aTSR[idxTSR].pfTSRCallBack = NULL;
 
-            pthread_mutex_unlock(&ptmTimer);
         }
     }
+        
+
+    pthread_mutex_unlock(&ptmTimer);
 
     if (guiNumTSR == 0)
     {
@@ -172,11 +174,11 @@ static void sTimerStart(void)
     struct sigaction sa;
     struct itimerval timerId;
 
-    /* Configure the timer to expire after 10 msec... */
+    /* Configure the timer to expire after 1 msec... */
     timerId.it_value.tv_sec = 0;
-    timerId.it_value.tv_usec = 10000;
+    timerId.it_value.tv_usec = 1000;
 
-    /* ... and every 10 msec after that. */
+    /* ... and every 1 msec after that. */
     timerId.it_interval.tv_sec = 0;
     timerId.it_interval.tv_usec = 1000;
 

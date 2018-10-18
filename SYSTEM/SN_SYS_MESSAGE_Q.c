@@ -25,7 +25,6 @@ int SN_SYS_MessageQInit(sysMessageQId *msgQId)
     {
         //@DEBUG
         perror("msgget error :");
-        exit(1);
     }
 
     return 0;
@@ -46,7 +45,6 @@ int SN_SYS_MessagePut(sysMessageQId *msgQId, event_id_t evtId, event_msg_t evtMe
     if((msgsnd(msgQId->keyId, (void *)msgQId, sizeof(sysMessageQId), IPC_NOWAIT) == -1))
     {
         perror("msgsnd error : ");
-        exit(0);
     }
 
     return 0;
@@ -66,7 +64,6 @@ general_evt_t SN_SYS_MessageGet(sysMessageQId *msgQId)
         else
         {
             perror("msgrcv error : ");
-            exit(0);
         }
     }
 
