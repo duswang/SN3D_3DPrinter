@@ -54,7 +54,11 @@ local.properties
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
+Makefile
 
+#Temp & Makefile
+tempFile/
+build/
 
 .cproject
 
