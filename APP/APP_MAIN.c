@@ -8,7 +8,6 @@
 #include "APPS.h"
 
 /** Global Variables **/
-//static app_state_t gAppState = APP_STATE_INIT;
 static app_state_t gAppState = APP_STATE_INIT;
 
 SN_STATUS APP_Main(general_evt_t evt)
@@ -17,8 +16,6 @@ SN_STATUS APP_Main(general_evt_t evt)
     app_state_t tAppState;
 
     tAppState = APP_GetAppState();
-
-    //printf("MSG APP <= MODULE\n"); fflush(stdout);
 
     switch(tAppState)
     {
@@ -50,7 +47,7 @@ SN_STATUS APP_Main(general_evt_t evt)
 
 void APP_Init(void)
 {
-    /** Enter Waiting **/
+
 }
 
 app_state_t  APP_GetAppState(void)

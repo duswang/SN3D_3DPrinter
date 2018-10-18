@@ -13,9 +13,9 @@
 
 
 typedef struct sys_timer_id {
-    bool  isOccupied;
+    bool    isOccupied;
     struct timespec tickRequested;
-    long msDuration;
+    long     msDuration;
     uint32_t uniqueCode;
     void* (*pfTSRCallBack)();
 } sysTimerQ_t;

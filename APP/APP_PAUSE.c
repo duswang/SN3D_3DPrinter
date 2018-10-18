@@ -14,7 +14,7 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage);
 static SN_STATUS sFileSystemHdlr(event_msg_t evtMessage);
 static SN_STATUS sImageViewerHdlr(event_msg_t evtMessage);
 
-int APP_PAUSE_EvtHdlr(general_evt_t evt)
+SN_STATUS APP_PAUSE_EvtHdlr(general_evt_t evt)
 {
     switch(evt.evt_id)
     {
@@ -33,7 +33,7 @@ int APP_PAUSE_EvtHdlr(general_evt_t evt)
         default:
             break;
     }
-    return 0;
+    return SN_STATUS_OK;
 }
 
 SN_STATUS APP_STATE_EnterStatePause(void)
@@ -51,6 +51,21 @@ SN_STATUS APP_STATE_EnterStatePause(void)
 static SN_STATUS s3DPrinterHdlr(event_msg_t evtMessage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+
+    switch(evtMessage)
+    {
+    case APP_EVT_MSG_3D_PRINTER_HOMING_DONE:
+        break;
+    case APP_EVT_MSG_3D_PRINTER_PAUSE_DONE:
+        break;
+    case APP_EVT_MSG_3D_PRINTER_DEVICE_STOP_DONE:
+        break;
+    case APP_EVT_MSG_3D_PRINTER_PRINTING_FINISH:
+        APP_STATE_EnterStateWaiting();
+        break;
+    default:
+        break;
+    }
 
     return retStatus;
 }

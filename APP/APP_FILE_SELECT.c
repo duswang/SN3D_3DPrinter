@@ -42,6 +42,7 @@ int APP_FILE_SELECT_EvtHdlr(general_evt_t evt)
     return 0;
 }
 
+
 SN_STATUS APP_STATE_EnterStateFileSelect(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
@@ -65,6 +66,17 @@ SN_STATUS APP_STATE_EnterStateFileSelect(void)
 static SN_STATUS s3DPrinterHdlr(event_msg_t evtMessage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+
+    switch(evtMessage)
+    {
+    case APP_EVT_MSG_3D_PRINTER_HOMING_DONE:
+        APP_STATE_EnterStatePrinting();
+        break;
+    case APP_EVT_MSG_3D_PRINTER_PAUSE_DONE:
+        break;
+    default:
+        break;
+    }
 
     return retStatus;
 }
@@ -104,7 +116,7 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                     itemIndex = msgNXId.value;
                     break;
                 case NX_ID_FILE_SELECT_BUTTON_PRINT_START:
-                    APP_STATE_EnterStatePrinting();
+                    SN_MODULE_DISPLAY_EnterState(NX_PAGE_LOADING);
                     SN_MODULE_3D_PRINTER_Start(pageIndex, (msgNXId.value - 1));
                     break;
                 default:

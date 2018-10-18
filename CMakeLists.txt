@@ -121,10 +121,10 @@ set(
 	
 	# IMAGE #
 	-DIMAGE_VIEWER_IS_ON=false
-	-DIMAGE_VIEWER_IS_FULL_SCREEN=false
+	-DIMAGE_VIEWER_IS_FULL_SCREEN=true
 
     # 3D PRINTER #
-    -DPRINTER_RX_DEBUG=true
+    -DPRINTER_RX_DEBUG=false
     -DPRINTER_TX_DEBUG=false
     
     # DISPLAY #

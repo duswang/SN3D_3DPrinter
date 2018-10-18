@@ -31,14 +31,13 @@ static void*       sFileSystemThread();
 static SN_STATUS   sFileSystemRead(void);
 static void        sFileSystemPrint(void);
 
-static SN_STATUS   sReadGCodeFile(char* srcPath);
+static SN_STATUS   sReadGCodeFile(const char* srcPath);
 
 /* Util*/
-static SN_STATUS   sCopyFile(char* srcPath, char* desPath);
-static SN_STATUS   sMoveTempFile(char* srcPath, char* desPath);
-static SN_STATUS   sRemoveTempFile(char* filePath);
-static SN_STATUS   sExtractTempFile(char* srcPath, char* desPath);
-static uint32_t    sCountSlice(char* srcPath);
+static SN_STATUS   sCopyFile(const char* srcPath, const char* desPath);
+static SN_STATUS   sRemoveTempFile(const char* filePath);
+static SN_STATUS   sExtractTempFile(const char* srcPath, const char* desPath);
+static uint32_t    sCountSlice(const char* srcPath);
 
 /* Util */
 static const char* sGetFilenameExt(const char *filename);
@@ -71,8 +70,8 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_MachineInfoInit(void)
     //@DEBUG
 
     moduleFileSystem.machineInfo.isInit = true;
-    moduleFileSystem.machineInfo.deviceParameter.weight   =         2560;
-    moduleFileSystem.machineInfo.deviceParameter.height   =         1440;
+    moduleFileSystem.machineInfo.deviceParameter.weight   =         1920;
+    moduleFileSystem.machineInfo.deviceParameter.height   =         1080;
 
     moduleFileSystem.machineInfo.deviceTarget.machineName =  DEVICE_NAME;
 
@@ -99,13 +98,12 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemI
     sRemoveTempFile(TEMP_FILE_PATH);
     sCopyFile(srcPath, desPath);
     sExtractTempFile(desPath, TEMP_FILE_PATH);
-    sMoveTempFile(EXTRACTED_TEMP_FILE_PATH, TEMP_FILE_PATH);
 
     sprintf(srcPath,"%s%s.%s", TEMP_FILE_PATH, \
                                moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, \
                                CONFIG_FILENAME_EXT); fflush(stdout);
     //@DEBUG
-    sReadGCodeFile(srcPath);
+    //sReadGCodeFile(TEMP_FILE_PATH);
 
     moduleFileSystem.printInfo.printTarget.slice                      = sCountSlice(TEMP_FILE_PATH);
 
@@ -292,7 +290,7 @@ static void safe_create_dir(const char *dir)
     }
 }
 
-static SN_STATUS sReadGCodeFile(char* srcPath)
+static SN_STATUS sReadGCodeFile(const char* srcPath)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     FILE* GCodeFile;
@@ -442,7 +440,7 @@ static const char* sGetFilename(const char *filename)
     return retstr;
 }
 
-static uint32_t sCountSlice(char* srcPath)
+static uint32_t sCountSlice(const char* srcPath)
 {
     DIR *d = opendir(srcPath);
     size_t path_len = strlen(srcPath);
@@ -483,7 +481,7 @@ static uint32_t sCountSlice(char* srcPath)
 
     return slice;
 }
-SN_STATUS sCopyFile(char* srcPath, char* desPath)
+SN_STATUS sCopyFile(const char* srcPath, const char* desPath)
 {
     FILE* src = fopen(srcPath, "rb");
     FILE* des = fopen(desPath, "wb");
@@ -528,77 +526,7 @@ SN_STATUS sCopyFile(char* srcPath, char* desPath)
     return SN_STATUS_OK;
 }
 
-SN_STATUS sMoveTempFile(char* srcPath, char* desPath)
-{
-    DIR *d = opendir(srcPath);
-    size_t path_len = strlen(srcPath);
-    size_t desPath_len = strlen(desPath);
-
-    int r = -1;
-
-    if(d)
-    {
-        struct dirent *p;
-
-        r = 0;
-
-        while(!r &&(p=readdir(d)))
-        {
-            int r2 = -1;
-            char *buf;
-            char *desBuf;
-            size_t len;
-            size_t lenDes;
-
-            if(!strcmp(p->d_name, ".") || !strcmp(p->d_name, ".."))
-            {
-                continue;
-            }
-
-            if(strstr(p->d_name, ".") == NULL)
-            {
-                continue;
-            }
-
-
-            len    =    path_len + strlen(p->d_name) + 2;
-            lenDes = desPath_len + strlen(p->d_name) + 2;
-            buf    = malloc(len);
-            desBuf = malloc(lenDes);
-
-            if(buf)
-            {
-                struct stat statbuf;
-
-                snprintf(buf, len,"%s%s", srcPath, p->d_name);
-                snprintf(desBuf, lenDes, "%s%s", desPath, p->d_name);
-                if(!stat(buf, &statbuf))
-                {
-                    r2 = rename(buf, desBuf);
-                }
-
-                free(buf);
-            }
-
-            r = r2;
-        }
-        closedir(d);
-    }
-    else
-    {
-        printf("REPLACE TEMP FILE. --FAILD...\n"); fflush(stdout);
-    }
-
-    if(!r)
-    {
-        //r = rmdir(filePath);
-        printf("REPLACE TEMP FILE.\n"); fflush(stdout);
-    }
-
-    return SN_STATUS_OK;
-}
-
-SN_STATUS sRemoveTempFile(char* filePath)
+SN_STATUS sRemoveTempFile(const char* filePath)
 {
     DIR *d = opendir(filePath);
     size_t path_len = strlen(filePath);
@@ -662,7 +590,7 @@ SN_STATUS sRemoveTempFile(char* filePath)
     return SN_STATUS_OK;
 }
 
-SN_STATUS sExtractTempFile(char* srcPath, char* desPath)
+SN_STATUS sExtractTempFile(const char* srcPath, const char* desPath)
 {
 
     struct zip *za;
@@ -675,6 +603,7 @@ SN_STATUS sExtractTempFile(char* srcPath, char* desPath)
     int i, len;
     int fd;
     long long sum;
+    char* fullFilePath;
 
     if ((za = zip_open(srcPath, 0, &err)) == NULL)
     {
@@ -687,13 +616,7 @@ SN_STATUS sExtractTempFile(char* srcPath, char* desPath)
     {
         if (zip_stat_index(za, i, 0, &sb) == 0)
         {
-            //printf("==================/n");
-
-            len = strlen(sb.name); fflush(stdout);
-
-            //printf("Name: [%s], ", sb.name);
-            //printf("Size: [%llu], ", sb.size);
-            //printf("mtime: [%u]/n", (unsigned int)sb.mtime);
+            len = strlen(sb.name);
 
             if (sb.name[len - 1] == '/')
             {
@@ -708,7 +631,18 @@ SN_STATUS sExtractTempFile(char* srcPath, char* desPath)
                     exit(100);
                 }
 
-                fd = open(sb.name, O_RDWR | O_TRUNC | O_CREAT, 0644);
+                len = strlen(desPath) + strlen(sb.name);
+
+                fullFilePath = malloc((len + 2)* sizeof(char));
+
+                snprintf(fullFilePath, len + 2, "%s/%s", desPath, sb.name);
+
+                fd = open(fullFilePath, O_RDWR | O_TRUNC | O_CREAT, 0644);
+
+                if (fullFilePath != NULL)
+                {
+                    free(fullFilePath);
+                }
 
                 if (fd < 0) {
                     fprintf(stderr, "boese, boese/n");

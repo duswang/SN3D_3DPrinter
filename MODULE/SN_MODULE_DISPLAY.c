@@ -88,6 +88,9 @@ SN_STATUS SN_MODULE_DISPLAY_EnterState(nx_page_t state)
     case NX_PAGE_INIT:
         sSendCommand(NX_COMMAND_RESET, sizeof(NX_COMMAND_RESET));
         break;
+    case NX_PAGE_LOADING:
+        sSendCommand(NX_PAGE_LOADING_COMMAND, sizeof(NX_PAGE_LOADING_COMMAND));
+        break;
     default:
         break;
     }

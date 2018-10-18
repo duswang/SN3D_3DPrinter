@@ -56,6 +56,21 @@ static SN_STATUS s3DPrinterHdlr(event_msg_t evtMessage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
+    switch(evtMessage)
+    {
+    case APP_EVT_MSG_3D_PRINTER_HOMING_DONE:
+        SN_MODULE_DISPLAY_EnterState(NX_PAGE_CONTROl);
+        break;
+    case APP_EVT_MSG_3D_PRINTER_PAUSE_DONE:
+        break;
+    case APP_EVT_MSG_3D_PRINTER_DEVICE_STOP_DONE:
+        break;
+    case APP_EVT_MSG_3D_PRINTER_PRINTING_FINISH:
+        break;
+    default:
+        break;
+    }
+
     return retStatus;
 }
 
@@ -89,6 +104,7 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                     SN_MODULE_3D_PRINTER_Z_DOWN(sGetZmmFromValue(msgNXId.value));
                     break;
                 case NX_ID_CONTROL_BUTTON_Z_HOMMING:
+                    SN_MODULE_DISPLAY_EnterState(NX_PAGE_LOADING);
                     SN_MODULE_3D_PRINTER_Z_HOMING();
                     break;
                 default:

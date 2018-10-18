@@ -92,6 +92,7 @@ typedef enum
     NX_PAGE_PAUSE               = 0x05,
     NX_PAGE_SETUP               = 0x06,
     NX_PAGE_INIT                = 0x07,
+    NX_PAGE_LOADING             = 0xF1, //ONLY NEXTION DISPLAY. FOR LOADING or WAITING MOTOR.
     NX_PAGE_NONE
 } nx_page_t; /* It Need to sync ref : 'app_state_t' */
 

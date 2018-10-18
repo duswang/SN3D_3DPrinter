@@ -105,15 +105,15 @@ typedef struct print_prameter {
     float    layerThickness;            //0.05000 mm
 
     /** Bottom Layer Parameter **/
-    uint32_t bottomLayerExposureTime;   //5000 ms
-    uint32_t bottomLayerNumber;         //7 Layer
+    long     bottomLayerExposureTime;   //5000 ms
+    long     bottomLayerNumber;         //7 Layer
     float    bottomLiftFeedRate;        //150.00 mm/s
 
     /** Normal Layer Paramter **/
-    uint32_t layerExposureTime;         //8000 ms
+    long     layerExposureTime;         //8000 ms
     float    liftFeedRate;              //150.00 mm/s
-    uint32_t liftTime;                  //7200 ms - Need Auto Calculate
-    uint32_t liftDistance;              //7 mm
+    long     liftTime;                  //7200 ms - Need Auto Calculate
+    long     liftDistance;              //7 mm
 
     float    retractFeedRate;           //150.00 mm/s
 

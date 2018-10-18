@@ -61,9 +61,6 @@ typedef struct moduel_3d_printer {
     /** Gcode - Need Init & Uninit **/
     char gcodeLiftUp[30];
     char gcodeLiftDown[30];
-
-    /** Homming Waiting **/
-    bool exitFlag;
 } module3DPrinter_t;
 
 

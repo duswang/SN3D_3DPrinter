@@ -83,8 +83,6 @@ static SN_STATUS sSN_SYSTEM_Init(void)
     /** @DEBUG **/
     SN_SYS_MessageQInit(&msgTest);
 
-    SDL_Delay(5000);
-
     /** APP Message Q Init **/
     SN_SYS_MessageQInit(&msgQIdApp);
     

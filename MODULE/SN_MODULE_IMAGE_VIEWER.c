@@ -61,6 +61,7 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex)
 
 
     sprintf(path,"%s%s%04d.png", printInfo.printTarget.tempFilePath, printInfo.printTarget.tempFileName, sliceIndex);
+
     puts(path);
 
     moduleImageViewer.texture = load_texture(path, moduleImageViewer.renderer);
@@ -93,14 +94,19 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_CLEAR(void)
 
 SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void)
 {
+    printf("START SDL INIT.\n"); fflush(stdout);
+
     check_error_sdl(SDL_Init(SDL_INIT_VIDEO) != 0, "Unable to initialize SDL");
 
     moduleImageViewer.machineInfo = SN_MODULE_FILE_SYSTEM_MachineInfoGet();
 
     if(!moduleImageViewer.machineInfo.isInit)
     {
+        printf("MACHINE INFO NOT INIT.\n"); fflush(stdout);
         return SN_STATUS_NOT_INITIALIZED;
     }
+
+    printf("START SDL FDFDF.\n"); fflush(stdout);
 
     moduleImageViewer.window = SDL_CreateWindow("SN3D", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
             moduleImageViewer.machineInfo.deviceParameter.weight, \
@@ -141,7 +147,8 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_Destory(void)
 #endif
 
 void check_error_sdl(bool check, const char* message) {
-    if (check) {
+    printf("%d, %s\n", check, message); fflush(stdout);
+    if (check != 0) {
         printf("%s\n", SDL_GetError());
         SDL_Quit();
         exit(-1);
@@ -149,7 +156,8 @@ void check_error_sdl(bool check, const char* message) {
 }
 
 void check_error_sdl_img(bool check, const char* message) {
-    if (check) {
+    printf("%d, %s\n", check, message); fflush(stdout);
+    if (check != 0) {
         printf("%s\n", IMG_GetError());
         IMG_Quit();
         SDL_Quit();

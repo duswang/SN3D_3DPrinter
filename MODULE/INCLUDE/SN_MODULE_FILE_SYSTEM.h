@@ -23,11 +23,11 @@
 #endif
 
 #ifdef __APPLE__
+#define TEMP_FILE_PATH              "../"
 
 #endif
 
 #ifdef linux
-#define EXTRACTED_TEMP_FILE_PATH    "/SN3D/sn3d-project/build/"
 #define TEMP_FILE_PATH              "/SN3D/sn3d-project/tempFile/"
 #endif
 

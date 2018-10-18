@@ -29,6 +29,6 @@
 
 
 #define RESPONSE_OK             "ok"
-#define INIT_OK                 "Plan Buffer Size"
+#define INIT_OK                 "Sprinter"
 
 #endif /* APP_COMMANDS_H_ */
