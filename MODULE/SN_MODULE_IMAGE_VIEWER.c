@@ -94,9 +94,13 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_CLEAR(void)
 
 SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void)
 {
+    int i = 0, r = 0;
+    SDL_RendererInfo info;
+
     printf("START SDL INIT.\n"); fflush(stdout);
 
     check_error_sdl(SDL_Init(SDL_INIT_VIDEO) != 0, "Unable to initialize SDL");
+    printf("IS PASS INIT?\n"); fflush(stdout); //@DEBUG POINT
 
     moduleImageViewer.machineInfo = SN_MODULE_FILE_SYSTEM_MachineInfoGet();
 
@@ -106,19 +110,34 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void)
         return SN_STATUS_NOT_INITIALIZED;
     }
 
-    printf("START SDL FDFDF.\n"); fflush(stdout);
-
-    moduleImageViewer.window = SDL_CreateWindow("SN3D", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+    moduleImageViewer.window = SDL_CreateWindow("SN3D", \
+            SDL_WINDOWPOS_UNDEFINED, \
+            SDL_WINDOWPOS_UNDEFINED, \
             moduleImageViewer.machineInfo.deviceParameter.weight, \
             moduleImageViewer.machineInfo.deviceParameter.height, \
-            (IMAGE_VIEWER_IS_FULL_SCREEN) ? (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL) : (SDL_WINDOW_OPENGL));
+            SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL );
 
     check_error_sdl(moduleImageViewer.window == NULL, "Unable to create window");
 
-    moduleImageViewer.renderer = SDL_CreateRenderer(moduleImageViewer.window, -1,\
-            SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    printf("IS PASS WINDOWS?\n"); fflush(stdout); //@DEBUG POINTs
+
+
+    r = SDL_GetNumRenderDrivers();
+    while ( i < r )
+    {
+        if ( SDL_GetRenderDriverInfo(i,&info) == 0 )
+        {
+            printf("%d : %s\n",i, info.name);
+        }
+        i++;
+    }
+
+    moduleImageViewer.renderer = SDL_CreateRenderer(moduleImageViewer.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     check_error_sdl(moduleImageViewer.renderer == NULL, "Unable to create a renderer");
+
+    printf("IS PASS RENDERROR?\n"); fflush(stdout); //@DEBUG POINT
+
 
     SDL_SetRenderDrawColor(moduleImageViewer.renderer, 0, 0, 0, 255);
 
@@ -147,21 +166,23 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_Destory(void)
 #endif
 
 void check_error_sdl(bool check, const char* message) {
-    printf("%d, %s\n", check, message); fflush(stdout);
-    if (check != 0) {
-        printf("%s\n", SDL_GetError());
-        SDL_Quit();
-        exit(-1);
+    const char *error = SDL_GetError();
+    if (*error) {
+      SDL_Log("SDL error: %s : %s", error, message);
+      SDL_ClearError();
+      SDL_Quit();
+      exit(-1);
     }
 }
 
 void check_error_sdl_img(bool check, const char* message) {
-    printf("%d, %s\n", check, message); fflush(stdout);
-    if (check != 0) {
-        printf("%s\n", IMG_GetError());
-        IMG_Quit();
-        SDL_Quit();
-        exit(-1);
+    const char *error = SDL_GetError();
+    if (*error) {
+      SDL_Log("SDL error: %s: %s", error, message);
+      SDL_ClearError();
+      IMG_Quit();
+      SDL_Quit();
+      exit(-1);
     }
 }
 

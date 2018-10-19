@@ -101,6 +101,10 @@ static SN_STATUS sFileSystemHdlr(event_msg_t evtMessage)
 
     switch(evtMessage)
     {
+    case APP_EVT_MSG_FILE_SYSTEM_USB_MOUNT:
+        break;
+    case APP_EVT_MSG_FILE_SYSTEM_USB_UNMOUNT:
+        break;
     case APP_EVT_MSG_FILE_SYSTEM_READ_DONE:
         break;
     case APP_EVT_MSG_FILE_SYSTEM_UPDATE_DONE:

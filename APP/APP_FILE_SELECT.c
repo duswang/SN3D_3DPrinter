@@ -20,7 +20,7 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage);
 static SN_STATUS sFileSystemHdlr(event_msg_t evtMessage);
 static SN_STATUS sImageViewerHdlr(event_msg_t evtMessage);
 
-int APP_FILE_SELECT_EvtHdlr(general_evt_t evt)
+SN_STATUS APP_FILE_SELECT_EvtHdlr(general_evt_t evt)
 {
     switch(evt.evt_id)
     {
@@ -39,7 +39,7 @@ int APP_FILE_SELECT_EvtHdlr(general_evt_t evt)
         default:
             break;
     }
-    return 0;
+    return SN_STATUS_OK;
 }
 
 
@@ -107,17 +107,27 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                 case NX_ID_FILE_SELECT_BUTTON_OPTION_DOWN:
                     break;
                 case NX_ID_FILE_SELECT_BUTTON_PAGE_UP:
-                    SN_MODULE_DISPLAY_FileSelectUpdate(pageIndex);
+                    if(fs.isItemExist)
+                    {
+                        SN_MODULE_DISPLAY_FileSelectUpdate(pageIndex);
+                    }
+
                     break;
                 case NX_ID_FILE_SELECT_BUTTON_PAGE_DOWN:
+                    if(fs.isItemExist)
+                    {
                     SN_MODULE_DISPLAY_FileSelectUpdate(pageIndex);
+                    }
                     break;
                 case NX_ID_FILE_SELECT_BUTTON_FILE_SELECT:
                     itemIndex = msgNXId.value;
                     break;
                 case NX_ID_FILE_SELECT_BUTTON_PRINT_START:
-                    SN_MODULE_DISPLAY_EnterState(NX_PAGE_LOADING);
-                    SN_MODULE_3D_PRINTER_Start(pageIndex, (msgNXId.value - 1));
+                    if(fs.isItemExist)
+                    {
+                        SN_MODULE_DISPLAY_EnterState(NX_PAGE_LOADING);
+                        SN_MODULE_3D_PRINTER_Start(pageIndex, (msgNXId.value - 1));
+                    }
                     break;
                 default:
                     break;
@@ -137,12 +147,37 @@ static SN_STATUS sFileSystemHdlr(event_msg_t evtMessage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
+    SN_MODULE_FILE_SYSTEM_Get(&fs);
+    SN_MODULE_DISPLAY_FileSelectUpdate(pageIndex);
+
+    switch(evtMessage)
+    {
+    case APP_EVT_MSG_FILE_SYSTEM_USB_MOUNT:
+        break;
+    case APP_EVT_MSG_FILE_SYSTEM_USB_UNMOUNT:
+        break;
+    case APP_EVT_MSG_FILE_SYSTEM_READ_DONE:
+        break;
+    case APP_EVT_MSG_FILE_SYSTEM_UPDATE_DONE:
+        /* USB MOUNT or USER TOUCH PRINT BUTTON */
+        APP_STATE_EnterStateFileSelect();
+        break;
+    default:
+            break;
+    }
+
     return retStatus;
 }
 
 static SN_STATUS sImageViewerHdlr(event_msg_t evtMessage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+
+    switch(evtMessage)
+    {
+    default:
+            break;
+    }
 
     return retStatus;
 }

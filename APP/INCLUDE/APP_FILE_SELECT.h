@@ -8,6 +8,6 @@
 #ifndef APP_INCLUDE_APP_FILE_SELECT_H_
 #define APP_INCLUDE_APP_FILE_SELECT_H_
 
-extern int APP_FILE_SELECT_EvtHdlr(general_evt_t evt);
+extern SN_STATUS APP_FILE_SELECT_EvtHdlr(general_evt_t evt);
 
 #endif /* APP_INCLUDE_APP_FILE_SELECT_H_ */

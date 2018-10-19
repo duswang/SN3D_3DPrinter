@@ -16,7 +16,7 @@ static SN_STATUS sImageViewerHdlr(event_msg_t evtMessage);
 /* Util */
 static float sGetZmmFromValue(uint8_t nxValue);
 
-int APP_CONTROL_EvtHdlr(general_evt_t evt)
+SN_STATUS APP_CONTROL_EvtHdlr(general_evt_t evt)
 {
     switch(evt.evt_id)
     {
@@ -35,7 +35,7 @@ int APP_CONTROL_EvtHdlr(general_evt_t evt)
         default:
             break;
     }
-    return 0;
+    return SN_STATUS_OK;
 }
 
 SN_STATUS APP_STATE_EnterStateControl(void)
@@ -125,12 +125,24 @@ static SN_STATUS sFileSystemHdlr(event_msg_t evtMessage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
+    switch(evtMessage)
+    {
+    default:
+            break;
+    }
+
     return retStatus;
 }
 
 static SN_STATUS sImageViewerHdlr(event_msg_t evtMessage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+
+    switch(evtMessage)
+    {
+    default:
+            break;
+    }
 
     return retStatus;
 }

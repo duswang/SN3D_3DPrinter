@@ -120,8 +120,7 @@ set(
 	Config
 	
 	# IMAGE #
-	-DIMAGE_VIEWER_IS_ON=false
-	-DIMAGE_VIEWER_IS_FULL_SCREEN=true
+	-DIMAGE_VIEWER_IS_ON=true
 
     # 3D PRINTER #
     -DPRINTER_RX_DEBUG=false

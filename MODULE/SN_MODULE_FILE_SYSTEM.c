@@ -173,6 +173,8 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void)
 {
     SN_STATUS retValue = SN_STATUS_OK;
 
+    printf("START FILE SYSTEM INIT.\n"); fflush(stdout);
+
     /** MESSAGE Q INIT **/
     SN_SYS_MessageQInit(&msgQIdFileSystem);
 
@@ -218,32 +220,21 @@ static void* sFileSystemThread()
         switch(evt.evt_id)
         {
             case MSG_FILE_SYSTEM_USB_MOUNT:
-                sFileSystemMessagePut(MSG_FILE_SYSTEM_READ, 0);
-                //printf("File System USB Mount. :: %d %d\n", evt.evt_id, evt.evt_msg);
-                fflush(stdout);
+                sFileSystemMessagePut(MSG_FILE_SYSTEM_UPDATE, APP_EVT_MSG_FILE_SYSTEM_USB_MOUNT);
                 break;
             case MSG_FILE_SYSTEM_USB_UNMOUNT:
-                sFileSystemMessagePut(MSG_FILE_SYSTEM_UPDATE, 0);
-                //printf("File System USB Unmount. :: %d %d\n", evt.evt_id, evt.evt_msg);
-                fflush(stdout);
+                sFileSystemMessagePut(MSG_FILE_SYSTEM_UPDATE, APP_EVT_MSG_FILE_SYSTEM_USB_UNMOUNT);
                 break;
-
             case MSG_FILE_SYSTEM_READ:
                 sFileSystemRead();
                 sFileSystemMessagePut(MSG_FILE_SYSTEM_UPDATE, APP_EVT_MSG_FILE_SYSTEM_READ_DONE);
-                //printf("File System Read. :: %d %d\n", evt.evt_id, evt.evt_msg);
-                fflush(stdout);
                 break;
 
             case MSG_FILE_SYSTEM_UPDATE:
-                sFileSystemMessagePut(MSG_FILE_SYSTEM_WAITING, 0);
                 SN_SYSTEM_SendAppMessage(APP_EVT_ID_FILE_SYSTEM, APP_EVT_MSG_FILE_SYSTEM_UPDATE_DONE);
-                //printf("File System Update. :: %d %d\n", evt.evt_id, evt.evt_msg);
-                fflush(stdout);
                 break;
 
             case MSG_FILE_SYSTEM_WAITING:
-                //printf("File System Waiting. :: %d %d\n", evt.evt_id, evt.evt_msg);
                 fflush(stdout);
                 break;
 
@@ -289,7 +280,7 @@ static void safe_create_dir(const char *dir)
         }
     }
 }
-
+/*
 static SN_STATUS sReadGCodeFile(const char* srcPath)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
@@ -324,7 +315,7 @@ static SN_STATUS sReadGCodeFile(const char* srcPath)
 
     return retStatus;
 }
-
+*/
 static SN_STATUS sFileSystemRead(void)
 {
     DIR *dp;

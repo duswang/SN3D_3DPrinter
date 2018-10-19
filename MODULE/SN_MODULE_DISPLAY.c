@@ -34,6 +34,8 @@ SN_STATUS SN_MODULE_DISPLAY_Init(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
+    printf("START NEXTION DISPLAY INIT.\n"); fflush(stdout);
+
     /** MESSAGE Q INIT **/
     SN_SYS_MessageQInit(&msgQIdDisplay);
 

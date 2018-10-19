@@ -58,8 +58,10 @@ typedef enum {
 } evtAppMsg_3DPrinter_t;
 
 typedef enum {
-    APP_EVT_MSG_FILE_SYSTEM_READ_DONE            = 0x0001,
-    APP_EVT_MSG_FILE_SYSTEM_UPDATE_DONE          = 0x0002,
+    APP_EVT_MSG_FILE_SYSTEM_USB_MOUNT            = 0x0001,
+    APP_EVT_MSG_FILE_SYSTEM_USB_UNMOUNT          = 0x0002,
+    APP_EVT_MSG_FILE_SYSTEM_READ_DONE            = 0x0003,
+    APP_EVT_MSG_FILE_SYSTEM_UPDATE_DONE          = 0x0004,
     APP_EVT_FILE_SYSTEM_NONE                     = 0xFF01
 } evtAppMsg_FileSystem_t;
 

@@ -14,7 +14,7 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage);
 static SN_STATUS sFileSystemHdlr(event_msg_t evtMessage);
 static SN_STATUS sImageViewerHdlr(event_msg_t evtMessage);
 
-int APP_INIT_EvtHdlr(general_evt_t evt)
+SN_STATUS APP_INIT_EvtHdlr(general_evt_t evt)
 {
     switch(evt.evt_id)
     {
@@ -33,7 +33,7 @@ int APP_INIT_EvtHdlr(general_evt_t evt)
         default:
             break;
     }
-    return 0;
+    return SN_STATUS_OK;
 }
 
 SN_STATUS APP_STATE_EnterStateInit(void)

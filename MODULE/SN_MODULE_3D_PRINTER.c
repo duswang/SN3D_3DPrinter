@@ -68,6 +68,8 @@ SN_STATUS SN_MODULE_3D_PRINTER_Init(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
+    printf("START 3D PRINTER INIT.\n"); fflush(stdout);
+
     /** MESSAGE Q INIT **/
     SN_SYS_MessageQInit(&msgQId3DPrinter);
 
@@ -356,17 +358,16 @@ static void s3DPrinter_MotorInit(void)
 static void s3DPrinter_MotorUninit(void)
 {
     printf("MOTOR UNINIT.\n"); fflush(stdout);
-    sSendGCode(GCODE_LCD_OFF, sizeof(GCODE_LCD_OFF));
     sSendGCode(GCODE_UNINIT_POSITION, sizeof(GCODE_UNINIT_POSITION));
     sSendGCode(GCODE_UNINIT_MOTOR, sizeof(GCODE_UNINIT_POSITION));
 }
 
 static void s3DPrinter_StopDevice(void)
 {
-    printf("DEVICE STOP.\n"); fflush(stdout);
+    printf("DEVICE STOP START.\n"); fflush(stdout);
     sSendGCode(GCODE_DEVICE_STOP, sizeof(GCODE_DEVICE_STOP));
 
-    SN_SYS_TimerCreate(&timerPrint, 10000, sTMR_Callback_StopDevice);
+    SN_SYS_TimerCreate(&timerPrint, 8000, sTMR_Callback_StopDevice);
 }
 
 static void sTMR_Callback_NextCycle(void)
@@ -381,9 +382,7 @@ static void sTMR_Callback_Lift(void)
 
 static void sTMR_Callback_StopDevice(void)
 {
-    /** Motor Uninit **/
-    s3DPrinter_MotorUninit();
-
+    printf("DEVICE STOP DONE.\n"); fflush(stdout);
     SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, APP_EVT_MSG_3D_PRINTER_DEVICE_STOP_DONE);
 
 }
@@ -460,6 +459,7 @@ static void s3DPrinter_PrintLift(void)
         if(module3DPrinter.sliceIndex > module3DPrinter.printInfo.printTarget.slice)
         {
             s3DPrinter_PrintStop();
+
             /* Printing Finish */
             s3DPrinterEnterState(DEVICE_FINISH);
             s3DPrinterMessagePut(MSG_3D_PRINTER_PRINTING_FINISH, 0);
@@ -515,7 +515,11 @@ static void s3DPrinter_PrintStop(void)
 
         SN_SYS_TimerCancle(&timerPrint);
 
+        sSendGCode(GCODE_LCD_OFF, sizeof(GCODE_LCD_OFF));
         SN_MODULE_IMAGE_VIEWER_CLEAR();
+
+        /** Motor Uninit **/
+        s3DPrinter_MotorUninit();
 
         SN_MODULE_FILE_SYSTEM_PrintInfoUninit();
 
