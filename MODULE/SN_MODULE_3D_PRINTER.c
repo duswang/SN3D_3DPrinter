@@ -26,8 +26,8 @@
 #define UART_OFLAGS  (O_RDWR | O_NOCTTY | O_NONBLOCK)
 
 /**** PRINT CONFIG ****/
-#define FIRST_SLICE_DELAY_TIME  5000 //ms  (  5 sec )
-#define STOP_DEVICE_DELAY_TIME 20000 //ms  ( 20 sec )
+#define FIRST_SLICE_DELAY_TIME   5000 //ms  (  5 sec )
+#define STOP_DEVICE_DELAY_TIME  50000 //ms  ( 20 sec )
 
 /**** MODULE ****/
 typedef enum {
@@ -209,6 +209,9 @@ SN_STATUS SN_MODULE_3D_PRINTER_Z_UP(float mm)
                 (float)DEFAULT_FEEDRATE,
                 true);
 
+        /** Z INFO SET **/
+        retStatus = sSendGCode(GCODE_CLEAR_BUFFER, sizeof(GCODE_CLEAR_BUFFER));
+
         /** Z UP **/
         retStatus = sSendGCode(module3DPrinter.gcodeLiftUp, sizeof(module3DPrinter.gcodeLiftUp));
     }
@@ -245,6 +248,10 @@ SN_STATUS SN_MODULE_3D_PRINTER_Z_DOWN(float mm)
                 (float)0, \
                 (float)DEFAULT_FEEDRATE,
                 false);
+
+        /** Z INFO SET **/
+        retStatus = sSendGCode(GCODE_CLEAR_BUFFER, sizeof(GCODE_CLEAR_BUFFER));
+
 
         retStatus = sSendGCode(module3DPrinter.gcodeLiftDown, sizeof(module3DPrinter.gcodeLiftDown));
     }
@@ -375,7 +382,7 @@ static void* sSerialRx_Callback(char* rxBuffer)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    if(strstr(rxBuffer, RESPONSE_OK) != NULL)
+    if(strstr(rxBuffer, GCODE_MOTOR_RESPONSE) != NULL)
     {
         switch(module3DPrinter.state)
         {
@@ -391,6 +398,7 @@ static void* sSerialRx_Callback(char* rxBuffer)
             SN_SYS_Log("Module => 3D Printer  => Z MOVE DONE.");
 
             retStatus = sSendGCode(GCODE_GET_CURRENT_POSITION, sizeof(GCODE_GET_CURRENT_POSITION));
+            SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
 
             retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, APP_EVT_MSG_3D_PRINTER_Z_MOVE_DONE);
             SN_SYS_ERROR_CHECK(retStatus, "APP Send Message Failed.");
@@ -405,6 +413,10 @@ static void* sSerialRx_Callback(char* rxBuffer)
               SN_SYS_Log("Module => 3D Printer  => RESPONSE.");
               break;
         }
+    }
+    else if(strstr(rxBuffer, GCODE_GET_CURRENT_POSITION_RESPONSE) != NULL)
+    {
+        SN_SYS_Log(rxBuffer);
     }
     else
     {
@@ -435,11 +447,18 @@ static void sTMR_Lift_Callback(void)
 static void sTMR_StopDevice_Callback(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-    SN_SYS_Log("Module => 3D Printer  => DEVICE STOP DONE.");
+
+    /* GET CURRENT POSITION */
+    retStatus = sSendGCode(GCODE_GET_CURRENT_POSITION, sizeof(GCODE_GET_CURRENT_POSITION));
+    SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
+
+    SN_SYS_Log("Module => 3D Printer  => MOTOR UNINIT.");
 
     /* MOTOR DISABLE */
     retStatus = s3DPrinter_MotorUninit();
     SN_SYS_ERROR_CHECK(retStatus, "Motor Uninit Failed.");
+
+    SN_SYS_Log("Module => 3D Printer  => DEVICE STOP DONE.");
 
     retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, APP_EVT_MSG_3D_PRINTER_DEVICE_STOP_DONE);
     SN_SYS_ERROR_CHECK(retStatus,"App Message Send Failed.");
@@ -455,8 +474,6 @@ static SN_STATUS s3DPrinter_StopDevice(void)
             (float)0, \
             (float)DEFAULT_FEEDRATE,
             true);
-
-    SN_SYS_Log("Module => 3D Printer  => MOTOR UNINIT.");
 
     /* Z Position Init */
     retStatus = sSendGCode(GCODE_INIT_POSITION_ABSOLUTE, sizeof(GCODE_INIT_POSITION_ABSOLUTE));
@@ -506,6 +523,9 @@ static SN_STATUS s3DPrinter_PrintInit(void)
                 (float)module3DPrinter.printInfo.printParameter.layerThickness, \
                 (float)module3DPrinter.printInfo.printParameter.liftFeedRate,
                 false);
+
+        /** PRINTING DISPLAY UPDATE **/
+        SN_MODULE_DISPLAY_PrintingInfoInit(module3DPrinter.printInfo.printTarget.tempFileName, "Option 1");
 
         /** Motor Init **/
         s3DPrinter_MotorInit();
@@ -587,6 +607,7 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
     {
         s3DPrinterEnterState(DEVICE_PRINTING);
 
+        SN_MODULE_DISPLAY_PrintingInfoUpdate((module3DPrinter.sliceIndex + 1), module3DPrinter.printInfo.printTarget.slice);
         printf("Module => 3D Printer  => SLICE %04d  =========", (module3DPrinter.sliceIndex + 1)); fflush(stdout);
 
         /** Slice Sequence **/

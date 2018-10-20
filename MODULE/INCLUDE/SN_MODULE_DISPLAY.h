@@ -20,6 +20,8 @@ extern SN_STATUS SN_MODULE_DISPLAY_EnterState(nx_page_t state);
 extern SN_STATUS SN_MODULE_DISPLAY_FileSelectUpdate(uint32_t page);
 
 /**** PRINITING ****/
-extern SN_STATUS SN_MODULE_DISPLAY_PrintingUpdate(void);
+extern SN_STATUS SN_MODULE_DISPLAY_PrintingInfoInit(const char* fileName, const char* optionName);
+extern SN_STATUS SN_MODULE_DISPLAY_PrintingInfoUpdate(uint32_t slice, uint32_t targetSlice);
+extern SN_STATUS SN_MODULE_DISPLAY_PrintingTimeUpdate(const char* timeStr);
 
 #endif /* SN_MODUEL_DISPLAY */

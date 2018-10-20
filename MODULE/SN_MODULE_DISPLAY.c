@@ -140,12 +140,63 @@ SN_STATUS SN_MODULE_DISPLAY_EnterState(nx_page_t state)
     return retStatus;
 }
 
-SN_STATUS SN_MODULE_DISPLAY_PrintingUpdate(void)
+SN_STATUS SN_MODULE_DISPLAY_PrintingInfoInit(const char* fileName, const char* optionName)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+    char buffer[256];
+
+    if(fileName == NULL)
+    {
+        return SN_STATUS_INVALID_PARAM;
+    }
+
+    if(optionName == NULL)
+    {
+        return SN_STATUS_INVALID_PARAM;
+    }
+
+    sprintf(buffer,"FileName.txt=\"%s\"", fileName);
+
+    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+
+    sprintf(buffer,"Option.txt=\"%s\"", optionName);
+
+    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+
 
     return retStatus;
 }
+
+SN_STATUS SN_MODULE_DISPLAY_PrintingInfoUpdate(uint32_t slice, uint32_t targetSlice)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    char buffer[256];
+
+    sprintf(buffer,"Image.txt=\"%4d/ %4d\"", slice, targetSlice);
+
+    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+
+
+    return retStatus;
+}
+
+SN_STATUS SN_MODULE_DISPLAY_PrintingTimeUpdate(const char* timeStr)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    char buffer[256];
+
+    if(timeStr == NULL)
+    {
+        return SN_STATUS_INVALID_PARAM;
+    }
+
+    return retStatus;
+}
+
+
 
 SN_STATUS SN_MODULE_DISPLAY_FileSelectUpdate(uint32_t page)
 {
