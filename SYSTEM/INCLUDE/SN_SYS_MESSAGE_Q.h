@@ -28,9 +28,9 @@ typedef struct message {
 } sysMessageQId;
 
 
-extern int           SN_SYS_MessageQInit(sysMessageQId *msgQId);
-extern int           SN_SYS_MessageQRemove(sysMessageQId *msgQId);
-extern int           SN_SYS_MessagePut(sysMessageQId *msgQId, event_id_t evtId, event_msg_t evtMessage);
+extern SN_STATUS     SN_SYS_MessageQInit(sysMessageQId *msgQId);
+extern SN_STATUS     SN_SYS_MessageQRemove(sysMessageQId *msgQId);
+extern SN_STATUS     SN_SYS_MessagePut(sysMessageQId *msgQId, event_id_t evtId, event_msg_t evtMessage);
 extern general_evt_t SN_SYS_MessageGet(sysMessageQId *msgQId);
 
 /******* *******/

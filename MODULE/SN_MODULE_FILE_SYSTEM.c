@@ -8,40 +8,86 @@
 #include "SN_API.h"
 #include "SN_MODULE_FILE_SYSTEM.h"
 
-/** System **/
-/* Thread */
+/******** STATIC DEFINE ********/
+/**** DEVICE CONFIG ****/
+#define DEFAULT_DEVICE_NAME  "POLARIS 500"
+
+/**** FILE CONFIG ****/
+#define FILENAME_EXT         "cws"
+#define IMAGE_FILENAME_EXT   "png"
+
+#define CONFIG_FILENAME      "manifest"
+#define CONFIG_FILENAME_EXT  "xml"
+
+/**** USB CONFIG ****/
+#ifdef __APPLE__
+#define USB_PATH              "/Volumes/USB_0/"
+#endif
+#ifdef linux
+#define USB_PATH              "/mnt/volume/"
+#endif
+
+#ifdef __APPLE__
+#define TEMP_FILE_PATH              "../"
+#endif
+#ifdef linux
+#define TEMP_FILE_PATH              "/SN3D/sn3d-project/tempFile/"
+#endif
+/**** MODULE ****/
+typedef struct moduel_file_system {
+    fs_t                     fs;
+    printInfo_t       printInfo;
+    machineInfo_t   machineInfo;
+} moduleFileSystem_t;
+/******** SYSTEM DEFINE ********/
+/**** MODULE THREAD ****/
 pthread_mutex_t ptmFileSystem = PTHREAD_MUTEX_INITIALIZER;
 pthread_t       ptFileSystem;
 
-/* Message */
+/**** MODULE MESSAGE Q ****/
 sysMessageQId msgQIdFileSystem;
+    /**** MODULE MESSAGES ****/
+typedef enum {
+    MSG_FILE_SYSTEM_USB_MOUNT = 0,
+    MSG_FILE_SYSTEM_USB_UNMOUNT,
+    MSG_FILE_SYSTEM_READ,
+    MSG_FILE_SYSTEM_UPDATE,
+    MSG_FILE_SYSTEM_WAITING,
+    MSG_FILE_SYSTEM_NONE,
+    MSG_FILE_SYSTEM_IGNORE          = 0xFF01
 
-/** Moduel Controller **/
+} evtFileSystem_t;
+
+/**** MODULE HANDLER  ****/
 static moduleFileSystem_t moduleFileSystem;
 
-/** Static Functions **/
-/* callback */
-static void*       USBEvent_callback(int evt);
+/******** GLOBAL VARIABLE ********/
 
-/* System */
-static void        sFileSystemMessagePut(evtFileSystem_t evtId, event_msg_t evtMessage);
+/******** STATIC FUNCTIONS ********/
+/***** USB ****/
+static void*       USBEvent_Callback(int evt);
+
+/**** SYSTEM ****/
 static void*       sFileSystemThread();
+static SN_STATUS   sFileSystemMessagePut(evtFileSystem_t evtId, event_msg_t evtMessage);
 
-/* Local */
+/**** FILE READ ****/
 static SN_STATUS   sFileSystemRead(void);
-static void        sFileSystemPrint(void);
+static SN_STATUS   sFileSystemPrint(void);
 
-static SN_STATUS   sReadGCodeFile(const char* srcPath);
-
-/* Util*/
+/**** FILE CONTROL ****/
 static SN_STATUS   sCopyFile(const char* srcPath, const char* desPath);
 static SN_STATUS   sRemoveTempFile(const char* filePath);
 static SN_STATUS   sExtractTempFile(const char* srcPath, const char* desPath);
-static uint32_t    sCountSlice(const char* srcPath);
 
-/* Util */
+/**** UTIL ****/
+static uint32_t    sCountSlice(const char* srcPath);
 static const char* sGetFilenameExt(const char *filename);
 static const char* sGetFilename(const char *filename);
+
+/**** DEMO ****/
+static void         sDemoPrintSetting(void);
+static void         sDemoMachineSetting(void);
 
 SN_STATUS SN_MODULE_FILE_SYSTEM_Get(fs_t* pFs)
 {
@@ -57,23 +103,20 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Get(fs_t* pFs)
 
 SN_STATUS SN_MODULE_FILE_SYSTEM_Update(void)
 {
-    sFileSystemMessagePut(MSG_FILE_SYSTEM_READ, 0);
+    SN_STATUS retStatus = SN_STATUS_OK;
 
-    return SN_STATUS_OK;
+    retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_READ, 0);
+    SN_SYS_ERROR_CHECK(retStatus, "File System Send Message Failed.");
+
+    return retStatus;
 }
 
 SN_STATUS SN_MODULE_FILE_SYSTEM_MachineInfoInit(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    //sMachineInfoRead();
-    //@DEBUG
-
-    moduleFileSystem.machineInfo.isInit = true;
-    moduleFileSystem.machineInfo.deviceParameter.weight   =         1920;
-    moduleFileSystem.machineInfo.deviceParameter.height   =         1080;
-
-    moduleFileSystem.machineInfo.deviceTarget.machineName =  DEVICE_NAME;
+    //@DEMO SETTING
+    sDemoMachineSetting();
 
     return retStatus;
 }
@@ -81,11 +124,7 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_MachineInfoInit(void)
 SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-
-    char srcPath[50];
-    char desPath[50];
-
-    //sPrintInfoRead();
+    char srcPath[256], desPath[256];
 
     sprintf(srcPath,"%s%s.%s",  USB_PATH, \
                                 moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, \
@@ -95,32 +134,14 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemI
                                 moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, \
                                 FILENAME_EXT); fflush(stdout);
 
-    sRemoveTempFile(TEMP_FILE_PATH);
-    sCopyFile(srcPath, desPath);
-    sExtractTempFile(desPath, TEMP_FILE_PATH);
-
-    sprintf(srcPath,"%s%s.%s", TEMP_FILE_PATH, \
-                               moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, \
-                               CONFIG_FILENAME_EXT); fflush(stdout);
-    //@DEBUG
-    //sReadGCodeFile(TEMP_FILE_PATH);
+    retStatus = sRemoveTempFile(TEMP_FILE_PATH);
+    retStatus = sCopyFile(srcPath, desPath);
+    retStatus = sExtractTempFile(desPath, TEMP_FILE_PATH);
 
     moduleFileSystem.printInfo.printTarget.slice                      = sCountSlice(TEMP_FILE_PATH);
 
-    /** Parameter **/
-    /* Base Paramter */
-    moduleFileSystem.printInfo.printParameter.layerThickness          = 0.05000;   //mm
-
-    /* Bottom Layer */
-    moduleFileSystem.printInfo.printParameter.bottomLayerExposureTime =    8000;   //ms
-    moduleFileSystem.printInfo.printParameter.bottomLayerNumber       =       7;   //layer
-    moduleFileSystem.printInfo.printParameter.bottomLiftFeedRate      =  150.00;   //mm/s
-
-    /* Normal Layer */
-    moduleFileSystem.printInfo.printParameter.layerExposureTime       =    3000;   //ms
-    moduleFileSystem.printInfo.printParameter.liftTime                =    7200;   //ms
-    moduleFileSystem.printInfo.printParameter.liftDistance            =       7;   //mm
-    moduleFileSystem.printInfo.printParameter.liftFeedRate            =   150.00;//mm/s
+    //@DEMO SETTING
+    sDemoPrintSetting();
 
     /** Target **/
     moduleFileSystem.printInfo.printTarget.sourceFilePath             = USB_PATH;
@@ -128,8 +149,7 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemI
     moduleFileSystem.printInfo.printTarget.tempFileName               = moduleFileSystem.fs.page[pageIndex].item[itemIndex].name;
 
 
-
-   moduleFileSystem.printInfo.isInit = true;
+    moduleFileSystem.printInfo.isInit = true;
 
     return retStatus;
 }
@@ -171,35 +191,33 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoUninit(void)
 
 SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void)
 {
-    SN_STATUS retValue = SN_STATUS_OK;
+    SN_STATUS retStatus = SN_STATUS_OK;
 
-    printf("START FILE SYSTEM INIT.\n"); fflush(stdout);
+    SN_SYS_Log("MODULE INIT => FILE SYSTEM.");
 
     /** MESSAGE Q INIT **/
-    SN_SYS_MessageQInit(&msgQIdFileSystem);
+    retStatus = SN_SYS_MessageQInit(&msgQIdFileSystem);
+    SN_SYS_ERROR_CHECK(retStatus, "File System Module Message Q Init Failed.");
 
     /** MUTEX INIT **/
     if (pthread_mutex_init(&ptmFileSystem, NULL) != 0)
     {
-        printf("\n mutex init failed\n"); fflush(stdout);
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System Mutex Init Failed.");
     }
 
     /** THREAD INIT **/
-    if((retValue = pthread_create(&ptFileSystem, NULL, sFileSystemThread, NULL)))
+    if((retStatus = pthread_create(&ptFileSystem, NULL, sFileSystemThread, NULL)))
     {
-        printf("Thread Creation Fail %d\n", retValue); fflush(stdout);
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System Thread Init Failed.");
     }
 
     /** USB DRIVER INIT **/
-    SN_SYS_USBDriverInit(USBEvent_callback);
+    SN_SYS_USBDriverInit(USBEvent_Callback);
 
     /** MACHINE INFO INIT **/
     SN_MODULE_FILE_SYSTEM_MachineInfoInit();
 
-    /** FILE SYSTEM INIT **/
-    sFileSystemRead();
-
-    return retValue;
+    return retStatus;
 }
 
 SN_STATUS SN_MODULE_FILE_SYSTEM_Uninit(void)
@@ -211,6 +229,7 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Uninit(void)
 
 static void* sFileSystemThread()
 {
+    SN_STATUS retStatus = SN_STATUS_OK;
     general_evt_t evt;
 
     while(true)
@@ -220,68 +239,75 @@ static void* sFileSystemThread()
         switch(evt.evt_id)
         {
             case MSG_FILE_SYSTEM_USB_MOUNT:
-                sFileSystemMessagePut(MSG_FILE_SYSTEM_UPDATE, APP_EVT_MSG_FILE_SYSTEM_USB_MOUNT);
+                retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_UPDATE, APP_EVT_MSG_FILE_SYSTEM_USB_MOUNT);
+                SN_SYS_ERROR_CHECK(retStatus, "File System Message Send Failed.");
                 break;
             case MSG_FILE_SYSTEM_USB_UNMOUNT:
-                sFileSystemMessagePut(MSG_FILE_SYSTEM_UPDATE, APP_EVT_MSG_FILE_SYSTEM_USB_UNMOUNT);
+                retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_UPDATE, APP_EVT_MSG_FILE_SYSTEM_USB_UNMOUNT);
+                SN_SYS_ERROR_CHECK(retStatus, "File System Message Send Failed.");
                 break;
             case MSG_FILE_SYSTEM_READ:
-                sFileSystemRead();
-                sFileSystemMessagePut(MSG_FILE_SYSTEM_UPDATE, APP_EVT_MSG_FILE_SYSTEM_READ_DONE);
+                retStatus = sFileSystemRead();
+                SN_SYS_ERROR_CHECK(retStatus, "File System Read Failed.");
+
+                retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_UPDATE, APP_EVT_MSG_FILE_SYSTEM_READ_DONE);
+                SN_SYS_ERROR_CHECK(retStatus, "File System Message Send Failed.");
                 break;
 
             case MSG_FILE_SYSTEM_UPDATE:
-                SN_SYSTEM_SendAppMessage(APP_EVT_ID_FILE_SYSTEM, APP_EVT_MSG_FILE_SYSTEM_UPDATE_DONE);
+                retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_FILE_SYSTEM, APP_EVT_MSG_FILE_SYSTEM_UPDATE_DONE);
+                SN_SYS_ERROR_CHECK(retStatus, "App Message Send Failed.");
                 break;
 
             case MSG_FILE_SYSTEM_WAITING:
-                fflush(stdout);
                 break;
 
+            case MSG_FILE_SYSTEM_IGNORE:
+                break;
             default:
+                SN_SYS_ERROR_CHECK(SN_STATUS_UNKNOWN_MESSAGE, "File System Get Unknown Message.");
                 break;
         }
+
+        SN_SYS_ERROR_CHECK(retStatus, "File System Module Get Error.");
     }
 
-    return 0;
+    return NULL;
 }
 
-static void* USBEvent_callback(int evt)
+static void* USBEvent_Callback(int evt)
 {
+    SN_STATUS retStatus = SN_STATUS_OK;
+
     switch(evt)
     {
         case USB_EVT_MOUNT:
-            sFileSystemMessagePut(MSG_FILE_SYSTEM_USB_MOUNT, 0);
+            retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_USB_MOUNT, 0);
+            SN_SYS_ERROR_CHECK(retStatus, "File System Send Message Fiailed.");
             break;
         case USB_EVT_UNMOUNT:
-            sFileSystemMessagePut(MSG_FILE_SYSTEM_USB_UNMOUNT, 0);
+            retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_USB_UNMOUNT, 0);
+            SN_SYS_ERROR_CHECK(retStatus, "File System Send Message Fiailed.");
             break;
         case USB_EVT_WAITING:
-            sFileSystemMessagePut(MSG_FILE_SYSTEM_WAITING, 0);
+            retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_WAITING, 0);
+            SN_SYS_ERROR_CHECK(retStatus, "File System Send Message Fiailed.");
             break;
         default:
+            SN_SYS_ERROR_CHECK(SN_STATUS_UNKNOWN_MESSAGE, "Unknown USB Event.");
             break;
     }
-    return 0;
+    return NULL;
 }
 
-static void sFileSystemMessagePut(evtFileSystem_t evtId, event_msg_t evtMessage)
+static SN_STATUS sFileSystemMessagePut(evtFileSystem_t evtId, event_msg_t evtMessage)
 {
-    SN_SYS_MessagePut(&msgQIdFileSystem, evtId, evtMessage);
+    return SN_SYS_MessagePut(&msgQIdFileSystem, evtId, evtMessage);
 }
 
-//@DEBUG
-static void safe_create_dir(const char *dir)
-{
-    if (mkdir(dir, 0755) < 0) {
-        if (errno != EEXIST) {
-            perror(dir);
-            exit(1);
-        }
-    }
-}
+
 /*
-static SN_STATUS sReadGCodeFile(const char* srcPath)
+static SN_STATUS sReadXMLFile(const char* srcPath)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     FILE* GCodeFile;
@@ -316,6 +342,7 @@ static SN_STATUS sReadGCodeFile(const char* srcPath)
     return retStatus;
 }
 */
+
 static SN_STATUS sFileSystemRead(void)
 {
     DIR *dp;
@@ -376,15 +403,15 @@ static SN_STATUS sFileSystemRead(void)
         moduleFileSystem.fs.isItemExist = false;
     }
 
-    /* @DEBUG */
     sFileSystemPrint();
 
     return SN_STATUS_OK;
 }
 
-/* @DEBUG */
-static void sFileSystemPrint(void)
+static SN_STATUS sFileSystemPrint(void)
 {
+    SN_STATUS retStatus = SN_STATUS_OK;
+
     int pageIndex = 0;
     int itemIndex = 0;
 
@@ -399,6 +426,8 @@ static void sFileSystemPrint(void)
     }
 
     printf("max page[%d]\n", moduleFileSystem.fs.pageCnt);
+
+    return retStatus;
 }
 
 /** Util Functions **/
@@ -461,13 +490,12 @@ static uint32_t sCountSlice(const char* srcPath)
     }
     else
     {
-        printf("COUNT SLICE --FAILD...\n"); fflush(stdout);
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Path Invalid.");
     }
 
     if(!r)
     {
-        //r = rmdir(filePath);
-        printf("SLICE : %04d\n", slice); fflush(stdout);
+        printf("Module => File System => Slice File Number : [ %04d ]\n", slice); fflush(stdout);
     }
 
     return slice;
@@ -481,12 +509,12 @@ SN_STATUS sCopyFile(const char* srcPath, const char* desPath)
 
     if(src == NULL)
     {
-        printf("CAN'T ONEN SOURCE FILE.\n");
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Source File Path Invalid.");
     }
 
-    if(des ==NULL)
+    if(des == NULL)
     {
-        printf("CAN'T OPEN DES FILE.\n");
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Path Invalid.");
     }
 
     while(true)
@@ -498,12 +526,11 @@ SN_STATUS sCopyFile(const char* srcPath, const char* desPath)
             if(feof(src)!=0)
             {
                 fwrite((void*)buf, 1, readCnt, des);
-                printf("MAKE TEMP FILE.\n"); fflush(stdout);
+                SN_SYS_Log("Module => File System => MAKE TEMP FILE.");
                 break;
             }
             else
             {
-                printf("MAKE TEMP FILE. --FAILD...\n");
                 break;
             }
         }
@@ -565,24 +592,34 @@ SN_STATUS sRemoveTempFile(const char* filePath)
             }
             r = r2;
         }
-        printf("REMOVE TEMP FILE.\n"); fflush(stdout);
         closedir(d);
     }
     else
     {
-        printf("REMOVE TEMP FILE. --FAILD...\n"); fflush(stdout);
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Folder Open Failed.");
     }
 
     if(!r)
     {
-
+        SN_SYS_Log("Module => File System => REMOVE TEMP FILE.");
     }
 
     return SN_STATUS_OK;
 }
 
+
+static void safe_create_dir(const char *dir)
+{
+    if(mkdir(dir, 0755) < 0) {
+        if (errno != EEXIST) {
+            SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Path Invalid.");
+        }
+    }
+}
+
 SN_STATUS sExtractTempFile(const char* srcPath, const char* desPath)
 {
+    SN_STATUS retStatus = SN_STATUS_OK;
 
     struct zip *za;
     struct zip_file *zf;
@@ -594,13 +631,11 @@ SN_STATUS sExtractTempFile(const char* srcPath, const char* desPath)
     int i, len;
     int fd;
     long long sum;
-    char* fullFilePath;
+    char fullFilePath[512];
 
     if ((za = zip_open(srcPath, 0, &err)) == NULL)
     {
-            zip_error_to_str(buf, sizeof(buf), err, errno);
-            fprintf(stderr, "can't open zip archive `%s': %s/n",srcPath, buf); fflush(stdout);
-            return 1;
+            SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Folder Open Failed.");
     }
 
     for (i = 0; i < zip_get_num_entries(za, 0); i++)
@@ -618,26 +653,17 @@ SN_STATUS sExtractTempFile(const char* srcPath, const char* desPath)
                 zf = zip_fopen_index(za, i, 0);
 
                 if (!zf) {
-                    fprintf(stderr, "boese, boese/n");
-                    exit(100);
+                    SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "Temp File Extract Failed.");
                 }
 
                 len = strlen(desPath) + strlen(sb.name);
-
-                fullFilePath = malloc((len + 2)* sizeof(char));
 
                 snprintf(fullFilePath, len + 2, "%s/%s", desPath, sb.name);
 
                 fd = open(fullFilePath, O_RDWR | O_TRUNC | O_CREAT, 0644);
 
-                if (fullFilePath != NULL)
-                {
-                    free(fullFilePath);
-                }
-
                 if (fd < 0) {
-                    fprintf(stderr, "boese, boese/n");
-                    exit(101);
+                    SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Path Invalid.");
                 }
 
                 sum = 0;
@@ -647,8 +673,7 @@ SN_STATUS sExtractTempFile(const char* srcPath, const char* desPath)
                     len = zip_fread(zf, buf, 1000);
                     if (len < 0)
                     {
-                      fprintf(stderr, "boese, boese/n");
-                      exit(102);
+                        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "Temp File Extract Failed.");
                     }
                     write(fd, buf, len);
                     sum += len;
@@ -658,19 +683,44 @@ SN_STATUS sExtractTempFile(const char* srcPath, const char* desPath)
                 zip_fclose(zf);
             }
         }
-        else
-        {
-              //printf("File[%s] Line[%d]/n", __FILE__, __LINE__);
-        }
     }
 
     if (zip_close(za) == -1)
     {
-        fprintf(stderr, "can't close zip archive `%s'/n", srcPath);
-        return 1;
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "Temp File Extract Failed.");
     }
 
-    printf("EXTRACT TEMP FILE.\n"); fflush(stdout);
+    SN_SYS_Log("Module => File System => EXTRACT TEMP FILE.");
 
-    return SN_STATUS_OK;
+    return retStatus;
+}
+
+static void sDemoPrintSetting(void)
+{
+
+    /** Parameter **/
+    /* Base Paramter */
+    moduleFileSystem.printInfo.printParameter.layerThickness          = 0.05000;//mm
+
+    /* Bottom Layer */
+    moduleFileSystem.printInfo.printParameter.bottomLayerExposureTime =   35000;//ms
+    moduleFileSystem.printInfo.printParameter.bottomLayerNumber       =       7;//layer
+    moduleFileSystem.printInfo.printParameter.bottomLiftFeedRate      =  150.00;//mm/s
+
+    /* Normal Layer */
+    moduleFileSystem.printInfo.printParameter.layerExposureTime       =    3000;//ms
+    moduleFileSystem.printInfo.printParameter.liftTime                =    7200;//ms
+    moduleFileSystem.printInfo.printParameter.liftDistance            =       7;//mm
+    moduleFileSystem.printInfo.printParameter.liftFeedRate            =  150.00;//mm/s
+
+}
+
+static void sDemoMachineSetting(void)
+{
+    moduleFileSystem.machineInfo.display.weight   =         1920;//px
+    moduleFileSystem.machineInfo.display.height   =         1080;//px
+
+    strcpy(moduleFileSystem.machineInfo.name, DEFAULT_DEVICE_NAME);
+    moduleFileSystem.machineInfo.height           =          200;//mm
+    moduleFileSystem.machineInfo.isInit           =         true;
 }

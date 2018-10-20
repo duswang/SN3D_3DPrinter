@@ -8,20 +8,11 @@
 #ifndef MODUEL_INCLUDE_SN_MODUEL_IMAGE_VIEWER_H_
 #define MODUEL_INCLUDE_SN_MODUEL_IMAGE_VIEWER_H_
 
-typedef struct image_viewer
-{
-    SDL_Window     *window;
-    SDL_Renderer *renderer;
-    SDL_Texture   *texture;
 
-    SDL_Rect     dest_rect;
+extern SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void);
+extern SN_STATUS SN_MODULE_IMAGE_VIEWER_Destroy(void);
+extern SN_STATUS SN_MODULE_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex);
+extern SN_STATUS SN_MODULE_IMAGE_VIEWER_CLEAR(void);
 
-    machineInfo_t machineInfo;
-    printInfo_t   printInfo;
-
-    char*       image_path;
-    uint32_t    image_w;
-    uint32_t    image_h;
-} moduleImageViewer_t;
 
 #endif /* MODUEL_INCLUDE_SN_MODUEL_IMAGE_VIEWER_H_ */

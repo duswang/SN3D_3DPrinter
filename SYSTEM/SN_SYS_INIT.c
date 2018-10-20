@@ -1,6 +1,6 @@
 /*
  ============================================================================
- Name        : Nextion_Project
+ Name        : SN3D_PROJECT
  Author      : bato
  Version     : 0.1
  Copyright   :
@@ -8,48 +8,59 @@
  ============================================================================
  */
 /*
- * main.c
+ * SN_SYS_INIT.c
  *
  *  Created on: Sep 18, 2018
  *      Author: bato
  */
 #include "SN_API.h"
 
-/** APP Main Call **/
+/**** APP Main Call ****/
 extern SN_STATUS APP_Main(general_evt_t evt);     /* To execute Main application thread */
-extern void APP_Init(void);
+extern SN_STATUS APP_Init(void);
 
-/** System **/
-/* Message Q */
+/******** SYSTEM DEFINE ********/
+/**** MODULE MESSAGE Q ****/
 sysMessageQId msgQIdApp;
+    /**** MODULE MESSAGES ****/
+    //"APP_MESSAGES.h"
 
-/** Global Variables **/
-
-
-/** Static Funtions **/
+/******** STATIC FUNCTIONS ********/
 static SN_STATUS sSN_SYSTEM_Init(void);
 
 int main(void)
 {
+    SN_STATUS retStatus = SN_STATUS_OK;
     general_evt_t evt;
 
-    /* Init */
-    sSN_SYSTEM_Init();
+    /**** SYSTEM INIT ****/
+    SN_SYS_Log("==>SYSTEM INIT");
 
-    /** FILE SYSTEM INIT  - IT MUST BE FIRST **/
-    SN_MODULE_FILE_SYSTEM_Init();
+    retStatus = sSN_SYSTEM_Init();
+    SN_SYS_ERROR_CHECK(retStatus, "SYSTEM INIT FAILD.");
 
-    /** IMAGE VIEWER INIT - IT NEED MACHINE INFO FROM "FILE SYSTEM" FOR INIT **/
-    SN_MODULE_IMAGE_VIEWER_Init();
+    /**** MODULE INIT ****/
+    SN_SYS_Log("==>MODULE INIT");
 
-    /** DISPLAY INIT      - NOPE **/
-    SN_MODULE_DISPLAY_Init();
+    /** FILE SYSTEM INIT **/
+    retStatus = SN_MODULE_FILE_SYSTEM_Init();
+    SN_SYS_ERROR_CHECK(retStatus, "FILE SYSTEM INIT FAILD.");
 
-    /** 3D PRINTER INIT   - NOPE **/
-    SN_MODULE_3D_PRINTER_Init();
+    /** NEXTION DISPLAY INIT **/
+    retStatus = SN_MODULE_DISPLAY_Init();
+    SN_SYS_ERROR_CHECK(retStatus, "NEXTION DISPLAY INIT FAILD.");
 
-    APP_Init();
+    /** 3D PRINTER INIT ( IMAGE VIEWER INIT ) **/
+    retStatus = SN_MODULE_3D_PRINTER_Init();
+    SN_SYS_ERROR_CHECK(retStatus, "3D PRINTER INIT FAILD.");
+    
+    /**** APP INIT ****/
+    SN_SYS_Log("==>APP INIT");
 
+    retStatus = APP_Init();
+    SN_SYS_ERROR_CHECK(retStatus,"APP INIT FAILD.");
+
+    /**** To APP Main ****/
     while(true)
     {
         evt = SN_SYS_MessageGet(&msgQIdApp);
@@ -57,8 +68,8 @@ int main(void)
         switch(evt.evt_id)
         {
             case APP_EVT_ID_IGNORE:
+                /* FROM TIMER message => Interrupted Signal */
                 break;
-
             case APP_EVT_ID_3D_PRINTER:
             case APP_EVT_ID_DISPLAY:
             case APP_EVT_ID_FILE_SYSTEM:
@@ -67,6 +78,7 @@ int main(void)
                 break;
 
             default:
+                SN_SYS_ERROR_CHECK(SN_STATUS_UNKNOWN_MESSAGE, "UNKNOWN APP MESSAGE_ID.");
                 break;
         }
     }
@@ -76,20 +88,21 @@ int main(void)
 static SN_STATUS sSN_SYSTEM_Init(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-    sysTimerId_t testTimerId;
-  
-    sysMessageQId msgTest; //@DEBUG
-  
+
     /** @DEBUG **/
+    sysMessageQId msgTest;
     SN_SYS_MessageQInit(&msgTest);
 
     /** APP Message Q Init **/
+    SN_SYS_Log("SYSTEM INIT => MESSAGE QUEUE.");
     SN_SYS_MessageQInit(&msgQIdApp);
-    
+
     /** Timer Init **/
+    SN_SYS_Log("SYSTEM INIT => TIMER.");
     SN_SYS_TimerInit();
 
     /** Serial Init **/
+    SN_SYS_Log("SYSTEM INIT => SERIAL.");
     SN_SYS_SerialInit();
 
     return retStatus;
@@ -99,10 +112,7 @@ SN_STATUS SN_SYSTEM_SendAppMessage(event_id_t evtId, event_msg_t evtMessage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    //printf("MSG MODULE => APP\n"); fflush(stdout);
     retStatus = SN_SYS_MessagePut(&msgQIdApp, evtId, evtMessage);
 
     return retStatus;
 }
-
-

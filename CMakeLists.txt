@@ -25,10 +25,11 @@ set(VERSION_MINOR 1)
 
 # Paths #
 set(PRJ_ROOT_PATH .)
-set(APP_PATH ${PRJ_ROOT_PATH}/APP)
-set(MODULE_PATH ${PRJ_ROOT_PATH}/MODULE)
-set(SYSTEM_PATH ${PRJ_ROOT_PATH}/SYSTEM)
-set(LIBRARY_PATH ${PRJ_ROOT_PATH}/LIBRARY)
+set(APP_PATH      ${PRJ_ROOT_PATH}/APP)
+set(APPS_PATH     ${APP_PATH}/APPS)
+set(MODULE_PATH   ${PRJ_ROOT_PATH}/MODULE)
+set(SYSTEM_PATH   ${PRJ_ROOT_PATH}/SYSTEM)
+set(LIBRARY_PATH  ${PRJ_ROOT_PATH}/LIBRARY)
 
 # Output Paths #
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PRJ_ROOT_PATH}/build)
@@ -46,9 +47,10 @@ find_package(SDL2_image REQUIRED)
 find_package(libzip REQUIRED)
 
 # Include - Local #
-include_directories( 
+include_directories(
 	${PRJ_ROOT_PATH}/INCLUDE
 	${APP_PATH}/INCLUDE
+	${APPS_PATH}/INCLUDE
 	${MODULE_PATH}/INCLUDE
 	${SYSTEM_PATH}/INCLUDE
 )
@@ -62,46 +64,52 @@ include_directories(
 set(
 	# Sources Name #
 	Source
- 
-	# Applications #
-	${APP_PATH}/APP_CONTROL.c
-	${APP_PATH}/APP_FILE_SELECT.c
+
+	# App Main #
 	${APP_PATH}/APP_MAIN.c
-	${APP_PATH}/APP_PAUSE.c
-	${APP_PATH}/APP_PRINTING.c
-	${APP_PATH}/APP_WAITING.c
-	${APP_PATH}/APP_INIT.c
 	
+	# Apps #
+	${APPS_PATH}/APP_CONTROL.c
+	${APPS_PATH}/APP_FILE_SELECT.c
+	${APPS_PATH}/APP_PAUSE.c
+	${APPS_PATH}/APP_PRINTING.c
+	${APPS_PATH}/APP_WAITING.c
+	${APPS_PATH}/APP_INIT.c
+
 	# Moduel #
-	${MODULE_PATH}/SN_MODULE_3D_PRINTER.c
-	${MODULE_PATH}/SN_MODULE_DISPLAY.c
 	${MODULE_PATH}/SN_MODULE_FILE_SYSTEM.c
 	${MODULE_PATH}/SN_MODULE_IMAGE_VIEWER.c
+	${MODULE_PATH}/SN_MODULE_3D_PRINTER.c
+	${MODULE_PATH}/SN_MODULE_DISPLAY.c
+
+	# Main #
+	${SYSTEM_PATH}/SN_SYS_INIT.c
 	
 	# System #
-	${SYSTEM_PATH}/SN_SYS_SERIAL_COMM.c
+	${SYSTEM_PATH}/SN_SYS_ERROR.c
 	${SYSTEM_PATH}/SN_SYS_MESSAGE_Q.c
-	${SYSTEM_PATH}/SN_SYS_INIT.c
-	${SYSTEM_PATH}/SN_SYS_USB_DRIVER.c
 	${SYSTEM_PATH}/SN_SYS_TIMER.c
+	${SYSTEM_PATH}/SN_SYS_USB_DRIVER.c
+	${SYSTEM_PATH}/SN_SYS_SERIAL_COMM.c
+
 )
 
 # Library #
 set(
 	# Library Name #
 	Library
-	
-	# ptrhead # 
-	pthread 
-	
+
+	# ptrhead #
+	pthread
+
 	# libusb #
 	usb-1.0
-	
+
 	# libzip #
 	${LIBZIP_LIBRARIES}
-	
-	# SDL # 
-	${SDL2_LIBRARIES} 
+
+	# SDL #
+	${SDL2_LIBRARIES}
 	${SDL2_IMAGE_LIBRARIES}
 )
 
@@ -109,8 +117,8 @@ set(
 set(
 	# Flags Name #
 	CMAKE_CXX_FLAGS
-	
-	
+
+
 )
 
 # Config #
@@ -118,18 +126,18 @@ set(
 set(
 	# Config Name #
 	Config
-	
+
 	# IMAGE #
-	-DIMAGE_VIEWER_IS_ON=true
+	-DIMAGE_VIEWER_OFF=false
 
     # 3D PRINTER #
-    -DPRINTER_RX_DEBUG=false
-    -DPRINTER_TX_DEBUG=false
-    
+    -DPRINTER_RX_DEBUG=true
+
+
     # DISPLAY #
-    -DDISPLAY_RX_DEBUG=true
-    -DDISPLAY_TX_DEBUG=false
-    
+    -DDISPLAY_RX_DEBUG=false
+
+    -DTX_DEBUG=false
 )
 ################### Target Setting ###################
 # Install exe file #
@@ -150,7 +158,7 @@ target_link_libraries(exe ${Library})
 message("###########################################")
 message("#")
 message("# Project Name   :: SN3D Project.")
-message("# exe File       :: ./build/exe")
+message("# exe File       :: ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 message("# Version        :: ${VERSION_MAJOR}.${VERSION_MINOR}v")
 message("# Build Option   :: C ${CMAKE_CXX_STANDARD} STANDARD ")
 message("# Flags          :: ${CMAKE_CXX_FLAGS}")

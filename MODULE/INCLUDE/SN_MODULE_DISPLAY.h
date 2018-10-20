@@ -8,34 +8,18 @@
 #ifndef SN_MODUEL_DISPLAY
 #define SN_MODUEL_DISPLAY
 
-/** Static Define **/
-#define BYTE_SIZE   SN_SYS_SERIAL_COMM_RX_REALTIME
-#define BAUD_RATE   SN_SYS_SERIAL_COMM_BAUD_RATE_9600
-#define RETURN_MODE SN_SYS_SERIAL_COMM_TX_NX_RETURN
+/**** MODULE ****/
+extern SN_STATUS SN_MODULE_DISPLAY_Init(void);
+extern SN_STATUS SN_MODULE_DISPLAY_Uninit(void);
 
-#ifdef __APPLE__
-#define UART_DEVICE "/dev/cu.usbmodem1421"
-#endif
+/**** PAGE ****/
+extern SN_STATUS SN_MODULE_DISPLAY_EnterState(nx_page_t state);
 
-#ifdef linux
-#define UART_DEVICE "/dev/serial0"
-#endif
 
-#define UART_OFLAGS  O_RDWR | O_NOCTTY | O_NONBLOCK
+/**** FILE SYSTEM ****/
+extern SN_STATUS SN_MODULE_DISPLAY_FileSelectUpdate(uint32_t page);
 
-/** Module Messgae **/
-typedef enum {
-    MSG_DISPLAY_DATA_RX = 0,
-    MSG_DISPLAY_DATA_TX,
-    MSG_DISPLAY_RESERVE,
-    MSG_DISPLAY_NONE
-} evtDisplay_t;
-
-typedef struct moduel_display {
-    uint32_t reserve;
-    /** Reponse Finished Waiting **/
-    bool exitFlag;
-    fs_t fs;
-} moduleDisplay_t;
+/**** PRINITING ****/
+extern SN_STATUS SN_MODULE_DISPLAY_PrintingUpdate(void);
 
 #endif /* SN_MODUEL_DISPLAY */

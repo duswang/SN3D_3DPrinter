@@ -29,8 +29,9 @@ static void sTimerStop(void);
 /* util */
 static long long sDiffTick(const struct timespec startTick, const struct timespec endTick);
 
-int SN_SYS_TimerInit(void)
+SN_STATUS SN_SYS_TimerInit(void)
 {
+    SN_STATUS retStatus = SN_STATUS_OK;
     int idxTSR = 0;
 
     guiNumTSR = 0;
@@ -47,21 +48,24 @@ int SN_SYS_TimerInit(void)
 
     if (pthread_mutex_init(&ptmTimer, NULL) != 0)
     {
-        printf("\n mutex init failed\n");
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Timer Mutex Init Faild.");
     }
 
-    return 0;
+    return retStatus;
 }
 
-int SN_SYS_TimerCreate(sysTimerId_t* pIdTSR, int msDuration, void* pfTSR)
+SN_STATUS SN_SYS_TimerCreate(sysTimerId_t* pIdTSR, unsigned int msDuration, void* pfTSR)
 {
+    SN_STATUS retStatus = SN_STATUS_OK;
     uint8_t idxTSR = 0;
-    int retCode;
 
-
+    if(pIdTSR == NULL)
+    {
+        return SN_STATUS_NOT_INITIALIZED;
+    }
     pthread_mutex_lock(&ptmTimer);
 
-    for (idxTSR = 0; idxTSR < MAX_NUM_OF_TSR; idxTSR++)
+    for(idxTSR = 0; idxTSR < MAX_NUM_OF_TSR; idxTSR++)
     {
         if (!aTSR[idxTSR].isOccupied)
         {
@@ -90,16 +94,21 @@ int SN_SYS_TimerCreate(sysTimerId_t* pIdTSR, int msDuration, void* pfTSR)
     if(idxTSR >= MAX_NUM_OF_TSR)
     {
         *pIdTSR = 0xFF;
-        retCode = -1;
+        retStatus = SN_STATUS_RESOURCE_NOT_AVAILABLE;
     }
 
-
-    return retCode;
+    return retStatus;
 }
 
-int SN_SYS_TimerCancle(sysTimerId_t* pIdTSR)
+SN_STATUS SN_SYS_TimerCancle(sysTimerId_t* pIdTSR)
 {
+    SN_STATUS retStatus = SN_STATUS_OK;
     uint8_t i = 0;
+
+    if(pIdTSR == NULL)
+    {
+        return SN_STATUS_INVALID_PARAM;
+    }
 
     pthread_mutex_lock(&ptmTimer);
 
@@ -127,7 +136,7 @@ int SN_SYS_TimerCancle(sysTimerId_t* pIdTSR)
 
     pthread_mutex_unlock(&ptmTimer);
 
-    return 0;
+    return retStatus;
 }
 
 static void sCallBackTSR()
@@ -159,7 +168,6 @@ static void sCallBackTSR()
 
         }
     }
-        
 
     pthread_mutex_unlock(&ptmTimer);
 
@@ -189,6 +197,7 @@ static void sTimerStart(void)
 
     setitimer(ITIMER_REAL, &timerId, NULL);
 }
+
 static void sTimerStop(void)
 {
     struct sigaction sa;

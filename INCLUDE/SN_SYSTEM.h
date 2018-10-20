@@ -7,6 +7,8 @@
 
 #ifndef INCLUDE_SN_SYSTEM_H_
 #define INCLUDE_SN_SYSTEM_H_
+/** Error and debug **/
+#include "SN_SYS_ERROR.h"
 
 /** Message Queue **/
 #include "SN_SYS_MESSAGE_Q.h"

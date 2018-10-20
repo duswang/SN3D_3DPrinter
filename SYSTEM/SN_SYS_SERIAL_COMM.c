@@ -163,6 +163,7 @@ SN_STATUS SN_SYS_SerialRemove(sysSerialId serialId)
 int SN_SYS_SerialTx(sysSerialId serialId, char* buffer, size_t bufferSize)
 {
     int count = 0;
+    unsigned char nxReturn[1];
 
     if(serialId == NULL)
     {
@@ -171,7 +172,7 @@ int SN_SYS_SerialTx(sysSerialId serialId, char* buffer, size_t bufferSize)
 
     if (serialId->uartId != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
     {
-#if(PRINTER_TX_DEBUG)
+#if(TX_DEBUG)
         printf("TX DATA => %s\n", buffer); fflush(stdout);
 #endif
         count = write(serialId->uartId, buffer, bufferSize - 1);
@@ -184,12 +185,13 @@ int SN_SYS_SerialTx(sysSerialId serialId, char* buffer, size_t bufferSize)
             count = write(serialId->uartId, CARRIAGE_RETURN, RETURN_SIZE);
             break;
         case SN_SYS_SERIAL_COMM_TX_NEW_LINE_RETURN:
-            count = write(serialId->uartId, NEW_LINE_RETURN, RETURN_SIZE);
+            count = write(serialId->uartId, CARRIAGE_RETURN, RETURN_SIZE);
             break;
         case SN_SYS_SERIAL_COMM_TX_NX_RETURN:
-            count = write(serialId->uartId, NX_RETURN, RETURN_SIZE);
-            count = write(serialId->uartId, NX_RETURN, RETURN_SIZE);
-            count = write(serialId->uartId, NX_RETURN, RETURN_SIZE);
+            nxReturn[0] = NX_RETURN;
+            count = write(serialId->uartId, nxReturn, RETURN_SIZE);
+            count = write(serialId->uartId, nxReturn, RETURN_SIZE);
+            count = write(serialId->uartId, nxReturn, RETURN_SIZE);
             break;
         default:
             break;

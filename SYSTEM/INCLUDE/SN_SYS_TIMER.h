@@ -22,8 +22,8 @@ typedef struct sys_timer_id {
 
 typedef uint32_t sysTimerId_t;
 
-extern int SN_SYS_TimerInit(void);
-extern int SN_SYS_TimerCreate(sysTimerId_t* pIdTSR, int msDuration, void* pfTSR);
-extern int SN_SYS_TimerCancle(sysTimerId_t* pIdTSR);
+extern SN_STATUS SN_SYS_TimerInit(void);
+extern SN_STATUS SN_SYS_TimerCreate(sysTimerId_t* pIdTSR, unsigned int msDuration, void* pfTSR);
+extern SN_STATUS SN_SYS_TimerCancle(sysTimerId_t* pIdTSR);
 
 #endif /* SN_SYS_TIMER_H_ */

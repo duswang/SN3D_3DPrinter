@@ -88,9 +88,12 @@ typedef struct sys_serial_q {
 
 #define CARRIAGE_RETURN "\r"
 #define NEW_LINE_RETURN "\n"
-#define NX_RETURN       "ÿ"
+#define NX_RETURN       0xFF
 
 #define RETURN_SIZE     1
+
+
+
 /** Functions **/
 extern int         SN_SYS_SerialInit (void);
 extern sysSerialId SN_SYS_SerialCreate(const sysSerialDef_t* serialDef, void* (*pfCallBack)(char*));
