@@ -55,9 +55,6 @@
 
 #include <zip.h>
 
-/**** Local Library ****/
-#include "SN_SYSTEM.h"
-#include "APP_MESSAGES.h"
 
 /*** bool ***/
 #ifndef bool
@@ -66,11 +63,14 @@ typedef int bool;
 #define false 0
 #endif
 
+
+/* * * * * * * * * * * System * * * * * * * * * * * */
+#include "SN_SYSTEM.h"
+
 /* * * * * * * * * * * Modules * * * * * * * * * * * */
-//#include "SN_MODULE_IMAGE_VIEWER.h"
-// 'IMAGE_VIEWER MODULE' INCLUDE IN '3D PRINTER MODULE'
-#include "SN_MODULE_3D_PRINTER.h"
-#include "SN_MODULE_DISPLAY.h"
-#include "SN_MODULE_FILE_SYSTEM.h"
+#include "SN_MODULE.h"
+
+/* * * * * * * * * * * Applications * * * * * * * * * * * */
+#include "APP_MESSAGES.h"
 
 #endif /* SN_API */

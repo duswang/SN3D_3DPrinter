@@ -131,7 +131,7 @@ set(
 	-DIMAGE_VIEWER_OFF=false
 
     # 3D PRINTER #
-    -DPRINTER_RX_DEBUG=true
+    -DPRINTER_RX_DEBUG=false
 
 
     # DISPLAY #
