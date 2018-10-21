@@ -12,6 +12,13 @@
 /**** DEVICE CONFIG ****/
 #define DEFAULT_DEVICE_NAME  "POLARIS 500"
 
+#define Z_DELAY_OFFSET (1600)
+#define SPPED_MM_SEC_TO_MM_MSEC(speed_mm_sec) \
+        ((speed_mm_sec) / (60 * 1000))
+
+#define Z_DELAY_MSEC_CAL(distnace, speed) \
+    ((((distnace) * 2) / (SPPED_MM_SEC_TO_MM_MSEC(speed))) + Z_DELAY_OFFSET)
+
 /**** FILE CONFIG ****/
 #define FILENAME_EXT         "cws"
 #define IMAGE_FILENAME_EXT   "png"
@@ -73,6 +80,7 @@ static SN_STATUS   sFileSystemMessagePut(evtFileSystem_t evtId, event_msg_t evtM
 
 /**** FILE READ ****/
 static SN_STATUS   sFileSystemRead(void);
+static SN_STATUS   sFileSystemRemove(void);
 static SN_STATUS   sFileSystemPrint(void);
 
 /**** FILE CONTROL ****/
@@ -89,6 +97,11 @@ static const char* sGetFilename(const char *filename);
 static void         sDemoPrintSetting(void);
 static void         sDemoMachineSetting(void);
 
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  Extern Functions
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 SN_STATUS SN_MODULE_FILE_SYSTEM_Get(fs_t* pFs)
 {
     if(pFs == NULL)
@@ -118,13 +131,15 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_MachineInfoInit(void)
     //@DEMO SETTING
     sDemoMachineSetting();
 
+    moduleFileSystem.machineInfo.isInit = true;
+
     return retStatus;
 }
 
-SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemIndex)
+SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemIndex/*,  uint32_t optionIndex */)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-    char srcPath[256], desPath[256];
+    char srcPath[MAX_PATH_LENGTH], desPath[MAX_PATH_LENGTH];
 
     sprintf(srcPath,"%s%s.%s",  USB_PATH, \
                                 moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, \
@@ -138,15 +153,14 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemI
     retStatus = sCopyFile(srcPath, desPath);
     retStatus = sExtractTempFile(desPath, TEMP_FILE_PATH);
 
-    moduleFileSystem.printInfo.printTarget.slice                      = sCountSlice(TEMP_FILE_PATH);
-
     //@DEMO SETTING
-    sDemoPrintSetting();
+    sDemoPrintSetting(); // Option Demo
 
     /** Target **/
     moduleFileSystem.printInfo.printTarget.sourceFilePath             = USB_PATH;
     moduleFileSystem.printInfo.printTarget.tempFilePath               = TEMP_FILE_PATH;
     moduleFileSystem.printInfo.printTarget.tempFileName               = moduleFileSystem.fs.page[pageIndex].item[itemIndex].name;
+    moduleFileSystem.printInfo.printTarget.slice                      = sCountSlice(TEMP_FILE_PATH);
 
 
     moduleFileSystem.printInfo.isInit = true;
@@ -227,6 +241,11 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Uninit(void)
     return SN_STATUS_OK;
 }
 
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  Module Thread
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 static void* sFileSystemThread()
 {
     SN_STATUS retStatus = SN_STATUS_OK;
@@ -239,23 +258,35 @@ static void* sFileSystemThread()
         switch(evt.evt_id)
         {
             case MSG_FILE_SYSTEM_USB_MOUNT:
-                retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_UPDATE, APP_EVT_MSG_FILE_SYSTEM_USB_MOUNT);
+                SN_SYS_Log("File System => Module => USB Mount.");
+
+                SN_SYS_Delay(2000);
+
+                retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_READ, 0);
                 SN_SYS_ERROR_CHECK(retStatus, "File System Message Send Failed.");
                 break;
             case MSG_FILE_SYSTEM_USB_UNMOUNT:
-                retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_UPDATE, APP_EVT_MSG_FILE_SYSTEM_USB_UNMOUNT);
-                SN_SYS_ERROR_CHECK(retStatus, "File System Message Send Failed.");
+
+                SN_SYS_Log("File System => Module => USB Unmount.");
+                retStatus = sFileSystemRemove();
+                SN_SYS_ERROR_CHECK(retStatus, "File System Remove Failed.");
+
+                retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_FILE_SYSTEM, APP_EVT_MSG_FILE_SYSTEM_USB_UNMOUNT);
+                SN_SYS_ERROR_CHECK(retStatus, "App Message Send Failed.");
                 break;
             case MSG_FILE_SYSTEM_READ:
                 retStatus = sFileSystemRead();
                 SN_SYS_ERROR_CHECK(retStatus, "File System Read Failed.");
 
-                retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_UPDATE, APP_EVT_MSG_FILE_SYSTEM_READ_DONE);
+                retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_UPDATE, 0);
                 SN_SYS_ERROR_CHECK(retStatus, "File System Message Send Failed.");
+
+                retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_FILE_SYSTEM, APP_EVT_MSG_FILE_SYSTEM_READ_DONE);
+                SN_SYS_ERROR_CHECK(retStatus, "App Message Send Failed.");
                 break;
 
             case MSG_FILE_SYSTEM_UPDATE:
-                retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_FILE_SYSTEM, APP_EVT_MSG_FILE_SYSTEM_UPDATE_DONE);
+                retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_FILE_SYSTEM, APP_EVT_MSG_FILE_SYSTEM_UPDATE);
                 SN_SYS_ERROR_CHECK(retStatus, "App Message Send Failed.");
                 break;
 
@@ -345,20 +376,16 @@ static SN_STATUS sReadXMLFile(const char* srcPath)
 
 static SN_STATUS sFileSystemRead(void)
 {
+    SN_STATUS retStatus = SN_STATUS_OK;
+
     DIR *dp;
     struct dirent *ep;
     char* nameBuffer = NULL;
-    int pageIndex = 0;
-    int itemIndex = 0;
+    int pageIndex = 0, itemIndex = 0;
 
     dp = opendir(USB_PATH);
 
-    /* Init FS */
-    for(pageIndex = 0; pageIndex <= moduleFileSystem.fs.pageCnt; pageIndex++)
-    {
-        moduleFileSystem.fs.page[pageIndex].itemCnt = 0;
-    }
-    moduleFileSystem.fs.pageCnt = 0;
+    sFileSystemRemove();
 
     pageIndex = 0;
 
@@ -407,6 +434,25 @@ static SN_STATUS sFileSystemRead(void)
 
     return SN_STATUS_OK;
 }
+
+static SN_STATUS sFileSystemRemove(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    int pageIndex = 0, itemIndex = 0;
+
+    /* Init FS */
+    for(pageIndex = 0; pageIndex <= moduleFileSystem.fs.pageCnt; pageIndex++)
+    {
+        moduleFileSystem.fs.page[pageIndex].itemCnt = 0;
+    }
+    moduleFileSystem.fs.pageCnt = 0;
+
+    moduleFileSystem.fs.isItemExist = false;
+
+    return retStatus;
+}
+
 
 static SN_STATUS sFileSystemPrint(void)
 {
@@ -500,6 +546,7 @@ static uint32_t sCountSlice(const char* srcPath)
 
     return slice;
 }
+
 SN_STATUS sCopyFile(const char* srcPath, const char* desPath)
 {
     FILE* src = fopen(srcPath, "rb");
@@ -631,7 +678,7 @@ SN_STATUS sExtractTempFile(const char* srcPath, const char* desPath)
     int i, len;
     int fd;
     long long sum;
-    char fullFilePath[512];
+    char fullFilePath[MAX_PATH_LENGTH];
 
     if ((za = zip_open(srcPath, 0, &err)) == NULL)
     {
@@ -709,9 +756,12 @@ static void sDemoPrintSetting(void)
 
     /* Normal Layer */
     moduleFileSystem.printInfo.printParameter.layerExposureTime       =    3000;//ms
-    moduleFileSystem.printInfo.printParameter.liftTime                =    7200;//ms
     moduleFileSystem.printInfo.printParameter.liftDistance            =       7;//mm
     moduleFileSystem.printInfo.printParameter.liftFeedRate            =  150.00;//mm/s
+
+    moduleFileSystem.printInfo.printParameter.liftTime                =  Z_DELAY_MSEC_CAL( \
+                             moduleFileSystem.printInfo.printParameter.liftDistance, \
+                             moduleFileSystem.printInfo.printParameter.liftFeedRate);
 
 }
 
@@ -722,5 +772,4 @@ static void sDemoMachineSetting(void)
 
     strcpy(moduleFileSystem.machineInfo.name, DEFAULT_DEVICE_NAME);
     moduleFileSystem.machineInfo.height           =          200;//mm
-    moduleFileSystem.machineInfo.isInit           =         true;
 }

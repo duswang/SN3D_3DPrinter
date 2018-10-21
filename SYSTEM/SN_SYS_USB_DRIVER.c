@@ -49,10 +49,11 @@ int SN_SYS_USBDriverInit(void* (pfCallBack)(int evt))
         fflush(stdout);
     }
 
-    if (LIBUSB_SUCCESS != r) {
-      printf("Error creating a hotplug callback\n");
-      libusb_exit(NULL);
-      return EXIT_FAILURE;
+    if (LIBUSB_SUCCESS != r)
+    {
+        printf("Error creating a hotplug callback\n");
+        libusb_exit(NULL);
+        return EXIT_FAILURE;
     }
 
     if(pfCallBack != NULL)
@@ -79,9 +80,14 @@ int SN_SYS_USBDriverInit(void* (pfCallBack)(int evt))
     }
 
     r = libusb_hotplug_register_callback(NULL, LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED |
-                                          LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT, 0, LIBUSB_HOTPLUG_MATCH_ANY, LIBUSB_HOTPLUG_MATCH_ANY,
-                                          LIBUSB_HOTPLUG_MATCH_ANY, hotplug_callback, NULL,
-                                          &handle);
+                                               LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT, \
+                                               0, \
+                                               LIBUSB_HOTPLUG_MATCH_ANY, \
+                                               LIBUSB_HOTPLUG_MATCH_ANY, \
+                                               LIBUSB_HOTPLUG_MATCH_ANY, \
+                                               hotplug_callback, \
+                                               NULL,
+                                               &handle);
 
     return r;
 }

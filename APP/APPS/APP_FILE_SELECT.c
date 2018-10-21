@@ -92,7 +92,11 @@ static SN_STATUS s3DPrinterHdlr(event_msg_t evtMessage)
         sResetIndexs();
         retStatus = APP_STATE_EnterStatePrinting();
         break;
-    case APP_EVT_MSG_3D_PRINTER_PAUSE_DONE:
+    case APP_EVT_MSG_3D_PRINTER_PAUSE:
+        break;
+    case APP_EVT_MSG_3D_PRINTER_STOP:
+        break;
+    case APP_EVT_MSG_3D_PRINTER_FINISH:
         break;
     default:
         break;
@@ -183,13 +187,12 @@ static SN_STATUS sFileSystemHdlr(event_msg_t evtMessage)
     {
     case APP_EVT_MSG_FILE_SYSTEM_USB_MOUNT:
         break;
-    case APP_EVT_MSG_FILE_SYSTEM_USB_UNMOUNT:
-        break;
     case APP_EVT_MSG_FILE_SYSTEM_READ_DONE:
         break;
-    case APP_EVT_MSG_FILE_SYSTEM_UPDATE_DONE:
+    case APP_EVT_MSG_FILE_SYSTEM_USB_UNMOUNT:
+    case APP_EVT_MSG_FILE_SYSTEM_UPDATE:
         /* USB MOUNT or USER TOUCH PRINT BUTTON */
-        retStatus = APP_STATE_EnterStateFileSelect();
+        retStatus = SN_MODULE_DISPLAY_FileSelectUpdate(pageIndex);
         break;
     default:
             break;

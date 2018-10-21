@@ -113,7 +113,7 @@ static SN_STATUS sFileSystemHdlr(event_msg_t evtMessage)
         break;
     case APP_EVT_MSG_FILE_SYSTEM_READ_DONE:
         break;
-    case APP_EVT_MSG_FILE_SYSTEM_UPDATE_DONE:
+    case APP_EVT_MSG_FILE_SYSTEM_UPDATE:
         /* USB MOUNT or USER TOUCH PRINT BUTTON */
         APP_STATE_EnterStateFileSelect();
         break;

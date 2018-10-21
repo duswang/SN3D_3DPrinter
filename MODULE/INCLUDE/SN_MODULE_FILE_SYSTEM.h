@@ -8,19 +8,20 @@
 #ifndef MODUEL_INCLUDE_SN_MODUEL_FILE_SYSTEM_H_
 #define MODUEL_INCLUDE_SN_MODUEL_FILE_SYSTEM_H_
 
-#define MAX_PAGE_SIZE   10
-#define MAX_ITEM_SIZE   5
-#define MAX_OPTION_SIZE 5
+#define MAX_PAGE_SIZE               10
+#define MAX_ITEM_SIZE                5
+#define MAX_OPTION_SIZE              5
 
-#define FILENAME_SIZE        256
+#define MAX_FILENAME_LENGTH        256
+#define MAX_PATH_LENGTH            256
 
 /**** FILE SYSTEM ****/
 typedef struct file_system_option {
-    char name[FILENAME_SIZE];
+    char name[MAX_FILENAME_LENGTH];
 } fsOption_t;
 
 typedef struct file_system_item {
-    char name[FILENAME_SIZE];
+    char name[MAX_FILENAME_LENGTH];
 } fsItem_t;
 
 typedef struct file_system_page {

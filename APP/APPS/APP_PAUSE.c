@@ -62,10 +62,10 @@ static SN_STATUS s3DPrinterHdlr(event_msg_t evtMessage)
     {
     case APP_EVT_MSG_3D_PRINTER_HOMING_DONE:
         break;
-    case APP_EVT_MSG_3D_PRINTER_PAUSE_DONE:
+    case APP_EVT_MSG_3D_PRINTER_PAUSE:
         break;
-    case APP_EVT_MSG_3D_PRINTER_DEVICE_STOP_DONE:
-    case APP_EVT_MSG_3D_PRINTER_PRINTING_FINISH:
+    case APP_EVT_MSG_3D_PRINTER_STOP:
+    case APP_EVT_MSG_3D_PRINTER_FINISH:
         APP_STATE_EnterStateWaiting();
         break;
     default:

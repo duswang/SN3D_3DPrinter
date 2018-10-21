@@ -29,6 +29,11 @@ static void sTimerStop(void);
 /* util */
 static long long sDiffTick(const struct timespec startTick, const struct timespec endTick);
 
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  Extern Functions
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 SN_STATUS SN_SYS_TimerInit(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
@@ -135,6 +140,14 @@ SN_STATUS SN_SYS_TimerCancle(sysTimerId_t* pIdTSR)
     }
 
     pthread_mutex_unlock(&ptmTimer);
+
+    return retStatus;
+}
+SN_STATUS SN_SYS_Delay(uint32_t msec)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    SDL_Delay(msec);
 
     return retStatus;
 }

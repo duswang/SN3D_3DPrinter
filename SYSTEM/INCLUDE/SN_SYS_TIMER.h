@@ -26,4 +26,6 @@ extern SN_STATUS SN_SYS_TimerInit(void);
 extern SN_STATUS SN_SYS_TimerCreate(sysTimerId_t* pIdTSR, unsigned int msDuration, void* pfTSR);
 extern SN_STATUS SN_SYS_TimerCancle(sysTimerId_t* pIdTSR);
 
+extern SN_STATUS SN_SYS_Delay(uint32_t msec);
+
 #endif /* SN_SYS_TIMER_H_ */

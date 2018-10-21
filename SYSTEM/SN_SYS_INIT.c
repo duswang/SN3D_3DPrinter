@@ -55,8 +55,6 @@ int main(void)
     SN_SYS_ERROR_CHECK(retStatus, "3D PRINTER INIT FAILD.");
     
     /**** APP INIT ****/
-    SN_SYS_Log("==>APP INIT");
-
     retStatus = APP_Init();
     SN_SYS_ERROR_CHECK(retStatus,"APP INIT FAILD.");
 

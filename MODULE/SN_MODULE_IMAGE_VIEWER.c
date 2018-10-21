@@ -25,6 +25,12 @@ typedef struct image_viewer
     uint32_t    image_h;
 } moduleImageViewer_t;
 
+#define SN_SYS_ERROR_CHECK_SDL(msg) \
+        sCheckError_SDL((msg), __FILE__, __FUNCTION__, __LINE__)
+
+#define SN_SYS_ERROR_CHECK_SDL_IMAGE(msg) \
+        sCheckError_SDL_Image((msg), __FILE__, __FUNCTION__, __LINE__)
+
 /******** SYSTEM DEFINE ********/
 /**** MODULE HANDLER  ****/
 static moduleImageViewer_t moduleImageViewer;
@@ -33,19 +39,16 @@ static moduleImageViewer_t moduleImageViewer;
 
 /******** STATIC FUNCTIONS ********/
 /**** SYSTEM ****/
-void check_error_sdl(bool check, const char* message);
-void check_error_sdl_img(bool check, const char* message);
+void sCheckError_SDL(const char* message, const char* _file, const char* _func, const int _line);
+void sCheckError_SDL_Image(const char* message, const char* _file, const char* _func, const int _line);
 
 /**** IMAGE ****/
-SDL_Texture* load_texture(const char* fname, SDL_Renderer *renderer);
+SDL_Texture* sLoadTexture(const char* fname, SDL_Renderer *renderer);
 
 #if(!IMAGE_VIEWER_OFF)
 SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-
-    int flags=IMG_INIT_JPG | IMG_INIT_PNG;
-    int initted = IMG_Init(flags);
 
     /** GET MACHINE INFO **/
     moduleImageViewer.machineInfo = SN_MODULE_FILE_SYSTEM_MachineInfoGet();
@@ -57,7 +60,10 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void)
     SN_SYS_Log("MODULE INIT => IMAGE VIEWER.");
 
     /** SDL INIT **/
-    check_error_sdl(SDL_Init(SDL_INIT_VIDEO) != 0, "Unable to initialize SDL");
+    if(SDL_Init(SDL_INIT_VIDEO) != 0)
+    {
+        SN_SYS_ERROR_CHECK_SDL("Unable to initialize SDL");
+    }
 
     /** SDL CURSOR INIT **/
     SDL_ShowCursor(SDL_DISABLE);
@@ -69,14 +75,28 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void)
             moduleImageViewer.machineInfo.display.weight, \
             moduleImageViewer.machineInfo.display.height, \
             SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL );
-    check_error_sdl(moduleImageViewer.window == NULL, "Unable to create window");
+
+    if(moduleImageViewer.window == NULL)
+    {
+        SN_SYS_ERROR_CHECK_SDL("Unable to create window");
+    }
 
     /** SDL RENDERER INIT **/
     moduleImageViewer.renderer = SDL_CreateRenderer(moduleImageViewer.window, -1, 0);
-    check_error_sdl(moduleImageViewer.renderer == NULL, "Unable to create a renderer");
+    if(moduleImageViewer.renderer == NULL)
+    {
+        SN_SYS_ERROR_CHECK_SDL("Unable to create window");
+    }
 
     /** IMAGE INIT **/
-    check_error_sdl_img((initted & flags) != flags, "Unable to initialize SDL_image");
+    int flags=IMG_INIT_JPG | IMG_INIT_PNG;
+    int initted = IMG_Init(flags);
+
+    if((initted & flags) != flags)
+    {
+        SN_SYS_ERROR_CHECK_SDL("Unable to initialize SDL_image");
+    }
+
     SN_MODULE_IMAGE_VIEWER_CLEAR();
 
     return retStatus;
@@ -85,8 +105,9 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void)
 SN_STATUS SN_MODULE_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+    ERROR_T error = 0;
 
-    char path[256] = {'\0', };
+    char path[MAX_PATH_LENGTH] = {'\0', };
     int image_w = 0, image_h = 0;
 
     /** GET PRINT TARGET INFO **/
@@ -96,18 +117,25 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex)
         return SN_STATUS_NOT_INITIALIZED;
     }
 
+    /** Load Texture **/
     sprintf(path,"%s%s%04d.png", printInfo.printTarget.tempFilePath, printInfo.printTarget.tempFileName, sliceIndex);
 
-    moduleImageViewer.texture = load_texture(path, moduleImageViewer.renderer);
-    SDL_QueryTexture(moduleImageViewer.texture, NULL, NULL, &image_w, &image_h);
+    moduleImageViewer.texture = sLoadTexture(path, moduleImageViewer.renderer);
+    error += SDL_QueryTexture(moduleImageViewer.texture, NULL, NULL, &image_w, &image_h);
 
     moduleImageViewer.dest_rect.x = 0;
     moduleImageViewer.dest_rect.y = 0;
     moduleImageViewer.dest_rect.w = image_w;
     moduleImageViewer.dest_rect.h = image_h;
 
-    SDL_RenderClear(moduleImageViewer.renderer);
-    SDL_RenderCopy(moduleImageViewer.renderer, moduleImageViewer.texture, NULL, &moduleImageViewer.dest_rect);
+    /** Drawing Image **/
+    error += SDL_RenderClear(moduleImageViewer.renderer);
+    error += SDL_RenderCopy(moduleImageViewer.renderer, moduleImageViewer.texture, NULL, &moduleImageViewer.dest_rect);
+    if(!error)
+    {
+        SN_SYS_ERROR_CHECK_SDL_IMAGE("Get error from renderer");
+    }
+
     SDL_RenderPresent(moduleImageViewer.renderer);
 
     SDL_DestroyTexture(moduleImageViewer.texture);
@@ -118,9 +146,16 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex)
 SN_STATUS SN_MODULE_IMAGE_VIEWER_CLEAR(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+    ERROR_T error = 0;
 
-    SDL_RenderClear(moduleImageViewer.renderer);
-    SDL_SetRenderDrawColor(moduleImageViewer.renderer, 0, 0, 0, 255);
+    /** Clear **/
+    error += SDL_RenderClear(moduleImageViewer.renderer);
+    error += SDL_SetRenderDrawColor(moduleImageViewer.renderer, 0, 0, 0, 255);
+    if(!error)
+    {
+        SN_SYS_ERROR_CHECK_SDL_IMAGE("Get error from renderer");
+    }
+
     SDL_RenderPresent(moduleImageViewer.renderer);
 
     return retStatus;
@@ -158,35 +193,55 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_Destroy(void)
 
 #endif
 
-void check_error_sdl(bool check, const char* message)
+SDL_Texture* sLoadTexture(const char* fname, SDL_Renderer *renderer)
 {
-    const char *error = SDL_GetError();
-
-    if (*error) {
-      SDL_ClearError();
-      SDL_Quit();
-      SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, error);
+    if(fname == NULL || renderer == NULL)
+    {
+        SN_SYS_ERROR_CHECK_SDL_IMAGE("Invalid Paramter in Load Texture.");
     }
-}
 
-void check_error_sdl_img(bool check, const char* message)
-{
-    const char *error = SDL_GetError();
-
-    if (*error) {
-      SDL_ClearError();
-      IMG_Quit();
-      SDL_Quit();
-      SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, error);
-    }
-}
-
-SDL_Texture* load_texture(const char* fname, SDL_Renderer *renderer)
-{
+    /** INIT IMAGE **/
     SDL_Surface *image = IMG_Load(fname);
-    check_error_sdl_img(image == NULL, "Unable to load image");
+    if(image == NULL)
+    {
+        SN_SYS_ERROR_CHECK_SDL_IMAGE("Unable to load image");
+    }
+
+    /** INIT TEXTURE **/
     SDL_Texture *img_texture = SDL_CreateTextureFromSurface(renderer, image);
-    check_error_sdl_img(img_texture == NULL, "Unable to create a texture from the image");
+    if(image == NULL)
+    {
+        SN_SYS_ERROR_CHECK_SDL_IMAGE("Unable to create a texture from the image");
+    }
+
     SDL_FreeSurface(image);
+
     return img_texture;
+}
+
+void sCheckError_SDL(const char* message, const char* _file, const char* _func, const int _line)
+{
+    const char *errorMessage = SDL_GetError();
+
+    if (*errorMessage)
+    {
+        SDL_ClearError();
+        SDL_Quit();
+
+        SN_SYS_ErrorCheck(SN_STATUS_SDL_ERROR, errorMessage, _file, _func, _line);
+    }
+}
+
+void sCheckError_SDL_Image(const char* message, const char* _file, const char* _func, const int _line)
+{
+    const char *errorMessage = SDL_GetError();
+
+    if(*errorMessage)
+    {
+        SDL_ClearError();
+        IMG_Quit();
+        SDL_Quit();
+
+        SN_SYS_ErrorCheck(SN_STATUS_SDL_ERROR, errorMessage, _file, _func, _line);
+    }
 }
