@@ -1,8 +1,12 @@
-/*
- * SN_MODULE_3D_PRINTER.c
+/**
+ * @file SN_MODULE_3D_PRINTER.c
+ * @author Bato
+ * @date 10 Oct 2018
+ * @brief
  *
- *  Created on: Sep 18, 2018
- *      Author: pi
+ * @see https://bitbucket.org/xengiennering/sn3d-project/src/master/
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  */
 
 #include "SN_API.h"
@@ -822,6 +826,7 @@ static SN_STATUS s3DPrinter_PrintUninit(void)
     retStatus = SN_MODULE_FILE_SYSTEM_PrintInfoUninit();
     SN_SYS_ERROR_CHECK(retStatus, "Target Data Unint Failed.");
 
+    /* STOP DISPLAY TIME INFO TIMER */
     retStatus = SN_MODULE_DISPLAY_PrintingTimerStop();
     SN_SYS_ERROR_CHECK(retStatus, "Display Printing Time Info Timer Stop Failed.");
 

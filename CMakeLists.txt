@@ -38,7 +38,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PRJ_ROOT_PATH}/lib)
 
 
 # Cmkae Module #
-set(CMAKE_MODULE_PATH "${PRJ_ROOT_PATH}/cmake/")
+set(CMAKE_MODULE_PATH "${PRJ_ROOT_PATH}/CMAKE_MODULE")
 
 ################### Library & Source & Include Setting ###################
 # Library #

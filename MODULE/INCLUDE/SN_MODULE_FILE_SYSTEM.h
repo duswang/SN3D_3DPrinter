@@ -81,7 +81,7 @@ typedef struct resolution_information {
     int weight;
 } resolution_t;
 typedef struct machine_information {
-    char             name[100];
+    char             name[MAX_FILENAME_LENGTH];
     char                height;
     resolution_t       display;
     bool                isInit;

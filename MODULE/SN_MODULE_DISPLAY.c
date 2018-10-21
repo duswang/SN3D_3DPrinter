@@ -283,9 +283,7 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerStop(void)
     if(moduleDisplay.IsTimerInfoInit)
     {
         moduleDisplay.estimatedBuildTime = sSecToTimeInfo(0);
-        moduleDisplay.nowTime.hour       = 0;
-        moduleDisplay.nowTime.min        = 0;
-        moduleDisplay.nowTime.sec        = 0;
+        moduleDisplay.nowTime            = sSecToTimeInfo(0);
         moduleDisplay.IsTimerInfoInit    = false;
 
         retStatus = SN_SYS_TimerCancle(&timerTimeIndicate);

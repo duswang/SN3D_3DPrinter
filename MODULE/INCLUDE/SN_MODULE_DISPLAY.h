@@ -1,14 +1,31 @@
-/*
- * SN_MODUEL_DISPLAY.h
+/**
+ * @file SN_MODUEL_DISPLAY.h
+ * @author Bato
+ * @date 18 Sep 2018
+ * @brief
  *
- *  Created on: Sep 18, 2018
- *      Author: bato
+ * @see https://bitbucket.org/xengiennering/sn3d-project/src/master/
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  */
 
 #ifndef SN_MODUEL_DISPLAY
 #define SN_MODUEL_DISPLAY
 
 /**** MODULE ****/
+/**
+*@brief
+*@details
+*@param args
+*@return
+*
+*@bug
+*@todo
+*@exception
+*
+*@see
+*@see
+*/
 extern SN_STATUS SN_MODULE_DISPLAY_Init(void);
 extern SN_STATUS SN_MODULE_DISPLAY_Uninit(void);
 
@@ -29,8 +46,6 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerInit(uint32_t sec);
 SN_STATUS SN_MODULE_DISPLAY_PrintingTimerPause(void);
 SN_STATUS SN_MODULE_DISPLAY_PrintingTimerResume(void);
 SN_STATUS SN_MODULE_DISPLAY_PrintingTimerStop(void);
-
-
 
 
 #endif /* SN_MODUEL_DISPLAY */
