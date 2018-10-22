@@ -1,0 +1,51 @@
+\hypertarget{SN__SYS__TIMER_8c}{}\section{S\+Y\+S\+T\+E\+M/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+T\+I\+M\+ER.c File Reference}
+\label{SN__SYS__TIMER_8c}\index{S\+Y\+S\+T\+E\+M/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+T\+I\+M\+E\+R.\+c@{S\+Y\+S\+T\+E\+M/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+T\+I\+M\+E\+R.\+c}}
+{\ttfamily \#include \char`\"{}S\+N\+\_\+\+A\+P\+I.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}S\+N\+\_\+\+S\+Y\+S\+\_\+\+T\+I\+M\+E\+R.\+h\char`\"{}}\newline
+Include dependency graph for S\+N\+\_\+\+S\+Y\+S\+\_\+\+T\+I\+M\+E\+R.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{SN__SYS__TIMER_8c__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Timer\+Init} (void)
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Timer\+Create} (sys\+Timer\+Id\+\_\+t $\ast$p\+Id\+T\+SR, unsigned int ms\+Duration, void $\ast$pf\+T\+SR)
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Timer\+Cancle} (sys\+Timer\+Id\+\_\+t $\ast$p\+Id\+T\+SR)
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Delay} (uint32\+\_\+t msec)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+pthread\+\_\+mutex\+\_\+t \hyperlink{SN__SYS__TIMER_8c_a682b87596c44150b7617a21f2f357481}{ptm\+Timer} = P\+T\+H\+R\+E\+A\+D\+\_\+\+M\+U\+T\+E\+X\+\_\+\+I\+N\+I\+T\+I\+A\+L\+I\+Z\+ER
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Bato 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+18 Sep 2018 
+\end{DoxyDate}
+\begin{DoxySeeAlso}{See also}
+\href{http://www.stack.nl/~dimitri/doxygen/docblocks.html}{\tt http\+://www.\+stack.\+nl/$\sim$dimitri/doxygen/docblocks.\+html} 
+
+\href{http://www.stack.nl/~dimitri/doxygen/commands.html}{\tt http\+://www.\+stack.\+nl/$\sim$dimitri/doxygen/commands.\+html} 
+\end{DoxySeeAlso}
+
+
+\subsection{Variable Documentation}
+\mbox{\Hypertarget{SN__SYS__TIMER_8c_a682b87596c44150b7617a21f2f357481}\label{SN__SYS__TIMER_8c_a682b87596c44150b7617a21f2f357481}} 
+\index{S\+N\+\_\+\+S\+Y\+S\+\_\+\+T\+I\+M\+E\+R.\+c@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+T\+I\+M\+E\+R.\+c}!ptm\+Timer@{ptm\+Timer}}
+\index{ptm\+Timer@{ptm\+Timer}!S\+N\+\_\+\+S\+Y\+S\+\_\+\+T\+I\+M\+E\+R.\+c@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+T\+I\+M\+E\+R.\+c}}
+\subsubsection{\texorpdfstring{ptm\+Timer}{ptmTimer}}
+{\footnotesize\ttfamily pthread\+\_\+mutex\+\_\+t ptm\+Timer = P\+T\+H\+R\+E\+A\+D\+\_\+\+M\+U\+T\+E\+X\+\_\+\+I\+N\+I\+T\+I\+A\+L\+I\+Z\+ER}
+
+System 

@@ -1,10 +1,18 @@
-/*
- * SN_SYS_USB_DRIVER.h
+/**
+ * @file SN_SYS_USB_DRIVER.h
+ * @author Bato
+ * @date 18 Sep 2018
+ * @brief
  *
- *  Created on: Sep 27, 2018
- *      Author: pi
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  */
-
+/**
+ * @defgroup SYSTEM_USB_DRIVER USB Driver
+ * @ingroup SYSTEM
+ * @brief System USB Driver Functions.
+ * @{
+ */
 #ifndef SN_SYS_USB_DRIVER_H_
 #define SN_SYS_USB_DRIVER_H_
 
@@ -39,3 +47,4 @@ extern int SN_SYS_USBDriverIsMount(void);
 #define USB_MOUNT       1
 
 #endif /* SN_SYS_USB_DRIVER_H_ */
+/**@}*/

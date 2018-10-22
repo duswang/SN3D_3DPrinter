@@ -1,17 +1,12 @@
-/*
- ============================================================================
- Name        : SN3D_PROJECT
- Author      : bato
- Version     : 0.1
- Copyright   :
- Description :
- ============================================================================
- */
-/*
- * SN_SYS_INIT.c
+/**
+ * @file SN_SYS_INIT.c
+ * @author Bato
+ * @date 18 Sep 2018
+ * @brief
  *
- *  Created on: Sep 18, 2018
- *      Author: bato
+ * @see https://bitbucket.org/xengiennering/sn3d-project/src/master/
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  */
 #include "SN_API.h"
 
@@ -28,6 +23,19 @@ sysMessageQId msgQIdApp;
 /******** STATIC FUNCTIONS ********/
 static SN_STATUS sSN_SYSTEM_Init(void);
 
+/**
+*@brief main
+*@details
+*@param
+*@return
+*
+*@bug
+*@todo
+*@exception
+*
+*@see
+*@see
+*/
 int main(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;

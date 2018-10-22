@@ -1,8 +1,11 @@
-/*
- * SN_SYS_MESSAGE_Q.c
+/**
+ * @file SN_SYS_MESSAGE_Q.c
+ * @author Bato
+ * @date 16 Oct 2018
+ * @brief
  *
- *  Created on: Sep 24, 2018
- *      Author: bato
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  */
 
 #include "SN_API.h"

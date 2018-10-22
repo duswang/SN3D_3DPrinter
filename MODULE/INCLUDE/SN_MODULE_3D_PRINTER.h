@@ -1,26 +1,124 @@
-/*
- * SN_MODUEL_3D_PRINTER.h
+/**
+ * @file SN_MODULE_3D_PRINTER.h
+ * @author Bato
+ * @date 18 Sep 2018
+ * @brief
  *
- *  Created on: Sep 18, 2018
- *      Author: bart
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  */
 
+/**
+ * @defgroup MODULE_3D_PRINTER 3D Printer
+ * @ingroup MODULE
+ * @brief 3D Printer Module Functions.
+ * @{
+ */
 #ifndef SN_MODUEL_3D_PRINTER
 #define SN_MODUEL_3D_PRINTER
-
-/**** MODULE ****/
+/** @name 3D Printr Module
+ *  Description of 3D Printr Module Init and Uninit funtions.
+ */
+///@{
+/** @brief
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Init(void);
+
+/** @brief
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Uninit(void);
 
-/**** PRINTING ****/
+///@}
+
+/** @name 3D Printer Module :: Printing.
+ *  Description of 3D Printr Module funtions.
+ */
+///@{
+/** @brief
+ *
+ *  @param pageIndex
+ *  @param itemIndex
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Start(uint32_t pageIndex, uint32_t itemIndex);
+
+/** @brief
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Stop(void);
+
+/** @brief
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Pause(void);
+
+/** @brief
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Resume(void);
 
-/**** CONTROL ****/
+///@}
+
+
+/** @name 3D Printer Module :: Z Control.
+ *  Description of 3D Printr Module funtions.
+ */
+///@{
+/** @brief
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
 extern SN_STATUS SN_MODULE_3D_PRINTER_MOTOR_INIT(void);
+/** @brief
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Z_HOMING(void);
+/** @brief
+ *
+ *  @param mm
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Z_UP(float mm);
+/** @brief
+ *
+ *  @param mm
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Z_DOWN(float mm);
-#endif /* MODUEL_HW_UART_H_ */
+
+///@}
+
+
+#endif /* SN_MODULE_3D_PRINTER */
+/**@}*/

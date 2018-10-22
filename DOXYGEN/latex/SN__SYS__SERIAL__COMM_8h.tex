@@ -1,0 +1,106 @@
+\hypertarget{SN__SYS__SERIAL__COMM_8h}{}\section{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+MM.h File Reference}
+\label{SN__SYS__SERIAL__COMM_8h}\index{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M.\+h@{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M.\+h}}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{SN__SYS__SERIAL__COMM_8h__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structsys__serial__stat}{sys\+\_\+serial\+\_\+stat}
+\item 
+struct \hyperlink{structsys__serial__def}{sys\+\_\+serial\+\_\+def}
+\item 
+struct \hyperlink{structsys__serial__id}{sys\+\_\+serial\+\_\+id}
+\item 
+struct \hyperlink{structsys__serial__q}{sys\+\_\+serial\+\_\+q}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_gab19b7880962ae52d90f784158f56f9f5}{M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+S\+E\+R\+I\+AL}~4
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_ga0e2406f7554f78b285eaccd1513fe392}{sys\+Serial\+Def}(name,  device,  oflags,  baud\+Rate,  rx\+Byte\+Size,  rx\+Return\+Mode)
+\begin{DoxyCompactList}\small\item\em def Serial def serial for get Serial\+Id \end{DoxyCompactList}\item 
+\#define {\bfseries sys\+Serial\+Thread\+Funcdef}(num)
+\item 
+\#define {\bfseries sys\+Serial}(name)~(\&sys\+\_\+serial\+\_\+def\+\_\+\#\#name)
+\item 
+\#define {\bfseries sys\+Serial\+Thread\+Func}(num)~(s\+Serial\+Thread\+\_\+\#\#num)
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_ga8ef896af26917008892ad9f98480cced}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+B\+A\+U\+D\+\_\+\+R\+A\+T\+E\+\_\+9600}~B9600
+\item 
+\#define {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+B\+A\+U\+D\+\_\+\+R\+A\+T\+E\+\_\+19200}~B19200
+\item 
+\#define {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+B\+A\+U\+D\+\_\+\+R\+A\+T\+E\+\_\+115200}~B115200
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_ga45345dabcfb671abba160a3dac350670}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+R\+E\+A\+L\+T\+I\+ME}~0
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_ga20e8092429292afa4348544ee9fafec3}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+4}~4
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_gaeeb374cea7f99086bd693aa158af8dc8}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+8}~8
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_ga56161a71858040bee49e45caeb42787a}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+16}~16
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_ga532ba920d82c8b8bf35997df3c732d4c}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+32}~32
+\item 
+\#define {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+T\+X\+\_\+\+R\+E\+T\+U\+RN}~0
+\item 
+\#define {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+T\+X\+\_\+\+C\+A\+R\+R\+I\+A\+G\+E\+\_\+\+R\+E\+T\+U\+RN}~1
+\item 
+\#define {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+T\+X\+\_\+\+N\+E\+W\+\_\+\+L\+I\+N\+E\+\_\+\+R\+E\+T\+U\+RN}~2
+\item 
+\#define {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+T\+X\+\_\+\+N\+X\+\_\+\+R\+E\+T\+U\+RN}~3
+\item 
+\#define {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+B\+U\+F\+F\+E\+R\+\_\+\+S\+I\+ZE}~255
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_gab3cb3e808e6aa6d23c73d7687b3b937e}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+I\+N\+V\+A\+I\+L\+D\+\_\+\+U\+A\+R\+T\+\_\+\+ID}~(-\/1)
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_ga3b81478c7058ceb6ed610ce8e2ca3822}{C\+A\+R\+R\+I\+A\+G\+E\+\_\+\+R\+E\+T\+U\+RN}~\char`\"{}\textbackslash{}r\char`\"{}
+\item 
+\#define {\bfseries N\+E\+W\+\_\+\+L\+I\+N\+E\+\_\+\+R\+E\+T\+U\+RN}~\char`\"{}\textbackslash{}n\char`\"{}
+\item 
+\#define {\bfseries N\+X\+\_\+\+R\+E\+T\+U\+RN}~0x\+FF
+\item 
+\#define {\bfseries R\+E\+T\+U\+R\+N\+\_\+\+S\+I\+ZE}~1
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \hyperlink{structsys__serial__stat}{sys\+\_\+serial\+\_\+stat} {\bfseries sys\+Serial\+Stat\+\_\+t}
+\item 
+typedef struct \hyperlink{structsys__serial__def}{sys\+\_\+serial\+\_\+def} {\bfseries sys\+Serial\+Def\+\_\+t}
+\item 
+typedef struct \hyperlink{structsys__serial__id}{sys\+\_\+serial\+\_\+id} $\ast$ {\bfseries sys\+Serial\+Id}
+\item 
+typedef struct \hyperlink{structsys__serial__q}{sys\+\_\+serial\+\_\+q} {\bfseries sys\+SerialQ}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{group__SYSTEM__SERIAL__COMM_ga5945cfb2c1d87d3fa9ad40bf928bd05a}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+Serial\+Init} (void)
+\item 
+\hyperlink{structsys__serial__id}{sys\+Serial\+Id} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Serial\+Create} (const \hyperlink{structsys__serial__def}{sys\+Serial\+Def\+\_\+t} $\ast$serial\+Def, void $\ast$($\ast$pf\+Call\+Back)(char $\ast$))
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Serial\+Remove} (\hyperlink{structsys__serial__id}{sys\+Serial\+Id} serial\+Id)
+\item 
+int {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Serial\+Tx} (\hyperlink{structsys__serial__id}{sys\+Serial\+Id} serial\+Id, char $\ast$buffer, size\+\_\+t buffer\+Size)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Bato 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+18 Sep 2018 
+\end{DoxyDate}
+\begin{DoxySeeAlso}{See also}
+\href{http://www.stack.nl/~dimitri/doxygen/docblocks.html}{\tt http\+://www.\+stack.\+nl/$\sim$dimitri/doxygen/docblocks.\+html} 
+
+\href{http://www.stack.nl/~dimitri/doxygen/commands.html}{\tt http\+://www.\+stack.\+nl/$\sim$dimitri/doxygen/commands.\+html} 
+\end{DoxySeeAlso}

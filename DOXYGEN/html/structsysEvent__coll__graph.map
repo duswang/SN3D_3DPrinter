@@ -1,0 +1,4 @@
+<map id="sysEvent" name="sysEvent">
+<area shape="rect" id="node2" href="$structmessage.html" title="{message\n|+ mtype\l+ keyId\l|}" alt="" coords="19,160,101,252"/>
+<area shape="rect" id="node3" href="$structgeneral__evt__t.html" title="{general_evt_t\n|+ evt_id\l+ evt_msg\l|}" alt="" coords="5,5,115,97"/>
+</map>

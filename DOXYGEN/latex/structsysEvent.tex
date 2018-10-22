@@ -1,0 +1,44 @@
+\hypertarget{structsysEvent}{}\section{sys\+Event Struct Reference}
+\label{structsysEvent}\index{sys\+Event@{sys\+Event}}
+
+
+Collaboration diagram for sys\+Event\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=191pt]{structsysEvent__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structsysEvent_a97996ededf93d5aeb33ca5104f1a5d95}\label{structsysEvent_a97996ededf93d5aeb33ca5104f1a5d95}} 
+uint32\+\_\+t \hyperlink{structsysEvent_a97996ededf93d5aeb33ca5104f1a5d95}{status}
+\begin{DoxyCompactList}\small\item\em status code\+: event or error information \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structsysEvent_a0dd7049a24d252a37758fead3f0a2380}\label{structsysEvent_a0dd7049a24d252a37758fead3f0a2380}} 
+\begin{tabbing}
+xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
+union \{\\
+\>uint32\_t \hyperlink{structsysEvent_a56a055cf017056e284d96ac197ac6e22}{v}\\
+\>\>{\em message as 32-\/bit value }\\
+\>void $\ast$ \hyperlink{structsysEvent_a387cb9c8e06db655010f576692979bfb}{p}\\
+\>\>{\em message or mail as void pointer }\\
+\>int32\_t \hyperlink{structsysEvent_ab911ad1725519b9d6d5fea72d7b8d89b}{signals}\\
+\>\>{\em signal flags }\\
+\} \hyperlink{structsysEvent_a0dd7049a24d252a37758fead3f0a2380}{value}\\
+
+\end{tabbing}\begin{DoxyCompactList}\small\item\em event value \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structsysEvent_afa01d1c1d694a6df0a748a92dfe47421}\label{structsysEvent_afa01d1c1d694a6df0a748a92dfe47421}} 
+\begin{tabbing}
+xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
+union \{\\
+\>\hyperlink{structmessage}{sysMessageQId} \hyperlink{structsysEvent_a4411241a7a31702b7bdfb3086db3a357}{message\_id}\\
+\>\>{\em message id obtained by osMessageCreate }\\
+\} \hyperlink{structsysEvent_afa01d1c1d694a6df0a748a92dfe47421}{def}\\
+
+\end{tabbing}\begin{DoxyCompactList}\small\item\em event definition \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\hyperlink{SN__SYS__MESSAGE__Q_8h}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+Q.\+h}\end{DoxyCompactItemize}

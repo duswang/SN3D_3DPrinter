@@ -1,0 +1,70 @@
+\hypertarget{group__SYSTEM__TIMER}{}\section{Timer}
+\label{group__SYSTEM__TIMER}\index{Timer@{Timer}}
+
+
+System Timer Functions.  
+
+
+Collaboration diagram for Timer\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=213pt]{group__SYSTEM__TIMER}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structsys__timer__id}{sys\+\_\+timer\+\_\+id}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{group__SYSTEM__TIMER_gad99ad563a1a632fde508ad8be6422e57}{M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+T\+SR}~32
+\item 
+\mbox{\Hypertarget{group__SYSTEM__TIMER_ga3ab2d3270619515d0cfdc5caf09d6366}\label{group__SYSTEM__TIMER_ga3ab2d3270619515d0cfdc5caf09d6366}} 
+\#define {\bfseries U\+N\+A\+L\+L\+O\+C\+A\+T\+E\+D\+\_\+\+T\+S\+R\+\_\+\+ID}~(0x\+F\+F\+F\+F\+F\+F\+F\+F)
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group__SYSTEM__TIMER_ga0964d5651c1e8775bdedb28ad089d8b9}\label{group__SYSTEM__TIMER_ga0964d5651c1e8775bdedb28ad089d8b9}} 
+typedef struct \hyperlink{structsys__timer__id}{sys\+\_\+timer\+\_\+id} {\bfseries sys\+Timer\+Q\+\_\+t}
+\item 
+\mbox{\Hypertarget{group__SYSTEM__TIMER_ga45dfe75dba9f4d77371435e6ea122117}\label{group__SYSTEM__TIMER_ga45dfe75dba9f4d77371435e6ea122117}} 
+typedef uint32\+\_\+t {\bfseries sys\+Timer\+Id\+\_\+t}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group__SYSTEM__TIMER_gabe15a62b1e228b796d3a2297c085c9ef}\label{group__SYSTEM__TIMER_gabe15a62b1e228b796d3a2297c085c9ef}} 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Timer\+Init} (void)
+\item 
+\mbox{\Hypertarget{group__SYSTEM__TIMER_ga1d85ad6b65ffc1c7a3fd35361b33aa08}\label{group__SYSTEM__TIMER_ga1d85ad6b65ffc1c7a3fd35361b33aa08}} 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Timer\+Create} (sys\+Timer\+Id\+\_\+t $\ast$p\+Id\+T\+SR, unsigned int ms\+Duration, void $\ast$pf\+T\+SR)
+\item 
+\mbox{\Hypertarget{group__SYSTEM__TIMER_gaa004347fdd0940a882a77729feaf60c4}\label{group__SYSTEM__TIMER_gaa004347fdd0940a882a77729feaf60c4}} 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Timer\+Cancle} (sys\+Timer\+Id\+\_\+t $\ast$p\+Id\+T\+SR)
+\item 
+\mbox{\Hypertarget{group__SYSTEM__TIMER_ga4cf64b0280d940416955ba171ed339aa}\label{group__SYSTEM__TIMER_ga4cf64b0280d940416955ba171ed339aa}} 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Delay} (uint32\+\_\+t msec)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+System Timer Functions. 
+
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{group__SYSTEM__TIMER_gad99ad563a1a632fde508ad8be6422e57}\label{group__SYSTEM__TIMER_gad99ad563a1a632fde508ad8be6422e57}} 
+\index{Timer@{Timer}!M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+T\+SR@{M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+T\+SR}}
+\index{M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+T\+SR@{M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+T\+SR}!Timer@{Timer}}
+\subsubsection{\texorpdfstring{M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+T\+SR}{MAX\_NUM\_OF\_TSR}}
+{\footnotesize\ttfamily \#define M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+T\+SR~32}
+
+
+
+{\ttfamily \#include $<$\hyperlink{SN__SYS__TIMER_8h}{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+T\+I\+M\+E\+R.\+h}$>$}
+
+Static Define 

@@ -1,0 +1,68 @@
+\hypertarget{group__SYSTEM__MESSAGE__Q}{}\section{Message Q}
+\label{group__SYSTEM__MESSAGE__Q}\index{Message Q@{Message Q}}
+
+
+System Message Q Functions.  
+
+
+Collaboration diagram for Message Q\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=239pt]{group__SYSTEM__MESSAGE__Q}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structgeneral__evt__header__t}{general\+\_\+evt\+\_\+header\+\_\+t}
+\item 
+struct \hyperlink{structgeneral__evt__t}{general\+\_\+evt\+\_\+t}
+\item 
+struct \hyperlink{structsys__message__queue}{sys\+\_\+message\+\_\+queue}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group__SYSTEM__MESSAGE__Q_gad24a094c35ed8ae444f4b7c6ea51704d}\label{group__SYSTEM__MESSAGE__Q_gad24a094c35ed8ae444f4b7c6ea51704d}} 
+typedef uint32\+\_\+t {\bfseries event\+\_\+id\+\_\+t}
+\item 
+\mbox{\Hypertarget{group__SYSTEM__MESSAGE__Q_ga655cadf65449a0b80f198cb7ce166d41}\label{group__SYSTEM__MESSAGE__Q_ga655cadf65449a0b80f198cb7ce166d41}} 
+typedef uint32\+\_\+t {\bfseries event\+\_\+msg\+\_\+t}
+\item 
+\mbox{\Hypertarget{group__SYSTEM__MESSAGE__Q_ga4d5c8f4d684de3a1e6e73e63f9f25c98}\label{group__SYSTEM__MESSAGE__Q_ga4d5c8f4d684de3a1e6e73e63f9f25c98}} 
+typedef struct \hyperlink{structsys__message__queue}{sys\+\_\+message\+\_\+queue} {\bfseries sys\+Message\+Q\+Id}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__SYSTEM__MESSAGE__Q_ga35e9ff084626dfccd36d098827638a0c}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+Message\+Q\+Init} (\hyperlink{structsys__message__queue}{sys\+Message\+Q\+Id} $\ast$msg\+Q\+Id)
+\item 
+\mbox{\Hypertarget{group__SYSTEM__MESSAGE__Q_ga293a77ea597b70f3f2f38b919f93497e}\label{group__SYSTEM__MESSAGE__Q_ga293a77ea597b70f3f2f38b919f93497e}} 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Message\+Q\+Remove} (\hyperlink{structsys__message__queue}{sys\+Message\+Q\+Id} $\ast$msg\+Q\+Id)
+\item 
+\mbox{\Hypertarget{group__SYSTEM__MESSAGE__Q_ga36e115419d4cbbfe4a6bde6e3fecf180}\label{group__SYSTEM__MESSAGE__Q_ga36e115419d4cbbfe4a6bde6e3fecf180}} 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Message\+Put} (\hyperlink{structsys__message__queue}{sys\+Message\+Q\+Id} $\ast$msg\+Q\+Id, event\+\_\+id\+\_\+t evt\+Id, event\+\_\+msg\+\_\+t evt\+Message)
+\item 
+\mbox{\Hypertarget{group__SYSTEM__MESSAGE__Q_gafb2da611b3c93f1f906109e7737d67cf}\label{group__SYSTEM__MESSAGE__Q_gafb2da611b3c93f1f906109e7737d67cf}} 
+\hyperlink{structgeneral__evt__t}{general\+\_\+evt\+\_\+t} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Message\+Get} (\hyperlink{structsys__message__queue}{sys\+Message\+Q\+Id} $\ast$msg\+Q\+Id)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+System Message Q Functions. 
+
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{group__SYSTEM__MESSAGE__Q_ga35e9ff084626dfccd36d098827638a0c}\label{group__SYSTEM__MESSAGE__Q_ga35e9ff084626dfccd36d098827638a0c}} 
+\index{Message Q@{Message Q}!S\+N\+\_\+\+S\+Y\+S\+\_\+\+Message\+Q\+Init@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+Message\+Q\+Init}}
+\index{S\+N\+\_\+\+S\+Y\+S\+\_\+\+Message\+Q\+Init@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+Message\+Q\+Init}!Message Q@{Message Q}}
+\subsubsection{\texorpdfstring{S\+N\+\_\+\+S\+Y\+S\+\_\+\+Message\+Q\+Init()}{SN\_SYS\_MessageQInit()}}
+{\footnotesize\ttfamily \hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} S\+N\+\_\+\+S\+Y\+S\+\_\+\+Message\+Q\+Init (\begin{DoxyParamCaption}\item[{\hyperlink{structsys__message__queue}{sys\+Message\+Q\+Id} $\ast$}]{msg\+Q\+Id }\end{DoxyParamCaption})}
+
+
+
+{\ttfamily \#include $<$\hyperlink{SN__SYS__MESSAGE__Q_8h}{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+Q.\+h}$>$}
+
+Static Define System Global Variables Static Funtions 

@@ -1,16 +1,19 @@
-/*
- * SN_SYS_ERROR.c
+    /**
+ * @file SN_SYS_ERROR.c
+ * @author Bato
+ * @date 24 Sep 2018
+ * @brief
  *
- *  Created on: Sep 24, 2018
- *      Author: bato
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  */
 
 #include "SN_API.h"
 #include "SN_SYS_ERROR.h"
 
-/******** STATIC DEFINE ********/
+/* ******* STATIC DEFINE ******* */
 
-/******** STATIC FUNCTIONS ********/
+/* ******* STATIC FUNCTIONS ******* */
 void sReboot(void);
 void sExit(void);
 

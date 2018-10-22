@@ -1,8 +1,11 @@
-/*
- * SN_SYS_USB_DRIVER.c
+/**
+ * @file SN_SYS_USB_DRIVER.c
+ * @author Bato
+ * @date 18 Sep 2018
+ * @brief
  *
- *  Created on: Sep 18, 2018
- *      Author: bato
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  */
 
 #include "SN_API.h"

@@ -1,32 +1,18 @@
-/*
- * MODUEL_FILE_SYSTEM.c
+/**
+ * @file SN_MODULE_FILE_SYSTEM.c
+ * @author Bato
+ * @date 18 Sep 2018
+ * @brief
  *
- *  Created on: Sep 24, 2018
- *      Author: bato
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  */
 
 #include "SN_API.h"
 #include "SN_MODULE_FILE_SYSTEM.h"
 
-/******** STATIC DEFINE ********/
-/**** DEVICE CONFIG ****/
-#define DEFAULT_DEVICE_NAME  "POLARIS 500"
-
-#define Z_DELAY_OFFSET (1600)
-#define SPPED_MM_SEC_TO_MM_MSEC(speed_mm_sec) \
-        ((speed_mm_sec) / (60 * 1000))
-
-#define Z_DELAY_MSEC_CAL(distnace, speed) \
-    ((((distnace) * 2) / (SPPED_MM_SEC_TO_MM_MSEC(speed))) + Z_DELAY_OFFSET)
-
-/**** FILE CONFIG ****/
-#define FILENAME_EXT         "cws"
-#define IMAGE_FILENAME_EXT   "png"
-
-#define CONFIG_FILENAME      "manifest"
-#define CONFIG_FILENAME_EXT  "xml"
-
-/**** USB CONFIG ****/
+/* ******* STATIC DEFINE ******* */
+/** @name USB Driver Config *////@{
 #ifdef __APPLE__
 #define USB_PATH              "/Volumes/USB_0/"
 #endif
@@ -40,62 +26,102 @@
 #ifdef linux
 #define TEMP_FILE_PATH              "/SN3D/sn3d-project/tempFile/"
 #endif
-/**** MODULE ****/
+///@}
+
+/** @name File path & name config *////@{
+#define FILENAME_EXT         "cws"
+#define IMAGE_FILENAME_EXT   "png"
+
+#define CONFIG_FILENAME      "manifest"
+#define CONFIG_FILENAME_EXT  "xml"
+///@}
+
+/** @name Z config *////@{
+#define Z_DELAY_OFFSET (1600)
+
+/** @def SPEED_MM_MIN_TO_MM_MSEC(speed_mm_min)
+ *  @brief mm/m to mm/s
+ *
+ *  @param speed_mm_min
+ *
+ *  @return mm/s
+ */
+#define SPEED_MM_MIN_TO_MM_MSEC(speed_mm_min) \
+        ((speed_mm_min) / (60 * 1000))
+
+/** @def Z_DELAY_MSEC_CAL(distnace, speed)
+ *  @brief calculate z delay
+ *
+ *  @param distance
+ *  @param speed
+ *
+ *  @return z_delay (msec)
+ */
+#define Z_DELAY_MSEC_CAL(distnace, speed) \
+    ((((distnace) * 2) / (SPEED_MM_MIN_TO_MM_MSEC(speed))) + Z_DELAY_OFFSET)
+///@}
+
+/** @name Other Define *////@{
+#define DEFAULT_DEVICE_NAME "POLARIS 500"
+///@}
+
+/* *** MODULE *** */
 typedef struct moduel_file_system {
     fs_t                     fs;
     printInfo_t       printInfo;
     machineInfo_t   machineInfo;
 } moduleFileSystem_t;
-/******** SYSTEM DEFINE ********/
-/**** MODULE THREAD ****/
-pthread_mutex_t ptmFileSystem = PTHREAD_MUTEX_INITIALIZER;
-pthread_t       ptFileSystem;
 
-/**** MODULE MESSAGE Q ****/
-sysMessageQId msgQIdFileSystem;
-    /**** MODULE MESSAGES ****/
+/* ******* SYSTEM DEFINE ******* */
+/* *** MODULE THREAD *** */
+static pthread_mutex_t ptmFileSystem = PTHREAD_MUTEX_INITIALIZER;
+static pthread_t       ptFileSystem;
+
+/* *** MODULE MESSAGE Q *** */
+static sysMessageQId msgQIdFileSystem;
+    /* *** MODULE MESSAGES *** */
 typedef enum {
-    MSG_FILE_SYSTEM_USB_MOUNT = 0,
-    MSG_FILE_SYSTEM_USB_UNMOUNT,
-    MSG_FILE_SYSTEM_READ,
-    MSG_FILE_SYSTEM_UPDATE,
-    MSG_FILE_SYSTEM_WAITING,
-    MSG_FILE_SYSTEM_NONE,
-    MSG_FILE_SYSTEM_IGNORE          = 0xFF01
+    MSG_FILE_SYSTEM_USB_MOUNT       = 0,        /**< USB Mount */
+    MSG_FILE_SYSTEM_USB_UNMOUNT,                /**< USB Unmount */
+    MSG_FILE_SYSTEM_READ,                       /**< Read USB - when USB Mounted */
+    MSG_FILE_SYSTEM_UPDATE,                     /**< Update File System - when read USB Finish */
+    MSG_FILE_SYSTEM_WAITING,                    /**< Waiting Next Event */
+    MSG_FILE_SYSTEM_NONE,                       /**< BAD ACCESS */
+    MSG_FILE_SYSTEM_IGNORE          = 0xFF01    /**< Came From Timer - Don't Care */
 
 } evtFileSystem_t;
 
-/**** MODULE HANDLER  ****/
+/* *** MODULE HANDLER  *** */
 static moduleFileSystem_t moduleFileSystem;
 
-/******** GLOBAL VARIABLE ********/
+/* ******* GLOBAL VARIABLE ******* */
 
-/******** STATIC FUNCTIONS ********/
-/***** USB ****/
+/* ******* STATIC FUNCTIONS ******* */
+/* **** USB Callback *** */
 static void*       USBEvent_Callback(int evt);
 
-/**** SYSTEM ****/
+/* *** SYSTEM *** */
 static void*       sFileSystemThread();
 static SN_STATUS   sFileSystemMessagePut(evtFileSystem_t evtId, event_msg_t evtMessage);
 
-/**** FILE READ ****/
+/* *** FILE SYSTEM CONTROL *** */
 static SN_STATUS   sFileSystemRead(void);
 static SN_STATUS   sFileSystemRemove(void);
 static SN_STATUS   sFileSystemPrint(void);
 
-/**** FILE CONTROL ****/
+/* *** TEMP FILE CONTROL *** */
+static uint32_t    sCountSlice(const char* srcPath);
 static SN_STATUS   sCopyFile(const char* srcPath, const char* desPath);
 static SN_STATUS   sRemoveTempFile(const char* filePath);
 static SN_STATUS   sExtractTempFile(const char* srcPath, const char* desPath);
 
-/**** UTIL ****/
-static uint32_t    sCountSlice(const char* srcPath);
+/* *** UTIL *** */
 static const char* sGetFilenameExt(const char *filename);
 static const char* sGetFilename(const char *filename);
 
-/**** DEMO ****/
-static void         sDemoPrintSetting(void);
-static void         sDemoMachineSetting(void);
+/* *** DEMO *** */
+static void        sDemoPrintSetting(void);
+static void        sDemoMachineSetting(void);
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
@@ -156,7 +182,7 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemI
     //@DEMO SETTING
     sDemoPrintSetting(); // Option Demo
 
-    /** Target **/
+    /* Target */
     moduleFileSystem.printInfo.printTarget.sourceFilePath             = USB_PATH;
     moduleFileSystem.printInfo.printTarget.tempFilePath               = TEMP_FILE_PATH;
     moduleFileSystem.printInfo.printTarget.tempFileName               = moduleFileSystem.fs.page[pageIndex].item[itemIndex].name;
@@ -178,7 +204,7 @@ printInfo_t SN_MODULE_FILE_SYSTEM_PrintInfoGet(void)
     return moduleFileSystem.printInfo;
 }
 
-SN_STATUS SN_MODULE_FILE_SYSTEM_MachineUninit(void)
+SN_STATUS SN_MODULE_FILE_SYSTEM_MachineInfoUninit(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
@@ -209,26 +235,26 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void)
 
     SN_SYS_Log("MODULE INIT => FILE SYSTEM.");
 
-    /** MESSAGE Q INIT **/
+    /* MESSAGE Q INIT */
     retStatus = SN_SYS_MessageQInit(&msgQIdFileSystem);
     SN_SYS_ERROR_CHECK(retStatus, "File System Module Message Q Init Failed.");
 
-    /** MUTEX INIT **/
+    /* MUTEX INIT */
     if (pthread_mutex_init(&ptmFileSystem, NULL) != 0)
     {
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System Mutex Init Failed.");
     }
 
-    /** THREAD INIT **/
+    /* THREAD INIT */
     if((retStatus = pthread_create(&ptFileSystem, NULL, sFileSystemThread, NULL)))
     {
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System Thread Init Failed.");
     }
 
-    /** USB DRIVER INIT **/
+    /* USB DRIVER INIT */
     SN_SYS_USBDriverInit(USBEvent_Callback);
 
-    /** MACHINE INFO INIT **/
+    /* MACHINE INFO INIT */
     SN_MODULE_FILE_SYSTEM_MachineInfoInit();
 
     return retStatus;
@@ -306,6 +332,12 @@ static void* sFileSystemThread()
     return NULL;
 }
 
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  USB Callback
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+
 static void* USBEvent_Callback(int evt)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
@@ -331,48 +363,11 @@ static void* USBEvent_Callback(int evt)
     return NULL;
 }
 
-static SN_STATUS sFileSystemMessagePut(evtFileSystem_t evtId, event_msg_t evtMessage)
-{
-    return SN_SYS_MessagePut(&msgQIdFileSystem, evtId, evtMessage);
-}
-
-
-/*
-static SN_STATUS sReadXMLFile(const char* srcPath)
-{
-    SN_STATUS retStatus = SN_STATUS_OK;
-    FILE* GCodeFile;
-    char* line = NULL;
-    size_t  len;
-    ssize_t read;
-    int i = 0;
-
-    GCodeFile = fopen(srcPath, "r");
-
-    if(GCodeFile != NULL)
-    {
-        printf("open gcode file faild.\n");
-        return SN_STATUS_INVALID_PARAM;
-    }
-
-    while((read = getline(&line, &len, GCodeFile)) != -1)
-    {
-        printf("%d :: %s\n", i, line); fflush(stdout);
-        i++;
-    }
-
-    fclose(GCodeFile);
-
-    printf("%d :: %s\n", i, line); fflush(stdout);
-
-    if(line)
-    {
-        free(line);
-    }
-
-    return retStatus;
-}
-*/
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  FILE SYSTEM CONTROL
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 
 static SN_STATUS sFileSystemRead(void)
 {
@@ -476,36 +471,11 @@ static SN_STATUS sFileSystemPrint(void)
     return retStatus;
 }
 
-/** Util Functions **/
-static const char* sGetFilenameExt(const char *filename)
-{
-    const char *dot = strrchr(filename, '.');
-
-    if(filename[0] == '.') return "";
-    if(!dot || dot == filename) return "";
-    return dot + 1;
-}
-
-static const char* sGetFilename(const char *filename)
-{
-    char *retstr;
-    char *lastdot;
-
-    if (filename == NULL)
-         return NULL;
-
-    if ((retstr = malloc (strlen (filename) + 1)) == NULL)
-        return NULL;
-
-    strcpy (retstr, filename);
-
-    lastdot = strrchr (retstr, '.');
-    if (lastdot != NULL)
-        *lastdot = '\0';
-
-    return retstr;
-}
-
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  TEMP FILE CONTROL
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 static uint32_t sCountSlice(const char* srcPath)
 {
     DIR *d = opendir(srcPath);
@@ -654,6 +624,42 @@ SN_STATUS sRemoveTempFile(const char* filePath)
     return SN_STATUS_OK;
 }
 
+/*
+static SN_STATUS sReadXMLFile(const char* srcPath)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    FILE* GCodeFile;
+    char* line = NULL;
+    size_t  len;
+    ssize_t read;
+    int i = 0;
+
+    GCodeFile = fopen(srcPath, "r");
+
+    if(GCodeFile != NULL)
+    {
+        printf("open gcode file faild.\n");
+        return SN_STATUS_INVALID_PARAM;
+    }
+
+    while((read = getline(&line, &len, GCodeFile)) != -1)
+    {
+        printf("%d :: %s\n", i, line); fflush(stdout);
+        i++;
+    }
+
+    fclose(GCodeFile);
+
+    printf("%d :: %s\n", i, line); fflush(stdout);
+
+    if(line)
+    {
+        free(line);
+    }
+
+    return retStatus;
+}
+*/
 
 static void safe_create_dir(const char *dir)
 {
@@ -741,11 +747,47 @@ SN_STATUS sExtractTempFile(const char* srcPath, const char* desPath)
 
     return retStatus;
 }
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  UTIL
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+static const char* sGetFilenameExt(const char *filename)
+{
+    const char *dot = strrchr(filename, '.');
 
+    if(filename[0] == '.') return "";
+    if(!dot || dot == filename) return "";
+    return dot + 1;
+}
+
+static const char* sGetFilename(const char *filename)
+{
+    char *retstr;
+    char *lastdot;
+
+    if (filename == NULL)
+         return NULL;
+
+    if ((retstr = malloc (strlen (filename) + 1)) == NULL)
+        return NULL;
+
+    strcpy (retstr, filename);
+
+    lastdot = strrchr (retstr, '.');
+    if (lastdot != NULL)
+        *lastdot = '\0';
+
+    return retstr;
+}
+
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  DEMO
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 static void sDemoPrintSetting(void)
 {
-
-    /** Parameter **/
     /* Base Paramter */
     moduleFileSystem.printInfo.printParameter.layerThickness          = 0.05000;//mm
 
@@ -773,3 +815,13 @@ static void sDemoMachineSetting(void)
     strcpy(moduleFileSystem.machineInfo.name, DEFAULT_DEVICE_NAME);
     moduleFileSystem.machineInfo.height           =          200;//mm
 }
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ * SYSTEM
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+static SN_STATUS sFileSystemMessagePut(evtFileSystem_t evtId, event_msg_t evtMessage)
+{
+    return SN_SYS_MessagePut(&msgQIdFileSystem, evtId, evtMessage);
+}
+

@@ -1,0 +1,318 @@
+\hypertarget{SN__MODULE__3D__PRINTER_8c}{}\section{M\+O\+D\+U\+L\+E/\+S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+ER.c File Reference}
+\label{SN__MODULE__3D__PRINTER_8c}\index{M\+O\+D\+U\+L\+E/\+S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{M\+O\+D\+U\+L\+E/\+S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}
+{\ttfamily \#include \char`\"{}S\+N\+\_\+\+A\+P\+I.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+E\+R.\+h\char`\"{}}\newline
+Include dependency graph for S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{SN__MODULE__3D__PRINTER_8c__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structmoduel__3d__printer}{moduel\+\_\+3d\+\_\+printer}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{SN__MODULE__3D__PRINTER_8c_a361e946e2049940ce6a56caddf5a18f0}{E\+S\+T\+I\+M\+A\+T\+E\+D\+\_\+\+B\+U\+I\+L\+D\+\_\+\+T\+I\+M\+E\+\_\+\+S\+E\+C\+\_\+\+C\+AL}(z\+\_\+delay,  uv\+\_\+delay,  uv\+\_\+bottom\+\_\+deleay,  num\+\_\+of\+\_\+layer,  num\+\_\+of\+\_\+bottom\+\_\+layer)~((((z\+\_\+delay) + (uv\+\_\+delay)) / 1000) $\ast$ ((num\+\_\+of\+\_\+layer) -\/ (num\+\_\+of\+\_\+bottom\+\_\+layer)) + (((uv\+\_\+bottom\+\_\+deleay + z\+\_\+delay) / 1000) $\ast$ (num\+\_\+of\+\_\+bottom\+\_\+layer)))
+\begin{DoxyCompactList}\small\item\em estimated build time calculator E\+S\+T\+I\+M\+A\+T\+E\+D\+\_\+\+B\+U\+I\+L\+D\+\_\+\+T\+I\+M\+E\+\_\+\+S\+E\+C\+\_\+\+C\+AL -\/ Def. funtion \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{Indent}\textbf{ Serial Config Define}\par
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_a86fd4404b140711fdb77326609c0f393}\label{SN__MODULE__3D__PRINTER_8c_a86fd4404b140711fdb77326609c0f393}} 
+\#define {\bfseries B\+Y\+T\+E\+\_\+\+S\+I\+ZE}~\hyperlink{group__SYSTEM__SERIAL__COMM_ga45345dabcfb671abba160a3dac350670}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+R\+E\+A\+L\+T\+I\+ME}
+\item 
+\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_ad4455691936f92fdd6c37566fc58ba1f}\label{SN__MODULE__3D__PRINTER_8c_ad4455691936f92fdd6c37566fc58ba1f}} 
+\#define {\bfseries B\+A\+U\+D\+\_\+\+R\+A\+TE}~S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+B\+A\+U\+D\+\_\+\+R\+A\+T\+E\+\_\+115200
+\item 
+\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_a5a0f6d20bbd813bb42026be07a61546b}\label{SN__MODULE__3D__PRINTER_8c_a5a0f6d20bbd813bb42026be07a61546b}} 
+\#define {\bfseries R\+E\+T\+U\+R\+N\+\_\+\+M\+O\+DE}~S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+T\+X\+\_\+\+N\+E\+W\+\_\+\+L\+I\+N\+E\+\_\+\+R\+E\+T\+U\+RN
+\item 
+\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_ade98bd4cd04d126a2dec0f4e0ab55650}\label{SN__MODULE__3D__PRINTER_8c_ade98bd4cd04d126a2dec0f4e0ab55650}} 
+\#define {\bfseries U\+A\+R\+T\+\_\+\+O\+F\+L\+A\+GS}~(O\+\_\+\+R\+D\+WR $\vert$ O\+\_\+\+N\+O\+C\+T\+TY $\vert$ O\+\_\+\+N\+O\+N\+B\+L\+O\+CK)
+\end{DoxyCompactItemize}
+\end{Indent}
+\begin{Indent}\textbf{ Printing Config Define}\par
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{SN__MODULE__3D__PRINTER_8c_a8d035fd9f86fac533b2d33534c0bcef4}{F\+I\+R\+S\+T\+\_\+\+S\+L\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME}~5000
+\item 
+\#define \hyperlink{SN__MODULE__3D__PRINTER_8c_afe24acc5c3c3e5e44eddf6bcbc688f61}{F\+I\+N\+I\+S\+H\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME}~50000
+\item 
+\#define \hyperlink{SN__MODULE__3D__PRINTER_8c_aa566db1a40d3471fc620d23519912482}{S\+T\+O\+P\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME}~10000
+\end{DoxyCompactItemize}
+\end{Indent}
+\begin{Indent}\textbf{ Other Define}\par
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{SN__MODULE__3D__PRINTER_8c_af6168edd26520974b8660182d040051a}{G\+C\+O\+D\+E\+\_\+\+B\+U\+F\+F\+E\+R\+\_\+\+S\+I\+ZE}~30
+\item 
+\#define \hyperlink{SN__MODULE__3D__PRINTER_8c_ad77a467852ad83019914973d6e2c6d31}{I\+N\+P\+U\+T\+\_\+\+C\+H\+A\+I\+N\+\_\+\+C\+O\+N\+D\+I\+T\+I\+ON}~3
+\end{DoxyCompactItemize}
+\end{Indent}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_abf9b3bbf15e03173bb845afefee07c90}\label{SN__MODULE__3D__PRINTER_8c_abf9b3bbf15e03173bb845afefee07c90}} 
+typedef enum \hyperlink{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0f}{device\+\_\+state} {\bfseries device\+State\+\_\+t}
+\item 
+\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_af33dc15f9be15faf2dc925f41819b798}\label{SN__MODULE__3D__PRINTER_8c_af33dc15f9be15faf2dc925f41819b798}} 
+typedef struct \hyperlink{structmoduel__3d__printer}{moduel\+\_\+3d\+\_\+printer} {\bfseries module3\+D\+Printer\+\_\+t}
+\item 
+\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_ad278b5768d77c0eca20256550b4a478f}\label{SN__MODULE__3D__PRINTER_8c_ad278b5768d77c0eca20256550b4a478f}} 
+typedef enum \hyperlink{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93c}{event\+\_\+3d\+\_\+printer\+\_\+message} {\bfseries evt3\+D\+Printer\+\_\+t}
+\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0f}{device\+\_\+state} \{ \newline
+\hyperlink{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fac4141ec776a3f91250778842cb3cca7d}{D\+E\+V\+I\+C\+E\+\_\+\+S\+T\+A\+N\+D\+BY}, 
+\hyperlink{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fa5b3e76c02f24f0d0df34a05a0da59358}{D\+E\+V\+I\+C\+E\+\_\+\+I\+N\+IT}, 
+\hyperlink{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fa14ba6379ebff00cfbb75cc348d22954c}{D\+E\+V\+I\+C\+E\+\_\+\+P\+R\+I\+N\+T\+I\+NG}, 
+\hyperlink{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fa80a47159ec3a8bea095ff5f2463ad98d}{D\+E\+V\+I\+C\+E\+\_\+\+P\+A\+U\+SE}, 
+\newline
+\hyperlink{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0faa6c5e5acbc9c3626c1ef2c894015d6d1}{D\+E\+V\+I\+C\+E\+\_\+\+R\+E\+S\+U\+ME}, 
+\hyperlink{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fa5739343ed25c72f71fa6f9456c3ea945}{D\+E\+V\+I\+C\+E\+\_\+\+S\+T\+OP}, 
+\hyperlink{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fad2582b0500a849ebbc11916b84211e36}{D\+E\+V\+I\+C\+E\+\_\+\+F\+I\+N\+I\+SH}, 
+\hyperlink{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fab2185057f66cb8d6b7ea99f146be11f2}{D\+E\+V\+I\+C\+E\+\_\+\+B\+U\+SY}, 
+\newline
+\hyperlink{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fa3e302cce6b1fef39d1af5c09dcc5cd1f}{D\+E\+V\+I\+C\+E\+\_\+\+H\+O\+M\+I\+NG}, 
+\hyperlink{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fa50c30a23dea6c506c49b17b601ae2c4e}{D\+E\+V\+I\+C\+E\+\_\+\+N\+O\+NE}
+ \}
+\item 
+enum \hyperlink{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93c}{event\+\_\+3d\+\_\+printer\+\_\+message} \{ \newline
+\hyperlink{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93caeb12ed6755f90036a6def274f1705834}{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+I\+N\+IT} = 0, 
+\hyperlink{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93ca29c3bab34c0834e23b9a6f0567d88776}{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+C\+Y\+C\+LE}, 
+\hyperlink{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93ca239c3c1de600da086e8af2750b8666c2}{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+Z\+\_\+\+L\+I\+FT}, 
+\hyperlink{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93caf613e9f9d380fd82e6c5861570afe65f}{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+P\+A\+U\+SE}, 
+\newline
+\hyperlink{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93caa25410b4a2f3a4d7dfeca849b95f54b1}{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+R\+E\+S\+U\+ME}, 
+\hyperlink{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93cacfd3a8295b72d77dbd6fabe554793f2e}{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+S\+T\+OP}, 
+\hyperlink{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93caf96c559fb8aa50e8c3d1b1713d44d4f2}{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+F\+I\+N\+I\+SH}, 
+\hyperlink{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93ca095ce6291f7f4cf157e483c098990a98}{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+H\+O\+M\+M\+I\+NG}, 
+\newline
+\hyperlink{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93caeee5d7bc3016df70276e2d335cf371d3}{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+S\+T\+A\+N\+D\+BY}, 
+\hyperlink{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93ca65e23858f476fe3a3937fe25c85ebb54}{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+N\+O\+NE}, 
+\hyperlink{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93ca24940221cf155a9a11e79c4db630bb3c}{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+I\+G\+N\+O\+RE} = 0x\+F\+F01
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_aadce2bdf1f6c733052e82bfcfe1ba944}\label{SN__MODULE__3D__PRINTER_8c_aadce2bdf1f6c733052e82bfcfe1ba944}} 
+{\bfseries sys\+Serial\+Def} (3\+D\+Printer\+Serial, U\+A\+R\+T\+\_\+\+D\+E\+V\+I\+C\+E, U\+A\+R\+T\+\_\+\+O\+F\+L\+A\+G\+S, B\+A\+U\+D\+\_\+\+R\+A\+T\+E, B\+Y\+T\+E\+\_\+\+S\+I\+Z\+E, R\+E\+T\+U\+R\+N\+\_\+\+M\+O\+D\+E)
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__MODULE__3D__PRINTER_ga801e265ffe6f8c56081112f4fdd35f39}{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+Init} (void)
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__MODULE__3D__PRINTER_ga776f5e31b0c0e176e35669f9432baec0}{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+Uninit} (void)
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__MODULE__3D__PRINTER_gafc569784fa8758bec7c2f90b1a7f1404}{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+M\+O\+T\+O\+R\+\_\+\+I\+N\+IT} (void)
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__MODULE__3D__PRINTER_gafa7b9a2a41989695e1b881b984794432}{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+Z\+\_\+\+H\+O\+M\+I\+NG} (void)
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__MODULE__3D__PRINTER_ga4671a91d49ef53f67f1d203f18355c63}{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+Z\+\_\+\+UP} (float mm)
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__MODULE__3D__PRINTER_ga5747a0d753cb9d79747db6f4a22b18e9}{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+Z\+\_\+\+D\+O\+WN} (float mm)
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__MODULE__3D__PRINTER_ga439ebb10f8ee839218655c5177e9110b}{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+Start} (uint32\+\_\+t page\+Index, uint32\+\_\+t item\+Index)
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__MODULE__3D__PRINTER_ga84a03238ddc0021011c12839757bf8c2}{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+Pause} (void)
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__MODULE__3D__PRINTER_gaabec8b5f01119d989d725eff26053ca5}{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+Resume} (void)
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__MODULE__3D__PRINTER_ga21ca69a451fafe2c9218c9a1737e1f15}{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+Stop} (void)
+\end{DoxyCompactItemize}
+\begin{Indent}\textbf{ Static Print Control Funtions}\par
+{\em Description of Display Module Init and Uninit funtions. }\end{Indent}
+
+
+\subsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Bato 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+10 Oct 2018
+\end{DoxyDate}
+\begin{DoxySeeAlso}{See also}
+\href{http://www.stack.nl/~dimitri/doxygen/docblocks.html}{\tt http\+://www.\+stack.\+nl/$\sim$dimitri/doxygen/docblocks.\+html} 
+
+\href{http://www.stack.nl/~dimitri/doxygen/commands.html}{\tt http\+://www.\+stack.\+nl/$\sim$dimitri/doxygen/commands.\+html} 
+\end{DoxySeeAlso}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_a361e946e2049940ce6a56caddf5a18f0}\label{SN__MODULE__3D__PRINTER_8c_a361e946e2049940ce6a56caddf5a18f0}} 
+\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!E\+S\+T\+I\+M\+A\+T\+E\+D\+\_\+\+B\+U\+I\+L\+D\+\_\+\+T\+I\+M\+E\+\_\+\+S\+E\+C\+\_\+\+C\+AL@{E\+S\+T\+I\+M\+A\+T\+E\+D\+\_\+\+B\+U\+I\+L\+D\+\_\+\+T\+I\+M\+E\+\_\+\+S\+E\+C\+\_\+\+C\+AL}}
+\index{E\+S\+T\+I\+M\+A\+T\+E\+D\+\_\+\+B\+U\+I\+L\+D\+\_\+\+T\+I\+M\+E\+\_\+\+S\+E\+C\+\_\+\+C\+AL@{E\+S\+T\+I\+M\+A\+T\+E\+D\+\_\+\+B\+U\+I\+L\+D\+\_\+\+T\+I\+M\+E\+\_\+\+S\+E\+C\+\_\+\+C\+AL}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}
+\subsubsection{\texorpdfstring{E\+S\+T\+I\+M\+A\+T\+E\+D\+\_\+\+B\+U\+I\+L\+D\+\_\+\+T\+I\+M\+E\+\_\+\+S\+E\+C\+\_\+\+C\+AL}{ESTIMATED\_BUILD\_TIME\_SEC\_CAL}}
+{\footnotesize\ttfamily \#define E\+S\+T\+I\+M\+A\+T\+E\+D\+\_\+\+B\+U\+I\+L\+D\+\_\+\+T\+I\+M\+E\+\_\+\+S\+E\+C\+\_\+\+C\+AL(\begin{DoxyParamCaption}\item[{}]{z\+\_\+delay,  }\item[{}]{uv\+\_\+delay,  }\item[{}]{uv\+\_\+bottom\+\_\+deleay,  }\item[{}]{num\+\_\+of\+\_\+layer,  }\item[{}]{num\+\_\+of\+\_\+bottom\+\_\+layer }\end{DoxyParamCaption})~((((z\+\_\+delay) + (uv\+\_\+delay)) / 1000) $\ast$ ((num\+\_\+of\+\_\+layer) -\/ (num\+\_\+of\+\_\+bottom\+\_\+layer)) + (((uv\+\_\+bottom\+\_\+deleay + z\+\_\+delay) / 1000) $\ast$ (num\+\_\+of\+\_\+bottom\+\_\+layer)))}
+
+
+
+estimated build time calculator E\+S\+T\+I\+M\+A\+T\+E\+D\+\_\+\+B\+U\+I\+L\+D\+\_\+\+T\+I\+M\+E\+\_\+\+S\+E\+C\+\_\+\+C\+AL -\/ Def. funtion 
+
+
+\begin{DoxyParams}{Parameters}
+{\em z\+\_\+delay} & \\
+\hline
+{\em uv\+\_\+delay} & \\
+\hline
+{\em uv\+\_\+bottom\+\_\+delay} & \\
+\hline
+{\em num\+\_\+of\+\_\+layer} & \\
+\hline
+{\em num\+\_\+of\+\_\+bottom\+\_\+layer} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+estimated build time (sec) 
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+
+\end{DoxyNote}
+\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_afe24acc5c3c3e5e44eddf6bcbc688f61}\label{SN__MODULE__3D__PRINTER_8c_afe24acc5c3c3e5e44eddf6bcbc688f61}} 
+\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!F\+I\+N\+I\+S\+H\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME@{F\+I\+N\+I\+S\+H\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME}}
+\index{F\+I\+N\+I\+S\+H\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME@{F\+I\+N\+I\+S\+H\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}
+\subsubsection{\texorpdfstring{F\+I\+N\+I\+S\+H\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME}{FINISH\_DEVICE\_DELAY\_TIME}}
+{\footnotesize\ttfamily \#define F\+I\+N\+I\+S\+H\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME~50000}
+
+finish device delay -\/ \begin{DoxyReturn}{Returns}
+msec 
+\end{DoxyReturn}
+\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_a8d035fd9f86fac533b2d33534c0bcef4}\label{SN__MODULE__3D__PRINTER_8c_a8d035fd9f86fac533b2d33534c0bcef4}} 
+\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!F\+I\+R\+S\+T\+\_\+\+S\+L\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME@{F\+I\+R\+S\+T\+\_\+\+S\+L\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME}}
+\index{F\+I\+R\+S\+T\+\_\+\+S\+L\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME@{F\+I\+R\+S\+T\+\_\+\+S\+L\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}
+\subsubsection{\texorpdfstring{F\+I\+R\+S\+T\+\_\+\+S\+L\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME}{FIRST\_SLICE\_DELAY\_TIME}}
+{\footnotesize\ttfamily \#define F\+I\+R\+S\+T\+\_\+\+S\+L\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME~5000}
+
+first slice getin delay -\/ \begin{DoxyReturn}{Returns}
+msec 
+\end{DoxyReturn}
+\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_af6168edd26520974b8660182d040051a}\label{SN__MODULE__3D__PRINTER_8c_af6168edd26520974b8660182d040051a}} 
+\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!G\+C\+O\+D\+E\+\_\+\+B\+U\+F\+F\+E\+R\+\_\+\+S\+I\+ZE@{G\+C\+O\+D\+E\+\_\+\+B\+U\+F\+F\+E\+R\+\_\+\+S\+I\+ZE}}
+\index{G\+C\+O\+D\+E\+\_\+\+B\+U\+F\+F\+E\+R\+\_\+\+S\+I\+ZE@{G\+C\+O\+D\+E\+\_\+\+B\+U\+F\+F\+E\+R\+\_\+\+S\+I\+ZE}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}
+\subsubsection{\texorpdfstring{G\+C\+O\+D\+E\+\_\+\+B\+U\+F\+F\+E\+R\+\_\+\+S\+I\+ZE}{GCODE\_BUFFER\_SIZE}}
+{\footnotesize\ttfamily \#define G\+C\+O\+D\+E\+\_\+\+B\+U\+F\+F\+E\+R\+\_\+\+S\+I\+ZE~30}
+
+gcode max buffer size \mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_ad77a467852ad83019914973d6e2c6d31}\label{SN__MODULE__3D__PRINTER_8c_ad77a467852ad83019914973d6e2c6d31}} 
+\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!I\+N\+P\+U\+T\+\_\+\+C\+H\+A\+I\+N\+\_\+\+C\+O\+N\+D\+I\+T\+I\+ON@{I\+N\+P\+U\+T\+\_\+\+C\+H\+A\+I\+N\+\_\+\+C\+O\+N\+D\+I\+T\+I\+ON}}
+\index{I\+N\+P\+U\+T\+\_\+\+C\+H\+A\+I\+N\+\_\+\+C\+O\+N\+D\+I\+T\+I\+ON@{I\+N\+P\+U\+T\+\_\+\+C\+H\+A\+I\+N\+\_\+\+C\+O\+N\+D\+I\+T\+I\+ON}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}
+\subsubsection{\texorpdfstring{I\+N\+P\+U\+T\+\_\+\+C\+H\+A\+I\+N\+\_\+\+C\+O\+N\+D\+I\+T\+I\+ON}{INPUT\_CHAIN\_CONDITION}}
+{\footnotesize\ttfamily \#define I\+N\+P\+U\+T\+\_\+\+C\+H\+A\+I\+N\+\_\+\+C\+O\+N\+D\+I\+T\+I\+ON~3}
+
+multiple touch condition \mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_aa566db1a40d3471fc620d23519912482}\label{SN__MODULE__3D__PRINTER_8c_aa566db1a40d3471fc620d23519912482}} 
+\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!S\+T\+O\+P\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME@{S\+T\+O\+P\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME}}
+\index{S\+T\+O\+P\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME@{S\+T\+O\+P\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}
+\subsubsection{\texorpdfstring{S\+T\+O\+P\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME}{STOP\_DEVICE\_DELAY\_TIME}}
+{\footnotesize\ttfamily \#define S\+T\+O\+P\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+T\+I\+ME~10000}
+
+stop device delay -\/ \begin{DoxyReturn}{Returns}
+msec 
+\end{DoxyReturn}
+
+
+\subsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0f}\label{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0f}} 
+\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!device\+\_\+state@{device\+\_\+state}}
+\index{device\+\_\+state@{device\+\_\+state}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}
+\subsubsection{\texorpdfstring{device\+\_\+state}{device\_state}}
+{\footnotesize\ttfamily enum \hyperlink{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0f}{device\+\_\+state}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{D\+E\+V\+I\+C\+E\+\_\+\+S\+T\+A\+N\+D\+BY@{D\+E\+V\+I\+C\+E\+\_\+\+S\+T\+A\+N\+D\+BY}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!D\+E\+V\+I\+C\+E\+\_\+\+S\+T\+A\+N\+D\+BY@{D\+E\+V\+I\+C\+E\+\_\+\+S\+T\+A\+N\+D\+BY}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fac4141ec776a3f91250778842cb3cca7d}\label{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fac4141ec776a3f91250778842cb3cca7d}} 
+D\+E\+V\+I\+C\+E\+\_\+\+S\+T\+A\+N\+D\+BY&D\+E\+V\+I\+C\+E\+\_\+\+S\+T\+A\+N\+D\+BY. Device Ready to Working \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{D\+E\+V\+I\+C\+E\+\_\+\+I\+N\+IT@{D\+E\+V\+I\+C\+E\+\_\+\+I\+N\+IT}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!D\+E\+V\+I\+C\+E\+\_\+\+I\+N\+IT@{D\+E\+V\+I\+C\+E\+\_\+\+I\+N\+IT}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fa5b3e76c02f24f0d0df34a05a0da59358}\label{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fa5b3e76c02f24f0d0df34a05a0da59358}} 
+D\+E\+V\+I\+C\+E\+\_\+\+I\+N\+IT&D\+E\+V\+I\+C\+E\+\_\+\+I\+N\+IT. Device Initializing \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{D\+E\+V\+I\+C\+E\+\_\+\+P\+R\+I\+N\+T\+I\+NG@{D\+E\+V\+I\+C\+E\+\_\+\+P\+R\+I\+N\+T\+I\+NG}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!D\+E\+V\+I\+C\+E\+\_\+\+P\+R\+I\+N\+T\+I\+NG@{D\+E\+V\+I\+C\+E\+\_\+\+P\+R\+I\+N\+T\+I\+NG}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fa14ba6379ebff00cfbb75cc348d22954c}\label{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fa14ba6379ebff00cfbb75cc348d22954c}} 
+D\+E\+V\+I\+C\+E\+\_\+\+P\+R\+I\+N\+T\+I\+NG&D\+E\+V\+I\+C\+E\+\_\+\+P\+R\+I\+N\+T\+I\+NG. Device Now Printing $<$ Motor Lift or UV on $>$ \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{D\+E\+V\+I\+C\+E\+\_\+\+P\+A\+U\+SE@{D\+E\+V\+I\+C\+E\+\_\+\+P\+A\+U\+SE}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!D\+E\+V\+I\+C\+E\+\_\+\+P\+A\+U\+SE@{D\+E\+V\+I\+C\+E\+\_\+\+P\+A\+U\+SE}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fa80a47159ec3a8bea095ff5f2463ad98d}\label{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fa80a47159ec3a8bea095ff5f2463ad98d}} 
+D\+E\+V\+I\+C\+E\+\_\+\+P\+A\+U\+SE&D\+E\+V\+I\+C\+E\+\_\+\+P\+A\+U\+SE. Trying Device Pause \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{D\+E\+V\+I\+C\+E\+\_\+\+R\+E\+S\+U\+ME@{D\+E\+V\+I\+C\+E\+\_\+\+R\+E\+S\+U\+ME}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!D\+E\+V\+I\+C\+E\+\_\+\+R\+E\+S\+U\+ME@{D\+E\+V\+I\+C\+E\+\_\+\+R\+E\+S\+U\+ME}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0faa6c5e5acbc9c3626c1ef2c894015d6d1}\label{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0faa6c5e5acbc9c3626c1ef2c894015d6d1}} 
+D\+E\+V\+I\+C\+E\+\_\+\+R\+E\+S\+U\+ME&D\+E\+V\+I\+C\+E\+\_\+\+R\+E\+S\+U\+ME. Trying Device Resume \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{D\+E\+V\+I\+C\+E\+\_\+\+S\+T\+OP@{D\+E\+V\+I\+C\+E\+\_\+\+S\+T\+OP}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!D\+E\+V\+I\+C\+E\+\_\+\+S\+T\+OP@{D\+E\+V\+I\+C\+E\+\_\+\+S\+T\+OP}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fa5739343ed25c72f71fa6f9456c3ea945}\label{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fa5739343ed25c72f71fa6f9456c3ea945}} 
+D\+E\+V\+I\+C\+E\+\_\+\+S\+T\+OP&D\+E\+V\+I\+C\+E\+\_\+\+S\+T\+OP. Trying Device Stop \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{D\+E\+V\+I\+C\+E\+\_\+\+F\+I\+N\+I\+SH@{D\+E\+V\+I\+C\+E\+\_\+\+F\+I\+N\+I\+SH}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!D\+E\+V\+I\+C\+E\+\_\+\+F\+I\+N\+I\+SH@{D\+E\+V\+I\+C\+E\+\_\+\+F\+I\+N\+I\+SH}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fad2582b0500a849ebbc11916b84211e36}\label{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fad2582b0500a849ebbc11916b84211e36}} 
+D\+E\+V\+I\+C\+E\+\_\+\+F\+I\+N\+I\+SH&D\+E\+V\+I\+C\+E\+\_\+\+F\+I\+N\+I\+SH. Trying Device Finising \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{D\+E\+V\+I\+C\+E\+\_\+\+B\+U\+SY@{D\+E\+V\+I\+C\+E\+\_\+\+B\+U\+SY}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!D\+E\+V\+I\+C\+E\+\_\+\+B\+U\+SY@{D\+E\+V\+I\+C\+E\+\_\+\+B\+U\+SY}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fab2185057f66cb8d6b7ea99f146be11f2}\label{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fab2185057f66cb8d6b7ea99f146be11f2}} 
+D\+E\+V\+I\+C\+E\+\_\+\+B\+U\+SY&D\+E\+V\+I\+C\+E\+\_\+\+B\+U\+SY. Device Working Now \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{D\+E\+V\+I\+C\+E\+\_\+\+H\+O\+M\+I\+NG@{D\+E\+V\+I\+C\+E\+\_\+\+H\+O\+M\+I\+NG}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!D\+E\+V\+I\+C\+E\+\_\+\+H\+O\+M\+I\+NG@{D\+E\+V\+I\+C\+E\+\_\+\+H\+O\+M\+I\+NG}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fa3e302cce6b1fef39d1af5c09dcc5cd1f}\label{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fa3e302cce6b1fef39d1af5c09dcc5cd1f}} 
+D\+E\+V\+I\+C\+E\+\_\+\+H\+O\+M\+I\+NG&D\+E\+V\+I\+C\+E\+\_\+\+H\+O\+M\+I\+NG. Device Homing Now \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{D\+E\+V\+I\+C\+E\+\_\+\+N\+O\+NE@{D\+E\+V\+I\+C\+E\+\_\+\+N\+O\+NE}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!D\+E\+V\+I\+C\+E\+\_\+\+N\+O\+NE@{D\+E\+V\+I\+C\+E\+\_\+\+N\+O\+NE}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fa50c30a23dea6c506c49b17b601ae2c4e}\label{SN__MODULE__3D__PRINTER_8c_a3322f575207e76f4d154936e39196d0fa50c30a23dea6c506c49b17b601ae2c4e}} 
+D\+E\+V\+I\+C\+E\+\_\+\+N\+O\+NE&D\+E\+V\+I\+C\+E\+\_\+\+N\+O\+NE. B\+AD A\+C\+C\+E\+SS \\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93c}\label{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93c}} 
+\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!event\+\_\+3d\+\_\+printer\+\_\+message@{event\+\_\+3d\+\_\+printer\+\_\+message}}
+\index{event\+\_\+3d\+\_\+printer\+\_\+message@{event\+\_\+3d\+\_\+printer\+\_\+message}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}
+\subsubsection{\texorpdfstring{event\+\_\+3d\+\_\+printer\+\_\+message}{event\_3d\_printer\_message}}
+{\footnotesize\ttfamily enum \hyperlink{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93c}{event\+\_\+3d\+\_\+printer\+\_\+message}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+I\+N\+IT@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+I\+N\+IT}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+I\+N\+IT@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+I\+N\+IT}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93caeb12ed6755f90036a6def274f1705834}\label{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93caeb12ed6755f90036a6def274f1705834}} 
+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+I\+N\+IT&Printing Init \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+C\+Y\+C\+LE@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+C\+Y\+C\+LE}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+C\+Y\+C\+LE@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+C\+Y\+C\+LE}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93ca29c3bab34c0834e23b9a6f0567d88776}\label{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93ca29c3bab34c0834e23b9a6f0567d88776}} 
+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+C\+Y\+C\+LE&Turn On UV and Update Image \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+Z\+\_\+\+L\+I\+FT@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+Z\+\_\+\+L\+I\+FT}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+Z\+\_\+\+L\+I\+FT@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+Z\+\_\+\+L\+I\+FT}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93ca239c3c1de600da086e8af2750b8666c2}\label{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93ca239c3c1de600da086e8af2750b8666c2}} 
+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+Z\+\_\+\+L\+I\+FT&Motor Lift. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+P\+A\+U\+SE@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+P\+A\+U\+SE}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+P\+A\+U\+SE@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+P\+A\+U\+SE}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93caf613e9f9d380fd82e6c5861570afe65f}\label{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93caf613e9f9d380fd82e6c5861570afe65f}} 
+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+P\+A\+U\+SE&Printing Pause \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+R\+E\+S\+U\+ME@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+R\+E\+S\+U\+ME}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+R\+E\+S\+U\+ME@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+R\+E\+S\+U\+ME}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93caa25410b4a2f3a4d7dfeca849b95f54b1}\label{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93caa25410b4a2f3a4d7dfeca849b95f54b1}} 
+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+R\+E\+S\+U\+ME&Printing Resume ( When Pause ) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+S\+T\+OP@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+S\+T\+OP}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+S\+T\+OP@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+S\+T\+OP}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93cacfd3a8295b72d77dbd6fabe554793f2e}\label{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93cacfd3a8295b72d77dbd6fabe554793f2e}} 
+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+S\+T\+OP&Printing Stop \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+F\+I\+N\+I\+SH@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+F\+I\+N\+I\+SH}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+F\+I\+N\+I\+SH@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+F\+I\+N\+I\+SH}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93caf96c559fb8aa50e8c3d1b1713d44d4f2}\label{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93caf96c559fb8aa50e8c3d1b1713d44d4f2}} 
+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+R\+I\+N\+T\+I\+N\+G\+\_\+\+F\+I\+N\+I\+SH&Printing Finish \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+H\+O\+M\+M\+I\+NG@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+H\+O\+M\+M\+I\+NG}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+H\+O\+M\+M\+I\+NG@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+H\+O\+M\+M\+I\+NG}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93ca095ce6291f7f4cf157e483c098990a98}\label{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93ca095ce6291f7f4cf157e483c098990a98}} 
+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+H\+O\+M\+M\+I\+NG&Z Homing \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+S\+T\+A\+N\+D\+BY@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+S\+T\+A\+N\+D\+BY}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+S\+T\+A\+N\+D\+BY@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+S\+T\+A\+N\+D\+BY}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93caeee5d7bc3016df70276e2d335cf371d3}\label{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93caeee5d7bc3016df70276e2d335cf371d3}} 
+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+S\+T\+A\+N\+D\+BY&Device Standby \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+N\+O\+NE@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+N\+O\+NE}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+N\+O\+NE@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+N\+O\+NE}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93ca65e23858f476fe3a3937fe25c85ebb54}\label{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93ca65e23858f476fe3a3937fe25c85ebb54}} 
+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+N\+O\+NE&B\+AD A\+C\+C\+E\+SS \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+I\+G\+N\+O\+RE@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+I\+G\+N\+O\+RE}!S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}}\index{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c@{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R.\+c}!M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+I\+G\+N\+O\+RE@{M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+I\+G\+N\+O\+RE}}}\mbox{\Hypertarget{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93ca24940221cf155a9a11e79c4db630bb3c}\label{SN__MODULE__3D__PRINTER_8c_ace39a9a0abfec103d37b5f252401e93ca24940221cf155a9a11e79c4db630bb3c}} 
+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+I\+G\+N\+O\+RE&Came From Timer -\/ Don\textquotesingle{}t Care \\
+\hline
+
+\end{DoxyEnumFields}

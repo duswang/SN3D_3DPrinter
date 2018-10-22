@@ -1,22 +1,21 @@
-/*
- * SN_MODULE_DISPLAY.c
+/**
+ * @file SN_MODULE_DISPLAY.c
+ * @author Bato
+ * @date 18 Sep 2018
+ * @brief
  *
- *  Created on: Sep 18, 2018
- *      Author: bart
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  */
 
 #include "SN_API.h"
 #include "SN_MODULE_DISPLAY.h"
-/******** STATIC DEFINE ********/
 
-#define DEFAULT_BUFFER_SIZE 256
-
-/**** SERIAL CONFIG ****/
+/* ******* STATIC DEFINE ******* */
+/** @name Serial Config Define */ ///@{
 #define BYTE_SIZE   SN_SYS_SERIAL_COMM_RX_REALTIME
 #define BAUD_RATE   SN_SYS_SERIAL_COMM_BAUD_RATE_9600
 #define RETURN_MODE SN_SYS_SERIAL_COMM_TX_NX_RETURN
-
-#define TIMER_INDICATE_INTERVAL 1000// (1 sec)
 
 #ifdef __APPLE__
 #define UART_DEVICE "/dev/cu.usbmodem1421"
@@ -26,6 +25,12 @@
 #endif
 
 #define UART_OFLAGS  O_RDWR | O_NOCTTY | O_NONBLOCK
+///@}
+
+/** @name Other Define */ ///@{
+#define DEFAULT_BUFFER_SIZE 256
+#define TIMER_INDICATE_INTERVAL 1000 /**< 1 second */
+///@}
 
 typedef struct time_display {
     uint32_t sec;
@@ -33,7 +38,7 @@ typedef struct time_display {
     uint32_t hour;
 } timeInfo_t;
 
-/**** MODULE ****/
+/* *** MODULE *** */
 typedef struct moduel_display {
 
     /** Timer Info **/
@@ -45,50 +50,50 @@ typedef struct moduel_display {
     fs_t fs;
 } moduleDisplay_t;
 
-/******** SYSTEM DEFINE ********/
-/**** MODULE THREAD ****/
+/* ******* SYSTEM DEFINE ******* */
+/* *** MODULE THREAD *** */
 static pthread_mutex_t ptmDisplay = PTHREAD_MUTEX_INITIALIZER;
 static pthread_t       ptDisplay;
 
-/**** MODULE SERIAL ****/
+/* *** MODULE SERIAL *** */
 sysSerialDef(DisplaySerial, UART_DEVICE, UART_OFLAGS, BAUD_RATE, BYTE_SIZE, RETURN_MODE);
 static sysSerialId serialIdDisplay;
 
-/**** MODULE MESSAGE Q ****/
+/* *** MODULE MESSAGE Q *** */
 static sysMessageQId   msgQIdDisplay;
-    /**** MODULE MESSAGES ****/
-typedef enum {
-    MSG_DISPLAY_EVENT_GET         = 0,
-    MSG_DISPLAY_UPDATE_IMAGE,
-    MSG_DISPLAY_TIME_INFO_TIMER_UPDATE,
-    MSG_DISPLAY_NONE,
-    MSG_DISPLAY_IGNORE          = 0xFF01
+    /* *** MODULE MESSAGES *** */
+typedef enum event_display_message {
+    MSG_DISPLAY_EVENT_GET         = 0,      /**< Serial message get from nextion display */
+    MSG_DISPLAY_UPDATE_IMAGE,               /**< Update Image on printing page */
+    MSG_DISPLAY_TIME_INFO_TIMER_UPDATE,     /**< Time Info Update */
+    MSG_DISPLAY_NONE,                       /**< BAD ACCESS */
+    MSG_DISPLAY_IGNORE            = 0xFF01  /**< Came From Timer - Don't Care */
 } evtDisplay_t;
 
-/**** MODULE TIMER ****/
+/* *** MODULE TIMER *** */
 static sysTimerId_t timerTimeIndicate;
 
-/**** MODULE HANDLER  ****/
+/* *** MODULE HANDLER  *** */
 static moduleDisplay_t moduleDisplay;
 
-/******** GLOBAL VARIABLE ********/
+/* ******* GLOBAL VARIABLE ******* */
 
-/******** STATIC FUNCTIONS ********/
-/**** SYSTEM ****/
+/* ******* STATIC FUNCTIONS ******* */
+/* *** SYSTEM *** */
 static void* sDisplayThread();
 static SN_STATUS sDisplayMessagePut(event_id_t evtDisplay_t, event_msg_t evtMessage);
 
-/**** TIMER ****/
-void sTMR_TimerUpdate_UpdateCallback(void);
+/* *** TIMER *** */
+static void sTMR_TimerUpdate_UpdateCallback(void);
 
-/**** SERIAL ****/
+/* *** SERIAL *** */
 static void* sSerialRx_Callback(char *rxBuffer);
 static SN_STATUS sSendCommand(char* command, size_t bufferSize);
 
-/**** TIME INFO ****/
-SN_STATUS sDisplay_TimerInfoUpdate(void);
+/* *** TIME INFO *** */
+static SN_STATUS sDisplay_TimerInfoUpdate(void);
 
-/**** UTIL ****/
+/* *** UTIL *** */
 static timeInfo_t sSecToTimeInfo(uint32_t sec);
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
@@ -103,24 +108,24 @@ SN_STATUS SN_MODULE_DISPLAY_Init(void)
 
     SN_SYS_Log("MODULE INIT => NEXTION DISPLAY.");
 
-    /** MESSAGE Q INIT **/
+    /* MESSAGE Q INIT */
     retStatus = SN_SYS_MessageQInit(&msgQIdDisplay);
     SN_SYS_ERROR_CHECK(retStatus, "Display Module Message Q Init Failed.");
 
-    /** SERIAL INIT **/
+    /* SERIAL INIT */
     serialIdDisplay = SN_SYS_SerialCreate(sysSerial(DisplaySerial), sSerialRx_Callback);
     if(serialIdDisplay == NULL)
     {
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Display Serial Init Failed.");
     }
 
-    /** MUTEX INIT **/
+    /* MUTEX INIT */
     if (pthread_mutex_init(&ptmDisplay, NULL) != 0)
     {
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Display Mutex Init Failed.");
     }
 
-    /** THREAD INIT **/
+    /* THREAD INIT */
     if((retStatus = pthread_create(&ptDisplay, NULL, sDisplayThread, NULL)))
     {
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Display Thread Init Failed.");
@@ -300,13 +305,13 @@ SN_STATUS SN_MODULE_DISPLAY_FileSelectUpdate(uint32_t page)
     int itemIndex = 0;
     char buffer[256];
 
-    /** Get File System **/
+    /* Get File System */
     retStatus = SN_MODULE_FILE_SYSTEM_Get(&moduleDisplay.fs);
     SN_SYS_ERROR_CHECK(retStatus, "Get File System Failed.");
 
     if(moduleDisplay.fs.isItemExist)
     {
-        /** Send to Nextion Display **/
+        /* Send to Nextion Display */
         if(page <= moduleDisplay.fs.pageCnt)
         {
             for(itemIndex = 0; itemIndex < MAX_ITEM_SIZE; itemIndex++)
@@ -336,7 +341,7 @@ SN_STATUS SN_MODULE_DISPLAY_FileSelectUpdate(uint32_t page)
         }
     }
 
-    /** Item Count Send **/
+    /* Item Count Send */
     sprintf(buffer,"Item_Cnt.val=%d", moduleDisplay.fs.page[page].itemCnt);
 
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
@@ -456,11 +461,11 @@ static void* sSerialRx_Callback(char * rxBuffer)
  *  Timer Callback
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-void sTMR_TimerUpdate_UpdateCallback(void)
+static void sTMR_TimerUpdate_UpdateCallback(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    /** INCREASE ONE SECOND **/
+    /* INCREASE ONE SECOND */
     moduleDisplay.secNowTime++;
 
     retStatus = sDisplayMessagePut(MSG_DISPLAY_TIME_INFO_TIMER_UPDATE, 0);
@@ -473,7 +478,7 @@ void sTMR_TimerUpdate_UpdateCallback(void)
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 
-SN_STATUS sDisplay_TimerInfoUpdate(void)
+static SN_STATUS sDisplay_TimerInfoUpdate(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     char buffer[DEFAULT_BUFFER_SIZE];

@@ -1,10 +1,18 @@
-/*
- * SN_SYS_SERIAL_COMM.h
+/**
+ * @file SN_SYS_SERIAL_COMM.h
+ * @author Bato
+ * @date 18 Sep 2018
+ * @brief
  *
- *  Created on: Sep 18, 2018
- *      Author: pi
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  */
-
+/**
+ * @defgroup SYSTEM_SERIAL_COMM Serial
+ * @ingroup SYSTEM
+ * @brief Serial System Functions.
+ * @{
+ */
 #ifndef SN_SYS_SERIAL_COMM
 #define SN_SYS_SERIAL_COMM
 
@@ -39,9 +47,21 @@ typedef struct sys_serial_q {
     bool isAvailable;
 } sysSerialQ;
 
+/** @brief def Serial
+ *  def serial for get SerialId
+ *
+ *  @param name
+ *  @param device
+ *  @param oflags
+ *  @param baudRate
+ *  @param rxByteSize
+ *  @param rxReturnMode
+ *
+ *  @note
+ */
 #define sysSerialDef(name, device, oflags, baudRate, rxByteSize, rxReturnMode)   \
-    char buffer##name[SN_SYS_SERIAL_COMM_BUFFER_SIZE]; \
-    const sysSerialDef_t sys_serial_def_##name = \
+    static char buffer##name[SN_SYS_SERIAL_COMM_BUFFER_SIZE]; \
+    static const sysSerialDef_t sys_serial_def_##name = \
     { (device), (oflags), (baudRate), (rxByteSize), (rxReturnMode),buffer##name }
 
 #define sysSerialThreadFuncdef(num) \
@@ -63,15 +83,15 @@ typedef struct sys_serial_q {
     (sSerialThread_##num)
 
 /** Def Option **/
-#define SN_SYS_SERIAL_COMM_BAUD_RATE_9600 B9600
-#define SN_SYS_SERIAL_COMM_BAUD_RATE_19200 B19200
+#define SN_SYS_SERIAL_COMM_BAUD_RATE_9600     B9600
+#define SN_SYS_SERIAL_COMM_BAUD_RATE_19200   B19200
 #define SN_SYS_SERIAL_COMM_BAUD_RATE_115200 B115200
 
-#define SN_SYS_SERIAL_COMM_RX_REALTIME 0
-#define SN_SYS_SERIAL_COMM_RX_BYTE_4 4
-#define SN_SYS_SERIAL_COMM_RX_BYTE_8 8
-#define SN_SYS_SERIAL_COMM_RX_BYTE_16 16
-#define SN_SYS_SERIAL_COMM_RX_BYTE_32 32
+#define SN_SYS_SERIAL_COMM_RX_REALTIME   0   /**< RX real time    */
+#define SN_SYS_SERIAL_COMM_RX_BYTE_4     4   /**< RX read  4 byte */
+#define SN_SYS_SERIAL_COMM_RX_BYTE_8     8   /**< RX read  8 byte */
+#define SN_SYS_SERIAL_COMM_RX_BYTE_16   16   /**< RX read 16 byte */
+#define SN_SYS_SERIAL_COMM_RX_BYTE_32   32   /**< RX read 32 byte */
 
 #define SN_SYS_SERIAL_COMM_TX_RETURN          0
 #define SN_SYS_SERIAL_COMM_TX_CARRIAGE_RETURN 1
@@ -102,3 +122,4 @@ extern int         SN_SYS_SerialTx(sysSerialId serialId, char* buffer, size_t bu
 
 
 #endif /* SN_SYS_SERIAL_COMM */
+/**@}*/

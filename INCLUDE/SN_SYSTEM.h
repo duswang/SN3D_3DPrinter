@@ -1,8 +1,14 @@
-/*
- * SN_SYSTEM.h
+/**
+ * @file SN_SYSTEM.h
+ * @author Bato
+ * @date 1 Oct 2018
+ * @brief
  *
- *  Created on: 2018. 10. 1.
- *      Author: BartKim
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
+ *
+ * @defgroup SYSTEM System
+ * @ingroup API
  */
 
 #ifndef INCLUDE_SN_SYSTEM_H_
@@ -26,3 +32,4 @@
 
 
 #endif /* SN_SYSTEM */
+/**@}*/ // end of SYSTEM

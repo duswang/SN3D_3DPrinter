@@ -1,10 +1,15 @@
-/*
- * APPS.h
+/**
+ * @file APPS.h
+ * @author Bato
+ * @date 1 Oct 2018
+ * @brief
  *
- *  Created on: 2018. 10. 1.
- *      Author: BartKim
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
+ *
+ * @defgroup APP Application
+ * @{
  */
-
 #ifndef APP_INCLUDE_APPS_H_
 #define APP_INCLUDE_APPS_H_
 
@@ -22,3 +27,4 @@
 
 
 #endif /* APP_INCLUDE_APPS_H_ */
+/**@}*/

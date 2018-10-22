@@ -1,8 +1,17 @@
-/*
- * SN_SYS_TIMER.h
+/**
+ * @file SN_SYS_TIMER.h
+ * @author Bato
+ * @date 18 Sep 2018
+ * @brief
  *
- *  Created on: Sep 27, 2018
- *      Author: pi
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
+ */
+/**
+ * @defgroup SYSTEM_TIMER Timer
+ * @ingroup SYSTEM
+ * @brief System Timer Functions.
+ * @{
  */
 #ifndef SN_SYS_TIMER_H_
 #define SN_SYS_TIMER_H_
@@ -29,3 +38,4 @@ extern SN_STATUS SN_SYS_TimerCancle(sysTimerId_t* pIdTSR);
 extern SN_STATUS SN_SYS_Delay(uint32_t msec);
 
 #endif /* SN_SYS_TIMER_H_ */
+/**@}*/

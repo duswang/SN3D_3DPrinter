@@ -1,0 +1,54 @@
+\hypertarget{SN__SYS__TIMER_8h}{}\section{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+T\+I\+M\+ER.h File Reference}
+\label{SN__SYS__TIMER_8h}\index{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+T\+I\+M\+E\+R.\+h@{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+T\+I\+M\+E\+R.\+h}}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{SN__SYS__TIMER_8h__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structsys__timer__id}{sys\+\_\+timer\+\_\+id}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{group__SYSTEM__TIMER_gad99ad563a1a632fde508ad8be6422e57}{M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+T\+SR}~32
+\item 
+\#define {\bfseries U\+N\+A\+L\+L\+O\+C\+A\+T\+E\+D\+\_\+\+T\+S\+R\+\_\+\+ID}~(0x\+F\+F\+F\+F\+F\+F\+F\+F)
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \hyperlink{structsys__timer__id}{sys\+\_\+timer\+\_\+id} {\bfseries sys\+Timer\+Q\+\_\+t}
+\item 
+typedef uint32\+\_\+t {\bfseries sys\+Timer\+Id\+\_\+t}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Timer\+Init} (void)
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Timer\+Create} (sys\+Timer\+Id\+\_\+t $\ast$p\+Id\+T\+SR, unsigned int ms\+Duration, void $\ast$pf\+T\+SR)
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Timer\+Cancle} (sys\+Timer\+Id\+\_\+t $\ast$p\+Id\+T\+SR)
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Delay} (uint32\+\_\+t msec)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Bato 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+18 Sep 2018 
+\end{DoxyDate}
+\begin{DoxySeeAlso}{See also}
+\href{http://www.stack.nl/~dimitri/doxygen/docblocks.html}{\tt http\+://www.\+stack.\+nl/$\sim$dimitri/doxygen/docblocks.\+html} 
+
+\href{http://www.stack.nl/~dimitri/doxygen/commands.html}{\tt http\+://www.\+stack.\+nl/$\sim$dimitri/doxygen/commands.\+html} 
+\end{DoxySeeAlso}

@@ -1,0 +1,288 @@
+\hypertarget{group__SYSTEM__SERIAL__COMM}{}\section{Serial}
+\label{group__SYSTEM__SERIAL__COMM}\index{Serial@{Serial}}
+
+
+Serial System Functions.  
+
+
+Collaboration diagram for Serial\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=213pt]{group__SYSTEM__SERIAL__COMM}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structsys__serial__stat}{sys\+\_\+serial\+\_\+stat}
+\item 
+struct \hyperlink{structsys__serial__def}{sys\+\_\+serial\+\_\+def}
+\item 
+struct \hyperlink{structsys__serial__id}{sys\+\_\+serial\+\_\+id}
+\item 
+struct \hyperlink{structsys__serial__q}{sys\+\_\+serial\+\_\+q}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_gab19b7880962ae52d90f784158f56f9f5}{M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+S\+E\+R\+I\+AL}~4
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_ga0e2406f7554f78b285eaccd1513fe392}{sys\+Serial\+Def}(name,  device,  oflags,  baud\+Rate,  rx\+Byte\+Size,  rx\+Return\+Mode)
+\begin{DoxyCompactList}\small\item\em def Serial def serial for get Serial\+Id \end{DoxyCompactList}\item 
+\#define {\bfseries sys\+Serial\+Thread\+Funcdef}(num)
+\item 
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_ga045c8c8025b6e2de3de32a5315da2766}\label{group__SYSTEM__SERIAL__COMM_ga045c8c8025b6e2de3de32a5315da2766}} 
+\#define {\bfseries sys\+Serial}(name)~(\&sys\+\_\+serial\+\_\+def\+\_\+\#\#name)
+\item 
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_ga7aed45ffffd42f5cd8fa50f8ae3af2cd}\label{group__SYSTEM__SERIAL__COMM_ga7aed45ffffd42f5cd8fa50f8ae3af2cd}} 
+\#define {\bfseries sys\+Serial\+Thread\+Func}(num)~(s\+Serial\+Thread\+\_\+\#\#num)
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_ga8ef896af26917008892ad9f98480cced}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+B\+A\+U\+D\+\_\+\+R\+A\+T\+E\+\_\+9600}~B9600
+\item 
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_gabbea68264d49ba7b3fd3ea0af2d5871d}\label{group__SYSTEM__SERIAL__COMM_gabbea68264d49ba7b3fd3ea0af2d5871d}} 
+\#define {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+B\+A\+U\+D\+\_\+\+R\+A\+T\+E\+\_\+19200}~B19200
+\item 
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_gac225ef6708a36c14757361c4f496f218}\label{group__SYSTEM__SERIAL__COMM_gac225ef6708a36c14757361c4f496f218}} 
+\#define {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+B\+A\+U\+D\+\_\+\+R\+A\+T\+E\+\_\+115200}~B115200
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_ga45345dabcfb671abba160a3dac350670}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+R\+E\+A\+L\+T\+I\+ME}~0
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_ga20e8092429292afa4348544ee9fafec3}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+4}~4
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_gaeeb374cea7f99086bd693aa158af8dc8}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+8}~8
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_ga56161a71858040bee49e45caeb42787a}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+16}~16
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_ga532ba920d82c8b8bf35997df3c732d4c}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+32}~32
+\item 
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_ga51f152fbdb061eaddc04d5840b5f23dd}\label{group__SYSTEM__SERIAL__COMM_ga51f152fbdb061eaddc04d5840b5f23dd}} 
+\#define {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+T\+X\+\_\+\+R\+E\+T\+U\+RN}~0
+\item 
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_ga81ba02d50e3bf740e33accc792ec0bf8}\label{group__SYSTEM__SERIAL__COMM_ga81ba02d50e3bf740e33accc792ec0bf8}} 
+\#define {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+T\+X\+\_\+\+C\+A\+R\+R\+I\+A\+G\+E\+\_\+\+R\+E\+T\+U\+RN}~1
+\item 
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_ga96c2a829d5aa963c53ee3f5607ef22fa}\label{group__SYSTEM__SERIAL__COMM_ga96c2a829d5aa963c53ee3f5607ef22fa}} 
+\#define {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+T\+X\+\_\+\+N\+E\+W\+\_\+\+L\+I\+N\+E\+\_\+\+R\+E\+T\+U\+RN}~2
+\item 
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_gafd10cc942a02102c07732e46041819bf}\label{group__SYSTEM__SERIAL__COMM_gafd10cc942a02102c07732e46041819bf}} 
+\#define {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+T\+X\+\_\+\+N\+X\+\_\+\+R\+E\+T\+U\+RN}~3
+\item 
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_ga741f5eba82633e103f491a30e0f9696a}\label{group__SYSTEM__SERIAL__COMM_ga741f5eba82633e103f491a30e0f9696a}} 
+\#define {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+B\+U\+F\+F\+E\+R\+\_\+\+S\+I\+ZE}~255
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_gab3cb3e808e6aa6d23c73d7687b3b937e}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+I\+N\+V\+A\+I\+L\+D\+\_\+\+U\+A\+R\+T\+\_\+\+ID}~(-\/1)
+\item 
+\#define \hyperlink{group__SYSTEM__SERIAL__COMM_ga3b81478c7058ceb6ed610ce8e2ca3822}{C\+A\+R\+R\+I\+A\+G\+E\+\_\+\+R\+E\+T\+U\+RN}~\char`\"{}\textbackslash{}r\char`\"{}
+\item 
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_ga501b77360464523474ef3fd6076599d5}\label{group__SYSTEM__SERIAL__COMM_ga501b77360464523474ef3fd6076599d5}} 
+\#define {\bfseries N\+E\+W\+\_\+\+L\+I\+N\+E\+\_\+\+R\+E\+T\+U\+RN}~\char`\"{}\textbackslash{}n\char`\"{}
+\item 
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_gaab38bc7c033c5c8a5443736e6adf31ec}\label{group__SYSTEM__SERIAL__COMM_gaab38bc7c033c5c8a5443736e6adf31ec}} 
+\#define {\bfseries N\+X\+\_\+\+R\+E\+T\+U\+RN}~0x\+FF
+\item 
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_ga5a476228d4333eaa5eb9148399655d60}\label{group__SYSTEM__SERIAL__COMM_ga5a476228d4333eaa5eb9148399655d60}} 
+\#define {\bfseries R\+E\+T\+U\+R\+N\+\_\+\+S\+I\+ZE}~1
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_gae2b8f8d40db50a365f1d32cdfd539428}\label{group__SYSTEM__SERIAL__COMM_gae2b8f8d40db50a365f1d32cdfd539428}} 
+typedef struct \hyperlink{structsys__serial__stat}{sys\+\_\+serial\+\_\+stat} {\bfseries sys\+Serial\+Stat\+\_\+t}
+\item 
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_gaa97ac9544ab815d09f1153c2715bee92}\label{group__SYSTEM__SERIAL__COMM_gaa97ac9544ab815d09f1153c2715bee92}} 
+typedef struct \hyperlink{structsys__serial__def}{sys\+\_\+serial\+\_\+def} {\bfseries sys\+Serial\+Def\+\_\+t}
+\item 
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_ga3fa14f9fe3f2c72c4889c51df638e51d}\label{group__SYSTEM__SERIAL__COMM_ga3fa14f9fe3f2c72c4889c51df638e51d}} 
+typedef struct \hyperlink{structsys__serial__id}{sys\+\_\+serial\+\_\+id} $\ast$ {\bfseries sys\+Serial\+Id}
+\item 
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_gaa194b6d4fd7457e2ecc053387b0d15fd}\label{group__SYSTEM__SERIAL__COMM_gaa194b6d4fd7457e2ecc053387b0d15fd}} 
+typedef struct \hyperlink{structsys__serial__q}{sys\+\_\+serial\+\_\+q} {\bfseries sys\+SerialQ}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{group__SYSTEM__SERIAL__COMM_ga5945cfb2c1d87d3fa9ad40bf928bd05a}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+Serial\+Init} (void)
+\item 
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_gaca93cc653a4c4657a762050b4228db3e}\label{group__SYSTEM__SERIAL__COMM_gaca93cc653a4c4657a762050b4228db3e}} 
+\hyperlink{structsys__serial__id}{sys\+Serial\+Id} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Serial\+Create} (const \hyperlink{structsys__serial__def}{sys\+Serial\+Def\+\_\+t} $\ast$serial\+Def, void $\ast$($\ast$pf\+Call\+Back)(char $\ast$))
+\item 
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_ga8644661ec9dba59ae309766a0b29c741}\label{group__SYSTEM__SERIAL__COMM_ga8644661ec9dba59ae309766a0b29c741}} 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Serial\+Remove} (\hyperlink{structsys__serial__id}{sys\+Serial\+Id} serial\+Id)
+\item 
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_gad0b162a078bef55b327436140da0650c}\label{group__SYSTEM__SERIAL__COMM_gad0b162a078bef55b327436140da0650c}} 
+int {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Serial\+Tx} (\hyperlink{structsys__serial__id}{sys\+Serial\+Id} serial\+Id, char $\ast$buffer, size\+\_\+t buffer\+Size)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Serial System Functions. 
+
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_ga3b81478c7058ceb6ed610ce8e2ca3822}\label{group__SYSTEM__SERIAL__COMM_ga3b81478c7058ceb6ed610ce8e2ca3822}} 
+\index{Serial@{Serial}!C\+A\+R\+R\+I\+A\+G\+E\+\_\+\+R\+E\+T\+U\+RN@{C\+A\+R\+R\+I\+A\+G\+E\+\_\+\+R\+E\+T\+U\+RN}}
+\index{C\+A\+R\+R\+I\+A\+G\+E\+\_\+\+R\+E\+T\+U\+RN@{C\+A\+R\+R\+I\+A\+G\+E\+\_\+\+R\+E\+T\+U\+RN}!Serial@{Serial}}
+\subsubsection{\texorpdfstring{C\+A\+R\+R\+I\+A\+G\+E\+\_\+\+R\+E\+T\+U\+RN}{CARRIAGE\_RETURN}}
+{\footnotesize\ttfamily \#define C\+A\+R\+R\+I\+A\+G\+E\+\_\+\+R\+E\+T\+U\+RN~\char`\"{}\textbackslash{}r\char`\"{}}
+
+
+
+{\ttfamily \#include $<$\hyperlink{SN__SYS__SERIAL__COMM_8h}{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M.\+h}$>$}
+
+Static Define \mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_gab19b7880962ae52d90f784158f56f9f5}\label{group__SYSTEM__SERIAL__COMM_gab19b7880962ae52d90f784158f56f9f5}} 
+\index{Serial@{Serial}!M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+S\+E\+R\+I\+AL@{M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+S\+E\+R\+I\+AL}}
+\index{M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+S\+E\+R\+I\+AL@{M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+S\+E\+R\+I\+AL}!Serial@{Serial}}
+\subsubsection{\texorpdfstring{M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+S\+E\+R\+I\+AL}{MAX\_NUM\_OF\_SERIAL}}
+{\footnotesize\ttfamily \#define M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+S\+E\+R\+I\+AL~4}
+
+
+
+{\ttfamily \#include $<$\hyperlink{SN__SYS__SERIAL__COMM_8h}{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M.\+h}$>$}
+
+Global Define \mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_ga8ef896af26917008892ad9f98480cced}\label{group__SYSTEM__SERIAL__COMM_ga8ef896af26917008892ad9f98480cced}} 
+\index{Serial@{Serial}!S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+B\+A\+U\+D\+\_\+\+R\+A\+T\+E\+\_\+9600@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+B\+A\+U\+D\+\_\+\+R\+A\+T\+E\+\_\+9600}}
+\index{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+B\+A\+U\+D\+\_\+\+R\+A\+T\+E\+\_\+9600@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+B\+A\+U\+D\+\_\+\+R\+A\+T\+E\+\_\+9600}!Serial@{Serial}}
+\subsubsection{\texorpdfstring{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+B\+A\+U\+D\+\_\+\+R\+A\+T\+E\+\_\+9600}{SN\_SYS\_SERIAL\_COMM\_BAUD\_RATE\_9600}}
+{\footnotesize\ttfamily \#define S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+B\+A\+U\+D\+\_\+\+R\+A\+T\+E\+\_\+9600~B9600}
+
+
+
+{\ttfamily \#include $<$\hyperlink{SN__SYS__SERIAL__COMM_8h}{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M.\+h}$>$}
+
+Def Option \mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_gab3cb3e808e6aa6d23c73d7687b3b937e}\label{group__SYSTEM__SERIAL__COMM_gab3cb3e808e6aa6d23c73d7687b3b937e}} 
+\index{Serial@{Serial}!S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+I\+N\+V\+A\+I\+L\+D\+\_\+\+U\+A\+R\+T\+\_\+\+ID@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+I\+N\+V\+A\+I\+L\+D\+\_\+\+U\+A\+R\+T\+\_\+\+ID}}
+\index{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+I\+N\+V\+A\+I\+L\+D\+\_\+\+U\+A\+R\+T\+\_\+\+ID@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+I\+N\+V\+A\+I\+L\+D\+\_\+\+U\+A\+R\+T\+\_\+\+ID}!Serial@{Serial}}
+\subsubsection{\texorpdfstring{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+I\+N\+V\+A\+I\+L\+D\+\_\+\+U\+A\+R\+T\+\_\+\+ID}{SN\_SYS\_SERIAL\_COMM\_INVAILD\_UART\_ID}}
+{\footnotesize\ttfamily \#define S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+I\+N\+V\+A\+I\+L\+D\+\_\+\+U\+A\+R\+T\+\_\+\+ID~(-\/1)}
+
+
+
+{\ttfamily \#include $<$\hyperlink{SN__SYS__SERIAL__COMM_8h}{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M.\+h}$>$}
+
+E\+R\+R\+OR C\+O\+DE \mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_ga56161a71858040bee49e45caeb42787a}\label{group__SYSTEM__SERIAL__COMM_ga56161a71858040bee49e45caeb42787a}} 
+\index{Serial@{Serial}!S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+16@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+16}}
+\index{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+16@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+16}!Serial@{Serial}}
+\subsubsection{\texorpdfstring{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+16}{SN\_SYS\_SERIAL\_COMM\_RX\_BYTE\_16}}
+{\footnotesize\ttfamily \#define S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+16~16}
+
+
+
+{\ttfamily \#include $<$\hyperlink{SN__SYS__SERIAL__COMM_8h}{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M.\+h}$>$}
+
+RX read 16 byte \mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_ga532ba920d82c8b8bf35997df3c732d4c}\label{group__SYSTEM__SERIAL__COMM_ga532ba920d82c8b8bf35997df3c732d4c}} 
+\index{Serial@{Serial}!S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+32@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+32}}
+\index{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+32@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+32}!Serial@{Serial}}
+\subsubsection{\texorpdfstring{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+32}{SN\_SYS\_SERIAL\_COMM\_RX\_BYTE\_32}}
+{\footnotesize\ttfamily \#define S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+32~32}
+
+
+
+{\ttfamily \#include $<$\hyperlink{SN__SYS__SERIAL__COMM_8h}{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M.\+h}$>$}
+
+RX read 32 byte \mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_ga20e8092429292afa4348544ee9fafec3}\label{group__SYSTEM__SERIAL__COMM_ga20e8092429292afa4348544ee9fafec3}} 
+\index{Serial@{Serial}!S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+4@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+4}}
+\index{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+4@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+4}!Serial@{Serial}}
+\subsubsection{\texorpdfstring{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+4}{SN\_SYS\_SERIAL\_COMM\_RX\_BYTE\_4}}
+{\footnotesize\ttfamily \#define S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+4~4}
+
+
+
+{\ttfamily \#include $<$\hyperlink{SN__SYS__SERIAL__COMM_8h}{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M.\+h}$>$}
+
+RX read 4 byte \mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_gaeeb374cea7f99086bd693aa158af8dc8}\label{group__SYSTEM__SERIAL__COMM_gaeeb374cea7f99086bd693aa158af8dc8}} 
+\index{Serial@{Serial}!S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+8@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+8}}
+\index{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+8@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+8}!Serial@{Serial}}
+\subsubsection{\texorpdfstring{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+8}{SN\_SYS\_SERIAL\_COMM\_RX\_BYTE\_8}}
+{\footnotesize\ttfamily \#define S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+B\+Y\+T\+E\+\_\+8~8}
+
+
+
+{\ttfamily \#include $<$\hyperlink{SN__SYS__SERIAL__COMM_8h}{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M.\+h}$>$}
+
+RX read 8 byte \mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_ga45345dabcfb671abba160a3dac350670}\label{group__SYSTEM__SERIAL__COMM_ga45345dabcfb671abba160a3dac350670}} 
+\index{Serial@{Serial}!S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+R\+E\+A\+L\+T\+I\+ME@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+R\+E\+A\+L\+T\+I\+ME}}
+\index{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+R\+E\+A\+L\+T\+I\+ME@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+R\+E\+A\+L\+T\+I\+ME}!Serial@{Serial}}
+\subsubsection{\texorpdfstring{S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+R\+E\+A\+L\+T\+I\+ME}{SN\_SYS\_SERIAL\_COMM\_RX\_REALTIME}}
+{\footnotesize\ttfamily \#define S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M\+\_\+\+R\+X\+\_\+\+R\+E\+A\+L\+T\+I\+ME~0}
+
+
+
+{\ttfamily \#include $<$\hyperlink{SN__SYS__SERIAL__COMM_8h}{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M.\+h}$>$}
+
+RX real time \mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_ga0e2406f7554f78b285eaccd1513fe392}\label{group__SYSTEM__SERIAL__COMM_ga0e2406f7554f78b285eaccd1513fe392}} 
+\index{Serial@{Serial}!sys\+Serial\+Def@{sys\+Serial\+Def}}
+\index{sys\+Serial\+Def@{sys\+Serial\+Def}!Serial@{Serial}}
+\subsubsection{\texorpdfstring{sys\+Serial\+Def}{sysSerialDef}}
+{\footnotesize\ttfamily \#define sys\+Serial\+Def(\begin{DoxyParamCaption}\item[{}]{name,  }\item[{}]{device,  }\item[{}]{oflags,  }\item[{}]{baud\+Rate,  }\item[{}]{rx\+Byte\+Size,  }\item[{}]{rx\+Return\+Mode }\end{DoxyParamCaption})}
+
+
+
+{\ttfamily \#include $<$\hyperlink{SN__SYS__SERIAL__COMM_8h}{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M.\+h}$>$}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\textcolor{keyword}{static} \textcolor{keywordtype}{char} buffer##name[SN\_SYS\_SERIAL\_COMM\_BUFFER\_SIZE]; \(\backslash\)
+    static \textcolor{keyword}{const} \hyperlink{structsys__serial__def}{sysSerialDef\_t} sys\_serial\_def\_##name = \(\backslash\)
+    \{ (device), (oflags), (baudRate), (rxByteSize), (rxReturnMode),buffer##name \}
+\end{DoxyCode}
+
+
+def Serial def serial for get Serial\+Id 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & \\
+\hline
+{\em device} & \\
+\hline
+{\em oflags} & \\
+\hline
+{\em baud\+Rate} & \\
+\hline
+{\em rx\+Byte\+Size} & \\
+\hline
+{\em rx\+Return\+Mode} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+
+\end{DoxyNote}
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_ga51badd112a41078433fc473bf8f60e06}\label{group__SYSTEM__SERIAL__COMM_ga51badd112a41078433fc473bf8f60e06}} 
+\index{Serial@{Serial}!sys\+Serial\+Thread\+Funcdef@{sys\+Serial\+Thread\+Funcdef}}
+\index{sys\+Serial\+Thread\+Funcdef@{sys\+Serial\+Thread\+Funcdef}!Serial@{Serial}}
+\subsubsection{\texorpdfstring{sys\+Serial\+Thread\+Funcdef}{sysSerialThreadFuncdef}}
+{\footnotesize\ttfamily \#define sys\+Serial\+Thread\+Funcdef(\begin{DoxyParamCaption}\item[{}]{num }\end{DoxyParamCaption})}
+
+
+
+{\ttfamily \#include $<$\hyperlink{SN__SYS__SERIAL__COMM_8h}{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M.\+h}$>$}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\textcolor{keyword}{static} \textcolor{keywordtype}{void}* sSerialThread\_##num() \(\backslash\)
+    \{ \(\backslash\)
+        while(\textcolor{keyword}{true}) \(\backslash\)
+        \{ \(\backslash\)
+            pthread\_mutex\_lock(&\hyperlink{SN__SYS__SERIAL__COMM_8c_ae4f4b16513b013ebb5f6b62e64d5bd3e}{ptmSerial}[(num)]);\(\backslash\)
+            if(aSerial[(num)].isAvailable) sSerial\_RX\_Hdlr\_r(aSerial[(num)].\_serialId); \(\backslash\)
+            pthread\_mutex\_unlock(&\hyperlink{SN__SYS__SERIAL__COMM_8c_ae4f4b16513b013ebb5f6b62e64d5bd3e}{ptmSerial}[(num)]); \(\backslash\)
+        \} \(\backslash\)
+        return NULL; \(\backslash\)
+    \}
+\end{DoxyCode}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{group__SYSTEM__SERIAL__COMM_ga5945cfb2c1d87d3fa9ad40bf928bd05a}\label{group__SYSTEM__SERIAL__COMM_ga5945cfb2c1d87d3fa9ad40bf928bd05a}} 
+\index{Serial@{Serial}!S\+N\+\_\+\+S\+Y\+S\+\_\+\+Serial\+Init@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+Serial\+Init}}
+\index{S\+N\+\_\+\+S\+Y\+S\+\_\+\+Serial\+Init@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+Serial\+Init}!Serial@{Serial}}
+\subsubsection{\texorpdfstring{S\+N\+\_\+\+S\+Y\+S\+\_\+\+Serial\+Init()}{SN\_SYS\_SerialInit()}}
+{\footnotesize\ttfamily int S\+N\+\_\+\+S\+Y\+S\+\_\+\+Serial\+Init (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+{\ttfamily \#include $<$\hyperlink{SN__SYS__SERIAL__COMM_8h}{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+C\+O\+M\+M.\+h}$>$}
+
+Functions 

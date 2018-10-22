@@ -1,27 +1,51 @@
-/*
- * SN_API.h
+/**
+@mainpage SN3D Main Page
+  @section INTRO
+  -
+  @section   PROJECT INFO
+  - Name  :  SN3D 3D Printer.
+  - brief :
+  @section  INOUTPUT
+  - INPUT       :
+  - OUTPUT      :
+  @section  CREATEINFO
+  -
+  @section  MODIFY INFO
+  -
+  -
+ */
+/**
+ * @file SN_API.h
+ * @author Bato
+ * @date 18 Sep 2018
+ * @brief
  *
- *  Created on: Sep 18, 2018
- *      Author: pi
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
+ *
+ * @defgroup API API
+ * @ingroup API
+ * @brief SN_API 0.0.1v
+ * @{
  */
 
 #ifndef SN_API
 #define SN_API
 
-/** Standard **/
+/* Standard */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
 #include <stdbool.h>
 
-/** Operation System */
+/* Operation System */
 #include <pthread.h>
 #include <semaphore.h>
 #include <signal.h>
 #include <time.h>
 
-/* system */
+/* Operation System */
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
@@ -31,16 +55,15 @@
 
 #include <errno.h>
 
-/** File System **/
+/* File System */
 #include <dirent.h>
 
-/** Serial **/
+/* Serial */
 #include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <signal.h>
 
-/**** Library ****/
+/* Library */
 #ifdef __APPLE__
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -55,8 +78,7 @@
 
 #include <zip.h>
 
-
-/*** bool ***/
+/** @def bool */
 #ifndef bool
 typedef int bool;
 #define true 1
@@ -74,3 +96,4 @@ typedef int bool;
 #include "APP_MESSAGES.h"
 
 #endif /* SN_API */
+/**@}*/
