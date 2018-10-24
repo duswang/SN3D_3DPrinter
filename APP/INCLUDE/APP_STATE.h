@@ -1,8 +1,11 @@
-/*
- * APP_STATE.h
+/**
+ * @file APP_STATE.h
+ * @author Bato
+ * @date 2 Oct 2018
+ * @brief
  *
- *  Created on: 2018. 10. 1.
- *      Author: BartKim
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  */
 
 #ifndef APP_APP_STATE_H_

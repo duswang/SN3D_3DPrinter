@@ -60,10 +60,7 @@ $(function() {
 
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
-<a href="#define-members">Macros</a> &#124;
-<a href="#typedef-members">Typedefs</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#nested-classes">Classes</a>  </div>
   <div class="headertitle">
 <div class="title">Timer<div class="ingroups"><a class="el" href="group__API.html">API</a> &raquo; <a class="el" href="group__SYSTEM.html">System</a></div></div>  </div>
 </div><!--header-->
@@ -86,16 +83,17 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsys__timer__id.html">sys_timer_id</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:gad99ad563a1a632fde508ad8be6422e57"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__SYSTEM__TIMER.html#gad99ad563a1a632fde508ad8be6422e57">MAX_NUM_OF_TSR</a>&#160;&#160;&#160;32</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
+Timer Config</h2></td></tr>
+<tr class="memitem:gad99ad563a1a632fde508ad8be6422e57"><td class="memItemLeft" align="right" valign="top"><a id="gad99ad563a1a632fde508ad8be6422e57"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>MAX_NUM_OF_TSR</b>&#160;&#160;&#160;32</td></tr>
 <tr class="separator:gad99ad563a1a632fde508ad8be6422e57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3ab2d3270619515d0cfdc5caf09d6366"><td class="memItemLeft" align="right" valign="top"><a id="ga3ab2d3270619515d0cfdc5caf09d6366"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>UNALLOCATED_TSR_ID</b>&#160;&#160;&#160;(0xFFFFFFFF)</td></tr>
 <tr class="separator:ga3ab2d3270619515d0cfdc5caf09d6366"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
-Typedefs</h2></td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
+Timer Structure</h2></td></tr>
 <tr class="memitem:ga0964d5651c1e8775bdedb28ad089d8b9"><td class="memItemLeft" align="right" valign="top"><a id="ga0964d5651c1e8775bdedb28ad089d8b9"></a>
 typedef struct <a class="el" href="structsys__timer__id.html">sys_timer_id</a>&#160;</td><td class="memItemRight" valign="bottom"><b>sysTimerQ_t</b></td></tr>
 <tr class="separator:ga0964d5651c1e8775bdedb28ad089d8b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -103,38 +101,133 @@ typedef struct <a class="el" href="structsys__timer__id.html">sys_timer_id</a>&#
 typedef uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>sysTimerId_t</b></td></tr>
 <tr class="separator:ga45dfe75dba9f4d77371435e6ea122117"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
-Functions</h2></td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
+Timer System</h2></td></tr>
+<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp97bcb014781015db18e3a1289035b4bb"></a>Description of Timer System Init and Uninit funtions. </p>
+</td></tr>
 <tr class="memitem:gabe15a62b1e228b796d3a2297c085c9ef"><td class="memItemLeft" align="right" valign="top"><a id="gabe15a62b1e228b796d3a2297c085c9ef"></a>
 <a class="el" href="group__SYSTEM__ERROR.html#ga4540713b9a7a18ce44d78c3a10f7442f">SN_STATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><b>SN_SYS_TimerInit</b> (void)</td></tr>
 <tr class="separator:gabe15a62b1e228b796d3a2297c085c9ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1d85ad6b65ffc1c7a3fd35361b33aa08"><td class="memItemLeft" align="right" valign="top"><a id="ga1d85ad6b65ffc1c7a3fd35361b33aa08"></a>
-<a class="el" href="group__SYSTEM__ERROR.html#ga4540713b9a7a18ce44d78c3a10f7442f">SN_STATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><b>SN_SYS_TimerCreate</b> (sysTimerId_t *pIdTSR, unsigned int msDuration, void *pfTSR)</td></tr>
-<tr class="separator:ga1d85ad6b65ffc1c7a3fd35361b33aa08"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaa004347fdd0940a882a77729feaf60c4"><td class="memItemLeft" align="right" valign="top"><a id="gaa004347fdd0940a882a77729feaf60c4"></a>
-<a class="el" href="group__SYSTEM__ERROR.html#ga4540713b9a7a18ce44d78c3a10f7442f">SN_STATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><b>SN_SYS_TimerCancle</b> (sysTimerId_t *pIdTSR)</td></tr>
+<tr class="memitem:gab533b949aff8c325d7e738f7c5bb1867"><td class="memItemLeft" align="right" valign="top"><a id="gab533b949aff8c325d7e738f7c5bb1867"></a>
+<a class="el" href="group__SYSTEM__ERROR.html#ga4540713b9a7a18ce44d78c3a10f7442f">SN_STATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><b>SN_SYS_TimerUninit</b> (void)</td></tr>
+<tr class="separator:gab533b949aff8c325d7e738f7c5bb1867"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
+Serial System :: Create &amp; Cancle</h2></td></tr>
+<tr class="memitem:ga0ee35ae172fdb2773d1a4fb1bcdf09bd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__SYSTEM__ERROR.html#ga4540713b9a7a18ce44d78c3a10f7442f">SN_STATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__SYSTEM__TIMER.html#ga0ee35ae172fdb2773d1a4fb1bcdf09bd">SN_SYS_TimerCreate</a> (sysTimerId_t *pIdTSR, uint32_t msDuration, void *pfTSR)</td></tr>
+<tr class="separator:ga0ee35ae172fdb2773d1a4fb1bcdf09bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa004347fdd0940a882a77729feaf60c4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__SYSTEM__ERROR.html#ga4540713b9a7a18ce44d78c3a10f7442f">SN_STATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__SYSTEM__TIMER.html#gaa004347fdd0940a882a77729feaf60c4">SN_SYS_TimerCancle</a> (sysTimerId_t *pIdTSR)</td></tr>
 <tr class="separator:gaa004347fdd0940a882a77729feaf60c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4cf64b0280d940416955ba171ed339aa"><td class="memItemLeft" align="right" valign="top"><a id="ga4cf64b0280d940416955ba171ed339aa"></a>
-<a class="el" href="group__SYSTEM__ERROR.html#ga4540713b9a7a18ce44d78c3a10f7442f">SN_STATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><b>SN_SYS_Delay</b> (uint32_t msec)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
+Serial System :: Delay</h2></td></tr>
+<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp936e32d7756ef74700ad1497336bc3be"></a></p><dl class="section note"><dt>Note</dt><dd>Now use SDL_Delay() </dd></dl>
+</td></tr>
+<tr class="memitem:ga4cf64b0280d940416955ba171ed339aa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__SYSTEM__ERROR.html#ga4540713b9a7a18ce44d78c3a10f7442f">SN_STATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__SYSTEM__TIMER.html#ga4cf64b0280d940416955ba171ed339aa">SN_SYS_Delay</a> (uint32_t msec)</td></tr>
 <tr class="separator:ga4cf64b0280d940416955ba171ed339aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>System Timer Functions. </p>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="gad99ad563a1a632fde508ad8be6422e57"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gad99ad563a1a632fde508ad8be6422e57">&#9670;&nbsp;</a></span>MAX_NUM_OF_TSR</h2>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="ga4cf64b0280d940416955ba171ed339aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga4cf64b0280d940416955ba171ed339aa">&#9670;&nbsp;</a></span>SN_SYS_Delay()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define MAX_NUM_OF_TSR&#160;&#160;&#160;32</td>
+          <td class="memname"><a class="el" href="group__SYSTEM__ERROR.html#ga4540713b9a7a18ce44d78c3a10f7442f">SN_STATUS</a> SN_SYS_Delay </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>msec</em></td><td>)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p><code>#include &lt;<a class="el" href="SN__SYS__TIMER_8h.html">SYSTEM/INCLUDE/SN_SYS_TIMER.h</a>&gt;</code></p>
-<p>Static Define </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">msec</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>SN_STATUS </dd></dl>
+<dl class="section note"><dt>Note</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="gaa004347fdd0940a882a77729feaf60c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa004347fdd0940a882a77729feaf60c4">&#9670;&nbsp;</a></span>SN_SYS_TimerCancle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__SYSTEM__ERROR.html#ga4540713b9a7a18ce44d78c3a10f7442f">SN_STATUS</a> SN_SYS_TimerCancle </td>
+          <td>(</td>
+          <td class="paramtype">sysTimerId_t *&#160;</td>
+          <td class="paramname"><em>pIdTSR</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><code>#include &lt;<a class="el" href="SN__SYS__TIMER_8h.html">SYSTEM/INCLUDE/SN_SYS_TIMER.h</a>&gt;</code></p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pIdTSR</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>SN_STATUS </dd></dl>
+<dl class="section note"><dt>Note</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="ga0ee35ae172fdb2773d1a4fb1bcdf09bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0ee35ae172fdb2773d1a4fb1bcdf09bd">&#9670;&nbsp;</a></span>SN_SYS_TimerCreate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__SYSTEM__ERROR.html#ga4540713b9a7a18ce44d78c3a10f7442f">SN_STATUS</a> SN_SYS_TimerCreate </td>
+          <td>(</td>
+          <td class="paramtype">sysTimerId_t *&#160;</td>
+          <td class="paramname"><em>pIdTSR</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>msDuration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>pfTSR</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><code>#include &lt;<a class="el" href="SN__SYS__TIMER_8h.html">SYSTEM/INCLUDE/SN_SYS_TIMER.h</a>&gt;</code></p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pIdTSR</td><td></td></tr>
+    <tr><td class="paramname">msDuration</td><td></td></tr>
+    <tr><td class="paramname">pfTSR</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>SN_STATUS </dd></dl>
+<dl class="section note"><dt>Note</dt><dd></dd></dl>
 
 </div>
 </div>

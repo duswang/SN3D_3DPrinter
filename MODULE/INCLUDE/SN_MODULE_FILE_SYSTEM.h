@@ -6,13 +6,13 @@
  *
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
- */
-/**
+ *
  * @defgroup MODULE_FILE_SYSTEM File System
  * @ingroup MODULE
  * @brief File System Module Functions.
  * @{
  */
+
 #ifndef MODUEL_INCLUDE_SN_MODUEL_FILE_SYSTEM_H_
 #define MODUEL_INCLUDE_SN_MODUEL_FILE_SYSTEM_H_
 
@@ -91,21 +91,20 @@ typedef struct print_information {
 ///@}
 
 /** @name Machine Info Structure *////@{
-typedef struct resolution_information {
-    int height;
-    int weight;
-} resolution_t;
 typedef struct machine_information {
     char             name[MAX_FILENAME_LENGTH];
     char                height;
-    resolution_t       display;
     bool                isInit;
 } machineInfo_t;
 ///@}
 
-/** @name File System Module
- *  @brief Description of Display Module Init and Uninit funtions.
- *////@{
+/*************************************************************
+ * @name File System Module
+ * @brief Description of Display Module Init and Uninit funtions.
+ * @{
+ */
+
+
 /** @brief
  *
  *  @return SN_STATUS
@@ -119,12 +118,15 @@ extern SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void);
  *  @note
  */
 extern SN_STATUS SN_MODULE_FILE_SYSTEM_Uninit(void);
-///@}
 
-/** @name File System Module :: FS
- *  @brief
+/*************************************************************@}*/
+
+/*************************************************************
+ * @name File System Module :: FS
+ * @brief
+ * @{
  */
-///@{
+
 /** @brief
  *
  *  @param pFs
@@ -134,17 +136,21 @@ extern SN_STATUS SN_MODULE_FILE_SYSTEM_Uninit(void);
  */
 extern SN_STATUS SN_MODULE_FILE_SYSTEM_Get(fs_t* pFs);
 
+
 /** @brief
  *
  *  @return SN_STATUS
  *  @note
  */
 extern SN_STATUS SN_MODULE_FILE_SYSTEM_Update(void);
-///@}
-/** @name File System Module :: Machine Info
- *  @brief
+
+/*************************************************************@}*/
+
+/*************************************************************
+ * @name File System Module :: Machine Info
+ * @brief
+ * @{
  */
-///@{
 
 /** @brief
  *
@@ -167,12 +173,13 @@ extern SN_STATUS SN_MODULE_FILE_SYSTEM_MachineInfoUninit(void);
  */
 extern machineInfo_t SN_MODULE_FILE_SYSTEM_MachineInfoGet(void);
 
-///@}
+/*************************************************************@}*/
 
-/** @name File System Module :: Print Target Info
- *  @brief
+/*************************************************************
+ * @name File System Module :: Print Target Info
+ * @brief
+ * @{
  */
-///@{
 /** @brief
  *
  *  @param pageIndex
@@ -196,7 +203,8 @@ extern SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoUninit(void);
  *  @note
  */
 extern printInfo_t   SN_MODULE_FILE_SYSTEM_PrintInfoGet(void);
-///@}
+
+/*************************************************************@}*/
 
 #endif /* MODUEL_INCLUDE_SN_MODUEL_FILE_SYSTEM_H_ */
 /**@}*/

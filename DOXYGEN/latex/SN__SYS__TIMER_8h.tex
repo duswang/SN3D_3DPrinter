@@ -1,7 +1,6 @@
 \hypertarget{SN__SYS__TIMER_8h}{}\section{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+T\+I\+M\+ER.h File Reference}
 \label{SN__SYS__TIMER_8h}\index{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+T\+I\+M\+E\+R.\+h@{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+T\+I\+M\+E\+R.\+h}}
-This graph shows which files directly or indirectly include this file\+:
-\nopagebreak
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -14,30 +13,49 @@ This graph shows which files directly or indirectly include this file\+:
 struct \hyperlink{structsys__timer__id}{sys\+\_\+timer\+\_\+id}
 \end{DoxyCompactItemize}
 \subsection*{Macros}
+\begin{Indent}\textbf{ Timer Config}\par
 \begin{DoxyCompactItemize}
 \item 
-\#define \hyperlink{group__SYSTEM__TIMER_gad99ad563a1a632fde508ad8be6422e57}{M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+T\+SR}~32
+\#define {\bfseries M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+O\+F\+\_\+\+T\+SR}~32
 \item 
 \#define {\bfseries U\+N\+A\+L\+L\+O\+C\+A\+T\+E\+D\+\_\+\+T\+S\+R\+\_\+\+ID}~(0x\+F\+F\+F\+F\+F\+F\+F\+F)
 \end{DoxyCompactItemize}
+\end{Indent}
 \subsection*{Typedefs}
+\begin{Indent}\textbf{ Timer Structure}\par
 \begin{DoxyCompactItemize}
 \item 
 typedef struct \hyperlink{structsys__timer__id}{sys\+\_\+timer\+\_\+id} {\bfseries sys\+Timer\+Q\+\_\+t}
 \item 
 typedef uint32\+\_\+t {\bfseries sys\+Timer\+Id\+\_\+t}
 \end{DoxyCompactItemize}
+\end{Indent}
 \subsection*{Functions}
-\begin{DoxyCompactItemize}
+\begin{Indent}\textbf{ Timer System}\par
+{\em Description of Timer System Init and Uninit funtions. }\begin{DoxyCompactItemize}
 \item 
 \hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Timer\+Init} (void)
 \item 
-\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Timer\+Create} (sys\+Timer\+Id\+\_\+t $\ast$p\+Id\+T\+SR, unsigned int ms\+Duration, void $\ast$pf\+T\+SR)
-\item 
-\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Timer\+Cancle} (sys\+Timer\+Id\+\_\+t $\ast$p\+Id\+T\+SR)
-\item 
-\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Delay} (uint32\+\_\+t msec)
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Timer\+Uninit} (void)
 \end{DoxyCompactItemize}
+\end{Indent}
+\begin{Indent}\textbf{ Serial System \+:\+: Create \& Cancle}\par
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__SYSTEM__TIMER_ga0ee35ae172fdb2773d1a4fb1bcdf09bd}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+Timer\+Create} (sys\+Timer\+Id\+\_\+t $\ast$p\+Id\+T\+SR, uint32\+\_\+t ms\+Duration, void $\ast$pf\+T\+SR)
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__SYSTEM__TIMER_gaa004347fdd0940a882a77729feaf60c4}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+Timer\+Cancle} (sys\+Timer\+Id\+\_\+t $\ast$p\+Id\+T\+SR)
+\end{DoxyCompactItemize}
+\end{Indent}
+\begin{Indent}\textbf{ Serial System \+:\+: Delay}\par
+{\em \begin{DoxyNote}{Note}
+Now use S\+D\+L\+\_\+\+Delay() 
+\end{DoxyNote}
+}\begin{DoxyCompactItemize}
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__SYSTEM__TIMER_ga4cf64b0280d940416955ba171ed339aa}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+Delay} (uint32\+\_\+t msec)
+\end{DoxyCompactItemize}
+\end{Indent}
 
 
 \subsection{Detailed Description}

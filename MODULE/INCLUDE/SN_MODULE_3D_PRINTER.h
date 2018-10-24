@@ -6,20 +6,18 @@
  *
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
- */
-
-/**
+ *
  * @defgroup MODULE_3D_PRINTER 3D Printer
  * @ingroup MODULE
  * @brief 3D Printer Module Functions.
  * @{
  */
+
 #ifndef SN_MODUEL_3D_PRINTER
 #define SN_MODUEL_3D_PRINTER
 /** @name 3D Printr Module
  *  Description of 3D Printr Module Init and Uninit funtions.
- */
-///@{
+ *////@{
 /** @brief
  *
  *  @return SN_STATUS
@@ -35,13 +33,13 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Init(void);
  *  @note
  */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Uninit(void);
-
 ///@}
 
 /** @name 3D Printer Module :: Printing.
  *  Description of 3D Printr Module funtions.
- */
-///@{
+ *////@{
+
+
 /** @brief
  *
  *  @param pageIndex
@@ -53,6 +51,7 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Uninit(void);
  */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Start(uint32_t pageIndex, uint32_t itemIndex);
 
+
 /** @brief
  *
  *  @return SN_STATUS
@@ -61,6 +60,7 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Start(uint32_t pageIndex, uint32_t itemInd
  */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Stop(void);
 
+
 /** @brief
  *
  *  @return SN_STATUS
@@ -68,6 +68,7 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Stop(void);
  *  @note
  */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Pause(void);
+
 
 /** @brief
  *
@@ -82,8 +83,9 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Resume(void);
 
 /** @name 3D Printer Module :: Z Control.
  *  Description of 3D Printr Module funtions.
- */
-///@{
+ *////@{
+
+
 /** @brief
  *
  *  @return SN_STATUS
@@ -91,6 +93,8 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Resume(void);
  *  @note
  */
 extern SN_STATUS SN_MODULE_3D_PRINTER_MOTOR_INIT(void);
+
+
 /** @brief
  *
  *  @return SN_STATUS
@@ -98,6 +102,8 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_MOTOR_INIT(void);
  *  @note
  */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Z_HOMING(void);
+
+
 /** @brief
  *
  *  @param mm
@@ -107,6 +113,8 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Z_HOMING(void);
  *  @note
  */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Z_UP(float mm);
+
+
 /** @brief
  *
  *  @param mm
@@ -116,6 +124,7 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Z_UP(float mm);
  *  @note
  */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Z_DOWN(float mm);
+
 
 ///@}
 

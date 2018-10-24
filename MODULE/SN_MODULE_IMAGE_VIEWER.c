@@ -39,6 +39,7 @@ typedef struct image_viewer
     SDL_Window     *window;
     SDL_Renderer *renderer;
     SDL_Texture   *texture;
+    SDL_DisplayMode dm;
 
     SDL_Rect     dest_rect;
 
@@ -89,6 +90,11 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void)
         SN_SYS_ERROR_CHECK_SDL("Unable to initialize SDL");
     }
 
+    /* GET DISPLAY INFO */
+    SDL_GetDesktopDisplayMode(0, &moduleImageViewer.dm);
+
+    printf("Image Viwer => Module => h%d w%d\n", moduleImageViewer.dm.h, moduleImageViewer.dm.w);
+
     /* SDL CURSOR INIT */
     SDL_ShowCursor(SDL_DISABLE);
 
@@ -96,8 +102,8 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void)
     moduleImageViewer.window = SDL_CreateWindow("SN3D", \
             SDL_WINDOWPOS_UNDEFINED, \
             SDL_WINDOWPOS_UNDEFINED, \
-            moduleImageViewer.machineInfo.display.weight, \
-            moduleImageViewer.machineInfo.display.height, \
+            moduleImageViewer.dm.w, \
+            moduleImageViewer.dm.h, \
             SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL );
 
     if(moduleImageViewer.window == NULL)
@@ -149,8 +155,8 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex)
 
     moduleImageViewer.dest_rect.x = 0;
     moduleImageViewer.dest_rect.y = 0;
-    moduleImageViewer.dest_rect.w = image_w;
-    moduleImageViewer.dest_rect.h = image_h;
+    moduleImageViewer.dest_rect.w = moduleImageViewer.dm.w;
+    moduleImageViewer.dest_rect.h = moduleImageViewer.dm.h;
 
     /* Drawing Image */
     error += SDL_RenderClear(moduleImageViewer.renderer);

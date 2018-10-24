@@ -62,7 +62,14 @@ SN_STATUS SN_SYS_TimerInit(void)
     return retStatus;
 }
 
-SN_STATUS SN_SYS_TimerCreate(sysTimerId_t* pIdTSR, unsigned int msDuration, void* pfTSR)
+SN_STATUS SN_SYS_TimerUninit(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    return retStatus;
+}
+
+SN_STATUS SN_SYS_TimerCreate(sysTimerId_t* pIdTSR, uint32_t msDuration, void* pfTSR)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     uint8_t idxTSR = 0;

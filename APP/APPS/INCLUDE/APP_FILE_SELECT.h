@@ -1,10 +1,12 @@
-/*
- * APP_FILE_SELECT.h
+/**
+ * @file APP_FILE_SELECT.h
+ * @author Bato
+ * @date 24 Oct 2018
+ * @brief
  *
- *  Created on: 2018. 10. 1.
- *      Author: BartKim
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  */
-
 #ifndef APP_INCLUDE_APP_FILE_SELECT_H_
 #define APP_INCLUDE_APP_FILE_SELECT_H_
 

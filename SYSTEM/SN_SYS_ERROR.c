@@ -13,6 +13,10 @@
 
 /* ******* STATIC DEFINE ******* */
 
+/* ******* SYSTEM DEFINE ******* */
+
+/* ******* GLOBAL VARIABLE ******* */
+
 /* ******* STATIC FUNCTIONS ******* */
 void sReboot(void);
 void sExit(void);

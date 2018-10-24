@@ -6,13 +6,13 @@
  *
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
- */
-/**
+ *
  * @defgroup MODULE_IMAGE_VIEWER Image Viewer
  * @ingroup MODULE
  * @brief Image Viewer Module Functions.
  * @{
  */
+
 #ifndef MODUEL_INCLUDE_SN_MODUEL_IMAGE_VIEWER_H_
 #define MODUEL_INCLUDE_SN_MODUEL_IMAGE_VIEWER_H_
 

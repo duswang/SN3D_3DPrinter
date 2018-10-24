@@ -65,8 +65,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#typedef-members">Typedefs</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#typedef-members">Typedefs</a>  </div>
   <div class="headertitle">
 <div class="title">SN_SYS_MESSAGE_Q.h File Reference</div>  </div>
 </div><!--header-->
@@ -85,10 +84,17 @@ This graph shows which files directly or indirectly include this file:</div>
 <area shape="rect" id="node8" href="SN__SYS__TIMER_8c.html" title="SYSTEM/SN_SYS_TIMER.c" alt="" coords="863,251,1046,278"/>
 <area shape="rect" id="node9" href="SN__SYS__USB__DRIVER_8c.html" title="SYSTEM/SN_SYS_USB_DRIVER.c" alt="" coords="1071,251,1297,278"/>
 <area shape="rect" id="node10" href="APPS_8h.html" title="APP/INCLUDE/APPS.h" alt="" coords="1321,251,1479,278"/>
-<area shape="rect" id="node11" href="SN__MODULE__3D__PRINTER_8c.html" title="MODULE/SN_MODULE_3D\l_PRINTER.c" alt="" coords="1503,244,1692,285"/>
-<area shape="rect" id="node12" href="SN__MODULE__DISPLAY_8c.html" title="MODULE/SN_MODULE_DISPLAY.c" alt="" coords="1717,251,1947,278"/>
-<area shape="rect" id="node13" href="SN__MODULE__FILE__SYSTEM_8c.html" title="MODULE/SN_MODULE_FILE\l_SYSTEM.c" alt="" coords="1971,244,2167,285"/>
-<area shape="rect" id="node14" href="SN__MODULE__IMAGE__VIEWER_8c.html" title="MODULE/SN_MODULE_IMAGE\l_VIEWER.c" alt="" coords="2191,244,2403,285"/>
+<area shape="rect" id="node18" href="SN__MODULE__3D__PRINTER_8c.html" title="MODULE/SN_MODULE_3D\l_PRINTER.c" alt="" coords="1503,244,1692,285"/>
+<area shape="rect" id="node19" href="SN__MODULE__DISPLAY_8c.html" title="MODULE/SN_MODULE_DISPLAY.c" alt="" coords="1717,251,1947,278"/>
+<area shape="rect" id="node20" href="SN__MODULE__FILE__SYSTEM_8c.html" title="MODULE/SN_MODULE_FILE\l_SYSTEM.c" alt="" coords="1971,244,2167,285"/>
+<area shape="rect" id="node21" href="SN__MODULE__IMAGE__VIEWER_8c.html" title="MODULE/SN_MODULE_IMAGE\l_VIEWER.c" alt="" coords="2191,244,2403,285"/>
+<area shape="rect" id="node11" href="APP__MAIN_8c.html" title="APP/APP_MAIN.c" alt="" coords="721,333,847,360"/>
+<area shape="rect" id="node12" href="APP__CONTROL_8c.html" title="APP/APPS/APP_CONTROL.c" alt="" coords="871,333,1065,360"/>
+<area shape="rect" id="node13" href="APP__FILE__SELECT_8c.html" title="APP/APPS/APP_FILE_SELECT.c" alt="" coords="1089,333,1300,360"/>
+<area shape="rect" id="node14" href="APP__INIT_8c.html" title="APP/APPS/APP_INIT.c" alt="" coords="1323,333,1477,360"/>
+<area shape="rect" id="node15" href="APP__PAUSE_8c.html" title="APP/APPS/APP_PAUSE.c" alt="" coords="1501,333,1675,360"/>
+<area shape="rect" id="node16" href="APP__PRINTING_8c.html" title="APP/APPS/APP_PRINTING.c" alt="" coords="1699,333,1890,360"/>
+<area shape="rect" id="node17" href="APP__WAITING_8c.html" title="APP/APPS/APP_WAITING.c" alt="" coords="1915,333,2099,360"/>
 </map>
 </div>
 </div>
@@ -96,9 +102,9 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgeneral__evt__header__t.html">general_evt_header_t</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgeneral__event__header.html">general_event_header</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgeneral__evt__t.html">general_evt_t</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgeneral__event.html">general_event</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsys__message__queue.html">sys_message_queue</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -111,22 +117,31 @@ typedef uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>event_id_
 <tr class="memitem:ga655cadf65449a0b80f198cb7ce166d41"><td class="memItemLeft" align="right" valign="top">
 typedef uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>event_msg_t</b></td></tr>
 <tr class="separator:ga655cadf65449a0b80f198cb7ce166d41"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga12432b205deff971be5518bc28b39dd4"><td class="memItemLeft" align="right" valign="top">
+typedef struct <a class="el" href="structgeneral__event__header.html">general_event_header</a>&#160;</td><td class="memItemRight" valign="bottom"><b>general_evt_header_t</b></td></tr>
+<tr class="separator:ga12432b205deff971be5518bc28b39dd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf304949d0591c2493574a1acc0eb0546"><td class="memItemLeft" align="right" valign="top">
+typedef struct <a class="el" href="structgeneral__event.html">general_event</a>&#160;</td><td class="memItemRight" valign="bottom"><b>general_evt_t</b></td></tr>
+<tr class="separator:gaf304949d0591c2493574a1acc0eb0546"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4d5c8f4d684de3a1e6e73e63f9f25c98"><td class="memItemLeft" align="right" valign="top">
 typedef struct <a class="el" href="structsys__message__queue.html">sys_message_queue</a>&#160;</td><td class="memItemRight" valign="bottom"><b>sysMessageQId</b></td></tr>
 <tr class="separator:ga4d5c8f4d684de3a1e6e73e63f9f25c98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr><td colspan="2"><div class="groupHeader">System Message Queue</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>Description of Message Queue Init and Uninit funtions. </p>
+</div></td></tr>
 <tr class="memitem:ga35e9ff084626dfccd36d098827638a0c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__SYSTEM__ERROR.html#ga4540713b9a7a18ce44d78c3a10f7442f">SN_STATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__SYSTEM__MESSAGE__Q.html#ga35e9ff084626dfccd36d098827638a0c">SN_SYS_MessageQInit</a> (<a class="el" href="structsys__message__queue.html">sysMessageQId</a> *msgQId)</td></tr>
 <tr class="separator:ga35e9ff084626dfccd36d098827638a0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga293a77ea597b70f3f2f38b919f93497e"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="group__SYSTEM__ERROR.html#ga4540713b9a7a18ce44d78c3a10f7442f">SN_STATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><b>SN_SYS_MessageQRemove</b> (<a class="el" href="structsys__message__queue.html">sysMessageQId</a> *msgQId)</td></tr>
+<tr class="memitem:ga293a77ea597b70f3f2f38b919f93497e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__SYSTEM__ERROR.html#ga4540713b9a7a18ce44d78c3a10f7442f">SN_STATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__SYSTEM__MESSAGE__Q.html#ga293a77ea597b70f3f2f38b919f93497e">SN_SYS_MessageQRemove</a> (<a class="el" href="structsys__message__queue.html">sysMessageQId</a> *msgQId)</td></tr>
 <tr class="separator:ga293a77ea597b70f3f2f38b919f93497e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga36e115419d4cbbfe4a6bde6e3fecf180"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="group__SYSTEM__ERROR.html#ga4540713b9a7a18ce44d78c3a10f7442f">SN_STATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><b>SN_SYS_MessagePut</b> (<a class="el" href="structsys__message__queue.html">sysMessageQId</a> *msgQId, event_id_t evtId, event_msg_t evtMessage)</td></tr>
+<tr><td colspan="2"><div class="groupHeader">System Message Queue :: Send &amp; Receive Message</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p>Description of Message Queue Init and Uninit funtions. </p>
+</div></td></tr>
+<tr class="memitem:ga36e115419d4cbbfe4a6bde6e3fecf180"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__SYSTEM__ERROR.html#ga4540713b9a7a18ce44d78c3a10f7442f">SN_STATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__SYSTEM__MESSAGE__Q.html#ga36e115419d4cbbfe4a6bde6e3fecf180">SN_SYS_MessagePut</a> (<a class="el" href="structsys__message__queue.html">sysMessageQId</a> *msgQId, event_id_t evtId, event_msg_t evtMessage)</td></tr>
 <tr class="separator:ga36e115419d4cbbfe4a6bde6e3fecf180"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gafb2da611b3c93f1f906109e7737d67cf"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="structgeneral__evt__t.html">general_evt_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>SN_SYS_MessageGet</b> (<a class="el" href="structsys__message__queue.html">sysMessageQId</a> *msgQId)</td></tr>
+<tr class="memitem:gafb2da611b3c93f1f906109e7737d67cf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structgeneral__event.html">general_evt_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__SYSTEM__MESSAGE__Q.html#gafb2da611b3c93f1f906109e7737d67cf">SN_SYS_MessageGet</a> (<a class="el" href="structsys__message__queue.html">sysMessageQId</a> *msgQId)</td></tr>
 <tr class="separator:gafb2da611b3c93f1f906109e7737d67cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>

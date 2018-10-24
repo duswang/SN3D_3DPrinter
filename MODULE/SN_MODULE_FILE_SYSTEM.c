@@ -235,6 +235,10 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void)
 
     SN_SYS_Log("MODULE INIT => FILE SYSTEM.");
 
+
+    /* USB DRIVER INIT */
+    SN_SYS_USBDriverInit(USBEvent_Callback);
+
     /* MESSAGE Q INIT */
     retStatus = SN_SYS_MessageQInit(&msgQIdFileSystem);
     SN_SYS_ERROR_CHECK(retStatus, "File System Module Message Q Init Failed.");
@@ -250,9 +254,6 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void)
     {
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System Thread Init Failed.");
     }
-
-    /* USB DRIVER INIT */
-    SN_SYS_USBDriverInit(USBEvent_Callback);
 
     /* MACHINE INFO INIT */
     SN_MODULE_FILE_SYSTEM_MachineInfoInit();
@@ -344,15 +345,15 @@ static void* USBEvent_Callback(int evt)
 
     switch(evt)
     {
-        case USB_EVT_MOUNT:
+        case MSG_USB_EVT_MOUNT:
             retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_USB_MOUNT, 0);
             SN_SYS_ERROR_CHECK(retStatus, "File System Send Message Fiailed.");
             break;
-        case USB_EVT_UNMOUNT:
+        case MSG_USB_EVT_UNMOUNT:
             retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_USB_UNMOUNT, 0);
             SN_SYS_ERROR_CHECK(retStatus, "File System Send Message Fiailed.");
             break;
-        case USB_EVT_WAITING:
+        case MSG_USB_EVT_WAITING:
             retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_WAITING, 0);
             SN_SYS_ERROR_CHECK(retStatus, "File System Send Message Fiailed.");
             break;
@@ -809,9 +810,6 @@ static void sDemoPrintSetting(void)
 
 static void sDemoMachineSetting(void)
 {
-    moduleFileSystem.machineInfo.display.weight   =         1920;//px
-    moduleFileSystem.machineInfo.display.height   =         1080;//px
-
     strcpy(moduleFileSystem.machineInfo.name, DEFAULT_DEVICE_NAME);
     moduleFileSystem.machineInfo.height           =          200;//mm
 }

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['general_5fevt_5fheader_5ft',['general_evt_header_t',['../structgeneral__evt__header__t.html',1,'']]],
-  ['general_5fevt_5ft',['general_evt_t',['../structgeneral__evt__t.html',1,'']]]
+  ['general_5fevent',['general_event',['../structgeneral__event.html',1,'']]],
+  ['general_5fevent_5fheader',['general_event_header',['../structgeneral__event__header.html',1,'']]]
 ];

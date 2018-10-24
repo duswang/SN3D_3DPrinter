@@ -1,10 +1,12 @@
-/*
- * APP_FILE_SELECT.c
+/**
+ * @file APP_FILE_SELECT.c
+ * @author Bato
+ * @date 24 Oct 2018
+ * @brief
  *
- *  Created on: 2018. 10. 1.
- *      Author: BartKim
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  */
-
 #include "APPS.h"
 
 /******** GLOBAL VARIABLE ********/

@@ -17,42 +17,32 @@ Collaboration diagram for U\+SB Driver\+:\nopagebreak
 \item 
 struct \hyperlink{structusb__dev__handle}{usb\+\_\+dev\+\_\+handle}
 \end{DoxyCompactItemize}
-\subsection*{Macros}
+\subsection*{U\+SB Event Macro}
 \begin{DoxyCompactItemize}
 \item 
-\#define \hyperlink{group__SYSTEM__USB__DRIVER_gaf6b170f580198c8e623aca38a5e96450}{V\+E\+R\+D\+O\+R\+\_\+\+ID}~1921
+\mbox{\Hypertarget{group__SYSTEM__USB__DRIVER_ga9b9388bbbf745b6cff8609792c63490d}\label{group__SYSTEM__USB__DRIVER_ga9b9388bbbf745b6cff8609792c63490d}} 
+enum {\bfseries usb\+\_\+driver\+\_\+event} \{ {\bfseries M\+S\+G\+\_\+\+U\+S\+B\+\_\+\+E\+V\+T\+\_\+\+M\+O\+U\+NT} = 0x01, 
+{\bfseries M\+S\+G\+\_\+\+U\+S\+B\+\_\+\+E\+V\+T\+\_\+\+U\+N\+M\+O\+U\+NT} = 0x02, 
+{\bfseries M\+S\+G\+\_\+\+U\+S\+B\+\_\+\+E\+V\+T\+\_\+\+W\+A\+I\+T\+I\+NG} = 0x03, 
+{\bfseries M\+S\+G\+\_\+\+S\+B\+\_\+\+E\+V\+T\+\_\+\+N\+O\+NE} = 0x04
+ \}
 \item 
-\mbox{\Hypertarget{group__SYSTEM__USB__DRIVER_ga6b41096e44c646df97fba9581acb4b4a}\label{group__SYSTEM__USB__DRIVER_ga6b41096e44c646df97fba9581acb4b4a}} 
-\#define {\bfseries P\+R\+O\+D\+U\+C\+T\+\_\+\+ID}~21808
-\item 
-\mbox{\Hypertarget{group__SYSTEM__USB__DRIVER_ga65606dd2f028bd2458735b044b869dda}\label{group__SYSTEM__USB__DRIVER_ga65606dd2f028bd2458735b044b869dda}} 
-\#define {\bfseries U\+S\+B\+\_\+\+E\+V\+T\+\_\+\+M\+O\+U\+NT}~0x01
-\item 
-\mbox{\Hypertarget{group__SYSTEM__USB__DRIVER_gaf01af306012e270c8f16ee1a5c597dc4}\label{group__SYSTEM__USB__DRIVER_gaf01af306012e270c8f16ee1a5c597dc4}} 
-\#define {\bfseries U\+S\+B\+\_\+\+E\+V\+T\+\_\+\+U\+N\+M\+O\+U\+NT}~0x02
-\item 
-\mbox{\Hypertarget{group__SYSTEM__USB__DRIVER_gaa9ecc196598c6f205b44560920e4bf6c}\label{group__SYSTEM__USB__DRIVER_gaa9ecc196598c6f205b44560920e4bf6c}} 
-\#define {\bfseries U\+S\+B\+\_\+\+E\+V\+T\+\_\+\+W\+A\+I\+T\+I\+NG}~0x03
-\item 
-\mbox{\Hypertarget{group__SYSTEM__USB__DRIVER_ga77a4b4b6d8aeaf81d91f893dd2958621}\label{group__SYSTEM__USB__DRIVER_ga77a4b4b6d8aeaf81d91f893dd2958621}} 
-\#define {\bfseries U\+S\+B\+\_\+\+E\+V\+T\+\_\+\+N\+O\+NE}~0x04
-\item 
-\mbox{\Hypertarget{group__SYSTEM__USB__DRIVER_ga748b5b8cef6b34b348684975c5d0578c}\label{group__SYSTEM__USB__DRIVER_ga748b5b8cef6b34b348684975c5d0578c}} 
-\#define {\bfseries U\+S\+B\+\_\+\+U\+N\+M\+O\+U\+NT}~0
-\item 
-\mbox{\Hypertarget{group__SYSTEM__USB__DRIVER_gac0641099c07ba1f6ad852306aadb0032}\label{group__SYSTEM__USB__DRIVER_gac0641099c07ba1f6ad852306aadb0032}} 
-\#define {\bfseries U\+S\+B\+\_\+\+M\+O\+U\+NT}~1
+\mbox{\Hypertarget{group__SYSTEM__USB__DRIVER_ga1bee7d22386716ee60aef5b482b5fa7e}\label{group__SYSTEM__USB__DRIVER_ga1bee7d22386716ee60aef5b482b5fa7e}} 
+enum usb\+\_\+driver\+\_\+event {\bfseries usb\+Evt\+\_\+t}
 \end{DoxyCompactItemize}
-\subsection*{Functions}
-\begin{DoxyCompactItemize}
+\subsection*{U\+SB Driver System}
+\label{_amgrp520fea60abf54d62f341eebb2a0145c6}%
+Description of Serial System Init and Uninit funtions. \begin{DoxyCompactItemize}
 \item 
-int \hyperlink{group__SYSTEM__USB__DRIVER_ga17e02bd678d50a38f21d757443ec938c}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Init} (void $\ast$(pf\+Call\+Back)(int evt))
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__SYSTEM__USB__DRIVER_gaf7719b8e9f6d6f05b702ac7d4e9c5a61}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Init} (void $\ast$(pf\+Call\+Back)(int evt))
 \item 
-\mbox{\Hypertarget{group__SYSTEM__USB__DRIVER_ga263fc8da4afaeab8f7bb40ed131f1264}\label{group__SYSTEM__USB__DRIVER_ga263fc8da4afaeab8f7bb40ed131f1264}} 
-int {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Terminate} (void)
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__SYSTEM__USB__DRIVER_ga60bc7a83a5370d89dffe6e3d4ad88538}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Terminate} (void)
+\end{DoxyCompactItemize}
+\subsection*{U\+SB Driver System \+:\+: Util}
+\label{_amgrp0bffd34c90f12d85c8fa16d1d16b13fd}%
+Description of Serial System Init and Uninit funtions. \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{group__SYSTEM__USB__DRIVER_ga20db703e1eb94fe62db97be11c59222d}\label{group__SYSTEM__USB__DRIVER_ga20db703e1eb94fe62db97be11c59222d}} 
-int {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Is\+Mount} (void)
+bool \hyperlink{group__SYSTEM__USB__DRIVER_gaccafd3f2c96104a41f768f05a083226f}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Is\+Mount} (void)
 \end{DoxyCompactItemize}
 
 
@@ -61,28 +51,57 @@ System U\+SB Driver Functions.
 
 
 
-\subsection{Macro Definition Documentation}
-\mbox{\Hypertarget{group__SYSTEM__USB__DRIVER_gaf6b170f580198c8e623aca38a5e96450}\label{group__SYSTEM__USB__DRIVER_gaf6b170f580198c8e623aca38a5e96450}} 
-\index{U\+S\+B Driver@{U\+S\+B Driver}!V\+E\+R\+D\+O\+R\+\_\+\+ID@{V\+E\+R\+D\+O\+R\+\_\+\+ID}}
-\index{V\+E\+R\+D\+O\+R\+\_\+\+ID@{V\+E\+R\+D\+O\+R\+\_\+\+ID}!U\+S\+B Driver@{U\+S\+B Driver}}
-\subsubsection{\texorpdfstring{V\+E\+R\+D\+O\+R\+\_\+\+ID}{VERDOR\_ID}}
-{\footnotesize\ttfamily \#define V\+E\+R\+D\+O\+R\+\_\+\+ID~1921}
-
-
-
-{\ttfamily \#include $<$\hyperlink{SN__SYS__USB__DRIVER_8h}{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+\_\+\+D\+R\+I\+V\+E\+R.\+h}$>$}
-
-Def Config 
-
 \subsection{Function Documentation}
-\mbox{\Hypertarget{group__SYSTEM__USB__DRIVER_ga17e02bd678d50a38f21d757443ec938c}\label{group__SYSTEM__USB__DRIVER_ga17e02bd678d50a38f21d757443ec938c}} 
+\mbox{\Hypertarget{group__SYSTEM__USB__DRIVER_gaf7719b8e9f6d6f05b702ac7d4e9c5a61}\label{group__SYSTEM__USB__DRIVER_gaf7719b8e9f6d6f05b702ac7d4e9c5a61}} 
 \index{U\+S\+B Driver@{U\+S\+B Driver}!S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Init@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Init}}
 \index{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Init@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Init}!U\+S\+B Driver@{U\+S\+B Driver}}
 \subsubsection{\texorpdfstring{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Init()}{SN\_SYS\_USBDriverInit()}}
-{\footnotesize\ttfamily int S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Init (\begin{DoxyParamCaption}\item[{void $\ast$}]{pf\+Call\+Back)(int evt }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Init (\begin{DoxyParamCaption}\item[{void $\ast$}]{pf\+Call\+Back)(int evt }\end{DoxyParamCaption})}
 
 
 
 {\ttfamily \#include $<$\hyperlink{SN__SYS__USB__DRIVER_8h}{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+\_\+\+D\+R\+I\+V\+E\+R.\+h}$>$}
 
-Open Device 
+
+\begin{DoxyParams}{Parameters}
+{\em pf\+Call\+Back} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+S\+N\+\_\+\+S\+T\+A\+T\+US 
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+
+\end{DoxyNote}
+\mbox{\Hypertarget{group__SYSTEM__USB__DRIVER_gaccafd3f2c96104a41f768f05a083226f}\label{group__SYSTEM__USB__DRIVER_gaccafd3f2c96104a41f768f05a083226f}} 
+\index{U\+S\+B Driver@{U\+S\+B Driver}!S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Is\+Mount@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Is\+Mount}}
+\index{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Is\+Mount@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Is\+Mount}!U\+S\+B Driver@{U\+S\+B Driver}}
+\subsubsection{\texorpdfstring{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Is\+Mount()}{SN\_SYS\_USBDriverIsMount()}}
+{\footnotesize\ttfamily bool S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Is\+Mount (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+{\ttfamily \#include $<$\hyperlink{SN__SYS__USB__DRIVER_8h}{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+\_\+\+D\+R\+I\+V\+E\+R.\+h}$>$}
+
+\begin{DoxyReturn}{Returns}
+is\+Mount 
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+
+\end{DoxyNote}
+\mbox{\Hypertarget{group__SYSTEM__USB__DRIVER_ga60bc7a83a5370d89dffe6e3d4ad88538}\label{group__SYSTEM__USB__DRIVER_ga60bc7a83a5370d89dffe6e3d4ad88538}} 
+\index{U\+S\+B Driver@{U\+S\+B Driver}!S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Terminate@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Terminate}}
+\index{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Terminate@{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Terminate}!U\+S\+B Driver@{U\+S\+B Driver}}
+\subsubsection{\texorpdfstring{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Terminate()}{SN\_SYS\_USBDriverTerminate()}}
+{\footnotesize\ttfamily \hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Terminate (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+{\ttfamily \#include $<$\hyperlink{SN__SYS__USB__DRIVER_8h}{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+\_\+\+D\+R\+I\+V\+E\+R.\+h}$>$}
+
+\begin{DoxyReturn}{Returns}
+S\+N\+\_\+\+S\+T\+A\+T\+US 
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+
+\end{DoxyNote}

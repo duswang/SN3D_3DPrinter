@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['timer',['Timer',['../group__SYSTEM__TIMER.html',1,'']]]
+  ['nextion_20display_20command',['Nextion Display Command',['../group__SYSTEM__SERIAL__NEXTION.html',1,'']]]
 ];

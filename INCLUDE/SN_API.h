@@ -24,7 +24,6 @@
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
  * @defgroup API API
- * @ingroup API
  * @brief SN_API 0.0.1v
  * @{
  */

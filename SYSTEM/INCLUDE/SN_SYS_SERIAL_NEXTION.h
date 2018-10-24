@@ -1,8 +1,16 @@
-/*
- * SN_SYS_SERIAL_NEXTION.h
+/**
+ * @fileSN_SYS_SERIAL_NEXTION.h
+ * @author Bato
+ * @date 27 Sep 2018
+ * @brief
  *
- *  Created on: Sep 27, 2018
- *      Author: pi
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
+ *
+ * @defgroup SYSTEM_SERIAL_NEXTION Nextion Display Command
+ * @ingroup SYSTEM_SERIAL_COMM
+ * @brief Nextion Display command
+ * @{
  */
 
 #ifndef SN_SYS_SERIAL_NEXTION_H_
@@ -22,7 +30,7 @@ typedef union Nextion_message {
    uint32_t NXmessage[2];
 } msgNX_t;
 
-/** Nextion Display UART Message **/
+/* * Nextion Display UART Message * */
 /* * * * * * * * * * * * * * * * * * * * * * * *
 
     Nextion Display TX Command.
@@ -32,6 +40,9 @@ typedef union Nextion_message {
     [reserve] [endCode[][][]]        32bit
 
  * * * * * * * * * * * * * * * * * * * * * * * */
+/**
+ *
+ */
 #define NX_PAGE_BOOT_COMMAND        "page Boot"
 #define NX_PAGE_WAITING_COMMAND     "page Waiting"
 #define NX_PAGE_CONTROL_COMMAND     "page Control"
@@ -56,30 +67,30 @@ typedef union Nextion_message {
 typedef enum
 {
     /* RESPONSE */
-    NX_COMMAND_FINISHED                 = 0x01,
+    NX_COMMAND_FINISHED                 = 0x01,//!< NX_COMMAND_FINISHED
     /* EVT */
-    NX_COMMAND_EVT_LAUNCHED             = 0x88,
-    NX_COMMAND_EVT_UPGRADED             = 0x89,
-    NX_COMMAND_EVT_TOUCH_HEAD           = 0x65,
-    NX_COMMAND_EVT_POSITIOn_HEAD        = 0x67,
-    NX_COMMAND_EVT_SLEEP_POSITION_HEAD  = 0x68,
+    NX_COMMAND_EVT_LAUNCHED             = 0x88,//!< NX_COMMAND_EVT_LAUNCHED
+    NX_COMMAND_EVT_UPGRADED             = 0x89,//!< NX_COMMAND_EVT_UPGRADED
+    NX_COMMAND_EVT_TOUCH_HEAD           = 0x65,//!< NX_COMMAND_EVT_TOUCH_HEAD
+    NX_COMMAND_EVT_POSITIOn_HEAD        = 0x67,//!< NX_COMMAND_EVT_POSITIOn_HEAD
+    NX_COMMAND_EVT_SLEEP_POSITION_HEAD  = 0x68,//!< NX_COMMAND_EVT_SLEEP_POSITION_HEAD
 
     /* SN MESSAGE HEAD */
-    NX_COMMAND_SN_MESSAGE_HEAD          = 0xF0,
+    NX_COMMAND_SN_MESSAGE_HEAD          = 0xF0,//!< NX_COMMAND_SN_MESSAGE_HEAD
 
     /* REQUEST VALUE HEAD */
-    NX_COMMAND_CURRENT_PAGE_ID_HEAD     = 0x66,
-    NX_COMMAND_STRING_HEAD              = 0x70,
-    NX_COMMAND_NUMBER_HEAD              = 0x71,
+    NX_COMMAND_CURRENT_PAGE_ID_HEAD     = 0x66,//!< NX_COMMAND_CURRENT_PAGE_ID_HEAD
+    NX_COMMAND_STRING_HEAD              = 0x70,//!< NX_COMMAND_STRING_HEAD
+    NX_COMMAND_NUMBER_HEAD              = 0x71,//!< NX_COMMAND_NUMBER_HEAD
     /* ERROR */
-    NX_COMMAND_INVALID_CMD              = 0x00,
-    NX_COMMAND_INVALID_COMPONET_ID      = 0x02,
-    NX_COMMAND_INVALID_PAGE_ID          = 0x03,
-    NX_COMMAND_INVALID_PICTURE_ID       = 0x04,
-    NX_COMMAND_INVALID_FONT_ID          = 0x05,
-    NX_COMMAND_INVALID_BAUD             = 0x11,
-    NX_COMMAND_INVALID_VARIABLE         = 0x1A,
-    NX_COMMAND_INVALID_OPERATION        = 0x1B
+    NX_COMMAND_INVALID_CMD              = 0x00,//!< NX_COMMAND_INVALID_CMD
+    NX_COMMAND_INVALID_COMPONET_ID      = 0x02,//!< NX_COMMAND_INVALID_COMPONET_ID
+    NX_COMMAND_INVALID_PAGE_ID          = 0x03,//!< NX_COMMAND_INVALID_PAGE_ID
+    NX_COMMAND_INVALID_PICTURE_ID       = 0x04,//!< NX_COMMAND_INVALID_PICTURE_ID
+    NX_COMMAND_INVALID_FONT_ID          = 0x05,//!< NX_COMMAND_INVALID_FONT_ID
+    NX_COMMAND_INVALID_BAUD             = 0x11,//!< NX_COMMAND_INVALID_BAUD
+    NX_COMMAND_INVALID_VARIABLE         = 0x1A,//!< NX_COMMAND_INVALID_VARIABLE
+    NX_COMMAND_INVALID_OPERATION        = 0x1B //!< NX_COMMAND_INVALID_OPERATION
 }nx_command_t;
 
 /** PAGE **/
@@ -178,3 +189,4 @@ typedef enum
 
 
 #endif /* SN_SYS_SERIAL_NEXTION_ */
+/**@}*/

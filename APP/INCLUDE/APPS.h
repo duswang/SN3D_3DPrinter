@@ -14,6 +14,7 @@
 #define APP_INCLUDE_APPS_H_
 
 #include "SN_API.h"
+
 #include "APP_STATE.h"
 
 #include "APP_MAIN.h"

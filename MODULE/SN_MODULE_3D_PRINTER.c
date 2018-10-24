@@ -152,6 +152,12 @@ static SN_STATUS s3DPrinter_PrintUninit(void);
 /* *** UTIL *** */
 static SN_STATUS sGcodeParser_ZMove(char* pGcode, float liftDistance, float layerThickness,float liftFeedRate, bool isUp);
 
+
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  Extern Functions
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 SN_STATUS SN_MODULE_3D_PRINTER_Init(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;

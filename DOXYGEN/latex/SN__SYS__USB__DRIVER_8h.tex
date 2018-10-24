@@ -1,7 +1,6 @@
 \hypertarget{SN__SYS__USB__DRIVER_8h}{}\section{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+\_\+\+D\+R\+I\+V\+ER.h File Reference}
 \label{SN__SYS__USB__DRIVER_8h}\index{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+\_\+\+D\+R\+I\+V\+E\+R.\+h@{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+\_\+\+D\+R\+I\+V\+E\+R.\+h}}
-This graph shows which files directly or indirectly include this file\+:
-\nopagebreak
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -13,33 +12,32 @@ This graph shows which files directly or indirectly include this file\+:
 \item 
 struct \hyperlink{structusb__dev__handle}{usb\+\_\+dev\+\_\+handle}
 \end{DoxyCompactItemize}
-\subsection*{Macros}
-\begin{DoxyCompactItemize}
-\item 
-\#define \hyperlink{group__SYSTEM__USB__DRIVER_gaf6b170f580198c8e623aca38a5e96450}{V\+E\+R\+D\+O\+R\+\_\+\+ID}~1921
-\item 
-\#define {\bfseries P\+R\+O\+D\+U\+C\+T\+\_\+\+ID}~21808
-\item 
-\#define {\bfseries U\+S\+B\+\_\+\+E\+V\+T\+\_\+\+M\+O\+U\+NT}~0x01
-\item 
-\#define {\bfseries U\+S\+B\+\_\+\+E\+V\+T\+\_\+\+U\+N\+M\+O\+U\+NT}~0x02
-\item 
-\#define {\bfseries U\+S\+B\+\_\+\+E\+V\+T\+\_\+\+W\+A\+I\+T\+I\+NG}~0x03
-\item 
-\#define {\bfseries U\+S\+B\+\_\+\+E\+V\+T\+\_\+\+N\+O\+NE}~0x04
-\item 
-\#define {\bfseries U\+S\+B\+\_\+\+U\+N\+M\+O\+U\+NT}~0
-\item 
-\#define {\bfseries U\+S\+B\+\_\+\+M\+O\+U\+NT}~1
-\end{DoxyCompactItemize}
 \subsection*{Functions}
+\begin{Indent}\textbf{ U\+SB Driver System}\par
+{\em Description of Serial System Init and Uninit funtions. }\begin{DoxyCompactItemize}
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__SYSTEM__USB__DRIVER_gaf7719b8e9f6d6f05b702ac7d4e9c5a61}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Init} (void $\ast$(pf\+Call\+Back)(int evt))
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__SYSTEM__USB__DRIVER_ga60bc7a83a5370d89dffe6e3d4ad88538}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Terminate} (void)
+\end{DoxyCompactItemize}
+\end{Indent}
+\begin{Indent}\textbf{ U\+SB Driver System \+:\+: Util}\par
+{\em Description of Serial System Init and Uninit funtions. }\begin{DoxyCompactItemize}
+\item 
+bool \hyperlink{group__SYSTEM__USB__DRIVER_gaccafd3f2c96104a41f768f05a083226f}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Is\+Mount} (void)
+\end{DoxyCompactItemize}
+\end{Indent}
+\subsection*{U\+SB Event Macro}
 \begin{DoxyCompactItemize}
 \item 
-int \hyperlink{group__SYSTEM__USB__DRIVER_ga17e02bd678d50a38f21d757443ec938c}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Init} (void $\ast$(pf\+Call\+Back)(int evt))
+\mbox{\Hypertarget{group__SYSTEM__USB__DRIVER_ga9b9388bbbf745b6cff8609792c63490d}\label{group__SYSTEM__USB__DRIVER_ga9b9388bbbf745b6cff8609792c63490d}} 
+enum {\bfseries usb\+\_\+driver\+\_\+event} \{ {\bfseries M\+S\+G\+\_\+\+U\+S\+B\+\_\+\+E\+V\+T\+\_\+\+M\+O\+U\+NT} = 0x01, 
+{\bfseries M\+S\+G\+\_\+\+U\+S\+B\+\_\+\+E\+V\+T\+\_\+\+U\+N\+M\+O\+U\+NT} = 0x02, 
+{\bfseries M\+S\+G\+\_\+\+U\+S\+B\+\_\+\+E\+V\+T\+\_\+\+W\+A\+I\+T\+I\+NG} = 0x03, 
+{\bfseries M\+S\+G\+\_\+\+S\+B\+\_\+\+E\+V\+T\+\_\+\+N\+O\+NE} = 0x04
+ \}
 \item 
-int {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Terminate} (void)
-\item 
-int {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+U\+S\+B\+Driver\+Is\+Mount} (void)
+enum usb\+\_\+driver\+\_\+event {\bfseries usb\+Evt\+\_\+t}
 \end{DoxyCompactItemize}
 
 

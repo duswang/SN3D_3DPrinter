@@ -1,267 +1,66 @@
 \hypertarget{APP__MESSAGES_8h}{}\section{A\+P\+P/\+I\+N\+C\+L\+U\+D\+E/\+A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+ES.h File Reference}
 \label{APP__MESSAGES_8h}\index{A\+P\+P/\+I\+N\+C\+L\+U\+D\+E/\+A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P/\+I\+N\+C\+L\+U\+D\+E/\+A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}
-This graph shows which files directly or indirectly include this file\+:
-\nopagebreak
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
 \includegraphics[width=350pt]{APP__MESSAGES_8h__dep__incl}
 \end{center}
 \end{figure}
-\subsection*{Macros}
-\begin{DoxyCompactItemize}
-\item 
-\#define \hyperlink{APP__MESSAGES_8h_a7f8a485e2ac959dd8dfec32bf3d18a25}{S\+N\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+B\+A\+SE}~0
-\item 
-\#define \hyperlink{APP__MESSAGES_8h_a5f1175178827a05a7df5beb3bf85c368}{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+ER}~(\hyperlink{APP__MESSAGES_8h_a7f8a485e2ac959dd8dfec32bf3d18a25}{S\+N\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+B\+A\+SE} + 0)
-\item 
-\#define \hyperlink{APP__MESSAGES_8h_a3b15d6786b776801ecc4a9fd52ae7b53}{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+D\+I\+S\+P\+L\+AY}~(\hyperlink{APP__MESSAGES_8h_a7f8a485e2ac959dd8dfec32bf3d18a25}{S\+N\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+B\+A\+SE} + 1)
-\item 
-\#define \hyperlink{APP__MESSAGES_8h_a3ff8434f726821744d49a715b0ca8f49}{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+EM}~(\hyperlink{APP__MESSAGES_8h_a7f8a485e2ac959dd8dfec32bf3d18a25}{S\+N\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+B\+A\+SE} + 2)
-\item 
-\#define \hyperlink{APP__MESSAGES_8h_aed7ef024188e9be654335c9f0c6453ba}{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+ER}~(\hyperlink{APP__MESSAGES_8h_a7f8a485e2ac959dd8dfec32bf3d18a25}{S\+N\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+B\+A\+SE} + 3)
-\item 
-\#define \hyperlink{APP__MESSAGES_8h_a16bb199b022dcdce1352aa86f4fd9a40}{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+T\+Y\+P\+E\+\_\+\+M\+A\+SK}~0x\+F\+F\+F\+F0000
-\item 
-\#define \hyperlink{APP__MESSAGES_8h_ae94265e142508d08b39aa6398abbbfc0}{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+V\+A\+L\+U\+E\+\_\+\+M\+A\+SK}~0x0000\+F\+F\+FF
-\item 
-\#define \hyperlink{APP__MESSAGES_8h_a67ccc19e78cb836495c66249e44878e9}{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+GE}(T\+Y\+PE,  V\+A\+L\+UE)~(((T\+Y\+PE$<$$<$16) \& \hyperlink{APP__MESSAGES_8h_a16bb199b022dcdce1352aa86f4fd9a40}{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+T\+Y\+P\+E\+\_\+\+M\+A\+SK}) $\vert$ ((V\+A\+L\+UE) \& \hyperlink{APP__MESSAGES_8h_ae94265e142508d08b39aa6398abbbfc0}{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+V\+A\+L\+U\+E\+\_\+\+M\+A\+SK}))
-\item 
-\#define \hyperlink{APP__MESSAGES_8h_a9d7ab5b1e03b2af2dc3098fcc1a875e3}{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+T\+Y\+PE}(E\+V\+E\+N\+T\+C\+O\+DE)~(((E\+V\+E\+N\+T\+C\+O\+DE) \& \hyperlink{APP__MESSAGES_8h_a16bb199b022dcdce1352aa86f4fd9a40}{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+T\+Y\+P\+E\+\_\+\+M\+A\+SK}) $>$$>$ 16)
-\item 
-\#define \hyperlink{APP__MESSAGES_8h_a7417312fd46423e7d7c884a791ac8ed7}{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+V\+A\+L\+UE}(E\+V\+E\+N\+T\+C\+O\+DE)~(((E\+V\+E\+N\+T\+C\+O\+DE) \& \hyperlink{APP__MESSAGES_8h_ae94265e142508d08b39aa6398abbbfc0}{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+V\+A\+L\+U\+E\+\_\+\+M\+A\+SK}))
-\end{DoxyCompactItemize}
 \subsection*{Enumerations}
 \begin{DoxyCompactItemize}
 \item 
-enum \hyperlink{APP__MESSAGES_8h_ab304d1be761dc5b7ba92061e24395c04}{evt\+App\+Type\+\_\+t} \{ \newline
-\hyperlink{APP__MESSAGES_8h_ab304d1be761dc5b7ba92061e24395c04a5c5d13d144b29bfebd8df580c526b61a}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+ER} = 0x0001, 
-\hyperlink{APP__MESSAGES_8h_ab304d1be761dc5b7ba92061e24395c04a86ac2c2919dfbbbc88a8e6369a8b4383}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+D\+I\+S\+P\+L\+AY} = 0x0002, 
-\hyperlink{APP__MESSAGES_8h_ab304d1be761dc5b7ba92061e24395c04ac65dce5dd8cc1063fe843b1fb8dde820}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+EM} = 0x0003, 
-\hyperlink{APP__MESSAGES_8h_ab304d1be761dc5b7ba92061e24395c04ae0ee6ba74d27dedcb1d7cf5235688688}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+ER} = 0x0004, 
+enum \hyperlink{group__APP__MSG__TYPE_gab304d1be761dc5b7ba92061e24395c04}{evt\+App\+Type\+\_\+t} \{ \newline
+\hyperlink{group__APP__MSG__TYPE_ggab304d1be761dc5b7ba92061e24395c04a5c5d13d144b29bfebd8df580c526b61a}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+ER} = 0x0001, 
+\hyperlink{group__APP__MSG__TYPE_ggab304d1be761dc5b7ba92061e24395c04a86ac2c2919dfbbbc88a8e6369a8b4383}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+D\+I\+S\+P\+L\+AY} = 0x0002, 
+\hyperlink{group__APP__MSG__TYPE_ggab304d1be761dc5b7ba92061e24395c04ac65dce5dd8cc1063fe843b1fb8dde820}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+EM} = 0x0003, 
+\hyperlink{group__APP__MSG__TYPE_ggab304d1be761dc5b7ba92061e24395c04ae0ee6ba74d27dedcb1d7cf5235688688}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+ER} = 0x0004, 
 \newline
-\hyperlink{APP__MESSAGES_8h_ab304d1be761dc5b7ba92061e24395c04ab53c0a445956534338d688300402a0c3}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+I\+G\+N\+O\+RE} = 0x\+F\+F01
+\hyperlink{group__APP__MSG__TYPE_ggab304d1be761dc5b7ba92061e24395c04ab53c0a445956534338d688300402a0c3}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+I\+G\+N\+O\+RE} = 0x\+F\+F01
  \}
 \item 
-enum \hyperlink{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13}{evt\+App\+Msg\+\_\+3\+D\+Printer\+\_\+t} \{ \newline
-\hyperlink{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13a1dbf3cccd2555d98c7af63f48d9b2f7a}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+H\+O\+M\+I\+N\+G\+\_\+\+D\+O\+NE} = 0x0001, 
-\hyperlink{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13aa8abb60d9322aeb467ed23abeba136f4}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+Z\+\_\+\+M\+O\+V\+E\+\_\+\+D\+O\+NE} = 0x0002, 
-\hyperlink{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13a0daa0e0b3cf4ae5fc76f2f295a65c916}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+A\+U\+SE} = 0x0003, 
-\hyperlink{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13aec4c7c501d59538afd114c58a4c794a5}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+S\+T\+OP} = 0x0004, 
+enum \hyperlink{group__APP__MSG__MODULE__3D__PRINTER_ga3e81a4750a7ff6ea6a509478b9d4bf13}{evt\+App\+Msg\+\_\+3\+D\+Printer\+\_\+t} \{ \newline
+\hyperlink{group__APP__MSG__MODULE__3D__PRINTER_gga3e81a4750a7ff6ea6a509478b9d4bf13a1dbf3cccd2555d98c7af63f48d9b2f7a}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+H\+O\+M\+I\+N\+G\+\_\+\+D\+O\+NE} = 0x0001, 
+\hyperlink{group__APP__MSG__MODULE__3D__PRINTER_gga3e81a4750a7ff6ea6a509478b9d4bf13aa8abb60d9322aeb467ed23abeba136f4}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+Z\+\_\+\+M\+O\+V\+E\+\_\+\+D\+O\+NE} = 0x0002, 
+\hyperlink{group__APP__MSG__MODULE__3D__PRINTER_gga3e81a4750a7ff6ea6a509478b9d4bf13a0daa0e0b3cf4ae5fc76f2f295a65c916}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+A\+U\+SE} = 0x0003, 
+\hyperlink{group__APP__MSG__MODULE__3D__PRINTER_gga3e81a4750a7ff6ea6a509478b9d4bf13aec4c7c501d59538afd114c58a4c794a5}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+S\+T\+OP} = 0x0004, 
 \newline
-\hyperlink{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13a30c451331e314daef0b6d7fa92d0e938}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+F\+I\+N\+I\+SH} = 0x0005, 
-\hyperlink{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13ac324ed4061c165405acbd766f03523a3}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+R\+A\+M\+P\+S\+\_\+\+B\+O\+A\+R\+D\+\_\+\+I\+N\+I\+T\+\_\+\+D\+O\+NE} = 0x0006, 
-\hyperlink{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13a496eef7aae5cf283ac3db533b615e1a5}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+N\+O\+NE} = 0x\+F\+F01
+\hyperlink{group__APP__MSG__MODULE__3D__PRINTER_gga3e81a4750a7ff6ea6a509478b9d4bf13a30c451331e314daef0b6d7fa92d0e938}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+F\+I\+N\+I\+SH} = 0x0005, 
+\hyperlink{group__APP__MSG__MODULE__3D__PRINTER_gga3e81a4750a7ff6ea6a509478b9d4bf13ac324ed4061c165405acbd766f03523a3}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+R\+A\+M\+P\+S\+\_\+\+B\+O\+A\+R\+D\+\_\+\+I\+N\+I\+T\+\_\+\+D\+O\+NE} = 0x0006, 
+\hyperlink{group__APP__MSG__MODULE__3D__PRINTER_gga3e81a4750a7ff6ea6a509478b9d4bf13a496eef7aae5cf283ac3db533b615e1a5}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+N\+O\+NE} = 0x\+F\+F01
  \}
 \item 
-enum \hyperlink{APP__MESSAGES_8h_a12571677d0a385e8c2fd5a2dd78c2726}{evt\+App\+Msg\+\_\+\+File\+System\+\_\+t} \{ \newline
-\hyperlink{APP__MESSAGES_8h_a12571677d0a385e8c2fd5a2dd78c2726a8b4ac61f0bca8d54a9d2f97be933fa38}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+S\+B\+\_\+\+M\+O\+U\+NT} = 0x0001, 
-\hyperlink{APP__MESSAGES_8h_a12571677d0a385e8c2fd5a2dd78c2726a2bc9ee0fd6157b09ab5edd53be3fbc25}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+S\+B\+\_\+\+U\+N\+M\+O\+U\+NT} = 0x0002, 
-\hyperlink{APP__MESSAGES_8h_a12571677d0a385e8c2fd5a2dd78c2726ae6f0a9011009c2fc92debcf78a33eca0}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+R\+E\+A\+D\+\_\+\+D\+O\+NE} = 0x0003, 
-\hyperlink{APP__MESSAGES_8h_a12571677d0a385e8c2fd5a2dd78c2726a1f71426ee0fc773dc22d98b3cb4f096f}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+P\+D\+A\+TE} = 0x0004, 
+enum \hyperlink{group__APP__MSG__MODULE__FILE__SYSTEM_ga12571677d0a385e8c2fd5a2dd78c2726}{evt\+App\+Msg\+\_\+\+File\+System\+\_\+t} \{ \newline
+\hyperlink{group__APP__MSG__MODULE__FILE__SYSTEM_gga12571677d0a385e8c2fd5a2dd78c2726a8b4ac61f0bca8d54a9d2f97be933fa38}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+S\+B\+\_\+\+M\+O\+U\+NT} = 0x0001, 
+\hyperlink{group__APP__MSG__MODULE__FILE__SYSTEM_gga12571677d0a385e8c2fd5a2dd78c2726a2bc9ee0fd6157b09ab5edd53be3fbc25}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+S\+B\+\_\+\+U\+N\+M\+O\+U\+NT} = 0x0002, 
+\hyperlink{group__APP__MSG__MODULE__FILE__SYSTEM_gga12571677d0a385e8c2fd5a2dd78c2726ae6f0a9011009c2fc92debcf78a33eca0}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+R\+E\+A\+D\+\_\+\+D\+O\+NE} = 0x0003, 
+\hyperlink{group__APP__MSG__MODULE__FILE__SYSTEM_gga12571677d0a385e8c2fd5a2dd78c2726a1f71426ee0fc773dc22d98b3cb4f096f}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+P\+D\+A\+TE} = 0x0004, 
 \newline
-\hyperlink{APP__MESSAGES_8h_a12571677d0a385e8c2fd5a2dd78c2726ab01a7341fbe753b6950a214eccf452cd}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+N\+O\+NE} = 0x\+F\+F01
+\hyperlink{group__APP__MSG__MODULE__FILE__SYSTEM_gga12571677d0a385e8c2fd5a2dd78c2726ab01a7341fbe753b6950a214eccf452cd}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+N\+O\+NE} = 0x\+F\+F01
  \}
 \item 
-enum \hyperlink{APP__MESSAGES_8h_a17536fc54fb79b49d62c28d027ea69a1}{evt\+App\+Msg\+\_\+\+Display\+\_\+t} \{ \hyperlink{APP__MESSAGES_8h_a17536fc54fb79b49d62c28d027ea69a1a6f47ebe41769e99d7ba6aaa5eacda0d9}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+D\+I\+S\+P\+L\+A\+Y\+\_\+\+N\+O\+NE} = 0x\+F\+F01
+enum \hyperlink{group__APP__MSG__MODULE__DISPLAY_ga17536fc54fb79b49d62c28d027ea69a1}{evt\+App\+Msg\+\_\+\+Display\+\_\+t} \{ \hyperlink{group__APP__MSG__MODULE__DISPLAY_gga17536fc54fb79b49d62c28d027ea69a1a6f47ebe41769e99d7ba6aaa5eacda0d9}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+D\+I\+S\+P\+L\+A\+Y\+\_\+\+N\+O\+NE} = 0x\+F\+F01
  \}
 \item 
-enum \hyperlink{APP__MESSAGES_8h_a2cd5640780ccfb7cf29617e3d17c1563}{evt\+App\+Msg\+\_\+\+Image\+Viewr\+\_\+t} \{ \hyperlink{APP__MESSAGES_8h_a2cd5640780ccfb7cf29617e3d17c1563a5123e2eeb111c6b714a92c45e03d84f2}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+E\+R\+\_\+\+N\+O\+NE} = 0x\+F\+F01
+enum \hyperlink{group__APP__MSG__MODULE__IMAGE__VIEWER_ga2cd5640780ccfb7cf29617e3d17c1563}{evt\+App\+Msg\+\_\+\+Image\+Viewr\+\_\+t} \{ \hyperlink{group__APP__MSG__MODULE__IMAGE__VIEWER_gga2cd5640780ccfb7cf29617e3d17c1563a5123e2eeb111c6b714a92c45e03d84f2}{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+E\+R\+\_\+\+N\+O\+NE} = 0x\+F\+F01
  \}
 \end{DoxyCompactItemize}
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hyperlink{SN__SYS__ERROR_8h_a4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{APP__MESSAGES_8h_aaecff3f61e5dd381bf5088743ec6d3df}{S\+N\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+Send\+App\+Message} (\hyperlink{SN__SYS__MESSAGE__Q_8h_ad24a094c35ed8ae444f4b7c6ea51704d}{event\+\_\+id\+\_\+t} evt\+Id, \hyperlink{SN__SYS__MESSAGE__Q_8h_a655cadf65449a0b80f198cb7ce166d41}{event\+\_\+msg\+\_\+t} evt\+Message)
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__APP__MSG_gaaecff3f61e5dd381bf5088743ec6d3df}{S\+N\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+Send\+App\+Message} (event\+\_\+id\+\_\+t evt\+Id, event\+\_\+msg\+\_\+t evt\+Message)
 \end{DoxyCompactItemize}
 
 
-\subsection{Macro Definition Documentation}
-\mbox{\Hypertarget{APP__MESSAGES_8h_a67ccc19e78cb836495c66249e44878e9}\label{APP__MESSAGES_8h_a67ccc19e78cb836495c66249e44878e9}} 
-\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+GE@{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+GE}}
-\index{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+GE@{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+GE}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}
-\subsubsection{\texorpdfstring{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+GE}{APP\_EVENT\_MESSAGE}}
-{\footnotesize\ttfamily \#define A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+GE(\begin{DoxyParamCaption}\item[{}]{T\+Y\+PE,  }\item[{}]{V\+A\+L\+UE }\end{DoxyParamCaption})~(((T\+Y\+PE$<$$<$16) \& \hyperlink{APP__MESSAGES_8h_a16bb199b022dcdce1352aa86f4fd9a40}{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+T\+Y\+P\+E\+\_\+\+M\+A\+SK}) $\vert$ ((V\+A\+L\+UE) \& \hyperlink{APP__MESSAGES_8h_ae94265e142508d08b39aa6398abbbfc0}{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+V\+A\+L\+U\+E\+\_\+\+M\+A\+SK}))}
+\subsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Bato 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2 Oct 2018 
+\end{DoxyDate}
+\begin{DoxySeeAlso}{See also}
+\href{http://www.stack.nl/~dimitri/doxygen/docblocks.html}{\tt http\+://www.\+stack.\+nl/$\sim$dimitri/doxygen/docblocks.\+html} 
 
-\mbox{\Hypertarget{APP__MESSAGES_8h_a9d7ab5b1e03b2af2dc3098fcc1a875e3}\label{APP__MESSAGES_8h_a9d7ab5b1e03b2af2dc3098fcc1a875e3}} 
-\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+T\+Y\+PE@{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+T\+Y\+PE}}
-\index{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+T\+Y\+PE@{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+T\+Y\+PE}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}
-\subsubsection{\texorpdfstring{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+T\+Y\+PE}{APP\_EVENT\_MESSAGE\_TYPE}}
-{\footnotesize\ttfamily \#define A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+T\+Y\+PE(\begin{DoxyParamCaption}\item[{}]{E\+V\+E\+N\+T\+C\+O\+DE }\end{DoxyParamCaption})~(((E\+V\+E\+N\+T\+C\+O\+DE) \& \hyperlink{APP__MESSAGES_8h_a16bb199b022dcdce1352aa86f4fd9a40}{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+T\+Y\+P\+E\+\_\+\+M\+A\+SK}) $>$$>$ 16)}
-
-\mbox{\Hypertarget{APP__MESSAGES_8h_a16bb199b022dcdce1352aa86f4fd9a40}\label{APP__MESSAGES_8h_a16bb199b022dcdce1352aa86f4fd9a40}} 
-\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+T\+Y\+P\+E\+\_\+\+M\+A\+SK@{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+T\+Y\+P\+E\+\_\+\+M\+A\+SK}}
-\index{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+T\+Y\+P\+E\+\_\+\+M\+A\+SK@{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+T\+Y\+P\+E\+\_\+\+M\+A\+SK}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}
-\subsubsection{\texorpdfstring{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+T\+Y\+P\+E\+\_\+\+M\+A\+SK}{APP\_EVENT\_MESSAGE\_TYPE\_MASK}}
-{\footnotesize\ttfamily \#define A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+T\+Y\+P\+E\+\_\+\+M\+A\+SK~0x\+F\+F\+F\+F0000}
-
-E\+V\+E\+NT M\+E\+S\+S\+A\+G\+ES D\+E\+F\+I\+NE \mbox{\Hypertarget{APP__MESSAGES_8h_a7417312fd46423e7d7c884a791ac8ed7}\label{APP__MESSAGES_8h_a7417312fd46423e7d7c884a791ac8ed7}} 
-\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+V\+A\+L\+UE@{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+V\+A\+L\+UE}}
-\index{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+V\+A\+L\+UE@{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+V\+A\+L\+UE}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}
-\subsubsection{\texorpdfstring{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+V\+A\+L\+UE}{APP\_EVENT\_MESSAGE\_VALUE}}
-{\footnotesize\ttfamily \#define A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+V\+A\+L\+UE(\begin{DoxyParamCaption}\item[{}]{E\+V\+E\+N\+T\+C\+O\+DE }\end{DoxyParamCaption})~(((E\+V\+E\+N\+T\+C\+O\+DE) \& \hyperlink{APP__MESSAGES_8h_ae94265e142508d08b39aa6398abbbfc0}{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+V\+A\+L\+U\+E\+\_\+\+M\+A\+SK}))}
-
-\mbox{\Hypertarget{APP__MESSAGES_8h_ae94265e142508d08b39aa6398abbbfc0}\label{APP__MESSAGES_8h_ae94265e142508d08b39aa6398abbbfc0}} 
-\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+V\+A\+L\+U\+E\+\_\+\+M\+A\+SK@{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+V\+A\+L\+U\+E\+\_\+\+M\+A\+SK}}
-\index{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+V\+A\+L\+U\+E\+\_\+\+M\+A\+SK@{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+V\+A\+L\+U\+E\+\_\+\+M\+A\+SK}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}
-\subsubsection{\texorpdfstring{A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+V\+A\+L\+U\+E\+\_\+\+M\+A\+SK}{APP\_EVENT\_MESSAGE\_VALUE\_MASK}}
-{\footnotesize\ttfamily \#define A\+P\+P\+\_\+\+E\+V\+E\+N\+T\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+V\+A\+L\+U\+E\+\_\+\+M\+A\+SK~0x0000\+F\+F\+FF}
-
-\mbox{\Hypertarget{APP__MESSAGES_8h_a5f1175178827a05a7df5beb3bf85c368}\label{APP__MESSAGES_8h_a5f1175178827a05a7df5beb3bf85c368}} 
-\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+ER@{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+ER}}
-\index{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+ER@{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+ER}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}
-\subsubsection{\texorpdfstring{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+ER}{SN\_APP\_MSG\_TYPE\_3D\_PRINTER}}
-{\footnotesize\ttfamily \#define S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+ER~(\hyperlink{APP__MESSAGES_8h_a7f8a485e2ac959dd8dfec32bf3d18a25}{S\+N\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+B\+A\+SE} + 0)}
-
-\mbox{\Hypertarget{APP__MESSAGES_8h_a3b15d6786b776801ecc4a9fd52ae7b53}\label{APP__MESSAGES_8h_a3b15d6786b776801ecc4a9fd52ae7b53}} 
-\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+D\+I\+S\+P\+L\+AY@{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+D\+I\+S\+P\+L\+AY}}
-\index{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+D\+I\+S\+P\+L\+AY@{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+D\+I\+S\+P\+L\+AY}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}
-\subsubsection{\texorpdfstring{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+D\+I\+S\+P\+L\+AY}{SN\_APP\_MSG\_TYPE\_DISPLAY}}
-{\footnotesize\ttfamily \#define S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+D\+I\+S\+P\+L\+AY~(\hyperlink{APP__MESSAGES_8h_a7f8a485e2ac959dd8dfec32bf3d18a25}{S\+N\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+B\+A\+SE} + 1)}
-
-\mbox{\Hypertarget{APP__MESSAGES_8h_a3ff8434f726821744d49a715b0ca8f49}\label{APP__MESSAGES_8h_a3ff8434f726821744d49a715b0ca8f49}} 
-\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+EM@{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+EM}}
-\index{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+EM@{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+EM}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}
-\subsubsection{\texorpdfstring{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+EM}{SN\_APP\_MSG\_TYPE\_FILE\_SYSTEM}}
-{\footnotesize\ttfamily \#define S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+EM~(\hyperlink{APP__MESSAGES_8h_a7f8a485e2ac959dd8dfec32bf3d18a25}{S\+N\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+B\+A\+SE} + 2)}
-
-\mbox{\Hypertarget{APP__MESSAGES_8h_aed7ef024188e9be654335c9f0c6453ba}\label{APP__MESSAGES_8h_aed7ef024188e9be654335c9f0c6453ba}} 
-\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+ER@{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+ER}}
-\index{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+ER@{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+ER}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}
-\subsubsection{\texorpdfstring{S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+ER}{SN\_APP\_MSG\_TYPE\_IMAGE\_VIEWER}}
-{\footnotesize\ttfamily \#define S\+N\+\_\+\+A\+P\+P\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+ER~(\hyperlink{APP__MESSAGES_8h_a7f8a485e2ac959dd8dfec32bf3d18a25}{S\+N\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+B\+A\+SE} + 3)}
-
-\mbox{\Hypertarget{APP__MESSAGES_8h_a7f8a485e2ac959dd8dfec32bf3d18a25}\label{APP__MESSAGES_8h_a7f8a485e2ac959dd8dfec32bf3d18a25}} 
-\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!S\+N\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+B\+A\+SE@{S\+N\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+B\+A\+SE}}
-\index{S\+N\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+B\+A\+SE@{S\+N\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+B\+A\+SE}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}
-\subsubsection{\texorpdfstring{S\+N\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+B\+A\+SE}{SN\_MSG\_TYPE\_BASE}}
-{\footnotesize\ttfamily \#define S\+N\+\_\+\+M\+S\+G\+\_\+\+T\+Y\+P\+E\+\_\+\+B\+A\+SE~0}
-
-
-
-\subsection{Enumeration Type Documentation}
-\mbox{\Hypertarget{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13}\label{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13}} 
-\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!evt\+App\+Msg\+\_\+3\+D\+Printer\+\_\+t@{evt\+App\+Msg\+\_\+3\+D\+Printer\+\_\+t}}
-\index{evt\+App\+Msg\+\_\+3\+D\+Printer\+\_\+t@{evt\+App\+Msg\+\_\+3\+D\+Printer\+\_\+t}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}
-\subsubsection{\texorpdfstring{evt\+App\+Msg\+\_\+3\+D\+Printer\+\_\+t}{evtAppMsg\_3DPrinter\_t}}
-{\footnotesize\ttfamily enum \hyperlink{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13}{evt\+App\+Msg\+\_\+3\+D\+Printer\+\_\+t}}
-
-Module App Message \begin{DoxyEnumFields}{Enumerator}
-\raisebox{\heightof{T}}[0pt][0pt]{\index{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+H\+O\+M\+I\+N\+G\+\_\+\+D\+O\+NE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+H\+O\+M\+I\+N\+G\+\_\+\+D\+O\+NE}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+H\+O\+M\+I\+N\+G\+\_\+\+D\+O\+NE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+H\+O\+M\+I\+N\+G\+\_\+\+D\+O\+NE}}}\mbox{\Hypertarget{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13a1dbf3cccd2555d98c7af63f48d9b2f7a}\label{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13a1dbf3cccd2555d98c7af63f48d9b2f7a}} 
-A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+H\+O\+M\+I\+N\+G\+\_\+\+D\+O\+NE&\\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+Z\+\_\+\+M\+O\+V\+E\+\_\+\+D\+O\+NE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+Z\+\_\+\+M\+O\+V\+E\+\_\+\+D\+O\+NE}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+Z\+\_\+\+M\+O\+V\+E\+\_\+\+D\+O\+NE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+Z\+\_\+\+M\+O\+V\+E\+\_\+\+D\+O\+NE}}}\mbox{\Hypertarget{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13aa8abb60d9322aeb467ed23abeba136f4}\label{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13aa8abb60d9322aeb467ed23abeba136f4}} 
-A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+Z\+\_\+\+M\+O\+V\+E\+\_\+\+D\+O\+NE&\\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+A\+U\+SE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+A\+U\+SE}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+A\+U\+SE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+A\+U\+SE}}}\mbox{\Hypertarget{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13a0daa0e0b3cf4ae5fc76f2f295a65c916}\label{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13a0daa0e0b3cf4ae5fc76f2f295a65c916}} 
-A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+P\+A\+U\+SE&\\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+S\+T\+OP@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+S\+T\+OP}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+S\+T\+OP@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+S\+T\+OP}}}\mbox{\Hypertarget{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13aec4c7c501d59538afd114c58a4c794a5}\label{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13aec4c7c501d59538afd114c58a4c794a5}} 
-A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+S\+T\+OP&\\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+F\+I\+N\+I\+SH@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+F\+I\+N\+I\+SH}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+F\+I\+N\+I\+SH@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+F\+I\+N\+I\+SH}}}\mbox{\Hypertarget{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13a30c451331e314daef0b6d7fa92d0e938}\label{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13a30c451331e314daef0b6d7fa92d0e938}} 
-A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+F\+I\+N\+I\+SH&\\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+R\+A\+M\+P\+S\+\_\+\+B\+O\+A\+R\+D\+\_\+\+I\+N\+I\+T\+\_\+\+D\+O\+NE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+R\+A\+M\+P\+S\+\_\+\+B\+O\+A\+R\+D\+\_\+\+I\+N\+I\+T\+\_\+\+D\+O\+NE}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+R\+A\+M\+P\+S\+\_\+\+B\+O\+A\+R\+D\+\_\+\+I\+N\+I\+T\+\_\+\+D\+O\+NE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+R\+A\+M\+P\+S\+\_\+\+B\+O\+A\+R\+D\+\_\+\+I\+N\+I\+T\+\_\+\+D\+O\+NE}}}\mbox{\Hypertarget{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13ac324ed4061c165405acbd766f03523a3}\label{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13ac324ed4061c165405acbd766f03523a3}} 
-A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+R\+A\+M\+P\+S\+\_\+\+B\+O\+A\+R\+D\+\_\+\+I\+N\+I\+T\+\_\+\+D\+O\+NE&\\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+N\+O\+NE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+N\+O\+NE}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+N\+O\+NE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+N\+O\+NE}}}\mbox{\Hypertarget{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13a496eef7aae5cf283ac3db533b615e1a5}\label{APP__MESSAGES_8h_a3e81a4750a7ff6ea6a509478b9d4bf13a496eef7aae5cf283ac3db533b615e1a5}} 
-A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+E\+R\+\_\+\+N\+O\+NE&\\
-\hline
-
-\end{DoxyEnumFields}
-\mbox{\Hypertarget{APP__MESSAGES_8h_a17536fc54fb79b49d62c28d027ea69a1}\label{APP__MESSAGES_8h_a17536fc54fb79b49d62c28d027ea69a1}} 
-\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!evt\+App\+Msg\+\_\+\+Display\+\_\+t@{evt\+App\+Msg\+\_\+\+Display\+\_\+t}}
-\index{evt\+App\+Msg\+\_\+\+Display\+\_\+t@{evt\+App\+Msg\+\_\+\+Display\+\_\+t}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}
-\subsubsection{\texorpdfstring{evt\+App\+Msg\+\_\+\+Display\+\_\+t}{evtAppMsg\_Display\_t}}
-{\footnotesize\ttfamily enum \hyperlink{APP__MESSAGES_8h_a17536fc54fb79b49d62c28d027ea69a1}{evt\+App\+Msg\+\_\+\+Display\+\_\+t}}
-
-\begin{DoxyEnumFields}{Enumerator}
-\raisebox{\heightof{T}}[0pt][0pt]{\index{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+D\+I\+S\+P\+L\+A\+Y\+\_\+\+N\+O\+NE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+D\+I\+S\+P\+L\+A\+Y\+\_\+\+N\+O\+NE}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+D\+I\+S\+P\+L\+A\+Y\+\_\+\+N\+O\+NE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+D\+I\+S\+P\+L\+A\+Y\+\_\+\+N\+O\+NE}}}\mbox{\Hypertarget{APP__MESSAGES_8h_a17536fc54fb79b49d62c28d027ea69a1a6f47ebe41769e99d7ba6aaa5eacda0d9}\label{APP__MESSAGES_8h_a17536fc54fb79b49d62c28d027ea69a1a6f47ebe41769e99d7ba6aaa5eacda0d9}} 
-A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+D\+I\+S\+P\+L\+A\+Y\+\_\+\+N\+O\+NE&\\
-\hline
-
-\end{DoxyEnumFields}
-\mbox{\Hypertarget{APP__MESSAGES_8h_a12571677d0a385e8c2fd5a2dd78c2726}\label{APP__MESSAGES_8h_a12571677d0a385e8c2fd5a2dd78c2726}} 
-\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!evt\+App\+Msg\+\_\+\+File\+System\+\_\+t@{evt\+App\+Msg\+\_\+\+File\+System\+\_\+t}}
-\index{evt\+App\+Msg\+\_\+\+File\+System\+\_\+t@{evt\+App\+Msg\+\_\+\+File\+System\+\_\+t}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}
-\subsubsection{\texorpdfstring{evt\+App\+Msg\+\_\+\+File\+System\+\_\+t}{evtAppMsg\_FileSystem\_t}}
-{\footnotesize\ttfamily enum \hyperlink{APP__MESSAGES_8h_a12571677d0a385e8c2fd5a2dd78c2726}{evt\+App\+Msg\+\_\+\+File\+System\+\_\+t}}
-
-\begin{DoxyEnumFields}{Enumerator}
-\raisebox{\heightof{T}}[0pt][0pt]{\index{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+S\+B\+\_\+\+M\+O\+U\+NT@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+S\+B\+\_\+\+M\+O\+U\+NT}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+S\+B\+\_\+\+M\+O\+U\+NT@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+S\+B\+\_\+\+M\+O\+U\+NT}}}\mbox{\Hypertarget{APP__MESSAGES_8h_a12571677d0a385e8c2fd5a2dd78c2726a8b4ac61f0bca8d54a9d2f97be933fa38}\label{APP__MESSAGES_8h_a12571677d0a385e8c2fd5a2dd78c2726a8b4ac61f0bca8d54a9d2f97be933fa38}} 
-A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+S\+B\+\_\+\+M\+O\+U\+NT&\\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+S\+B\+\_\+\+U\+N\+M\+O\+U\+NT@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+S\+B\+\_\+\+U\+N\+M\+O\+U\+NT}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+S\+B\+\_\+\+U\+N\+M\+O\+U\+NT@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+S\+B\+\_\+\+U\+N\+M\+O\+U\+NT}}}\mbox{\Hypertarget{APP__MESSAGES_8h_a12571677d0a385e8c2fd5a2dd78c2726a2bc9ee0fd6157b09ab5edd53be3fbc25}\label{APP__MESSAGES_8h_a12571677d0a385e8c2fd5a2dd78c2726a2bc9ee0fd6157b09ab5edd53be3fbc25}} 
-A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+S\+B\+\_\+\+U\+N\+M\+O\+U\+NT&\\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+R\+E\+A\+D\+\_\+\+D\+O\+NE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+R\+E\+A\+D\+\_\+\+D\+O\+NE}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+R\+E\+A\+D\+\_\+\+D\+O\+NE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+R\+E\+A\+D\+\_\+\+D\+O\+NE}}}\mbox{\Hypertarget{APP__MESSAGES_8h_a12571677d0a385e8c2fd5a2dd78c2726ae6f0a9011009c2fc92debcf78a33eca0}\label{APP__MESSAGES_8h_a12571677d0a385e8c2fd5a2dd78c2726ae6f0a9011009c2fc92debcf78a33eca0}} 
-A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+R\+E\+A\+D\+\_\+\+D\+O\+NE&\\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+P\+D\+A\+TE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+P\+D\+A\+TE}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+P\+D\+A\+TE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+P\+D\+A\+TE}}}\mbox{\Hypertarget{APP__MESSAGES_8h_a12571677d0a385e8c2fd5a2dd78c2726a1f71426ee0fc773dc22d98b3cb4f096f}\label{APP__MESSAGES_8h_a12571677d0a385e8c2fd5a2dd78c2726a1f71426ee0fc773dc22d98b3cb4f096f}} 
-A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+M\+S\+G\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+U\+P\+D\+A\+TE&\\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+N\+O\+NE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+N\+O\+NE}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+N\+O\+NE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+N\+O\+NE}}}\mbox{\Hypertarget{APP__MESSAGES_8h_a12571677d0a385e8c2fd5a2dd78c2726ab01a7341fbe753b6950a214eccf452cd}\label{APP__MESSAGES_8h_a12571677d0a385e8c2fd5a2dd78c2726ab01a7341fbe753b6950a214eccf452cd}} 
-A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+N\+O\+NE&\\
-\hline
-
-\end{DoxyEnumFields}
-\mbox{\Hypertarget{APP__MESSAGES_8h_a2cd5640780ccfb7cf29617e3d17c1563}\label{APP__MESSAGES_8h_a2cd5640780ccfb7cf29617e3d17c1563}} 
-\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!evt\+App\+Msg\+\_\+\+Image\+Viewr\+\_\+t@{evt\+App\+Msg\+\_\+\+Image\+Viewr\+\_\+t}}
-\index{evt\+App\+Msg\+\_\+\+Image\+Viewr\+\_\+t@{evt\+App\+Msg\+\_\+\+Image\+Viewr\+\_\+t}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}
-\subsubsection{\texorpdfstring{evt\+App\+Msg\+\_\+\+Image\+Viewr\+\_\+t}{evtAppMsg\_ImageViewr\_t}}
-{\footnotesize\ttfamily enum \hyperlink{APP__MESSAGES_8h_a2cd5640780ccfb7cf29617e3d17c1563}{evt\+App\+Msg\+\_\+\+Image\+Viewr\+\_\+t}}
-
-\begin{DoxyEnumFields}{Enumerator}
-\raisebox{\heightof{T}}[0pt][0pt]{\index{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+E\+R\+\_\+\+N\+O\+NE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+E\+R\+\_\+\+N\+O\+NE}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+E\+R\+\_\+\+N\+O\+NE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+E\+R\+\_\+\+N\+O\+NE}}}\mbox{\Hypertarget{APP__MESSAGES_8h_a2cd5640780ccfb7cf29617e3d17c1563a5123e2eeb111c6b714a92c45e03d84f2}\label{APP__MESSAGES_8h_a2cd5640780ccfb7cf29617e3d17c1563a5123e2eeb111c6b714a92c45e03d84f2}} 
-A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+E\+R\+\_\+\+N\+O\+NE&\\
-\hline
-
-\end{DoxyEnumFields}
-\mbox{\Hypertarget{APP__MESSAGES_8h_ab304d1be761dc5b7ba92061e24395c04}\label{APP__MESSAGES_8h_ab304d1be761dc5b7ba92061e24395c04}} 
-\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!evt\+App\+Type\+\_\+t@{evt\+App\+Type\+\_\+t}}
-\index{evt\+App\+Type\+\_\+t@{evt\+App\+Type\+\_\+t}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}
-\subsubsection{\texorpdfstring{evt\+App\+Type\+\_\+t}{evtAppType\_t}}
-{\footnotesize\ttfamily enum \hyperlink{APP__MESSAGES_8h_ab304d1be761dc5b7ba92061e24395c04}{evt\+App\+Type\+\_\+t}}
-
-\begin{DoxyEnumFields}{Enumerator}
-\raisebox{\heightof{T}}[0pt][0pt]{\index{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+ER@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+ER}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+ER@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+ER}}}\mbox{\Hypertarget{APP__MESSAGES_8h_ab304d1be761dc5b7ba92061e24395c04a5c5d13d144b29bfebd8df580c526b61a}\label{APP__MESSAGES_8h_ab304d1be761dc5b7ba92061e24395c04a5c5d13d144b29bfebd8df580c526b61a}} 
-A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+3\+D\+\_\+\+P\+R\+I\+N\+T\+ER&\\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+D\+I\+S\+P\+L\+AY@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+D\+I\+S\+P\+L\+AY}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+D\+I\+S\+P\+L\+AY@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+D\+I\+S\+P\+L\+AY}}}\mbox{\Hypertarget{APP__MESSAGES_8h_ab304d1be761dc5b7ba92061e24395c04a86ac2c2919dfbbbc88a8e6369a8b4383}\label{APP__MESSAGES_8h_ab304d1be761dc5b7ba92061e24395c04a86ac2c2919dfbbbc88a8e6369a8b4383}} 
-A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+D\+I\+S\+P\+L\+AY&\\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+EM@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+EM}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+EM@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+EM}}}\mbox{\Hypertarget{APP__MESSAGES_8h_ab304d1be761dc5b7ba92061e24395c04ac65dce5dd8cc1063fe843b1fb8dde820}\label{APP__MESSAGES_8h_ab304d1be761dc5b7ba92061e24395c04ac65dce5dd8cc1063fe843b1fb8dde820}} 
-A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+EM&\\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+ER@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+ER}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+ER@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+ER}}}\mbox{\Hypertarget{APP__MESSAGES_8h_ab304d1be761dc5b7ba92061e24395c04ae0ee6ba74d27dedcb1d7cf5235688688}\label{APP__MESSAGES_8h_ab304d1be761dc5b7ba92061e24395c04ae0ee6ba74d27dedcb1d7cf5235688688}} 
-A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+ER&\\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+I\+G\+N\+O\+RE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+I\+G\+N\+O\+RE}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+I\+G\+N\+O\+RE@{A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+I\+G\+N\+O\+RE}}}\mbox{\Hypertarget{APP__MESSAGES_8h_ab304d1be761dc5b7ba92061e24395c04ab53c0a445956534338d688300402a0c3}\label{APP__MESSAGES_8h_ab304d1be761dc5b7ba92061e24395c04ab53c0a445956534338d688300402a0c3}} 
-A\+P\+P\+\_\+\+E\+V\+T\+\_\+\+I\+D\+\_\+\+I\+G\+N\+O\+RE&\\
-\hline
-
-\end{DoxyEnumFields}
-
-
-\subsection{Function Documentation}
-\mbox{\Hypertarget{APP__MESSAGES_8h_aaecff3f61e5dd381bf5088743ec6d3df}\label{APP__MESSAGES_8h_aaecff3f61e5dd381bf5088743ec6d3df}} 
-\index{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}!S\+N\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+Send\+App\+Message@{S\+N\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+Send\+App\+Message}}
-\index{S\+N\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+Send\+App\+Message@{S\+N\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+Send\+App\+Message}!A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h@{A\+P\+P\+\_\+\+M\+E\+S\+S\+A\+G\+E\+S.\+h}}
-\subsubsection{\texorpdfstring{S\+N\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+Send\+App\+Message()}{SN\_SYSTEM\_SendAppMessage()}}
-{\footnotesize\ttfamily \hyperlink{SN__SYS__ERROR_8h_a4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} S\+N\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+Send\+App\+Message (\begin{DoxyParamCaption}\item[{\hyperlink{SN__SYS__MESSAGE__Q_8h_ad24a094c35ed8ae444f4b7c6ea51704d}{event\+\_\+id\+\_\+t}}]{evt\+Id,  }\item[{\hyperlink{SN__SYS__MESSAGE__Q_8h_a655cadf65449a0b80f198cb7ce166d41}{event\+\_\+msg\+\_\+t}}]{evt\+Message }\end{DoxyParamCaption})}
-
+\href{http://www.stack.nl/~dimitri/doxygen/commands.html}{\tt http\+://www.\+stack.\+nl/$\sim$dimitri/doxygen/commands.\+html} 
+\end{DoxySeeAlso}

@@ -1,7 +1,6 @@
 \hypertarget{SN__SYS__MESSAGE__Q_8h}{}\section{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+Q.h File Reference}
 \label{SN__SYS__MESSAGE__Q_8h}\index{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+Q.\+h@{S\+Y\+S\+T\+E\+M/\+I\+N\+C\+L\+U\+D\+E/\+S\+N\+\_\+\+S\+Y\+S\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+Q.\+h}}
-This graph shows which files directly or indirectly include this file\+:
-\nopagebreak
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -11,9 +10,9 @@ This graph shows which files directly or indirectly include this file\+:
 \subsection*{Classes}
 \begin{DoxyCompactItemize}
 \item 
-struct \hyperlink{structgeneral__evt__header__t}{general\+\_\+evt\+\_\+header\+\_\+t}
+struct \hyperlink{structgeneral__event__header}{general\+\_\+event\+\_\+header}
 \item 
-struct \hyperlink{structgeneral__evt__t}{general\+\_\+evt\+\_\+t}
+struct \hyperlink{structgeneral__event}{general\+\_\+event}
 \item 
 struct \hyperlink{structsys__message__queue}{sys\+\_\+message\+\_\+queue}
 \end{DoxyCompactItemize}
@@ -24,19 +23,29 @@ typedef uint32\+\_\+t {\bfseries event\+\_\+id\+\_\+t}
 \item 
 typedef uint32\+\_\+t {\bfseries event\+\_\+msg\+\_\+t}
 \item 
+typedef struct \hyperlink{structgeneral__event__header}{general\+\_\+event\+\_\+header} {\bfseries general\+\_\+evt\+\_\+header\+\_\+t}
+\item 
+typedef struct \hyperlink{structgeneral__event}{general\+\_\+event} {\bfseries general\+\_\+evt\+\_\+t}
+\item 
 typedef struct \hyperlink{structsys__message__queue}{sys\+\_\+message\+\_\+queue} {\bfseries sys\+Message\+Q\+Id}
 \end{DoxyCompactItemize}
 \subsection*{Functions}
-\begin{DoxyCompactItemize}
+\begin{Indent}\textbf{ System Message Queue}\par
+{\em Description of Message Queue Init and Uninit funtions. }\begin{DoxyCompactItemize}
 \item 
 \hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__SYSTEM__MESSAGE__Q_ga35e9ff084626dfccd36d098827638a0c}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+Message\+Q\+Init} (\hyperlink{structsys__message__queue}{sys\+Message\+Q\+Id} $\ast$msg\+Q\+Id)
 \item 
-\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Message\+Q\+Remove} (\hyperlink{structsys__message__queue}{sys\+Message\+Q\+Id} $\ast$msg\+Q\+Id)
-\item 
-\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Message\+Put} (\hyperlink{structsys__message__queue}{sys\+Message\+Q\+Id} $\ast$msg\+Q\+Id, event\+\_\+id\+\_\+t evt\+Id, event\+\_\+msg\+\_\+t evt\+Message)
-\item 
-\hyperlink{structgeneral__evt__t}{general\+\_\+evt\+\_\+t} {\bfseries S\+N\+\_\+\+S\+Y\+S\+\_\+\+Message\+Get} (\hyperlink{structsys__message__queue}{sys\+Message\+Q\+Id} $\ast$msg\+Q\+Id)
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__SYSTEM__MESSAGE__Q_ga293a77ea597b70f3f2f38b919f93497e}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+Message\+Q\+Remove} (\hyperlink{structsys__message__queue}{sys\+Message\+Q\+Id} $\ast$msg\+Q\+Id)
 \end{DoxyCompactItemize}
+\end{Indent}
+\begin{Indent}\textbf{ System Message Queue \+:\+: Send \& Receive Message}\par
+{\em Description of Message Queue Init and Uninit funtions. }\begin{DoxyCompactItemize}
+\item 
+\hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__SYSTEM__MESSAGE__Q_ga36e115419d4cbbfe4a6bde6e3fecf180}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+Message\+Put} (\hyperlink{structsys__message__queue}{sys\+Message\+Q\+Id} $\ast$msg\+Q\+Id, event\+\_\+id\+\_\+t evt\+Id, event\+\_\+msg\+\_\+t evt\+Message)
+\item 
+\hyperlink{structgeneral__event}{general\+\_\+evt\+\_\+t} \hyperlink{group__SYSTEM__MESSAGE__Q_gafb2da611b3c93f1f906109e7737d67cf}{S\+N\+\_\+\+S\+Y\+S\+\_\+\+Message\+Get} (\hyperlink{structsys__message__queue}{sys\+Message\+Q\+Id} $\ast$msg\+Q\+Id)
+\end{DoxyCompactItemize}
+\end{Indent}
 
 
 \subsection{Detailed Description}

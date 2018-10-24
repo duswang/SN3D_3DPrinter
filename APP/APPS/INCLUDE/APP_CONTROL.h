@@ -1,8 +1,11 @@
-/*
- * APP_CONTROL.h
+/**
+ * @file APP_CONTROL.h
+ * @author Bato
+ * @date 24 Oct 2018
+ * @brief
  *
- *  Created on: Oct 17, 2018
- *      Author: pi
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  */
 
 #ifndef APP_CONTROL_H_

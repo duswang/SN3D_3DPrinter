@@ -25,31 +25,31 @@ pthread_t       ptSerial[MAX_NUM_OF_SERIAL];
 
 /** Global Variables **/
 
-/** Static Funtions **/
-/* system */
+/* ******* GLOBAL VARIABLE ******* */
 
-/* hdlr */
-static SN_STATUS  sSerial_RX_Hdlr_r(sysSerialId serialId);
+static uint32_t guiNumSerial;
+static sysSerialQ aSerial[MAX_NUM_OF_SERIAL];
 
-/* local */
+/* ******* STATIC FUNCTIONS ******* */
+
+/* *** HANDLER *** */
+static SN_STATUS  sSerial_RX_Hdlr_r(sysSerialId serialId); /**< Reentrant fucntions */
+
+/* *** RX HANDLER *** */
+static bool       sSerial_RX_Parsing_NotCustom(sysSerialId serialId);
+static bool       sSerial_RX_Parsing_NextionsDisplay(sysSerialId serialId);
+
+/* *** SERIAL *** */
 static uint32_t   sSerialInterfaceInit(const char *device, uint32_t oflags);
 static uint32_t   sSerialinterfaceSetattribs(uint32_t uartID, uint32_t baud_rate, uint32_t parity);
 static void       sSerialSetBlocking(uint32_t uartID, bool should_block);
 
-static bool       sSerial_RX_Parsing_NotCustom(sysSerialId serialId);
-static bool       sSerial_RX_Parsing_NextionsDisplay(sysSerialId serialId);
-
-/* Globla Variables */
-static uint32_t guiNumSerial;
-static sysSerialQ aSerial[MAX_NUM_OF_SERIAL];
-
-/* Thread Functions Def */
+/* *** Thread Funtion Def *** */
 sysSerialThreadFuncdef(0)
 sysSerialThreadFuncdef(1)
 sysSerialThreadFuncdef(2)
 sysSerialThreadFuncdef(3)
 //sysSerialThreadFuncdef(num) - CHECK => ( num < MAX_NUM_OF_SERIAL )
-
 void* (*pfSerialThreadFunc[MAX_NUM_OF_SERIAL])()     = { \
                                   sysSerialThreadFunc(0), \
                                   sysSerialThreadFunc(1), \
@@ -58,14 +58,20 @@ void* (*pfSerialThreadFunc[MAX_NUM_OF_SERIAL])()     = { \
                                   //sysSerialThreadFunc(num) - CHECK => ( num < MAX_NUM_OF_SERIAL )
                           };
 
-int SN_SYS_SerialInit(void)
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  Extern Functions
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+
+SN_STATUS SN_SYS_SerialInit(void)
 {
+    SN_STATUS retStauts = SN_STATUS_OK;
     int i = 0;
-    int retValue = 0;
 
     if (pthread_mutex_init(&ptmSerialArray, NULL) != 0)
     {
-        printf("\n mutex init failed\n");
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Serial System Mutex Init Failed.");
     }
 
     for(i = 0; i < MAX_NUM_OF_SERIAL; i++)
@@ -74,7 +80,14 @@ int SN_SYS_SerialInit(void)
         aSerial[i]._serialId    = NULL;
     }
 
-    return retValue;
+    return retStauts;
+}
+
+SN_STATUS SN_SYS_SerialUninit(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    return retStatus;
 }
 
 sysSerialId SN_SYS_SerialCreate(const sysSerialDef_t* serialDef, void* (*pfCallBack)(char*))
@@ -163,14 +176,20 @@ SN_STATUS SN_SYS_SerialRemove(sysSerialId serialId)
     return retStatus;
 }
 
-int SN_SYS_SerialTx(sysSerialId serialId, char* buffer, size_t bufferSize)
+SN_STATUS SN_SYS_SerialTx(sysSerialId serialId, char* buffer, size_t bufferSize)
 {
+    SN_STATUS retStatus = SN_STATUS_OK;
     int count = 0;
     unsigned char nxReturn[1];
 
     if(serialId == NULL)
     {
-        return -1;
+        return SN_STATUS_INVALID_PARAM;
+    }
+
+    if(buffer == NULL)
+    {
+        return SN_STATUS_INVALID_PARAM;
     }
 
     if (serialId->uartId != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
@@ -207,9 +226,14 @@ int SN_SYS_SerialTx(sysSerialId serialId, char* buffer, size_t bufferSize)
         }
     }
 
-    return 0;
+    return retStatus;
 }
 
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  SERIAL CONTROL
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 //OPEN THE UART
 //The flags (defined in fcntl.h):
 //      Access modes (use 1 of these):
@@ -308,7 +332,11 @@ static void sSerialSetBlocking(uint32_t uartID, bool should_block)
     }
 }
 
-
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  RX HANDLER
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 static bool sSerial_RX_Parsing_NextionsDisplay(sysSerialId serialId)
 {
     char rx_buffer[SN_SYS_SERIAL_COMM_BUFFER_SIZE];
@@ -412,7 +440,11 @@ static bool sSerial_RX_Parsing_NotCustom(sysSerialId serialId)
     return rxDone;
 }
 
-/** reentrant fucntions **/
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  HANDLER
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 static SN_STATUS sSerial_RX_Hdlr_r(sysSerialId serialId)
 {
     bool rxDone = false;

@@ -6,13 +6,13 @@
  *
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
- */
-/**
- * @defgroup SYSTEM_ERROR Error
+ *
+ * @defgroup SYSTEM_ERROR Error Handler
  * @ingroup SYSTEM
  * @brief System Error Functions.
  * @{
  */
+
 #ifndef SN_ERROR_H_
 #define SN_ERROR_H_
 
@@ -39,6 +39,11 @@ typedef int        ERROR_T;
 /** @name Error System
  *  @brief
  */
+
+/** @name System Error Handler
+ *  Description of Message Queue Init and Uninit funtions.
+ *////@{
+
 /** @brief
  *
  *  @param errorStatus
@@ -52,6 +57,7 @@ typedef int        ERROR_T;
  */
 extern void SN_SYS_ErrorCheck(SN_STATUS errorStatus, const char* errorMessage, const char* _file, const char* _func, const int _line);
 
+
 /** @brief
  *
  *  @param log
@@ -60,6 +66,7 @@ extern void SN_SYS_ErrorCheck(SN_STATUS errorStatus, const char* errorMessage, c
  *  @note
  */
 extern void SN_SYS_Log(const char* log);
+
 
 /** @def SN_SYS_ERROR_CHECK(error, msg)
  *  @brief
@@ -72,6 +79,7 @@ extern void SN_SYS_Log(const char* log);
  */
 #define SN_SYS_ERROR_CHECK(error, msg) \
 SN_SYS_ErrorCheck((error), (msg), __FILE__, __FUNCTION__, __LINE__)
+
 ///@}
 
 #endif /* SN_ERROR_H_ */

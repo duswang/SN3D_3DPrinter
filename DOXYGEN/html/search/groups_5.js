@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['image_20viewer',['Image Viewer',['../group__MODULE__IMAGE__VIEWER.html',1,'']]]
+  ['gcode_20command',['GCode Command',['../group__SYSTEM__SERIAL__GCODE.html',1,'']]]
 ];
