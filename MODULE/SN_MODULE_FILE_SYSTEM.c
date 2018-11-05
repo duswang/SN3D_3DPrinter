@@ -6,6 +6,9 @@
  *
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
+ *
+ * @todo read XML File and Option File.
+ * @todo read machine XML File.
  */
 
 #include "SN_API.h"

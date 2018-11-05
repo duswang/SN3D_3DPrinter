@@ -6,6 +6,8 @@
  *
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
+ *
+ * @bug USB_UNMOUNT_EVENT not working
  */
 
 #include "SN_API.h"

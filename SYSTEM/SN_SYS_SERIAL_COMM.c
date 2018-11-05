@@ -6,6 +6,8 @@
  *
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
+ *
+ * @todo serial path finder
  */
 
 #include "SN_API.h"

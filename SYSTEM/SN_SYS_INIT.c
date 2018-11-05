@@ -24,49 +24,43 @@ sysMessageQId msgQIdApp;
 static SN_STATUS sSN_SYSTEM_Init(void);
 
 /**
-*@brief main
-*@details
-*@param
-*@return
-*
-*@bug
-*@todo
-*@exception
-*
-*@see
-*@see
+*  @brief main
 */
 int main(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     general_evt_t evt;
 
-    /**** SYSTEM INIT ****/
+    /* SYSTEM INIT */
     SN_SYS_Log("==>SYSTEM INIT");
 
     retStatus = sSN_SYSTEM_Init();
     SN_SYS_ERROR_CHECK(retStatus, "SYSTEM INIT FAILD.");
 
-    /**** MODULE INIT ****/
+    /* MODULE INIT */
     SN_SYS_Log("==>MODULE INIT");
 
-    /** FILE SYSTEM INIT **/
+    /* FILE SYSTEM INIT */
     retStatus = SN_MODULE_FILE_SYSTEM_Init();
     SN_SYS_ERROR_CHECK(retStatus, "FILE SYSTEM INIT FAILD.");
 
-    /** NEXTION DISPLAY INIT **/
+    /* NEXTION DISPLAY INIT */
     retStatus = SN_MODULE_DISPLAY_Init();
     SN_SYS_ERROR_CHECK(retStatus, "NEXTION DISPLAY INIT FAILD.");
 
-    /** 3D PRINTER INIT ( IMAGE VIEWER INIT ) **/
+    /* 3D PRINTER INIT ( IMAGE VIEWER INIT ) */
     retStatus = SN_MODULE_3D_PRINTER_Init();
     SN_SYS_ERROR_CHECK(retStatus, "3D PRINTER INIT FAILD.");
     
-    /**** APP INIT ****/
+    /* APP INIT */
     retStatus = APP_Init();
     SN_SYS_ERROR_CHECK(retStatus,"APP INIT FAILD.");
 
-    /**** To APP Main ****/
+    /* TEST */
+    //SN_MODULE_3D_PRINTER_Test();
+
+
+    /* APP main() */
     while(true)
     {
         evt = SN_SYS_MessageGet(&msgQIdApp);

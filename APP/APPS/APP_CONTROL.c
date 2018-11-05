@@ -57,7 +57,7 @@ SN_STATUS APP_STATE_EnterStateControl(void)
     APP_SetAppState(APP_STATE_CONTROL);
     SN_MODULE_DISPLAY_EnterState(APP_STATE_CONTROL);
 
-    retStatus = SN_MODULE_3D_PRINTER_MOTOR_INIT();
+    retStatus = SN_MODULE_3D_PRINTER_MotorInit();
 
     return retStatus;
 }
@@ -109,14 +109,14 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                     break;
                 /* IN PAGE BUTTONS */
                 case NX_ID_CONTROL_BUTTON_Z_UP:
-                        retStatus = SN_MODULE_3D_PRINTER_Z_UP(sGetZmmFromValue(msgNXId.value));
+                        retStatus = SN_MODULE_3D_PRINTER_Z_Up(sGetZmmFromValue(msgNXId.value));
                     break;
                 case NX_ID_CONTROL_BUTTON_Z_DOWN:
-                        retStatus = SN_MODULE_3D_PRINTER_Z_DOWN(sGetZmmFromValue(msgNXId.value));
+                        retStatus = SN_MODULE_3D_PRINTER_Z_Down(sGetZmmFromValue(msgNXId.value));
                     break;
                 case NX_ID_CONTROL_BUTTON_Z_HOMMING:
                     retStatus = SN_MODULE_DISPLAY_EnterState(NX_PAGE_LOADING);
-                    retStatus = SN_MODULE_3D_PRINTER_Z_HOMING();
+                    retStatus = SN_MODULE_3D_PRINTER_Z_Homing();
                     break;
                 default:
                     break;

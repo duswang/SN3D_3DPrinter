@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['time_5fdisplay',['time_display',['../structtime__display.html',1,'']]]
+  ['usb_5fdev_5fhandle',['usb_dev_handle',['../structusb__dev__handle.html',1,'']]]
 ];

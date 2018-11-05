@@ -7,6 +7,9 @@
  *
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
+ *
+ * @todo Z move soft limit
+ * @todo Need More Printing test
  */
 
 #include "SN_API.h"
@@ -153,6 +156,18 @@ static SN_STATUS s3DPrinter_PrintUninit(void);
 static SN_STATUS sGcodeParser_ZMove(char* pGcode, float liftDistance, float layerThickness,float liftFeedRate, bool isUp);
 
 
+SN_STATUS SN_MODULE_3D_PRINTER_Test(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    retStatus = SN_SYS_SerialTx(serialId3DPrinter, GCODE_LCD_ON, sizeof(GCODE_LCD_ON));
+    SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
+
+    while(true);
+
+    return retStatus;
+}
+
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
  *  Extern Functions
@@ -207,7 +222,7 @@ SN_STATUS SN_MODULE_3D_PRINTER_Uninit(void)
     return retStatus;
 }
 
-SN_STATUS SN_MODULE_3D_PRINTER_MOTOR_INIT(void)
+SN_STATUS SN_MODULE_3D_PRINTER_MotorInit(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
@@ -217,7 +232,14 @@ SN_STATUS SN_MODULE_3D_PRINTER_MOTOR_INIT(void)
     return retStatus;
 }
 
-SN_STATUS SN_MODULE_3D_PRINTER_Z_HOMING(void)
+SN_STATUS SN_MODULE_3D_PRINTER_MotorUninit(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    return retStatus;
+}
+
+SN_STATUS SN_MODULE_3D_PRINTER_Z_Homing(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
@@ -227,7 +249,7 @@ SN_STATUS SN_MODULE_3D_PRINTER_Z_HOMING(void)
     return retStatus;
 }
 
-SN_STATUS SN_MODULE_3D_PRINTER_Z_UP(float mm)
+SN_STATUS SN_MODULE_3D_PRINTER_Z_Up(float mm)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     char gcodeBuffer[GCODE_BUFFER_SIZE];
@@ -269,7 +291,7 @@ SN_STATUS SN_MODULE_3D_PRINTER_Z_UP(float mm)
     return retStatus;
 }
 
-SN_STATUS SN_MODULE_3D_PRINTER_Z_DOWN(float mm)
+SN_STATUS SN_MODULE_3D_PRINTER_Z_Down(float mm)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     char gcodeBuffer[GCODE_BUFFER_SIZE];

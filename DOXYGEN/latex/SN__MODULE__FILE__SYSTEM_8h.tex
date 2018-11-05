@@ -26,8 +26,6 @@ struct \hyperlink{structprint__target}{print\+\_\+target}
 \item 
 struct \hyperlink{structprint__information}{print\+\_\+information}
 \item 
-struct \hyperlink{structresolution__information}{resolution\+\_\+information}
-\item 
 struct \hyperlink{structmachine__information}{machine\+\_\+information}
 \end{DoxyCompactItemize}
 \subsection*{Macros}
@@ -73,40 +71,25 @@ typedef struct \hyperlink{structprint__information}{print\+\_\+information} {\bf
 \begin{Indent}\textbf{ Machine Info Structure}\par
 \begin{DoxyCompactItemize}
 \item 
-typedef struct \hyperlink{structresolution__information}{resolution\+\_\+information} {\bfseries resolution\+\_\+t}
-\item 
 typedef struct \hyperlink{structmachine__information}{machine\+\_\+information} {\bfseries machine\+Info\+\_\+t}
 \end{DoxyCompactItemize}
 \end{Indent}
 \subsection*{Functions}
-\begin{Indent}\textbf{ File System Module}\par
-{\em Description of Display Module Init and Uninit funtions. }\begin{DoxyCompactItemize}
+\begin{DoxyCompactItemize}
 \item 
 \hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__MODULE__FILE__SYSTEM_ga4b8101916d7de3e4d3004b79f4c8c2de}{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+Init} (void)
 \item 
 \hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__MODULE__FILE__SYSTEM_ga39c0e153f169cc6bdb35bce4d2a9194b}{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+Uninit} (void)
-\end{DoxyCompactItemize}
-\end{Indent}
-\begin{Indent}\textbf{ File System Module \+:\+: FS}\par
-\begin{DoxyCompactItemize}
 \item 
 \hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__MODULE__FILE__SYSTEM_gadfe4c4eeb9c662e30893824357bc46a5}{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+Get} (\hyperlink{structfile__system}{fs\+\_\+t} $\ast$p\+Fs)
 \item 
 \hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__MODULE__FILE__SYSTEM_ga7df4490475224028341c54f5d5db5736}{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+Update} (void)
-\end{DoxyCompactItemize}
-\end{Indent}
-\begin{Indent}\textbf{ File System Module \+:\+: Machine Info}\par
-\begin{DoxyCompactItemize}
 \item 
 \hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__MODULE__FILE__SYSTEM_ga4fba82e15bc9a77407cacaa1a6aadd50}{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+Machine\+Info\+Init} (void)
 \item 
 \hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__MODULE__FILE__SYSTEM_ga86125af6adcd6218d4ebdb484e11d273}{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+Machine\+Info\+Uninit} (void)
 \item 
 \hyperlink{structmachine__information}{machine\+Info\+\_\+t} \hyperlink{group__MODULE__FILE__SYSTEM_ga647e18cfc2415cb546d69b327ed76232}{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+Machine\+Info\+Get} (void)
-\end{DoxyCompactItemize}
-\end{Indent}
-\begin{Indent}\textbf{ File System Module \+:\+: Print Target Info}\par
-\begin{DoxyCompactItemize}
 \item 
 \hyperlink{group__SYSTEM__ERROR_ga4540713b9a7a18ce44d78c3a10f7442f}{S\+N\+\_\+\+S\+T\+A\+T\+US} \hyperlink{group__MODULE__FILE__SYSTEM_gadbd5aafed31faed399abd08193a04bc8}{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+Print\+Info\+Init} (uint32\+\_\+t page\+Index, uint32\+\_\+t item\+Index)
 \item 
@@ -114,7 +97,6 @@ typedef struct \hyperlink{structmachine__information}{machine\+\_\+information} 
 \item 
 \hyperlink{structprint__information}{print\+Info\+\_\+t} \hyperlink{group__MODULE__FILE__SYSTEM_ga6679d04769a997531a277ba3940cf16c}{S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+\+F\+I\+L\+E\+\_\+\+S\+Y\+S\+T\+E\+M\+\_\+\+Print\+Info\+Get} (void)
 \end{DoxyCompactItemize}
-\end{Indent}
 
 
 \subsection{Detailed Description}

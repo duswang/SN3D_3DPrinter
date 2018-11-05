@@ -1,12 +1,11 @@
 <map id="moduel_file_system" name="moduel_file_system">
-<area shape="rect" id="node2" href="$structfile__system.html" title="{file_system\n|+ pageCnt\l+ isItemExist\l|}" alt="" coords="285,425,392,517"/>
-<area shape="rect" id="node3" href="$structfile__system__option.html" title="{file_system_option\n|+ name\l|}" alt="" coords="5,211,147,289"/>
-<area shape="rect" id="node4" href="$structfile__system__page.html" title="{file_system_page\n|+ itemCnt\l|}" alt="" coords="171,211,304,289"/>
-<area shape="rect" id="node5" href="$structfile__system__item.html" title="{file_system_item\n|+ name\l|}" alt="" coords="172,5,303,83"/>
-<area shape="rect" id="node6" href="$structfile__system__target.html" title="{file_system_target\n|+ item_index\l+ page_index\l|}" alt="" coords="329,204,469,296"/>
-<area shape="rect" id="node7" href="$structprint__information.html" title="{print_information\n|+ isInit\l|}" alt="" coords="553,432,684,509"/>
-<area shape="rect" id="node8" href="$structprint__target.html" title="{print_target\n|+ sourceFilePath\l+ tempFilePath\l+ tempFileName\l+ slice\l|}" alt="" coords="493,189,624,311"/>
-<area shape="rect" id="node9" href="$structprint__prameter.html" title="{print_prameter\n|+ layerThickness\l+ bottomLayerExposureTime\l+ bottomLayerNumber\l+ bottomLiftFeedRate\l+ layerExposureTime\l+ liftFeedRate\l+ liftTime\l+ liftDistance\l+ retractFeedRate\l+ stopPosition\l|}" alt="" coords="649,145,858,355"/>
-<area shape="rect" id="node10" href="$structmachine__information.html" title="{machine_information\n|+ name\l+ height\l+ isInit\l|}" alt="" coords="827,417,984,524"/>
-<area shape="rect" id="node11" href="$structresolution__information.html" title="{resolution_information\n|+ height\l+ weight\l|}" alt="" coords="883,204,1048,296"/>
+<area shape="rect" id="node2" href="$structfile__system.html" title="{file_system\n|+ pageCnt\l+ isItemExist\l|}" alt="" coords="253,425,353,517"/>
+<area shape="rect" id="node3" href="$structfile__system__option.html" title="{file_system_option\n|+ name\l|}" alt="" coords="5,211,136,289"/>
+<area shape="rect" id="node4" href="$structfile__system__page.html" title="{file_system_page\n|+ itemCnt\l|}" alt="" coords="161,211,285,289"/>
+<area shape="rect" id="node5" href="$structfile__system__item.html" title="{file_system_item\n|+ name\l|}" alt="" coords="162,5,283,83"/>
+<area shape="rect" id="node6" href="$structfile__system__target.html" title="{file_system_target\n|+ item_index\l+ page_index\l|}" alt="" coords="309,204,438,296"/>
+<area shape="rect" id="node7" href="$structprint__information.html" title="{print_information\n|+ isInit\l|}" alt="" coords="463,432,582,509"/>
+<area shape="rect" id="node8" href="$structprint__target.html" title="{print_target\n|+ sourceFilePath\l+ tempFilePath\l+ tempFileName\l+ slice\l|}" alt="" coords="462,189,583,311"/>
+<area shape="rect" id="node9" href="$structprint__prameter.html" title="{print_prameter\n|+ layerThickness\l+ bottomLayerExposureTime\l+ bottomLayerNumber\l+ bottomLiftFeedRate\l+ layerExposureTime\l+ liftFeedRate\l+ liftTime\l+ liftDistance\l+ retractFeedRate\l+ stopPosition\l|}" alt="" coords="607,145,798,355"/>
+<area shape="rect" id="node10" href="$structmachine__information.html" title="{machine_information\n|+ name\l+ height\l+ isInit\l|}" alt="" coords="606,417,749,524"/>
 </map>

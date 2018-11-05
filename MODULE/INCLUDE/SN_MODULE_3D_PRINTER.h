@@ -92,7 +92,7 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Resume(void);
  *
  *  @note
  */
-extern SN_STATUS SN_MODULE_3D_PRINTER_MOTOR_INIT(void);
+extern SN_STATUS SN_MODULE_3D_PRINTER_MotorInit(void);
 
 
 /** @brief
@@ -101,7 +101,16 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_MOTOR_INIT(void);
  *
  *  @note
  */
-extern SN_STATUS SN_MODULE_3D_PRINTER_Z_HOMING(void);
+extern SN_STATUS SN_MODULE_3D_PRINTER_MotorUninit(void);
+
+
+/** @brief
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
+extern SN_STATUS SN_MODULE_3D_PRINTER_Z_Homing(void);
 
 
 /** @brief
@@ -112,7 +121,7 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Z_HOMING(void);
  *
  *  @note
  */
-extern SN_STATUS SN_MODULE_3D_PRINTER_Z_UP(float mm);
+extern SN_STATUS SN_MODULE_3D_PRINTER_Z_Up(float mm);
 
 
 /** @brief
@@ -123,11 +132,13 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Z_UP(float mm);
  *
  *  @note
  */
-extern SN_STATUS SN_MODULE_3D_PRINTER_Z_DOWN(float mm);
+extern SN_STATUS SN_MODULE_3D_PRINTER_Z_Down(float mm);
 
 
 ///@}
 
+
+extern SN_STATUS SN_MODULE_3D_PRINTER_Test(void);
 
 #endif /* SN_MODULE_3D_PRINTER */
 /**@}*/

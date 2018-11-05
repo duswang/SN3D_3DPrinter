@@ -1,18 +1,7 @@
 /**
 @mainpage SN3D Main Page
-  @section INTRO
-  -
-  @section   PROJECT INFO
+  @section INFO Project Info
   - Name  :  SN3D 3D Printer.
-  - brief :
-  @section  INOUTPUT
-  - INPUT       :
-  - OUTPUT      :
-  @section  CREATEINFO
-  -
-  @section  MODIFY INFO
-  -
-  -
  */
 /**
  * @file SN_API.h
@@ -38,6 +27,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include <fcntl.h>
+
 /* Operation System */
 #include <pthread.h>
 #include <semaphore.h>
@@ -57,22 +48,33 @@
 /* File System */
 #include <dirent.h>
 
+
 /* Serial */
 #include <termios.h>
 #include <unistd.h>
-#include <fcntl.h>
+
 
 /* Library */
 #ifdef __APPLE__
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+
 #include <libusb-1.0/libusb.h>
+
+#include <libxml/xmlreader.h>
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
 #endif
 
 #ifdef linux
 #include <SDL.h>
 #include <SDL_image.h>
+
 #include <libusb-1.0/libusb.h>
+
+#include <libxml/xmlreader.h>
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
 #endif
 
 #include <zip.h>

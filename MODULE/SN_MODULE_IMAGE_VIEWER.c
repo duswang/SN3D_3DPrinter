@@ -6,6 +6,9 @@
  *
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
+ *
+ * @todo direct contorl framebuffer?
+ * @bug 2048 x 2048 Over Resolution it can't make Window(surface)
  */
 
 #include "SN_API.h"
@@ -32,6 +35,8 @@
 #define SN_SYS_ERROR_CHECK_SDL_IMAGE(msg) \
         sCheckError_SDL_Image((msg), __FILE__, __FUNCTION__, __LINE__)
 
+#define DEFAULT_WINDOW_WIDTH 1920
+#define DEFAULT_WINDOW_HEIGHT 1080
 
 /* *** MODULE *** */
 typedef struct image_viewer
@@ -93,7 +98,16 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void)
     /* GET DISPLAY INFO */
     SDL_GetDesktopDisplayMode(0, &moduleImageViewer.dm);
 
-    printf("Image Viwer => Module => h%d w%d\n", moduleImageViewer.dm.h, moduleImageViewer.dm.w);
+    printf("Image Viwer => Module => Display Resolution [ %d x %d ] %dGHz %d\n", moduleImageViewer.dm.w, moduleImageViewer.dm.h, \
+                                                                                 moduleImageViewer.dm.refresh_rate, \
+                                                                                 moduleImageViewer.dm.format);
+
+    printf("Image Viwer => Module => Window Resolution [ %d x %d ]\n", DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
+
+#if(IMAGE_VIEWER_FIX_RESOLUTION)
+    moduleImageViewer.dm.w = DEFAULT_WINDOW_WIDTH;
+    moduleImageViewer.dm.h = DEFAULT_WINDOW_HEIGHT;
+#endif
 
     /* SDL CURSOR INIT */
     SDL_ShowCursor(SDL_DISABLE);
@@ -104,7 +118,7 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void)
             SDL_WINDOWPOS_UNDEFINED, \
             moduleImageViewer.dm.w, \
             moduleImageViewer.dm.h, \
-            SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL );
+            SDL_WINDOW_OPENGL );
 
     if(moduleImageViewer.window == NULL)
     {

@@ -36,7 +36,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PRJ_ROOT_PATH}/build)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PRJ_ROOT_PATH}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PRJ_ROOT_PATH}/lib)
 
-
 # Cmkae Module #
 set(CMAKE_MODULE_PATH "${PRJ_ROOT_PATH}/CMAKE_MODULE")
 
@@ -45,6 +44,7 @@ set(CMAKE_MODULE_PATH "${PRJ_ROOT_PATH}/CMAKE_MODULE")
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(libzip REQUIRED)
+find_package(libxml2 REQUIRED)
 
 # Include - Local #
 include_directories(
@@ -59,6 +59,7 @@ include_directories(
 	${SDL2_INCLUDE_DIRS}
 	${SDL2_IMAGE_INCLUDE_DIRS}
 	${LIBZIP_INCLUDE_DIRS}
+	${LIBXML2_INCLUDE_DIRS}
 )
 # Source #
 set(
@@ -111,6 +112,9 @@ set(
 	# SDL #
 	${SDL2_LIBRARIES}
 	${SDL2_IMAGE_LIBRARIES}
+	
+	# XML #
+	${LIBXML2_LIBRARIES}
 )
 
 # Flags #
@@ -138,6 +142,9 @@ set(
     -DDISPLAY_RX_DEBUG=false
 
     -DTX_DEBUG=false
+    
+    # IMAGE VIEWER #
+    -DIMAGE_VIEWER_FIX_RESOLUTION=true
 )
 ################### Target Setting ###################
 # Install exe file #
