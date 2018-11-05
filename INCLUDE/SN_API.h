@@ -42,6 +42,8 @@
 #include <sys/stat.h>
 #include <sys/poll.h>
 #include <sys/time.h>
+#include <sys/mman.h>
+#include <sys/ioctl.h>
 
 #include <errno.h>
 
@@ -62,11 +64,15 @@
 #include <libusb-1.0/libusb.h>
 
 #include <libxml/xmlreader.h>
-#include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
 #endif
 
 #ifdef linux
+#include <linux/fb.h>
+#include <png.h>
+#include <zlib.h>
+
 #include <SDL.h>
 #include <SDL_image.h>
 

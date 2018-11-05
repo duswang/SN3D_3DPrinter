@@ -40,6 +40,7 @@ set(CMAKE_MODULE_PATH "${PRJ_ROOT_PATH}/CMAKE_MODULE")
 # Library #
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
+find_package(png REQUIRED)
 find_package(libzip REQUIRED)
 find_package(libxml2 REQUIRED)
 
@@ -55,6 +56,7 @@ include_directories(
 include_directories(
 	${SDL2_INCLUDE_DIRS}
 	${SDL2_IMAGE_INCLUDE_DIRS}
+	${PNG_INCLUDE_DIRS}
 	${LIBZIP_INCLUDE_DIRS}
 	${LIBXML2_INCLUDE_DIRS}
 )
@@ -86,10 +88,10 @@ set(
 	# System #
 	${SYSTEM_PATH}/SN_SYS_ERROR.c
 	${SYSTEM_PATH}/SN_SYS_MESSAGE_Q.c
+	${SYSTEM_PATH}/SN_SYS_SERIAL_COMM.c
 	${SYSTEM_PATH}/SN_SYS_TIMER.c
 	${SYSTEM_PATH}/SN_SYS_USB_DRIVER.c
-	${SYSTEM_PATH}/SN_SYS_SERIAL_COMM.c
-
+	
 )
 
 # Library #
@@ -109,6 +111,9 @@ set(
 	# SDL #
 	${SDL2_LIBRARIES}
 	${SDL2_IMAGE_LIBRARIES}
+	
+	# PNG #
+	${PNG_LIBRARIES}
 	
 	# XML #
 	${LIBXML2_LIBRARIES}
@@ -142,6 +147,7 @@ set(
     
     # IMAGE VIEWER #
     -DIMAGE_VIEWER_FIX_RESOLUTION=true
+    -DIMAGE_VIEWER_USE_SDL=false
 )
 ################### Target Setting ###################
 # Install exe file #

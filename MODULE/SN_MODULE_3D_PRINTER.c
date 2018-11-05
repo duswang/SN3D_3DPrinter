@@ -10,6 +10,7 @@
  *
  * @todo Z move soft limit
  * @todo Need More Printing test
+ * @todo real-time get current z position info with nextion display
  */
 
 #include "SN_API.h"

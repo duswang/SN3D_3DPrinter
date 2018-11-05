@@ -119,6 +119,7 @@ static SN_STATUS   sRemoveTempFile(const char* filePath);
 static SN_STATUS   sExtractTempFile(const char* srcPath, const char* desPath);
 
 /* *** UTIL *** */
+static void ParsingXMLFile(const char* srcPath);
 static const char* sGetFilenameExt(const char *filename);
 static const char* sGetFilename(const char *filename);
 
@@ -168,19 +169,29 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_MachineInfoInit(void)
 SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemIndex/*,  uint32_t optionIndex */)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-    char srcPath[MAX_PATH_LENGTH], desPath[MAX_PATH_LENGTH];
-
-    sprintf(srcPath,"%s%s.%s",  USB_PATH, \
-                                moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, \
-                                FILENAME_EXT); fflush(stdout);
-
-    sprintf(desPath,"%s%s.%s",TEMP_FILE_PATH, \
-                                moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, \
-                                FILENAME_EXT); fflush(stdout);
+    char srcPath[MAX_PATH_LENGTH], desPath[MAX_PATH_LENGTH], configPath[MAX_PATH_LENGTH];
 
     retStatus = sRemoveTempFile(TEMP_FILE_PATH);
+
+    sprintf(srcPath,"%s%s.%s", USB_PATH, \
+                                moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, \
+                                FILENAME_EXT); fflush(stdout);
+
+    sprintf(desPath,"%s%s.%s", TEMP_FILE_PATH, \
+                                moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, \
+                                FILENAME_EXT); fflush(stdout);
+
     retStatus = sCopyFile(srcPath, desPath);
     retStatus = sExtractTempFile(desPath, TEMP_FILE_PATH);
+
+    sprintf(configPath,"%s%s.%s", TEMP_FILE_PATH, \
+                                CONFIG_FILENAME, \
+                                CONFIG_FILENAME_EXT); fflush(stdout);
+
+
+    printf("%s", configPath); fflush(stdout);
+
+    ParsingXMLFile(configPath);
 
     //@DEMO SETTING
     sDemoPrintSetting(); // Option Demo
@@ -628,43 +639,6 @@ SN_STATUS sRemoveTempFile(const char* filePath)
     return SN_STATUS_OK;
 }
 
-/*
-static SN_STATUS sReadXMLFile(const char* srcPath)
-{
-    SN_STATUS retStatus = SN_STATUS_OK;
-    FILE* GCodeFile;
-    char* line = NULL;
-    size_t  len;
-    ssize_t read;
-    int i = 0;
-
-    GCodeFile = fopen(srcPath, "r");
-
-    if(GCodeFile != NULL)
-    {
-        printf("open gcode file faild.\n");
-        return SN_STATUS_INVALID_PARAM;
-    }
-
-    while((read = getline(&line, &len, GCodeFile)) != -1)
-    {
-        printf("%d :: %s\n", i, line); fflush(stdout);
-        i++;
-    }
-
-    fclose(GCodeFile);
-
-    printf("%d :: %s\n", i, line); fflush(stdout);
-
-    if(line)
-    {
-        free(line);
-    }
-
-    return retStatus;
-}
-*/
-
 static void safe_create_dir(const char *dir)
 {
     if(mkdir(dir, 0755) < 0) {
@@ -692,7 +666,7 @@ SN_STATUS sExtractTempFile(const char* srcPath, const char* desPath)
 
     if ((za = zip_open(srcPath, 0, &err)) == NULL)
     {
-            SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Folder Open Failed.");
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Folder Open Failed.");
     }
 
     for (i = 0; i < zip_get_num_entries(za, 0); i++)
@@ -756,6 +730,50 @@ SN_STATUS sExtractTempFile(const char* srcPath, const char* desPath)
  *  UTIL
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+//char configReceive[6][80] = { " " };
+
+static void ParsingXMLFile(const char *srcPath)
+{
+    const char         *docname;
+    xmlDocPtr           doc;
+    xmlNodePtr          cur;
+    xmlChar             *uri;
+
+    if(srcPath == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "XMl File Open Failed.");
+    }
+
+    docname = srcPath;
+    doc = xmlParseFile(docname);
+
+    if(doc == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+    }
+
+    cur = xmlDocGetRootElement(doc);
+
+    if(cur == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+    }
+
+    cur = cur->xmlChildrenNode;
+
+    while (cur != NULL)
+    {
+        if ((!xmlStrcmp(cur->name, (const xmlChar *)"GCode")))
+        {
+            SN_SYS_Log("\n<GCode>\n");
+        }
+        cur = cur->next;
+    }
+
+    xmlFreeDoc(doc);
+}
+
+
 static const char* sGetFilenameExt(const char *filename)
 {
     const char *dot = strrchr(filename, '.');
