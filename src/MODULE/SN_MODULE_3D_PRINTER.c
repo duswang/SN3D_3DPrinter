@@ -8,6 +8,7 @@
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
+ * @todo Finish Notify Screen = with MODULE::DISPLAY
  * @todo Z move soft limit
  * @todo Need More Printing test
  * @todo real-time get current z position info with nextion display
@@ -36,7 +37,7 @@
 
 /** @name Printing Config Define */ ///@{
 #define FIRST_SLICE_DELAY_TIME     5000 /**< first slice getin delay - @return msec */
-#define FINISH_DEVICE_DELAY_TIME 100000 /**< finish device delay - @return msec */
+#define FINISH_DEVICE_DELAY_TIME  90000 /**< finish device delay - @return msec */
 #define STOP_DEVICE_DELAY_TIME    15000 /**< stop device delay - @return msec */
 ///@}
 
@@ -423,6 +424,8 @@ static void* s3DPrinterThread()
             retStatus = s3DPrinter_PrintStop();
             break;
         case MSG_3D_PRINTER_PRINTING_FINISH:
+            /* Finish Sequence */
+            retStatus = s3DPrinter_PrintFinish();
             break;
         case MSG_3D_PRINTER_HOMMING:
             retStatus = s3DPrinter_Homming();
@@ -715,12 +718,7 @@ static SN_STATUS s3DPrinter_PrintLift(void)
         {
             printf("=========> FINISH. [ %4d/ %4d ]\n", (module3DPrinter.sliceIndex + 1), module3DPrinter.printInfo.printTarget.slice); fflush(stdout);
 
-            /* Finish Sequence */
-            retStatus = s3DPrinter_PrintFinish();
-            SN_SYS_ERROR_CHECK(retStatus, "Finish Sequence Failed.");
-
             /* Printing Finish */
-            s3DPrinterEnterState(DEVICE_FINISH);
             retStatus = s3DPrinterMessagePut(MSG_3D_PRINTER_PRINTING_FINISH, 0);
             SN_SYS_ERROR_CHECK(retStatus, "3D Printer Message Failed.");
         }
@@ -834,20 +832,23 @@ static SN_STATUS s3DPrinter_PrintFinish(void)
         /* Print Uninit */
         s3DPrinter_PrintUninit();
 
-        /* Stop Device */
+        /* Nextion Display to Loading */
+        SN_MODULE_DISPLAY_EnterState(NX_PAGE_LOADING);
+
+        /* Z Position Init */
+        retStatus = sSendGCode(GCODE_INIT_POSITION_ABSOLUTE, sizeof(GCODE_INIT_POSITION_ABSOLUTE));
+        SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
+
         sGcodeParser_ZMove(finishGCode,     \
                 (float) module3DPrinter.machineInfo.height, \
                 (float)0, \
                 (float)DEFAULT_FEEDRATE,
                 true);
 
-        /* Z Position Init */
-        retStatus = sSendGCode(GCODE_INIT_POSITION_ABSOLUTE, sizeof(GCODE_INIT_POSITION_ABSOLUTE));
-        SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
-
         retStatus = sSendGCode(finishGCode, sizeof(finishGCode));
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
 
+        /* Wait Z Position */
         retStatus = SN_SYS_TimerCreate(&timerPrint, FINISH_DEVICE_DELAY_TIME, sTMR_FinishDevice_Callback);
         SN_SYS_ERROR_CHECK(retStatus, "Timer Cretae Failed.");
     }

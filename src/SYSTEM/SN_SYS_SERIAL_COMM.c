@@ -8,7 +8,6 @@
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
  * @todo serial path finder
- * @bug sometime printing is stop maybe in rx thread. or with check image viewr(FB)
  */
 
 #include "SN_API.h"

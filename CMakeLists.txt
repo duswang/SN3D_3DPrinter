@@ -144,7 +144,7 @@ set(
 
     # 3D PRINTER #
     -DPRINTER_RX_DEBUG=false
-	-DMOTOR_DISALBE=true
+	-DMOTOR_DISALBE=false
 
     # DISPLAY #
     -DDISPLAY_RX_DEBUG=false

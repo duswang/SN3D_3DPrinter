@@ -877,14 +877,14 @@ static void sDemoPrintSetting(void)
     moduleFileSystem.printInfo.printParameter.layerThickness          = 0.05000;//mm
 
     /* Bottom Layer */
-    moduleFileSystem.printInfo.printParameter.bottomLayerExposureTime =     50;//ms
-    //moduleFileSystem.printInfo.printParameter.bottomLayerExposureTime =   35000;//ms
+    //moduleFileSystem.printInfo.printParameter.bottomLayerExposureTime =     50;//ms
+    moduleFileSystem.printInfo.printParameter.bottomLayerExposureTime =   35000;//ms
     moduleFileSystem.printInfo.printParameter.bottomLayerNumber       =       7;//layer
     moduleFileSystem.printInfo.printParameter.bottomLiftFeedRate      =  150.00;//mm/s
 
     /* Normal Layer */
-    //moduleFileSystem.printInfo.printParameter.layerExposureTime       =    3000;//ms
-    moduleFileSystem.printInfo.printParameter.layerExposureTime       =      50;//ms
+    moduleFileSystem.printInfo.printParameter.layerExposureTime       =    3000;//ms
+    //moduleFileSystem.printInfo.printParameter.layerExposureTime       =      50;//ms
     moduleFileSystem.printInfo.printParameter.liftDistance            =       7;//mm
     moduleFileSystem.printInfo.printParameter.liftFeedRate            =  150.00;//mm/s
 
