@@ -1,7 +1,0 @@
-<map id="Module" name="Module">
-<area shape="rect" id="node1" href="$group__MODULE__DISPLAY.html" title="Display Module Functions. " alt="" coords="232,5,300,32"/>
-<area shape="rect" id="node3" href="$group__MODULE__IMAGE__VIEWER.html" title="Image Viewer Module Functions. " alt="" coords="212,56,320,83"/>
-<area shape="rect" id="node4" href="$group__MODULE__FILE__SYSTEM.html" title="File System Module Functions. " alt="" coords="219,107,313,133"/>
-<area shape="rect" id="node5" href="$group__MODULE__3D__PRINTER.html" title="3D Printer Module Functions. " alt="" coords="223,157,309,184"/>
-<area shape="rect" id="node6" href="$group__API.html" title="SN_API 0.0.1v. " alt="" coords="5,81,48,108"/>
-</map>

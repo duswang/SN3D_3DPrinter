@@ -1,4 +1,0 @@
-<map id="print_information" name="print_information">
-<area shape="rect" id="node2" href="$structprint__target.html" title="{print_target\n|+ sourceFilePath\l+ tempFilePath\l+ tempFileName\l+ slice\l|}" alt="" coords="5,49,136,171"/>
-<area shape="rect" id="node3" href="$structprint__prameter.html" title="{print_prameter\n|+ layerThickness\l+ bottomLayerExposureTime\l+ bottomLayerNumber\l+ bottomLiftFeedRate\l+ layerExposureTime\l+ liftFeedRate\l+ liftTime\l+ liftDistance\l+ retractFeedRate\l+ stopPosition\l|}" alt="" coords="161,5,370,215"/>
-</map>

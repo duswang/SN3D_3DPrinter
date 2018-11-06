@@ -1,5 +1,0 @@
-<map id="sys_serial_q" name="sys_serial_q">
-<area shape="rect" id="node2" href="$structsys__serial__id.html" title="{sys_serial_id\n|+ pfSerialCallBack\l+ uartId\l|}" alt="" coords="66,219,205,311"/>
-<area shape="rect" id="node3" href="$structsys__serial__stat.html" title="{sys_serial_stat\n|+ buffer_length\l+ rx_length\l+ endCodeChk\l+ mode\l|}" alt="" coords="5,20,127,141"/>
-<area shape="rect" id="node4" href="$structsys__serial__def.html" title="{sys_serial_def\n|+ device\l+ oflags\l+ baudRate\l+ rxByteSize\l+ returnMode\l+ buffer\l|}" alt="" coords="151,5,261,156"/>
-</map>

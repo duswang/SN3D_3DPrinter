@@ -1,4 +1,0 @@
-var searchData=
-[
-  ['return_5fmode',['RETURN_MODE',['../SN__MODULE__3D__PRINTER_8c.html#a5a0f6d20bbd813bb42026be07a61546b',1,'RETURN_MODE():&#160;SN_MODULE_3D_PRINTER.c'],['../SN__MODULE__DISPLAY_8c.html#a5a0f6d20bbd813bb42026be07a61546b',1,'RETURN_MODE():&#160;SN_MODULE_DISPLAY.c']]]
-];

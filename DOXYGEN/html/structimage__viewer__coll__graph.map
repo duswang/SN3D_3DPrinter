@@ -1,8 +1,0 @@
-<map id="image_viewer" name="image_viewer">
-<area shape="rect" id="node2" href="$structprint__information.html" title="{print_information\n|+ isInit\l|}" alt="" coords="96,307,215,384"/>
-<area shape="rect" id="node3" href="$structprint__target.html" title="{print_target\n|+ sourceFilePath\l+ tempFilePath\l+ tempFileName\l+ slice\l|}" alt="" coords="5,49,127,171"/>
-<area shape="rect" id="node4" href="$structprint__prameter.html" title="{print_prameter\n|+ layerThickness\l+ bottomLayerExposureTime\l+ bottomLayerNumber\l+ bottomLiftFeedRate\l+ layerExposureTime\l+ liftFeedRate\l+ liftTime\l+ liftDistance\l+ retractFeedRate\l+ stopPosition\l|}" alt="" coords="151,5,341,215"/>
-<area shape="rect" id="node5" href="$structframeBuffer__Image.html" title="{frameBuffer_Image\n|+ rgb\l+ alpha\l+ w\l+ h\l|}" alt="" coords="239,285,373,406"/>
-<area shape="rect" id="node6" href="$structframeBuffer__Window.html" title="{frameBuffer_Window\n|+ name\l+ w\l+ h\l+ bpp\l+ screenSize\l|}" alt="" coords="397,277,541,413"/>
-<area shape="rect" id="node7" href="$structmachine__information.html" title="{machine_information\n|+ name\l+ height\l+ isInit\l|}" alt="" coords="565,292,708,399"/>
-</map>

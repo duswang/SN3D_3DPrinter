@@ -1,8 +1,0 @@
-<map id="System" name="System">
-<area shape="rect" id="node1" href="$group__SYSTEM__USB__DRIVER.html" title="System USB Driver Functions. " alt="" coords="222,5,314,32"/>
-<area shape="rect" id="node2" href="$group__SYSTEM__MESSAGE__Q.html" title="System Message Q Functions. " alt="" coords="221,56,315,83"/>
-<area shape="rect" id="node3" href="$group__SYSTEM__TIMER.html" title="System Timer Functions. " alt="" coords="239,107,297,133"/>
-<area shape="rect" id="node4" href="$group__SYSTEM__SERIAL__COMM.html" title="Serial System Functions. " alt="" coords="239,157,297,184"/>
-<area shape="rect" id="node6" href="$group__SYSTEM__ERROR.html" title="System Error Functions. " alt="" coords="215,208,321,235"/>
-<area shape="rect" id="node7" href="$group__API.html" title="SN_API 0.0.1v. " alt="" coords="5,107,48,133"/>
-</map>

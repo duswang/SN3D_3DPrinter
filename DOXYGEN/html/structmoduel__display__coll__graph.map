@@ -1,8 +1,0 @@
-<map id="moduel_display" name="moduel_display">
-<area shape="rect" id="node2" href="$structfile__system.html" title="{file_system\n|+ pageCnt\l+ isItemExist\l|}" alt="" coords="184,307,291,399"/>
-<area shape="rect" id="node3" href="$structfile__system__option.html" title="{file_system_option\n|+ name\l|}" alt="" coords="5,153,147,230"/>
-<area shape="rect" id="node4" href="$structfile__system__page.html" title="{file_system_page\n|+ itemCnt\l|}" alt="" coords="171,153,304,230"/>
-<area shape="rect" id="node5" href="$structfile__system__item.html" title="{file_system_item\n|+ name\l|}" alt="" coords="172,5,303,83"/>
-<area shape="rect" id="node6" href="$structfile__system__target.html" title="{file_system_target\n|+ item_index\l+ page_index\l|}" alt="" coords="329,145,469,237"/>
-<area shape="rect" id="node7" href="$structtime__display.html" title="{time_display\n|+ sec\l+ min\l+ hour\l|}" alt="" coords="315,300,418,407"/>
-</map>
