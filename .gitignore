@@ -57,10 +57,10 @@ cmake_install.cmake
 Makefile
 
 #Doxygen Untrack Files
-DOXYGEN/
+doc/doxygen/
 
-#Temp & Makefile
-tempFile/
+#target & gakefile
+res/target/*.*
 
 #ETC 
 .DS_Store
