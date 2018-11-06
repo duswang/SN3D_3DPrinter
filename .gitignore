@@ -62,5 +62,9 @@ DOXYGEN/
 #Temp & Makefile
 tempFile/
 
+#ETC 
+.DS_Store
+.AppleDouble
+
 .cproject
 
