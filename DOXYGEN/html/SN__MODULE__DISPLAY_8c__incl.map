@@ -1,16 +1,16 @@
 <map id="MODULE/SN_MODULE_DISPLAY.c" name="MODULE/SN_MODULE_DISPLAY.c">
-<area shape="rect" id="node2" href="$SN__API_8h.html" title="SN_API.h" alt="" coords="1237,80,1317,107"/>
-<area shape="rect" id="node34" href="$SN__MODULE__DISPLAY_8h.html" title="SN_MODULE_DISPLAY.h" alt="" coords="3053,229,3225,256"/>
-<area shape="rect" id="node24" href="$SN__SYSTEM_8h.html" title="SN_SYSTEM.h" alt="" coords="2116,155,2227,181"/>
-<area shape="rect" id="node32" href="$SN__MODULE_8h.html" title="SN_MODULE.h" alt="" coords="2640,155,2756,181"/>
-<area shape="rect" id="node36" href="$APP__MESSAGES_8h.html" title="APP_MESSAGES.h" alt="" coords="2781,155,2919,181"/>
-<area shape="rect" id="node25" href="$SN__SYS__ERROR_8h.html" title="SN_SYS_ERROR.h" alt="" coords="1243,229,1377,256"/>
-<area shape="rect" id="node26" href="$SN__SYS__MESSAGE__Q_8h.html" title="SN_SYS_MESSAGE_Q.h" alt="" coords="1402,229,1575,256"/>
-<area shape="rect" id="node27" href="$SN__SYS__TIMER_8h.html" title="SN_SYS_TIMER.h" alt="" coords="1600,229,1729,256"/>
-<area shape="rect" id="node28" href="$SN__SYS__SERIAL__COMM_8h.html" title="SN_SYS_SERIAL_COMM.h" alt="" coords="1754,229,1938,256"/>
-<area shape="rect" id="node29" href="$SN__SYS__SERIAL__NEXTION_8h_source.html" title="SN_SYS_SERIAL_NEXTION.h" alt="" coords="1963,229,2161,256"/>
-<area shape="rect" id="node30" href="$SN__SYS__SERIAL__GCODE_8h.html" title="SN_SYS_SERIAL_GCODE.h" alt="" coords="2185,229,2376,256"/>
-<area shape="rect" id="node31" href="$SN__SYS__USB__DRIVER_8h.html" title="SN_SYS_USB_DRIVER.h" alt="" coords="2401,229,2574,256"/>
-<area shape="rect" id="node33" href="$SN__MODULE__3D__PRINTER_8h.html" title="SN_MODULE_3D_PRINTER.h" alt="" coords="2598,229,2798,256"/>
-<area shape="rect" id="node35" href="$SN__MODULE__FILE__SYSTEM_8h.html" title="SN_MODULE_FILE_SYSTEM.h" alt="" coords="2823,229,3029,256"/>
+<area shape="rect" id="node2" href="$SN__API_8h.html" title="SN_API.h" alt="" coords="1255,80,1337,107"/>
+<area shape="rect" id="node36" href="$SN__MODULE__DISPLAY_8h.html" title="SN_MODULE_DISPLAY.h" alt="" coords="3209,229,3389,256"/>
+<area shape="rect" id="node26" href="$SN__SYSTEM_8h.html" title="SN_SYSTEM.h" alt="" coords="2241,155,2356,181"/>
+<area shape="rect" id="node34" href="$SN__MODULE_8h.html" title="SN_MODULE.h" alt="" coords="2785,155,2901,181"/>
+<area shape="rect" id="node38" href="$APP__MESSAGES_8h.html" title="APP_MESSAGES.h" alt="" coords="2925,155,3067,181"/>
+<area shape="rect" id="node27" href="$SN__SYS__ERROR_8h.html" title="SN_SYS_ERROR.h" alt="" coords="1339,229,1482,256"/>
+<area shape="rect" id="node28" href="$SN__SYS__MESSAGE__Q_8h.html" title="SN_SYS_MESSAGE_Q.h" alt="" coords="1507,229,1683,256"/>
+<area shape="rect" id="node29" href="$SN__SYS__TIMER_8h.html" title="SN_SYS_TIMER.h" alt="" coords="1707,229,1842,256"/>
+<area shape="rect" id="node30" href="$SN__SYS__SERIAL__COMM_8h.html" title="SN_SYS_SERIAL_COMM.h" alt="" coords="1866,229,2057,256"/>
+<area shape="rect" id="node31" href="$SN__SYS__SERIAL__NEXTION_8h_source.html" title="SN_SYS_SERIAL_NEXTION.h" alt="" coords="2081,229,2289,256"/>
+<area shape="rect" id="node32" href="$SN__SYS__SERIAL__GCODE_8h.html" title="SN_SYS_SERIAL_GCODE.h" alt="" coords="2313,229,2511,256"/>
+<area shape="rect" id="node33" href="$SN__SYS__USB__DRIVER_8h.html" title="SN_SYS_USB_DRIVER.h" alt="" coords="2535,229,2715,256"/>
+<area shape="rect" id="node35" href="$SN__MODULE__3D__PRINTER_8h.html" title="SN_MODULE_3D_PRINTER.h" alt="" coords="2739,229,2946,256"/>
+<area shape="rect" id="node37" href="$SN__MODULE__FILE__SYSTEM_8h.html" title="SN_MODULE_FILE_SYSTEM.h" alt="" coords="2971,229,3184,256"/>
 </map>

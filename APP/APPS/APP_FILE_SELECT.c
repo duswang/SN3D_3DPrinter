@@ -9,33 +9,34 @@
  */
 #include "APPS.h"
 
-/******** GLOBAL VARIABLE ********/
+/* ******* GLOBAL VARIABLE ******* */
 static fs_t     fs;
 static uint32_t pageIndex;
 static uint32_t itemIndex;
 static uint32_t optionIndex;
 
-/******** STATIC FUNCTIONS ********/
-/**** HDLR ****/
+
+/* ******* STATIC FUNCTIONS ******* */
+/* *** HANDLER *** */
 static SN_STATUS s3DPrinterHdlr(event_msg_t evtMessage);
 static SN_STATUS sDisplayHdlr(event_msg_t evtMessage);
 static SN_STATUS sFileSystemHdlr(event_msg_t evtMessage);
 static SN_STATUS sImageViewerHdlr(event_msg_t evtMessage);
 
-/**** BUTTON ****/
-/** PAGE **/
+/* *** BUTTON *** */
+/* PAGE */
 static void sUpPageIndex(void);
 static void sDownPageIndex(void);
 static uint32_t sGetPageIndex(void);
 
-/** OPTION **/
+/* OPTION */
 static void sUpOptionIndex(void);
 static void sDownOptionIndex(void);
 
-/** ITEM **/
+/* *** UTIL *** */
 static bool sItemOverIndexCheck(uint32_t itemIndex);
 
-/** ETC **/
+/* *** ETC *** */
 static void sResetIndexs(void);
 
 SN_STATUS APP_FILE_SELECT_EvtHdlr(general_evt_t evt)

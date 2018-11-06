@@ -7,8 +7,8 @@
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
- * @todo direct contorl framebuffer?
- * @bug 2048 x 2048 Over Resolution it can't make Window(surface)
+ * @bug SDL :: 2048 x 2048 Over Resolution it can't make Window(surface)
+ * @bug FB  :: Not Yet
  */
 
 #include "SN_API.h"
@@ -38,6 +38,12 @@
 #define DEFAULT_WINDOW_WIDTH 1920
 #define DEFAULT_WINDOW_HEIGHT 1080
 
+#if(IMAGE_VIEWER_USE_SDL)
+#define WINDOW_NAME "sn3d"
+#else
+#define WINDOW_NAME "/dev/fb0"
+#endif
+
 /* *** MODULE *** */
 #if(IMAGE_VIEWER_USE_SDL)
 typedef struct image_viewer
@@ -60,19 +66,22 @@ typedef struct image_viewer
 
 typedef struct frameBuffer_Image
 {
-    unsigned char **buffer;
-    unsigned char **alpha;
+    unsigned char *rgb;
+    unsigned char *alpha;
 
-    uint32_t        w;
-    uint32_t        h;
+    int             w;
+    int             h;
 } FB_Image_t;
 
 typedef struct frameBuffer_Window
 {
-    char*    name;
+    const char*    name;
 
     uint32_t w;
     uint32_t h;
+    uint32_t bpp;
+
+    long screenSize;
 } FB_Window_t;
 
 typedef struct image_viewer
@@ -81,7 +90,7 @@ typedef struct image_viewer
     printInfo_t     printInfo;
 
     FB_Window_t window;
-    FB_Image_t image;
+    FB_Image_t  image;
 } moduleImageViewer_t;
 #endif
 
@@ -101,13 +110,20 @@ static void sCheckError_SDL(const char* message, const char* _file, const char* 
 static void sCheckError_SDL_Image(const char* message, const char* _file, const char* _func, const int _line);
 #else
 /* *** IMAGE *** */
-static void sLoadImage(const char* filename, unsigned char **buffer, unsigned char **alpha, int* width, int* height);
+static SN_STATUS sLoadImage(const char* filename, FB_Image_t* image);
+static SN_STATUS sDistroyImage(FB_Image_t* pImage);
+
+/* FRAME BUFFER */
+static SN_STATUS sLoadWindow(const char* devicename, FB_Window_t* window);
+static SN_STATUS sUpdateWindow(const FB_Window_t window, const FB_Image_t image);
+static SN_STATUS sCleanWindow(const FB_Window_t window);
+static SN_STATUS sDistroyWindow(FB_Window_t* window);
 
 /* *** UTIL *** */
 inline static unsigned char make8color(unsigned char r, unsigned char g, unsigned char b);
 inline static unsigned short make15color(unsigned char r, unsigned char g, unsigned char b);
 inline static unsigned short make16color(unsigned char r, unsigned char g, unsigned char b);
-void* convertRGB2FB(int fh, unsigned char *rgbbuff, unsigned long count, int bpp, int *cpp);
+static void* convertRGB2FB(int fh, unsigned char *rgbbuff, unsigned long count, int bpp, int *cpp);
 
 #endif
 
@@ -158,7 +174,7 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void)
     SDL_ShowCursor(SDL_DISABLE);
 
     /* SDL WINDOWS INIT */
-    moduleImageViewer.window = SDL_CreateWindow("SN3D", \
+    moduleImageViewer.window = SDL_CreateWindow(WINDOW_NAME, \
             SDL_WINDOWPOS_UNDEFINED, \
             SDL_WINDOWPOS_UNDEFINED, \
             moduleImageViewer.dm.w, \
@@ -272,9 +288,11 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void)
         return SN_STATUS_NOT_INITIALIZED;
     }
 
-#if(IMAGE_VIEWER_FIX_RESOLUTION)
-    printf("Image Viwer => Module => Window Resolution [ %d x %d ]\n", DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
-#endif
+    /* Load FrameBuffer Window */
+    sLoadWindow(WINDOW_NAME, &moduleImageViewer.window);
+
+    /* Init Window */
+    sCleanWindow(moduleImageViewer.window);
 
     return retStatus;
 }
@@ -283,18 +301,24 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     char path[MAX_PATH_LENGTH] = {'\0', };
-     int image_w = 0, image_h = 0;
+    int image_w = 0, image_h = 0;
 
-     /* GET PRINT TARGET INFO */
-     printInfo_t printInfo = SN_MODULE_FILE_SYSTEM_PrintInfoGet();
-     if(!printInfo.isInit)
-     {
+    /* GET PRINT TARGET INFO */
+    printInfo_t printInfo = SN_MODULE_FILE_SYSTEM_PrintInfoGet();
+    if(!printInfo.isInit)
+    {
          return SN_STATUS_NOT_INITIALIZED;
-     }
+    }
 
-     /* Load Texture */
-     sprintf(path,"%s%s%04d.png", printInfo.printTarget.tempFilePath, printInfo.printTarget.tempFileName, sliceIndex);
+    /* Load Image */
+    sprintf(path,"%s%s%04d.png", printInfo.printTarget.tempFilePath, printInfo.printTarget.tempFileName, sliceIndex);
+    sLoadImage(path, &moduleImageViewer.image);
 
+    /* Display */
+    sUpdateWindow(moduleImageViewer.window, moduleImageViewer.image);
+
+    /* Distroy Image */
+    sDistroyImage(&moduleImageViewer.image);
 
     return retStatus;
 }
@@ -303,12 +327,17 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_CLEAR(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
+    sCleanWindow(moduleImageViewer.window);
+
     return retStatus;
 }
 
 SN_STATUS SN_MODULE_IMAGE_VIEWER_Destroy(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+
+    sDistroyImage(&moduleImageViewer.image);
+    sDistroyWindow(&moduleImageViewer.window);
 
     return retStatus;
 }
@@ -368,146 +397,149 @@ static SDL_Texture* sLoadTexture(const char* filename, SDL_Renderer *renderer)
     return img_texture;
 }
 #else
-static void sLoadImage(const char* filename, unsigned char **buffer, unsigned char **alpha, int* width, int* height)
+static SN_STATUS sLoadImage(const char* filename, FB_Image_t* pImage)
 {
+    SN_STATUS retStatus = SN_STATUS_OK;
+
     char header[8];    // 8 is the maximum size that can be checked
 
-      png_byte color_type;
-      png_byte bit_depth;
+    png_byte color_type;
+    png_byte bit_depth;
 
-      png_structp png_ptr;
-      png_infop info_ptr;
-      int number_of_passes;
-      int transparent = 0;
+    png_structp png_ptr;
+    png_infop info_ptr;
+    int number_of_passes;
+    int transparent = 0;
 
-      unsigned char* row_pointer;
-      unsigned char* fbptr;
+    unsigned char* row_pointer;
+    unsigned char* fbptr;
 
-      png_bytep rptr[2];
+    png_bytep rptr[2];
 
-      int pass = 0, i = 0;;
+    int pass = 0, i = 0;;
 
+    if(filename == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "filename is NULL.");
+    }
 
-      /* open file and test for it being a png */
-      FILE *fp = fopen(filename, "rb");
-      if (!fp)
-      {
-        printf("[read_png_file] File %s could not be opened for reading", filename);
-        exit(-1);
-      }
-      fread(header, 1, 8, fp);
-      if (png_sig_cmp(header, 0, 8))
-      {
-        printf("[read_png] File %s is not recognized as a PNG file\n", filename);
-        exit(-1);
-      }
+    if(pImage == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "image structure is NULL.");
+    }
 
-      /* initialize stuff */
-      png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    FILE *fp = fopen(filename, "rb");
+    if (!fp)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "load image faild. check image path.");
+    }
 
-      if (!png_ptr)
-      {
-        printf("[read_png] png_create_read_struct failed\n");
-        exit(-1);
-      }
+    /* HEDER CHECK */
+    fread(header, 1, 8, fp);
+    if (png_sig_cmp(header, 0, 8))
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_SUPPORTED, "is not png file.");
+    }
 
-      info_ptr = png_create_info_struct(png_ptr);
-      if (!info_ptr)
-      {
-        printf("[read_png] png_create_info_struct failed\n");
-        exit(-1);
+    /* INIT PNG STRUCTURE */
+    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    if (!png_ptr)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "create png struct faild.");
+    }
 
-      }
+    info_ptr = png_create_info_struct(png_ptr);
+    if (!info_ptr)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "create png info struct faild.");
+    }
 
-      if (setjmp(png_jmpbuf(png_ptr)))
-      {
-        printf("[read_png] Error during init_io\n");
-        exit(-1);
+    if (setjmp(png_jmpbuf(png_ptr)))
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Error during init_io.");
+    }
 
-      }
+    png_init_io(png_ptr, fp);
+    png_set_sig_bytes(png_ptr, 8);
 
-      png_init_io(png_ptr, fp);
-      png_set_sig_bytes(png_ptr, 8);
+    png_read_info(png_ptr, info_ptr);
 
-      png_read_info(png_ptr, info_ptr);
+    /* READ PNG IMAGE INFO  */
+    pImage->w = png_get_image_width(png_ptr, info_ptr);
+    pImage->h = png_get_image_height(png_ptr, info_ptr);
+    color_type = png_get_color_type(png_ptr, info_ptr);
+    bit_depth = png_get_bit_depth(png_ptr, info_ptr);
 
-      *width = png_get_image_width(png_ptr, info_ptr);
-      *height = png_get_image_height(png_ptr, info_ptr);
-      color_type = png_get_color_type(png_ptr, info_ptr);
-      bit_depth = png_get_bit_depth(png_ptr, info_ptr);
+    number_of_passes = png_set_interlace_handling(png_ptr);
+    png_read_update_info(png_ptr, info_ptr);
 
-      number_of_passes = png_set_interlace_handling(png_ptr);
-      png_read_update_info(png_ptr, info_ptr);
+    /* READ PNG IMAGE */
+    if (setjmp(png_jmpbuf(png_ptr)))
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "Error during");
+    }
 
-      printf("[readpng] w = %d, h = %d, %d bpp\n", *width, *height, bit_depth);
-
-      /* read file */
-      if (setjmp(png_jmpbuf(png_ptr)))
-      {
-        printf("[read_png_file] Error during read_image\n");
-        exit(-1);
-      }
-
-    printf("%d\n", __LINE__);
-      if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
-      {
+    if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
+    {
         transparent = 1;
         png_set_tRNS_to_alpha(png_ptr);
-      }
+    }
 
-      *buffer = (unsigned char*)malloc((*width) * (*height) * 3); //RGB 888
-      if (*buffer == NULL)
-      {
-        printf("[read_png]out of memory: failed to allocate image rgb buffer\n");
-        exit(-1);
-      }
+    /* CREATE PNG RGB BUFFER */
+    pImage->rgb = (unsigned char*)malloc((pImage->w) * (pImage->h) * 3); //RGB 888
+    if (pImage->rgb == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_OUT_OF_MEM, " failed to allocate image rgb buffer");
+    }
 
-      if (color_type == PNG_COLOR_TYPE_RGB_ALPHA || color_type == PNG_COLOR_TYPE_GRAY_ALPHA || transparent != 0)
-      {
-        unsigned char* alpha_buffer = (unsigned char *)malloc((*width) * (*height));
+    /* CREATE PNG ALPHA BUFFER */
+    if(color_type == PNG_COLOR_TYPE_RGB_ALPHA || color_type == PNG_COLOR_TYPE_GRAY_ALPHA || transparent != 0)
+    {
+        unsigned char* alpha_buffer = (unsigned char *)malloc(pImage->w * pImage->h);
         unsigned char* aptr;
 
-        row_pointer = (unsigned char*)malloc((*width) * 4);
+        row_pointer = (unsigned char*)malloc((pImage->w) * 4);
         rptr[0] = (png_bytep) row_pointer;
 
-        *alpha = alpha_buffer;
+        pImage->alpha = alpha_buffer;
 
         for (pass = 0; pass < number_of_passes; pass++)
         {
-          fbptr = *buffer;
-          aptr = alpha_buffer;
+            fbptr = pImage->rgb;
+            aptr = alpha_buffer;
 
-          for (i = 0; i<(*height); i++)
-          {
-            int n;
-            unsigned char *trp = row_pointer;
-
-            png_read_rows(png_ptr, rptr, NULL, 1);
-
-            for(n = 0; n < (*width); n++, fbptr+=3, trp+=4)
+            for (i = 0; i < pImage->h; i++)
             {
-              memcpy(fbptr, trp, 3);
-              *(aptr++) = trp[3];
+                int n;
+                unsigned char *trp = row_pointer;
+
+                png_read_rows(png_ptr, rptr, NULL, 1);
+
+                for(n = 0; n < pImage->w; n++, fbptr+=3, trp+=4)
+                {
+                    memcpy(fbptr, trp, 3);
+                    *(aptr++) = trp[3];
+                }
             }
-          }
         }
         free(row_pointer);
-      }
-      else
-      {
+    }
+    else
+    {
         for(pass = 0; pass < number_of_passes; pass++)
         {
-          fbptr = *buffer;
-          for(i = 0; i< (*height); i++, fbptr += *width * 3)
-          {
-            rptr[0] = (png_bytep)fbptr;
-            png_read_rows(png_ptr, rptr, NULL, 1);
-          }
+            fbptr = pImage->rgb;
+            for(i = 0; i < pImage->h; i++, fbptr += pImage->w * 3)
+            {
+                rptr[0] = (png_bytep)fbptr;
+                png_read_rows(png_ptr, rptr, NULL, 1);
+            }
         }
-      }
-      png_read_end(png_ptr, info_ptr);
-      png_destroy_read_struct(&png_ptr, &info_ptr, (NULL));
-      printf("%d\n", __LINE__);
+    }
+
+    /* PNG DONE */
+    png_read_end(png_ptr, info_ptr);
+    png_destroy_read_struct(&png_ptr, &info_ptr, (NULL));
 
     //  row_pointers = (png_bytep*) malloc(sizeof(png_bytep) * height);
     //  for (y=0; y<height; y++)
@@ -515,7 +547,27 @@ static void sLoadImage(const char* filename, unsigned char **buffer, unsigned ch
 
     //  png_read_image(png_ptr, row_pointers);
 
-      fclose(fp);
+    fclose(fp);
+
+    return retStatus;
+}
+
+static SN_STATUS sDistroyImage(FB_Image_t* image)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    if(image == NULL)
+    {
+        return SN_STATUS_INVALID_PARAM;
+    }
+
+    free(image->alpha);
+    free(image->rgb);
+
+    image->h = 0;
+    image->w = 0;
+
+    return retStatus;
 }
 
 inline static unsigned char make8color(unsigned char r, unsigned char g, unsigned char b)
@@ -590,7 +642,7 @@ void* convertRGB2FB(int fh, unsigned char *rgbbuff, unsigned long count, int bpp
     return fbbuff;
 }
 
-SN_STATUS sGetDisplayMode(const char* deviceName)
+static SN_STATUS sLoadWindow(const char* devicename, FB_Window_t* window)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
@@ -598,83 +650,166 @@ SN_STATUS sGetDisplayMode(const char* deviceName)
     struct fb_var_screeninfo vinfo;
     struct fb_fix_screeninfo finfo;
 
-    long int screenSize = 0;
-    char *fbp = NULL;
+    if(devicename == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "devicename param is NULL.");
+    }
 
+    if(window == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "window param is NULL.");
+    }
 
+    fbfd = open(devicename, O_RDWR);
+    if (fbfd == -1)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "cannot open framebuffer device.");
+    }
+    window->name = devicename;
 
+    /* GET FIX SCREEN INFO */
+    if (ioctl(fbfd, FBIOGET_FSCREENINFO, &finfo) == -1)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Error reading fixed information.");
+    }
 
+    /* GET VARIABLE SCREEN INFO */
+    if (ioctl(fbfd, FBIOGET_VSCREENINFO, &vinfo) == -1)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Error reading variable information.");
+    }
 
+    window->h   = vinfo.yres;
+    window->w   = vinfo.xres;
+    window->bpp = vinfo.bits_per_pixel;
+
+    // Figure out the size of the screen in bytes
+    window->screenSize = (window->w * window->h) * (window->bpp / 8);
+    //x_stride = (vinfo.line_length * 8) / finfo.bits_per_pixel;
+
+    printf("Image Viwer => Module => Window Resolution [ %d x %d ], %dbpp\n", window->w, window->h, window->bpp);
+
+    close(fbfd);
 
     return retStatus;
 }
 
-void display_to_fb(const char* devicename, unsigned char * rgb, unsigned char* alpha, int w, int h)
+static SN_STATUS sUpdateWindow(const FB_Window_t window, const FB_Image_t image)
 {
-  int fbfd = 0;
-  struct fb_var_screeninfo vinfo;
-  struct fb_fix_screeninfo finfo;
-  long int screensize = 0;
-  char *fbp = 0;
+    SN_STATUS retStatus = SN_STATUS_OK;
 
-  unsigned long x_stride;
-  int bp = 0;
-  unsigned short* fbbuff = NULL;
+    int fbfd = 0;
+    long int screensize = 0;
+    char *fbp = 0;
 
-  unsigned char*  fbptr = NULL;
-  unsigned char*  imptr = NULL;
+    unsigned long x_stride;
+    int bp = 0;
+    unsigned short* fbbuff = NULL;
 
-  // Open the file for reading and writing
-  fbfd = open(devicename, O_RDWR);
-  if (fbfd == -1) {
-      perror("Error: cannot open framebuffer device");
-      exit(1);
-  }
-  printf("The framebuffer device was opened successfully.\n");
+    unsigned char*  fbptr = NULL;
+    unsigned char*  imptr = NULL;
 
-  // Get fixed screen information
-  if (ioctl(fbfd, FBIOGET_FSCREENINFO, &finfo) == -1) {
-      perror("Error reading fixed information");
-      exit(2);
-  }
+    if(window.name == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "window not initialzed.");
+    }
 
-  // Get variable screen information
-  if (ioctl(fbfd, FBIOGET_VSCREENINFO, &vinfo) == -1) {
-      perror("Error reading variable information");
-      exit(3);
-  }
+    fbfd = open(window.name, O_RDWR);
+    if (fbfd == -1)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "cannot open framebuffer device.");
+    }
 
-  printf("%dx%d, %dbpp\n", vinfo.xres, vinfo.yres, vinfo.bits_per_pixel);
+    fbbuff = convertRGB2FB(fbfd, image.rgb, image.w * image.h, window.bpp, &bp);
 
-  // Figure out the size of the screen in bytes
-  screensize = vinfo.xres * vinfo.yres * vinfo.bits_per_pixel / 8;
-  //x_stride = (vinfo.line_length * 8) / finfo.bits_per_pixel;
+    /* Map the device to memory */
+    fbp = (char *)mmap(0, window.screenSize, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
+    if ((int)fbp == -1)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "failed to map framebuffer device to memory.");
+    }
 
-  //////////////////////////////////////////////////////////////////////////////////
+    fbptr = fbp;
+    imptr = (unsigned char* )fbbuff;
 
-  fbbuff = convertRGB2FB(fbfd, rgb, w * h, vinfo.bits_per_pixel, &bp);
+    for (int i = 0; i < image.h; i++, fbptr += image.w * bp, imptr += image.w * bp)
+    {
+        memcpy(fbptr, imptr, image.w * bp);
+    }
 
-  // Map the device to memory
-  fbp = (char *)mmap(0, screensize, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
-  if ((int)fbp == -1) {
-      perror("Error: failed to map framebuffer device to memory");
-      exit(4);
-  }
-  printf("The framebuffer device was mapped to memory successfully.\n");
+    free(fbbuff);
 
-  fbptr = fbp;
-  imptr = (unsigned char* )fbbuff;
+    munmap(fbp, window.screenSize);
 
-  for (int i = 0; i<h; i++, fbptr += w * bp, imptr += w * bp)
-  {
-    memcpy(fbptr, imptr, w * bp);
-  }
+    close(fbfd);
 
-  free(imptr);
+    return retStatus;
+}
 
-  munmap(fbp, screensize);
-  close(fbfd);
-  return;
+static SN_STATUS sCleanWindow(const FB_Window_t window)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    int fbfd = 0;
+    int i = 0;
+    int j = 0;
+    long int location = 0;
+    char *fbp = 0;
+
+    if(window.name == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "window not initialzed.");
+    }
+
+    fbfd = open(window.name, O_RDWR);
+    if (fbfd == -1)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "cannot open framebuffer device.");
+    }
+
+    /* Map the device to memory */
+    fbp = (char *)mmap(0, window.screenSize, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
+    if ((int)fbp == -1)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "failed to map framebuffer device to memory.");
+    }
+
+    /* Figure out where in memory to put the pixel */
+    for (i = 0; i < window.h; i++)
+    {
+        if(window.bpp == 32)
+        {
+            memset(fbp + ((i * window.w) * 4), 0, window.w * 4);
+        }
+        else //assume 16bpp
+        {
+            memset(fbp + ((i * window.w) * 2), 0, window.w * 2);
+        }
+        //else 8bpp
+    }
+
+    munmap(fbp, window.screenSize);
+
+    close(fbfd);
+
+    return retStatus;
+}
+static SN_STATUS sDistroyWindow(FB_Window_t* window)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    if(window == NULL)
+    {
+        return SN_STATUS_INVALID_PARAM;
+    }
+
+    window->name       = NULL;
+
+    window->screenSize = 0;
+    window->h          = 0;
+    window->w          = 0;
+    window->bpp        = 0;
+
+    return retStatus;
 }
 #endif
 #if(IMAGE_VIEWER_USE_SDL)

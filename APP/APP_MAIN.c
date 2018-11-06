@@ -11,7 +11,7 @@
  */
 #include "APPS.h"
 
-/******** GLOBAL VARIABLE ********/
+/* **** GLOBAL VARIABLE **** */
 static app_state_t gAppState = APP_STATE_INIT;
 
 SN_STATUS APP_Main(general_evt_t evt)

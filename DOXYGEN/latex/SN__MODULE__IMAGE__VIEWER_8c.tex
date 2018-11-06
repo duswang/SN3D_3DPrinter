@@ -2,7 +2,8 @@
 \label{SN__MODULE__IMAGE__VIEWER_8c}\index{M\+O\+D\+U\+L\+E/\+S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+E\+R.\+c@{M\+O\+D\+U\+L\+E/\+S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+E\+R.\+c}}
 {\ttfamily \#include \char`\"{}S\+N\+\_\+\+A\+P\+I.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+E\+R.\+h\char`\"{}}\newline
-Include dependency graph for S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+E\+R.\+c\+:\nopagebreak
+Include dependency graph for S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+\+I\+M\+A\+G\+E\+\_\+\+V\+I\+E\+W\+E\+R.\+c\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -11,6 +12,10 @@ Include dependency graph for S\+N\+\_\+\+M\+O\+D\+U\+L\+E\+\_\+\+I\+M\+A\+G\+E\+
 \end{figure}
 \subsection*{Classes}
 \begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structframeBuffer__Image}{frame\+Buffer\+\_\+\+Image}
+\item 
+struct \hyperlink{structframeBuffer__Window}{frame\+Buffer\+\_\+\+Window}
 \item 
 struct \hyperlink{structimage__viewer}{image\+\_\+viewer}
 \end{DoxyCompactItemize}
@@ -26,9 +31,18 @@ struct \hyperlink{structimage__viewer}{image\+\_\+viewer}
 \item 
 \mbox{\Hypertarget{SN__MODULE__IMAGE__VIEWER_8c_a030ebc610fddb0a18d62829ab376bf85}\label{SN__MODULE__IMAGE__VIEWER_8c_a030ebc610fddb0a18d62829ab376bf85}} 
 \#define {\bfseries D\+E\+F\+A\+U\+L\+T\+\_\+\+W\+I\+N\+D\+O\+W\+\_\+\+H\+E\+I\+G\+HT}~1080
+\item 
+\mbox{\Hypertarget{SN__MODULE__IMAGE__VIEWER_8c_a2d6acae8f9b752a5d85795baf1005907}\label{SN__MODULE__IMAGE__VIEWER_8c_a2d6acae8f9b752a5d85795baf1005907}} 
+\#define {\bfseries W\+I\+N\+D\+O\+W\+\_\+\+N\+A\+ME}~\char`\"{}/dev/fb0\char`\"{}
 \end{DoxyCompactItemize}
 \subsection*{Typedefs}
 \begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{SN__MODULE__IMAGE__VIEWER_8c_a0fe75d03cbb1c197077cd56e5cbcd6d2}\label{SN__MODULE__IMAGE__VIEWER_8c_a0fe75d03cbb1c197077cd56e5cbcd6d2}} 
+typedef struct \hyperlink{structframeBuffer__Image}{frame\+Buffer\+\_\+\+Image} {\bfseries F\+B\+\_\+\+Image\+\_\+t}
+\item 
+\mbox{\Hypertarget{SN__MODULE__IMAGE__VIEWER_8c_a382b70022487b1671e8eb6ba0f624772}\label{SN__MODULE__IMAGE__VIEWER_8c_a382b70022487b1671e8eb6ba0f624772}} 
+typedef struct \hyperlink{structframeBuffer__Window}{frame\+Buffer\+\_\+\+Window} {\bfseries F\+B\+\_\+\+Window\+\_\+t}
 \item 
 \mbox{\Hypertarget{SN__MODULE__IMAGE__VIEWER_8c_aa2c53d48080de6cfcac7f400c20b3125}\label{SN__MODULE__IMAGE__VIEWER_8c_aa2c53d48080de6cfcac7f400c20b3125}} 
 typedef struct \hyperlink{structimage__viewer}{image\+\_\+viewer} {\bfseries module\+Image\+Viewer\+\_\+t}
@@ -58,10 +72,10 @@ Bato
 
 \href{http://www.stack.nl/~dimitri/doxygen/commands.html}{\tt http\+://www.\+stack.\+nl/$\sim$dimitri/doxygen/commands.\+html}
 \end{DoxySeeAlso}
-\begin{DoxyRefDesc}{Todo}
-\item[\hyperlink{todo__todo000002}{Todo}]direct contorl framebuffer? \end{DoxyRefDesc}
 \begin{DoxyRefDesc}{Bug}
-\item[\hyperlink{bug__bug000003}{Bug}]2048 x 2048 Over Resolution it can\textquotesingle{}t make Window(surface) \end{DoxyRefDesc}
+\item[\hyperlink{bug__bug000003}{Bug}]S\+DL \+:\+: 2048 x 2048 Over Resolution it can\textquotesingle{}t make Window(surface) 
+
+FB \+:\+: Not Yet \end{DoxyRefDesc}
 
 
 \subsection{Macro Definition Documentation}
