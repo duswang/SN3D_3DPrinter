@@ -6,30 +6,29 @@
  *
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
+ *
+ * @note signal timer => thread timer :: 16 nov 2018.
  */
 
 #include "SN_API.h"
 #include "SN_SYS_TIMER.h"
 
-/** System **/
-/* Thread */
-pthread_mutex_t ptmTimer = PTHREAD_MUTEX_INITIALIZER;
+/* ******* STATIC DEFINE ******* */
 
-/** Global Variables **/
+/* ******* SYSTEM DEFINE ******* */
+/* *** SYSTEM THREAD *** */
+pthread_mutex_t ptmTimer;
+pthread_t       ptTimer;
+
+/* ******* GLOBAL VARIABLE ******* */
 static int guiNumTSR;
 static sysTimerQ_t aTSR[MAX_NUM_OF_TSR];
 
-/** Global Variables **/
+/* ******* STATIC FUNCTIONS ******* */
+/* *** THREAD *** */
+static void* sTimerThread();
 
-/** Static Funtions **/
-/* callback */
-static void sCallBackTSR();
-
-/* local */
-static void sTimerStart(void);
-static void sTimerStop(void);
-
-/* util */
+/* *** UTIL *** */
 static long long sDiffTick(const struct timespec startTick, const struct timespec endTick);
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
@@ -56,7 +55,13 @@ SN_STATUS SN_SYS_TimerInit(void)
 
     if (pthread_mutex_init(&ptmTimer, NULL) != 0)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Timer Mutex Init Faild.");
+        printf("\n mutex init failed\n");
+    }
+
+    if((retStatus = pthread_create(&ptTimer, NULL, sTimerThread, NULL)))
+    {
+        printf("Thread Creation Fail %d\n", retStatus);
+        fflush(stdout);
     }
 
     return retStatus;
@@ -78,6 +83,7 @@ SN_STATUS SN_SYS_TimerCreate(sysTimerId_t* pIdTSR, uint32_t msDuration, void* pf
     {
         return SN_STATUS_NOT_INITIALIZED;
     }
+
     pthread_mutex_lock(&ptmTimer);
 
     for(idxTSR = 0; idxTSR < MAX_NUM_OF_TSR; idxTSR++)
@@ -96,10 +102,6 @@ SN_STATUS SN_SYS_TimerCreate(sysTimerId_t* pIdTSR, uint32_t msDuration, void* pf
             *pIdTSR = aTSR[idxTSR].uniqueCode;
             guiNumTSR++;
 
-            if (guiNumTSR == 1)
-            {
-                sTimerStart();
-            }
             break;
         }
     }
@@ -162,80 +164,43 @@ SN_STATUS SN_SYS_Delay(uint32_t msec)
     return retStatus;
 }
 
-static void sCallBackTSR()
+static void* sTimerThread()
 {
     uint8_t idxTSR;
     struct timespec tickNow;
 
-    pthread_mutex_lock(&ptmTimer);
-
-    for (idxTSR = 0; idxTSR < MAX_NUM_OF_TSR; idxTSR++)
+    while(true)
     {
-        clock_gettime(CLOCK_REALTIME, &tickNow);
-        if ((aTSR[idxTSR].isOccupied) && (aTSR[idxTSR].pfTSRCallBack != NULL) &&
-            (sDiffTick(aTSR[idxTSR].tickRequested, tickNow) >= ((aTSR[idxTSR].msDuration))))
-    	{
+        pthread_mutex_lock(&ptmTimer);
 
-            (void)(aTSR[idxTSR].pfTSRCallBack)();
-
-            aTSR[idxTSR].isOccupied = false;
-            aTSR[idxTSR].tickRequested.tv_sec = 0;
-            aTSR[idxTSR].tickRequested.tv_nsec = 0;
-            aTSR[idxTSR].msDuration = 0;
-            aTSR[idxTSR].uniqueCode = 0;
-            if(guiNumTSR != 0)
+        for (idxTSR = 0; idxTSR < MAX_NUM_OF_TSR; idxTSR++)
+        {
+            clock_gettime(CLOCK_REALTIME, &tickNow);
+            if ((aTSR[idxTSR].isOccupied) && (aTSR[idxTSR].pfTSRCallBack != NULL) &&
+                (sDiffTick(aTSR[idxTSR].tickRequested, tickNow) >= ((aTSR[idxTSR].msDuration))))
             {
-                guiNumTSR--;
+
+                (void)(aTSR[idxTSR].pfTSRCallBack)();
+
+                aTSR[idxTSR].isOccupied = false;
+                aTSR[idxTSR].tickRequested.tv_sec = 0;
+                aTSR[idxTSR].tickRequested.tv_nsec = 0;
+                aTSR[idxTSR].msDuration = 0;
+                aTSR[idxTSR].uniqueCode = 0;
+                if(guiNumTSR != 0)
+                {
+                    guiNumTSR--;
+                }
+                aTSR[idxTSR].pfTSRCallBack = NULL;
             }
-            aTSR[idxTSR].pfTSRCallBack = NULL;
-
-
         }
+
+        pthread_mutex_unlock(&ptmTimer);
+
+        SN_SYS_Delay(1);
     }
 
-    pthread_mutex_unlock(&ptmTimer);
-
-    if (guiNumTSR == 0)
-    {
-        sTimerStop();
-    }
-}
-
-static void sTimerStart(void)
-{
-    struct sigaction sa;
-    struct itimerval timerId;
-
-    /* Configure the timer to expire after 1 msec... */
-    timerId.it_value.tv_sec = 0;
-    timerId.it_value.tv_usec = 1000;
-
-    /* ... and every 1 msec after that. */
-    timerId.it_interval.tv_sec = 0;
-    timerId.it_interval.tv_usec = 1000;
-
-    if (signal(SIGALRM, (void (*)(int)) sCallBackTSR) == SIG_ERR) {
-      perror("Unable to catch SIGALRM");
-      exit(1);
-    }
-
-    setitimer(ITIMER_REAL, &timerId, NULL);
-}
-
-static void sTimerStop(void)
-{
-    struct sigaction sa;
-    struct itimerval timerId;
-
-    /* Configure the timer to expire after 250 msec... */
-    timerId.it_value.tv_sec = 0;
-    timerId.it_value.tv_usec = 0;
-
-    /* ... and every 250 msec after that. */
-    timerId.it_interval.tv_sec = 0;
-    timerId.it_interval.tv_usec = 0;
-
-    setitimer(ITIMER_REAL, &timerId, NULL);
+    return NULL;
 }
 
 static long long sDiffTick(const struct timespec startTick, const struct timespec endTick)

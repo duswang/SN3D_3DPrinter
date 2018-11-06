@@ -223,7 +223,7 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex)
     }
 
     /* Load Texture */
-    sprintf(path,"%s%s%04d.png", printInfo.printTarget.tempFilePath, printInfo.printTarget.tempFileName, sliceIndex);
+    sprintf(path,"%s%s%04d.png", printInfo.printTarget.targetPath, printInfo.printTarget.targetName, sliceIndex);
 
     moduleImageViewer.texture = sLoadTexture(path, moduleImageViewer.renderer);
     error += SDL_QueryTexture(moduleImageViewer.texture, NULL, NULL, &image_w, &image_h);
@@ -289,10 +289,10 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void)
     }
 
     /* Load FrameBuffer Window */
-    sLoadWindow(WINDOW_NAME, &moduleImageViewer.window);
+    retStatus = sLoadWindow(WINDOW_NAME, &moduleImageViewer.window);
 
     /* Init Window */
-    sCleanWindow(moduleImageViewer.window);
+    retStatus = sCleanWindow(moduleImageViewer.window);
 
     return retStatus;
 }
@@ -311,14 +311,17 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex)
     }
 
     /* Load Image */
-    sprintf(path,"%s/%s%04d.png", printInfo.printTarget.tempFilePath, printInfo.printTarget.tempFileName, sliceIndex);
-    sLoadImage(path, &moduleImageViewer.image);
+    sprintf(path,"%s/%s%04d.png", printInfo.printTarget.targetPath, printInfo.printTarget.targetName, sliceIndex);
+    retStatus = sLoadImage(path, &moduleImageViewer.image);
+    SN_SYS_ERROR_CHECK(retStatus, "Load Image Failed.");
 
     /* Display */
-    sUpdateWindow(moduleImageViewer.window, moduleImageViewer.image);
+    retStatus = sUpdateWindow(moduleImageViewer.window, moduleImageViewer.image);
+    SN_SYS_ERROR_CHECK(retStatus, "Window Update Failed.");
 
     /* Distroy Image */
-    sDistroyImage(&moduleImageViewer.image);
+    retStatus = sDistroyImage(&moduleImageViewer.image);
+    SN_SYS_ERROR_CHECK(retStatus, "Image Clean Failed.");
 
     return retStatus;
 }
@@ -327,7 +330,7 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_CLEAR(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    sCleanWindow(moduleImageViewer.window);
+    retStatus= sCleanWindow(moduleImageViewer.window);
 
     return retStatus;
 }
@@ -506,7 +509,7 @@ static SN_STATUS sLoadImage(const char* filename, FB_Image_t* pImage)
         for (pass = 0; pass < number_of_passes; pass++)
         {
             fbptr = pImage->rgb;
-            aptr = alpha_buffer;
+            aptr  = alpha_buffer;
 
             for (i = 0; i < pImage->h; i++)
             {
@@ -563,8 +566,15 @@ static SN_STATUS sDistroyImage(FB_Image_t* image)
         return SN_STATUS_INVALID_PARAM;
     }
 
-    free(image->alpha);
-    free(image->rgb);
+    if(image->rgb != NULL)
+    {
+        free(image->rgb);
+    }
+
+    if(image->alpha != NULL)
+    {
+        free(image->alpha);
+    }
 
     image->h = 0;
     image->w = 0;

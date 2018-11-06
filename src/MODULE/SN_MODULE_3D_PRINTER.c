@@ -36,7 +36,7 @@
 
 /** @name Printing Config Define */ ///@{
 #define FIRST_SLICE_DELAY_TIME     5000 /**< first slice getin delay - @return msec */
-#define FINISH_DEVICE_DELAY_TIME  50000 /**< finish device delay - @return msec */
+#define FINISH_DEVICE_DELAY_TIME 100000 /**< finish device delay - @return msec */
 #define STOP_DEVICE_DELAY_TIME    15000 /**< stop device delay - @return msec */
 ///@}
 
@@ -515,6 +515,7 @@ static void sTMR_NextCycle_Callback(void)
 static void sTMR_Lift_Callback(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+
     s3DPrinterMessagePut(MSG_3D_PRINTER_PRINTING_Z_LIFT, 0);
     SN_SYS_ERROR_CHECK(retStatus, "3D Printer Message Send Failed.");
 }
@@ -603,16 +604,19 @@ static SN_STATUS s3DPrinter_PrintInit(void)
         SN_SYS_ERROR_CHECK(retStatus, "Display Timer Info Update Failed.");
 
         /* NEXTION PAGE INFO INIT */
-        retStatus = SN_MODULE_DISPLAY_PrintingInfoInit(module3DPrinter.printInfo.printTarget.tempFileName, "Demo");
+        retStatus = SN_MODULE_DISPLAY_PrintingInfoInit(module3DPrinter.printInfo.printTarget.targetName , "Demo");
         SN_SYS_ERROR_CHECK(retStatus, "Display Base Info Update Failed.");
         retStatus = SN_MODULE_DISPLAY_PrintingInfoUpdate((module3DPrinter.sliceIndex + 1), module3DPrinter.printInfo.printTarget.slice);
         SN_SYS_ERROR_CHECK(retStatus, "Display Slice Info Update Failed.");
 
         /* Motor Init */
         s3DPrinter_MotorInit();
-        SN_MODULE_IMAGE_VIEWER_CLEAR();
 
-        printf("Module => 3D Printer  => TARGET NAME [ %s ]\n", module3DPrinter.printInfo.printTarget.tempFileName);
+        /* IMAGE VIEWER CLEAER */
+        retStatus = SN_MODULE_IMAGE_VIEWER_CLEAR();
+        SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Clear Failed.");
+
+        printf("Module => 3D Printer  => TARGET NAME [ %s ]\n", module3DPrinter.printInfo.printTarget.targetName);
 
         retStatus = SN_SYS_TimerCreate(&timerPrint, FIRST_SLICE_DELAY_TIME, sTMR_NextCycle_Callback);
         SN_SYS_ERROR_CHECK(retStatus, "Timer Cretae Failed.");
@@ -692,14 +696,15 @@ static SN_STATUS s3DPrinter_PrintLift(void)
         retStatus = SN_SYS_SerialTx(serialId3DPrinter,GCODE_LCD_OFF, sizeof(GCODE_LCD_OFF));
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
 
+#if(MOTOR_DISALBE)
+
+#else
         /* IMAGE VIEWER CLEAER */
         retStatus = SN_MODULE_IMAGE_VIEWER_CLEAR();
         SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Clear Failed.");
 
         /* Z LIFT */
-#if(MOTOR_DISALBE)
 
-#else
         retStatus = sSendGCode(module3DPrinter.gcodeLiftUp, sizeof(module3DPrinter.gcodeLiftUp));
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
         retStatus = sSendGCode(module3DPrinter.gcodeLiftDown, sizeof(module3DPrinter.gcodeLiftDown));
@@ -728,7 +733,7 @@ static SN_STATUS s3DPrinter_PrintLift(void)
 
             /* Next Cycle */
 #if(MOTOR_DISALBE)
-            retStatus = SN_SYS_TimerCreate(&timerPrint, 100, sTMR_NextCycle_Callback);
+            retStatus = SN_SYS_TimerCreate(&timerPrint, 50, sTMR_NextCycle_Callback);
             SN_SYS_ERROR_CHECK(retStatus, "Timer Create Failed.");
 #else
             retStatus = SN_SYS_TimerCreate(&timerPrint, module3DPrinter.printInfo.printParameter.liftTime, sTMR_NextCycle_Callback);

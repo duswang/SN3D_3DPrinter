@@ -77,9 +77,8 @@ typedef struct print_prameter {
 
 
 typedef struct print_target {
-    const char* sourceFilePath;
-    const char* tempFilePath;
-    const char* tempFileName;
+    const char* targetPath;
+    const char* targetName;
     uint32_t slice;
 } printTarget_t;
 

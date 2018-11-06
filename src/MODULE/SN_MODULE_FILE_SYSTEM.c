@@ -24,37 +24,37 @@
 #endif
 
 #ifdef __APPLE__
-#define TEMP_FILE_PATH              "../res/tempFile"
+#define TARGET_PATH              "../res/tempFile"
 #endif
 #ifdef linux
-#define TEMP_FILE_PATH              "/SN3D/sn3d-project/res/tempFile"
+#define TARGET_PATH              "/SN3D/sn3d-project/res/target"
 #endif
 
 #ifdef __APPLE__
-#define OPTION_FILE_PATH              "../res/optionFile"
+#define OPTION_FILE_PATH              "../res/profileConfig"
 #endif
 #ifdef linux
-#define OPTION_FILE_PATH              "/SN3D/sn3d-project/res/optionFile"
+#define OPTION_FILE_PATH              "/SN3D/sn3d-project/res/profileConfig"
 #endif
 
 #ifdef __APPLE__
-#define CONFIG_FILE_PATH              "../res/configFile"
+#define DEVICE_FILE_PATH              "../res/deviceConfig"
 #endif
 #ifdef linux
-#define CONFIG_FILE_PATH              "/SN3D/sn3d-project/res/configFile"
+#define DEVICE_FILE_PATH              "/SN3D/sn3d-project/res/deviceConfig"
 #endif
 ///@}
 
 /** @name File path & name config *////@{
-#define FILENAME_EXT           "cws"
-#define IMAGE_FILENAME_EXT     "png"
+#define TARGET_FILE_EXT           "cws"
+#define TARGET_IMAGE_EXT     "png"
 
-#define MANIFEST_FILENAME      "manifest"
-#define MANIFEST_FILENAME_EXT  "xml"
+#define MANIFEST_FILE_NAME      "manifest"
+#define MANIFEST_FILE_EXT  "xml"
 
-#define CONFIG_FILENAME_EXT    "xml"
+#define DEVICE_FILE_EXT    "xml"
 
-#define OPTION_FILENAME_EXT    "xml"
+#define OPTION_FILE_EXT    "xml"
 ///@}
 
 /** @name Z config *////@{
@@ -194,31 +194,30 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemI
     char optionFilePath[MAX_PATH_LENGTH];
     char manifestPath[MAX_PATH_LENGTH];
 
-    retStatus = sRemoveTempFile(TEMP_FILE_PATH);
+    retStatus = sRemoveTempFile(TARGET_PATH);
 
     sprintf(srcTempFilePath,"%s/%s.%s", USB_PATH, \
                                 moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, \
-                                FILENAME_EXT); fflush(stdout);
+                                TARGET_FILE_EXT); fflush(stdout);
 
-    sprintf(desTempFilePath,"%s/%s.%s", TEMP_FILE_PATH, \
+    sprintf(desTempFilePath,"%s/%s.%s", TARGET_PATH, \
                                 moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, \
-                                FILENAME_EXT); fflush(stdout);
+                                TARGET_FILE_EXT); fflush(stdout);
 
     retStatus = sCopyFile(srcTempFilePath, desTempFilePath);
-    retStatus = sExtractTempFile(desTempFilePath, TEMP_FILE_PATH);
+    retStatus = sExtractTempFile(desTempFilePath, TARGET_PATH);
 
-    sprintf(manifestPath,"%s/%s.%s", TEMP_FILE_PATH, \
-                                MANIFEST_FILENAME, \
-                                MANIFEST_FILENAME_EXT); fflush(stdout);
+    sprintf(manifestPath,"%s/%s.%s", TARGET_PATH, \
+                                MANIFEST_FILE_NAME, \
+                                MANIFEST_FILE_EXT); fflush(stdout);
 
     //@DEMO SETTING
     sDemoPrintSetting(); // Option Demo
 
     /* Target */
-    moduleFileSystem.printInfo.printTarget.sourceFilePath             = USB_PATH;
-    moduleFileSystem.printInfo.printTarget.tempFilePath               = TEMP_FILE_PATH;
-    moduleFileSystem.printInfo.printTarget.tempFileName               = sParseXML_TempFileName(manifestPath);
-    moduleFileSystem.printInfo.printTarget.slice                      = sCountSlice(TEMP_FILE_PATH);
+    moduleFileSystem.printInfo.printTarget.targetPath                 = TARGET_PATH;
+    moduleFileSystem.printInfo.printTarget.targetName                 = sParseXML_TempFileName(manifestPath);
+    moduleFileSystem.printInfo.printTarget.slice                      = sCountSlice(TARGET_PATH);
 
 
     moduleFileSystem.printInfo.isInit = true;
@@ -255,7 +254,7 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoUninit(void)
     if(moduleFileSystem.printInfo.isInit)
     {
         moduleFileSystem.printInfo.isInit = false;
-        sRemoveTempFile(TEMP_FILE_PATH);
+        sRemoveTempFile(TARGET_PATH);
     }
 
     return retStatus;
@@ -423,7 +422,7 @@ static SN_STATUS sFileSystemRead(void)
         {
             nameBuffer = ep->d_name;
 
-            if(!strcmp(FILENAME_EXT, sGetFilenameExt(nameBuffer)))
+            if(!strcmp(TARGET_FILE_EXT, sGetFilenameExt(nameBuffer)))
             {
                 if(MAX_ITEM_SIZE <= itemIndex)
                 {
@@ -530,7 +529,7 @@ static uint32_t sCountSlice(const char* srcPath)
                 continue;
             }
 
-            if(strstr(p->d_name, IMAGE_FILENAME_EXT) != NULL)
+            if(strstr(p->d_name, TARGET_IMAGE_EXT) != NULL)
             {
                 slice++;
             }
@@ -878,12 +877,14 @@ static void sDemoPrintSetting(void)
     moduleFileSystem.printInfo.printParameter.layerThickness          = 0.05000;//mm
 
     /* Bottom Layer */
-    moduleFileSystem.printInfo.printParameter.bottomLayerExposureTime =   35000;//ms
+    moduleFileSystem.printInfo.printParameter.bottomLayerExposureTime =     50;//ms
+    //moduleFileSystem.printInfo.printParameter.bottomLayerExposureTime =   35000;//ms
     moduleFileSystem.printInfo.printParameter.bottomLayerNumber       =       7;//layer
     moduleFileSystem.printInfo.printParameter.bottomLiftFeedRate      =  150.00;//mm/s
 
     /* Normal Layer */
-    moduleFileSystem.printInfo.printParameter.layerExposureTime       =    3000;//ms
+    //moduleFileSystem.printInfo.printParameter.layerExposureTime       =    3000;//ms
+    moduleFileSystem.printInfo.printParameter.layerExposureTime       =      50;//ms
     moduleFileSystem.printInfo.printParameter.liftDistance            =       7;//mm
     moduleFileSystem.printInfo.printParameter.liftFeedRate            =  150.00;//mm/s
 

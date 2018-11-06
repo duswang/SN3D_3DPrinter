@@ -11,13 +11,17 @@
 #include "SN_API.h"
 #include "SN_SYS_MESSAGE_Q.h"
 
-/** Static Define **/
+/* ******* SYSTEM DEFINE ******* */
 
-/** System **/
+/* ******* GLOBAL VARIABLE ******* */
 
-/** Global Variables **/
+/* ******* STATIC FUNCTIONS ******* */
 
-/** Static Funtions **/
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  Extern Functions
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 SN_STATUS SN_SYS_MessageQInit(sysMessageQId *msgQId)
 {
     SN_STATUS retStatus = SN_STATUS_OK;

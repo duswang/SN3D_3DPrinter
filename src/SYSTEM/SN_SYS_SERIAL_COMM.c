@@ -14,10 +14,10 @@
 #include "SN_API.h"
 #include "SN_SYS_SERIAL_COMM.h"
 
-/** System **/
-/* Thread */
+/* ******* STATIC DEFINE ******* */
 
-
+/* ******* SYSTEM DEFINE ******* */
+/* *** SYSTEM THREAD *** */
 pthread_mutex_t ptmSerial[MAX_NUM_OF_SERIAL] = { \
                                   PTHREAD_MUTEX_INITIALIZER, \
                                   PTHREAD_MUTEX_INITIALIZER, \
@@ -26,10 +26,7 @@ pthread_mutex_t ptmSerial[MAX_NUM_OF_SERIAL] = { \
 pthread_mutex_t ptmSerialArray  = PTHREAD_MUTEX_INITIALIZER;
 pthread_t       ptSerial[MAX_NUM_OF_SERIAL];
 
-/** Global Variables **/
-
 /* ******* GLOBAL VARIABLE ******* */
-
 static uint32_t guiNumSerial;
 static sysSerialQ aSerial[MAX_NUM_OF_SERIAL];
 

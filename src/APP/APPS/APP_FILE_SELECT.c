@@ -9,6 +9,8 @@
  */
 #include "APPS.h"
 
+/* ******* STATIC DEFINE ******* */
+
 /* ******* GLOBAL VARIABLE ******* */
 static fs_t     fs;
 static uint32_t pageIndex;

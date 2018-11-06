@@ -10,17 +10,19 @@
  */
 #include "SN_API.h"
 
-/**** APP Main Call ****/
+/* *** APP Main Call *** */
 extern SN_STATUS APP_Main(general_evt_t evt);     /* To execute Main application thread */
 extern SN_STATUS APP_Init(void);
 
-/******** SYSTEM DEFINE ********/
-/**** MODULE MESSAGE Q ****/
-sysMessageQId msgQIdApp;
-    /**** MODULE MESSAGES ****/
-    //"APP_MESSAGES.h"
+/* ******* STATIC DEFINE ******* */
 
-/******** STATIC FUNCTIONS ********/
+/* ******* SYSTEM DEFINE ******* */
+/* *** MODULE MESSAGE Q *** */
+sysMessageQId msgQIdApp;
+    /* *** MODULE MESSAGES *** */
+    //@ref "APP_MESSAGES.h"
+
+/* ******* STATIC FUNCTIONS ******* */
 static SN_STATUS sSN_SYSTEM_Init(void);
 
 /**
@@ -85,6 +87,11 @@ int main(void)
 
 }
 
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  Extern Functions
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 static SN_STATUS sSN_SYSTEM_Init(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;

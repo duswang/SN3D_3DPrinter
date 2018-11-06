@@ -9,10 +9,12 @@
  */
 #include "APPS.h"
 
-/******** GLOBAL VARIABLE ********/
+/* ******* STATIC DEFINE ******* */
 
-/******** STATIC FUNCTIONS ********/
-/**** HDLR ****/
+/* ******* GLOBAL VARIABLE ******* */
+
+/* ******* STATIC FUNCTIONS ******* */
+/* *** HANDLER *** */
 static SN_STATUS s3DPrinterHdlr(event_msg_t evtMessage);
 static SN_STATUS sDisplayHdlr(event_msg_t evtMessage);
 static SN_STATUS sFileSystemHdlr(event_msg_t evtMessage);
