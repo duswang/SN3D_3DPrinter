@@ -14,6 +14,9 @@
 #include "SN_API.h"
 #include "SN_MODULE_FILE_SYSTEM.h"
 
+#include "FILE_SYSTEM/INCLUDE/FILE_SYSTEM_PAGE.h"
+#include "FILE_SYSTEM/INCLUDE/FILE_SYSTEM_XML.h"
+
 /* ******* STATIC DEFINE ******* */
 /** @name USB Driver Config *////@{
 #ifdef __APPLE__
@@ -130,19 +133,8 @@ static SN_STATUS   sFileSystemRead(void);
 static SN_STATUS   sFileSystemRemove(void);
 static SN_STATUS   sFileSystemPrint(void);
 
-/* *** TEMP FILE CONTROL *** */
+/* *** TARGET FILE CONTROL *** */
 static uint32_t    sCountSlice(const char* srcPath);
-static SN_STATUS   sCopyFile(const char* srcPath, const char* desPath);
-static SN_STATUS   sRemoveTempFile(const char* filePath);
-static SN_STATUS   sExtractTempFile(const char* srcPath, const char* desPath);
-
-/* *** UTIL *** */
-static const char* sParseXML_TargetName(const char* srcPath);
-static SN_STATUS   sParseXML_ConfigFile(const char* srcPath);
-static SN_STATUS   sParseXML_OptionFile(const char* srcPath);
-
-static const char* sGetFilenameExt(const char *filename);
-static const char* sGetFilename(const char *filename);
 
 /* *** DEMO *** */
 static void        sDemoPrintSetting(void);
@@ -194,7 +186,9 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemI
     char optionFilePath[MAX_PATH_LENGTH];
     char manifestPath[MAX_PATH_LENGTH];
 
-    retStatus = sRemoveTempFile(TARGET_PATH);
+    FileSystem_GetItem(&moduleFileSystem.fs.pageHeader, pageIndex, itemIndex);
+
+    retStatus = FileSystem_fctl_RemoveFiles(TARGET_PATH);
 
     sprintf(srcTempFilePath,"%s/%s.%s", USB_PATH, \
                                 moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, \
@@ -204,8 +198,8 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemI
                                 moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, \
                                 TARGET_FILE_EXT); fflush(stdout);
 
-    retStatus = sCopyFile(srcTempFilePath, desTempFilePath);
-    retStatus = sExtractTempFile(desTempFilePath, TARGET_PATH);
+    retStatus = FileSystem_fctl_CopyFile(srcTempFilePath, desTempFilePath);
+    retStatus = FileSystem_fctl_ExtractFile(desTempFilePath, TARGET_PATH);
 
     sprintf(manifestPath,"%s/%s.%s", TARGET_PATH, \
                                 MANIFEST_FILE_NAME, \
@@ -548,321 +542,15 @@ static uint32_t sCountSlice(const char* srcPath)
     return slice;
 }
 
-SN_STATUS sCopyFile(const char* srcPath, const char* desPath)
-{
-    FILE* src = fopen(srcPath, "rb");
-    FILE* des = fopen(desPath, "wb");
-    char buf[1000];
-    int readCnt = 0;
 
-    if(src == NULL)
-    {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Source File Path Invalid.");
-    }
 
-    if(des == NULL)
-    {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Path Invalid.");
-    }
 
-    while(true)
-    {
-        readCnt = fread((void*)buf, 1, sizeof(buf), src);
-
-        if(readCnt < sizeof(buf))
-        {
-            if(feof(src)!=0)
-            {
-                fwrite((void*)buf, 1, readCnt, des);
-                SN_SYS_Log("Module => File System => MAKE TEMP FILE.");
-                break;
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        fwrite((void*)buf,1, sizeof(buf), des);
-    }
-
-    fclose(src);
-    fclose(des);
-
-    return SN_STATUS_OK;
-}
-
-SN_STATUS sRemoveTempFile(const char* filePath)
-{
-    DIR *d = opendir(filePath);
-    size_t path_len = strlen(filePath);
-    int r = -1;
-
-    if(d)
-    {
-        struct dirent *p;
-
-        r = 0;
-
-        while(!r &&(p=readdir(d)))
-        {
-            int r2 = -1;
-            char *buf;
-            size_t len;
-
-            if(!strcmp(p->d_name, ".") || !strcmp(p->d_name, ".."))
-            {
-                continue;
-            }
-
-            len = path_len + strlen(p->d_name) + 2;
-            buf = malloc(len);
-
-            if(buf)
-            {
-                struct stat statbuf;
-
-                snprintf(buf, len,"%s/%s", filePath, p->d_name);
-
-                if(!stat(buf, &statbuf))
-                {
-                    if(S_ISDIR(statbuf.st_mode))
-                    {
-                        r2 = sRemoveTempFile(buf);
-                    }
-                    else
-                    {
-                        r2 = unlink(buf);
-                    }
-                }
-
-                free(buf);
-            }
-            r = r2;
-        }
-        closedir(d);
-    }
-    else
-    {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Folder Open Failed.");
-    }
-
-    if(!r)
-    {
-        SN_SYS_Log("Module => File System => REMOVE TEMP FILE.");
-    }
-
-    return SN_STATUS_OK;
-}
-
-static void safe_create_dir(const char *dir)
-{
-    if(mkdir(dir, 0755) < 0) {
-        if (errno != EEXIST) {
-            SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Path Invalid.");
-        }
-    }
-}
-
-SN_STATUS sExtractTempFile(const char* srcPath, const char* desPath)
-{
-    SN_STATUS retStatus = SN_STATUS_OK;
-
-    struct zip *za;
-    struct zip_file *zf;
-    struct zip_stat sb;
-
-    char buf[1000];
-
-    int err;
-    int i, len;
-    int fd;
-    long long sum;
-    char fullFilePath[MAX_PATH_LENGTH];
-
-    if ((za = zip_open(srcPath, 0, &err)) == NULL)
-    {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Folder Open Failed.");
-    }
-
-    for (i = 0; i < zip_get_num_entries(za, 0); i++)
-    {
-        if (zip_stat_index(za, i, 0, &sb) == 0)
-        {
-            len = strlen(sb.name);
-
-            if (sb.name[len - 1] == '/')
-            {
-                safe_create_dir(sb.name);
-            }
-            else
-            {
-                zf = zip_fopen_index(za, i, 0);
-
-                if (!zf) {
-                    SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "Temp File Extract Failed.");
-                }
-
-                len = strlen(desPath) + strlen(sb.name);
-
-                snprintf(fullFilePath, len + 2, "%s/%s", desPath, sb.name);
-
-                fd = open(fullFilePath, O_RDWR | O_TRUNC | O_CREAT, 0644);
-
-                if (fd < 0) {
-                    SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Path Invalid.");
-                }
-
-                sum = 0;
-
-                while (sum != sb.size)
-                {
-                    len = zip_fread(zf, buf, 1000);
-                    if (len < 0)
-                    {
-                        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "Temp File Extract Failed.");
-                    }
-                    write(fd, buf, len);
-                    sum += len;
-                }
-
-                close(fd);
-                zip_fclose(zf);
-            }
-        }
-    }
-
-    if (zip_close(za) == -1)
-    {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "Temp File Extract Failed.");
-    }
-
-    SN_SYS_Log("Module => File System => EXTRACT TEMP FILE.");
-
-    return retStatus;
-}
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
  *  UTIL
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 
-static const char* parse_ProjectName(xmlDocPtr doc, xmlNodePtr cur)
-{
-    char *retStr = NULL;
-    xmlChar *key;
-
-    cur = cur->xmlChildrenNode;
-
-    while(cur != NULL)
-    {
-        if((!xmlStrcmp(cur->name, (const xmlChar *)"name")))
-        {
-            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-
-            if ((retStr = malloc (strlen((const char *)key) + 1)) == NULL)
-            {
-                return NULL;
-            }
-            strcpy(retStr, (const char *)sGetFilename((const char *)key));
-
-            xmlFree(key);
-        }
-        cur = cur->next;
-    }
-
-    return retStr;
-}
-
-static const char* sParseXML_TargetName(const char *srcPath)
-{
-    const char         *docname;
-    xmlDocPtr           doc;
-    xmlNodePtr          cur;
-    const char *retStr = NULL;
-
-    if(srcPath == NULL)
-    {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "XMl File Open Failed.");
-    }
-
-    docname = srcPath;
-    doc = xmlParseFile(docname);
-
-    if(doc == NULL)
-    {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
-    }
-
-    cur = xmlDocGetRootElement(doc);
-
-    if(cur == NULL)
-    {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
-    }
-
-    cur = cur->xmlChildrenNode;
-
-    while (cur != NULL)
-    {
-        if ((!xmlStrcmp(cur->name, (const xmlChar *)"GCode")))
-        {
-            retStr = parse_ProjectName(doc, cur);
-
-            if(retStr == NULL)
-            {
-                SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "CWS File is Invalid File.");
-            }
-        }
-        cur = cur->next;
-    }
-
-    xmlFreeDoc(doc);
-
-    return retStr;
-}
-
-static SN_STATUS sParseXML_ConfigFile(const char* srcPath)
-{
-    return SN_STATUS_OK;
-}
-static SN_STATUS sParseXML_OptionFile(const char* srcPath)
-{
-    return SN_STATUS_OK;
-}
-
-static const char* sGetFilenameExt(const char *filename)
-{
-    const char *dot = strrchr(filename, '.');
-
-    if(filename[0] == '.') return "";
-    if(!dot || dot == filename) return "";
-    return dot + 1;
-}
-
-static const char* sGetFilename(const char *filename)
-{
-    char *retStr;
-    char *lastDot;
-
-    if (filename == NULL)
-    {
-         return NULL;
-    }
-
-    if ((retStr = malloc (strlen (filename) + 1)) == NULL)
-    {
-        return NULL;
-    }
-
-    strcpy (retStr, filename);
-
-    lastDot = strrchr (retStr, '.');
-    if (lastDot != NULL)
-        *lastDot = '\0';
-
-    return retStr;
-}
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *

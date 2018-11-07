@@ -50,11 +50,23 @@ find_package(libxml2 REQUIRED)
 
 # Include - Local #
 include_directories(
+	# API #
 	${PRJ_SOURCE_PATH}/INCLUDE
+	
+	# SYSTEM #
+	${SYSTEM_PATH}/INCLUDE
+	
+	# MODULE #
+	${MODULE_PATH}/INCLUDE
+	
+	# MODULE :: FILE SYSTEM #
+	${MODULE_PATH}/FILE_SYSTEM/INCLUDE
+	
+
+	
+	# APP #
 	${APP_PATH}/INCLUDE
 	${APPS_PATH}/INCLUDE
-	${MODULE_PATH}/INCLUDE
-	${SYSTEM_PATH}/INCLUDE
 )
 # Include - Library #
 include_directories(
@@ -88,8 +100,9 @@ set(
 
 
 	# Module :: File System #
-	${MODULE_PATH}/SN_MODULE_FILE_SYSTEM/SN_MODULE_FILE_SYSTEM_XML.c
-
+	${MODULE_PATH}/FILE_SYSTEM/FILE_SYSTEM_XML.c
+	${MODULE_PATH}/FILE_SYSTEM/FILE_SYSTEM_PAGE.c
+	
 	# Main #
 	${SYSTEM_PATH}/SN_SYS_INIT.c
 	
