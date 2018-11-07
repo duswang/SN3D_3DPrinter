@@ -16,7 +16,7 @@
 /* ******* STATIC DEFINE ******* */
 /** @name Serial Config Define */ ///@{
 #define BYTE_SIZE   SN_SYS_SERIAL_COMM_RX_REALTIME
-#define BAUD_RATE   SN_SYS_SERIAL_COMM_BAUD_RATE_9600
+#define BAUD_RATE   SN_SYS_SERIAL_COMM_BAUD_RATE_115200
 #define RETURN_MODE SN_SYS_SERIAL_COMM_TX_NX_RETURN
 
 #ifdef __APPLE__

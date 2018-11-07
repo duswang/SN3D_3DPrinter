@@ -130,11 +130,12 @@ set(
 	
 	# GDB #
 	-g
-
+	
+	# Warning #
+	-Wall
 )
 
 # Config #
-
 set(
 	# Config Name #
 	Config
@@ -155,6 +156,18 @@ set(
     -DIMAGE_VIEWER_FIX_RESOLUTION=true
     -DIMAGE_VIEWER_USE_SDL=false
 )
+
+# Command #
+add_custom_target(gdb gdb ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/exe)
+add_custom_target(run ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/exe)
+
+add_custom_target(start sudo systemctl restart SN3D.service)
+add_custom_target(stop sudo systemctl stop SN3D.service)
+
+add_custom_target(doxygen doxygen ${PRJ_ROOT_PATH}/sn3d_doxygen)
+
+add_custom_target(all_clean rm -rf ${PRJ_ROOT_PATH}/CMakeFiles ${PRJ_ROOT_PATH}/cmake_install.cmake ${PRJ_ROOT_PATH}/CMakeCache.txt)
+
 ################### Target Setting ###################
 # Install exe file #
 add_executable(exe ${Source})
