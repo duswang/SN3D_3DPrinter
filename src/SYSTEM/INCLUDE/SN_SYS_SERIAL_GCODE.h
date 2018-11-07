@@ -37,7 +37,7 @@
 
 #define GCODE_HOMING                     "G28 Z0 F150.0"
 
-#define GCODE_LCD_ON                     "M106 S25"
+#define GCODE_LCD_ON                     "M106 S255"
 #define GCODE_LCD_OFF                    "M107"
 
 #define GCODE_GET_CURRENT_POSITION       "M114"

@@ -839,7 +839,7 @@ static SN_STATUS s3DPrinter_PrintFinish(void)
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
 
         sGcodeParser_ZMove(finishGCode,     \
-                (float) module3DPrinter.machineInfo.height, \
+                (float)(module3DPrinter.machineInfo.height - 5), \
                 (float)0, \
                 (float)DEFAULT_FEEDRATE,
                 true);
