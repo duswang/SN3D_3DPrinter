@@ -137,7 +137,7 @@ static SN_STATUS   sRemoveTempFile(const char* filePath);
 static SN_STATUS   sExtractTempFile(const char* srcPath, const char* desPath);
 
 /* *** UTIL *** */
-static const char* sParseXML_TempFileName(const char* srcPath);
+static const char* sParseXML_TargetName(const char* srcPath);
 static SN_STATUS   sParseXML_ConfigFile(const char* srcPath);
 static SN_STATUS   sParseXML_OptionFile(const char* srcPath);
 
@@ -216,7 +216,7 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemI
 
     /* Target */
     moduleFileSystem.printInfo.printTarget.targetPath                 = TARGET_PATH;
-    moduleFileSystem.printInfo.printTarget.targetName                 = sParseXML_TempFileName(manifestPath);
+    moduleFileSystem.printInfo.printTarget.targetName                 = sParseXML_TargetName(manifestPath);
     moduleFileSystem.printInfo.printTarget.slice                      = sCountSlice(TARGET_PATH);
 
 
@@ -459,14 +459,14 @@ static SN_STATUS sFileSystemRead(void)
 
     sFileSystemPrint();
 
-    return SN_STATUS_OK;
+    return retStatus;
 }
 
 static SN_STATUS sFileSystemRemove(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    int pageIndex = 0, itemIndex = 0;
+    int pageIndex = 0;
 
     /* Init FS */
     for(pageIndex = 0; pageIndex <= moduleFileSystem.fs.pageCnt; pageIndex++)
@@ -511,7 +511,6 @@ static SN_STATUS sFileSystemPrint(void)
 static uint32_t sCountSlice(const char* srcPath)
 {
     DIR *d = opendir(srcPath);
-    size_t path_len = strlen(srcPath);
     uint32_t slice = 0;
 
     int r = -1;
@@ -761,11 +760,11 @@ static const char* parse_ProjectName(xmlDocPtr doc, xmlNodePtr cur)
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 
-            if ((retStr = malloc (strlen (key) + 1)) == NULL)
+            if ((retStr = malloc (strlen((const char *)key) + 1)) == NULL)
             {
                 return NULL;
             }
-            strcpy(retStr, (const char *)sGetFilename(key));
+            strcpy(retStr, (const char *)sGetFilename((const char *)key));
 
             xmlFree(key);
         }
@@ -775,13 +774,12 @@ static const char* parse_ProjectName(xmlDocPtr doc, xmlNodePtr cur)
     return retStr;
 }
 
-static const char* sParseXML_TempFileName(const char *srcPath)
+static const char* sParseXML_TargetName(const char *srcPath)
 {
     const char         *docname;
     xmlDocPtr           doc;
     xmlNodePtr          cur;
-    xmlChar             *uri;
-    const char *retStr;
+    const char *retStr = NULL;
 
     if(srcPath == NULL)
     {

@@ -323,13 +323,15 @@ SN_STATUS SN_MODULE_DISPLAY_FileSelectUpdate(uint32_t page)
                 {
                     sprintf(buffer,"Index_%d.txt=\"%s\"", itemIndex, moduleDisplay.fs.page[page].item[itemIndex].name);
 
-                    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-                    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+
                 }
                 else
                 {
-                    break;
+                    sprintf(buffer,"Index_%d.txt=\" \"", itemIndex);
                 }
+
+                retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+                SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
             }
         }
     }
