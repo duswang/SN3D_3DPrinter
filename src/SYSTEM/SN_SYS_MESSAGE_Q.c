@@ -68,8 +68,6 @@ SN_STATUS SN_SYS_MessagePut(sysMessageQId *msgQId, event_id_t evtId, event_msg_t
 
 general_evt_t SN_SYS_MessageGet(sysMessageQId *msgQId)
 {
-    sysMessageQId buffer;
-
     if(msgQId == NULL)
     {
         SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Message Q id is not Initialized.");

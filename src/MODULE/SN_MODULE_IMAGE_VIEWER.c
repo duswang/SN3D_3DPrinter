@@ -73,17 +73,20 @@ typedef struct frameBuffer_Image
 
     int             w;
     int             h;
+
+    int     colorType;
+    int           bpp;
 } FB_Image_t;
 
 typedef struct frameBuffer_Window
 {
-    const char*    name;
+    const char* name;
 
-    uint32_t w;
-    uint32_t h;
-    uint32_t bpp;
+    int            w;
+    int            h;
+    int          bpp;
 
-    long screenSize;
+    long  screenSize;
 } FB_Window_t;
 
 typedef struct image_viewer
@@ -303,7 +306,6 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     char path[MAX_PATH_LENGTH] = {'\0', };
-    int image_w = 0, image_h = 0;
 
     /* GET PRINT TARGET INFO */
     printInfo_t printInfo = SN_MODULE_FILE_SYSTEM_PrintInfoGet();
@@ -406,10 +408,7 @@ static SN_STATUS sLoadImage(const char* filename, FB_Image_t* pImage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    char header[8];    // 8 is the maximum size that can be checked
-
-    png_byte color_type;
-    png_byte bit_depth;
+    unsigned char header[8];    // 8 is the maximum size that can be checked
 
     png_structp png_ptr;
     png_infop info_ptr;
@@ -472,8 +471,8 @@ static SN_STATUS sLoadImage(const char* filename, FB_Image_t* pImage)
     /* READ PNG IMAGE INFO  */
     pImage->w = png_get_image_width(png_ptr, info_ptr);
     pImage->h = png_get_image_height(png_ptr, info_ptr);
-    color_type = png_get_color_type(png_ptr, info_ptr);
-    bit_depth = png_get_bit_depth(png_ptr, info_ptr);
+    pImage->colorType = png_get_color_type(png_ptr, info_ptr);
+    pImage->bpp = png_get_bit_depth(png_ptr, info_ptr);
 
     number_of_passes = png_set_interlace_handling(png_ptr);
     png_read_update_info(png_ptr, info_ptr);
@@ -498,7 +497,9 @@ static SN_STATUS sLoadImage(const char* filename, FB_Image_t* pImage)
     }
 
     /* CREATE PNG ALPHA BUFFER */
-    if(color_type == PNG_COLOR_TYPE_RGB_ALPHA || color_type == PNG_COLOR_TYPE_GRAY_ALPHA || transparent != 0)
+    if((pImage->colorType ==  PNG_COLOR_TYPE_RGB_ALPHA) || \
+       (pImage->colorType == PNG_COLOR_TYPE_GRAY_ALPHA) || \
+                                      transparent != 0)
     {
         unsigned char* alpha_buffer = (unsigned char *)malloc(pImage->w * pImage->h);
         unsigned char* aptr;
@@ -527,6 +528,7 @@ static SN_STATUS sLoadImage(const char* filename, FB_Image_t* pImage)
                 }
             }
         }
+
         free(row_pointer);
     }
     else
@@ -580,6 +582,9 @@ static SN_STATUS sDistroyImage(FB_Image_t* image)
 
     image->h = 0;
     image->w = 0;
+
+    image->colorType = 0;
+    image->bpp       = 0;
 
     return retStatus;
 }
@@ -697,9 +702,7 @@ static SN_STATUS sLoadWindow(const char* devicename, FB_Window_t* window)
     window->w   = vinfo.xres;
     window->bpp = vinfo.bits_per_pixel;
 
-    // Figure out the size of the screen in bytes
     window->screenSize = (window->w * window->h) * (window->bpp / 8);
-    //x_stride = (vinfo.line_length * 8) / finfo.bits_per_pixel;
 
     printf("Image Viwer => Module => Window Resolution [ %d x %d ], %dbpp\n", window->w, window->h, window->bpp);
 
@@ -713,15 +716,13 @@ static SN_STATUS sUpdateWindow(const FB_Window_t window, const FB_Image_t image)
     SN_STATUS retStatus = SN_STATUS_OK;
 
     int fbfd = 0;
-    long int screensize = 0;
-    char *fbp = 0;
-
-    unsigned long x_stride;
     int bp = 0;
-    unsigned short* fbbuff = NULL;
 
-    unsigned char*  fbptr = NULL;
-    unsigned char*  imptr = NULL;
+    char* fbp = 0;
+
+    unsigned short* fbbuff = NULL;
+    unsigned char*  fbptr  = NULL;
+    unsigned char*  imptr  = NULL;
 
     if(window.name == NULL)
     {
@@ -743,8 +744,8 @@ static SN_STATUS sUpdateWindow(const FB_Window_t window, const FB_Image_t image)
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "failed to map framebuffer device to memory.");
     }
 
-    fbptr = fbp;
-    imptr = (unsigned char* )fbbuff;
+    fbptr = (unsigned char *)fbp;
+    imptr = (unsigned char *)fbbuff;
 
     for (int i = 0; i < image.h; i++, fbptr += image.w * bp, imptr += image.w * bp)
     {

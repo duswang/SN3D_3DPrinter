@@ -561,7 +561,6 @@ static void sTMR_StopDevice_Callback(void)
 static SN_STATUS s3DPrinter_PrintInit(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-    char* liftGcode = NULL;
     uint32_t estimatedBuildTime = 0;
 
     if(module3DPrinter.state != DEVICE_BUSY || module3DPrinter.state != DEVICE_INIT)
