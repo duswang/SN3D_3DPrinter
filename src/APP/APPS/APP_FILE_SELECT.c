@@ -139,18 +139,18 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                     sDownOptionIndex();
                     break;
                 case NX_ID_FILE_SELECT_BUTTON_PAGE_UP:
-                    SN_SYS_Log("PAGE UP");
-                    if(fs.isItemExist)
-                    {
-                        sUpPageIndex();
-                        retStatus = SN_MODULE_DISPLAY_FileSelectUpdate(pageIndex);
-                    }
-                    break;
-                case NX_ID_FILE_SELECT_BUTTON_PAGE_DOWN:
                     SN_SYS_Log("PAGE DOWN");
                     if(fs.isItemExist)
                     {
                         sDownPageIndex();
+                        retStatus = SN_MODULE_DISPLAY_FileSelectUpdate(pageIndex);
+                    }
+                    break;
+                case NX_ID_FILE_SELECT_BUTTON_PAGE_DOWN:
+                    SN_SYS_Log("PAGE UP");
+                    if(fs.isItemExist)
+                    {
+                        sUpPageIndex();
                         retStatus = SN_MODULE_DISPLAY_FileSelectUpdate(pageIndex);
                     }
                     break;
