@@ -9,6 +9,9 @@
  *
  * @todo read XML File and Option File.
  * @todo read machine XML File.
+ * @todo target folder check.
+ * @todo optionConfig folder check.
+ * @todo deviceConfigs folder check.
  */
 
 #include "SN_API.h"

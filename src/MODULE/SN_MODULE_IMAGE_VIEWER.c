@@ -7,10 +7,9 @@
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
- * @todo check resolution part
- *
  * @bug  SDL :: 2048 x 2048 Over Resolution it can't make Window(surface)
- * @bug  FB  :: Not Yet
+ *
+ * @todo memory test
  */
 
 #include "SN_API.h"

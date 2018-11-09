@@ -153,6 +153,21 @@ set(
 	-Wall
 )
 
+# Mode #
+set(
+	# Mode Name #
+	Mode
+	
+	# Debug #
+	-DDEBUG_MODE=true
+	
+	# Demo #
+	-DDEMO_MODE=false
+	
+	# Release #
+	-DRELEASE_MODE=false
+)
+
 # Config #
 set(
 	# Config Name #
@@ -173,6 +188,9 @@ set(
     # IMAGE VIEWER #
     -DIMAGE_VIEWER_FIX_RESOLUTION=true
     -DIMAGE_VIEWER_USE_SDL=false
+    
+    # Mode #
+    ${Mode}
 )
 
 # Command #
@@ -193,7 +211,7 @@ add_executable(exe ${Source})
 # Compile Option  #
 target_compile_options(exe PRIVATE ${CMAKE_CXX_FLAGS})
 
-# Compile Cong #
+# Compile Config #
 target_compile_definitions(exe PRIVATE ${Config} BOOST_ERROR_CODE_HEADER_ONLY)
 
 # Link Library  #
