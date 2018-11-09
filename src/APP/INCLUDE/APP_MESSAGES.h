@@ -35,7 +35,6 @@ typedef enum {
     APP_EVT_ID_DISPLAY        = 0x0002,     /**< 0x0002*/
     APP_EVT_ID_FILE_SYSTEM    = 0x0003,     /**< 0x0003*/
     APP_EVT_ID_IMAGE_VIEWER   = 0x0004,     /**< 0x0004*/
-    APP_EVT_ID_IGNORE         = 0xFF01      /**< 0xFF01*/
 } evtAppType_t;
 /**@}*/
 

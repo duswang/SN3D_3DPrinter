@@ -38,19 +38,22 @@ typedef struct file_system_item {
 typedef struct file_system_page {
     fsItem_t item[MAX_ITEM_SIZE];
     uint32_t itemCnt;
+    struct file_system_page* prevPage;
+    struct file_system_page* nextPage;
 } fsPage_t;
 
-typedef struct file_system_target {
-    uint32_t item_index;
-    uint32_t page_index;
-} fsTarget_t;
+typedef struct file_system_page_header {
+    bool        isItemExist;
+
+    fsPage_t* firstPage;
+    fsPage_t* lastPage;
+
+    uint32_t    pageCnt;
+} fsPageHeader_t;
 
 typedef struct file_system {
-    fsTarget_t  target;
     fsOption_t  option[MAX_OPTION_SIZE];
-    fsPage_t    page[MAX_PAGE_SIZE];
-    uint32_t    pageCnt;
-    bool        isItemExist;
+    fsPageHeader_t*    pageHeader;
 } fs_t;
 ///@}
 
@@ -99,7 +102,7 @@ typedef struct machine_information {
 
 /*************************************************************
  * @name File System Module
- * @brief Description of Display Module Init and Uninit funtions.
+ * @brief
  * @{
  */
 
@@ -128,12 +131,27 @@ extern SN_STATUS SN_MODULE_FILE_SYSTEM_Uninit(void);
 
 /** @brief
  *
- *  @param pFs
  *
  *  @return SN_STATUS
  *  @note
  */
-extern SN_STATUS SN_MODULE_FILE_SYSTEM_Get(fs_t* pFs);
+extern const fsPage_t* SN_MODULE_FILE_SYSTEM_GetPage(int pageIndex);
+
+/** @brief
+ *
+ *
+ *  @return SN_STATUS
+ *  @note
+ */
+extern int SN_MODULE_FILE_SYSTEM_GetPageCnt(void);
+
+/** @brief
+ *
+ *
+ *  @return SN_STATUS
+ *  @note
+ */
+extern const fs_t SN_MODULE_FILE_SYSTEM_GetFileSystem(void);
 
 
 /** @brief
@@ -143,6 +161,13 @@ extern SN_STATUS SN_MODULE_FILE_SYSTEM_Get(fs_t* pFs);
  */
 extern SN_STATUS SN_MODULE_FILE_SYSTEM_Update(void);
 
+
+/** @brief
+ *
+ *  @return SN_STATUS
+ *  @note
+ */
+extern bool SN_MODULE_FILE_SYSTEM_isItemExist(void);
 /*************************************************************@}*/
 
 /*************************************************************

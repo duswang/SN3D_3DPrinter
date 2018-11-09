@@ -50,11 +50,23 @@ find_package(libxml2 REQUIRED)
 
 # Include - Local #
 include_directories(
+	# API #
 	${PRJ_SOURCE_PATH}/INCLUDE
+	
+	# SYSTEM #
+	${SYSTEM_PATH}/INCLUDE
+	
+	# MODULE #
+	${MODULE_PATH}/INCLUDE
+	
+	# MODULE :: FILE SYSTEM #
+	${MODULE_PATH}/FILE_SYSTEM/INCLUDE
+	
+
+	
+	# APP #
 	${APP_PATH}/INCLUDE
 	${APPS_PATH}/INCLUDE
-	${MODULE_PATH}/INCLUDE
-	${SYSTEM_PATH}/INCLUDE
 )
 # Include - Library #
 include_directories(
@@ -86,6 +98,12 @@ set(
 	${MODULE_PATH}/SN_MODULE_3D_PRINTER.c
 	${MODULE_PATH}/SN_MODULE_DISPLAY.c
 
+
+	# Module :: File System #
+	${MODULE_PATH}/FILE_SYSTEM/FILE_SYSTEM_FCTL.c
+	${MODULE_PATH}/FILE_SYSTEM/FILE_SYSTEM_XML.c
+	${MODULE_PATH}/FILE_SYSTEM/FILE_SYSTEM_PAGE.c
+	
 	# Main #
 	${SYSTEM_PATH}/SN_SYS_INIT.c
 	
@@ -135,6 +153,21 @@ set(
 	-Wall
 )
 
+# Mode #
+set(
+	# Mode Name #
+	Mode
+	
+	# Debug #
+	-DDEBUG_MODE=true
+	
+	# Demo #
+	-DDEMO_MODE=false
+	
+	# Release #
+	-DRELEASE_MODE=false
+)
+
 # Config #
 set(
 	# Config Name #
@@ -148,13 +181,16 @@ set(
 	-DMOTOR_DISALBE=false
 
     # DISPLAY #
-    -DDISPLAY_RX_DEBUG=true
+    -DDISPLAY_RX_DEBUG=false
 
     -DTX_DEBUG=false
     
     # IMAGE VIEWER #
     -DIMAGE_VIEWER_FIX_RESOLUTION=true
     -DIMAGE_VIEWER_USE_SDL=false
+    
+    # Mode #
+    ${Mode}
 )
 
 # Command #
@@ -175,7 +211,7 @@ add_executable(exe ${Source})
 # Compile Option  #
 target_compile_options(exe PRIVATE ${CMAKE_CXX_FLAGS})
 
-# Compile Cong #
+# Compile Config #
 target_compile_definitions(exe PRIVATE ${Config} BOOST_ERROR_CODE_HEADER_ONLY)
 
 # Link Library  #

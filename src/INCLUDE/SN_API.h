@@ -29,13 +29,13 @@
 
 #include <fcntl.h>
 
-/* Operation System */
+/* POSIX */
 #include <pthread.h>
 #include <semaphore.h>
 #include <signal.h>
 #include <time.h>
 
-/* Operation System */
+/* System */
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
@@ -50,11 +50,9 @@
 /* File System */
 #include <dirent.h>
 
-
 /* Serial */
 #include <termios.h>
 #include <unistd.h>
-
 
 /* Library */
 #ifdef __APPLE__
@@ -85,7 +83,14 @@
 
 #include <zip.h>
 
-/** @def bool */
+#if(DEMO_MODE)
+{
+
+}
+#else
+
+#endif
+/* Type */
 #ifndef bool
 typedef int bool;
 #define true 1
