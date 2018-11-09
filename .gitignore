@@ -59,8 +59,10 @@ Makefile
 #Doxygen Untrack Files
 doc/doxygen/
 
-#target & gakefile
-res/target/*.*
+#resource Untrack Files
+res/target/*.png
+res/target/*.xml
+res/target/*.slice
 
 #ETC 
 .DS_Store
