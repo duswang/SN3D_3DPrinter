@@ -547,17 +547,68 @@ static SN_STATUS sLoadImage(const char* filename, FB_Image_t* pImage)
     png_read_end(png_ptr, info_ptr);
     png_destroy_read_struct(&png_ptr, &info_ptr, (NULL));
 
-    //  row_pointers = (png_bytep*) malloc(sizeof(png_bytep) * height);
-    //  for (y=0; y<height; y++)
-    //          row_pointers[y] = (png_byte*) malloc(png_get_rowbytes(png_ptr,info_ptr));
-
-    //  png_read_image(png_ptr, row_pointers);
-
     fclose(fp);
 
     //printf("\nImage Info : [ %d x %d], %dbpp %d\n", pImage->w, pImage->h, bit_depth, color_type);
 
     return retStatus;
+}
+unsigned char* make_thumbnail(const unsigned char* buffer, int width, int height, int target_width)
+{
+  int target_height = 0;
+  unsigned char* thumbnail = NULL;
+  int i = 0;
+  int j = 0;
+
+  unsigned char * target_pixel = NULL;
+
+  target_height = target_width * height / width;
+
+  thumbnail = (unsigned char*)malloc(target_width * target_height * sizeof(unsigned char));
+
+  if (thumbnail == NULL)
+  {
+    printf("Failed to allocate thumbnail buffer.\n");
+  }
+
+  int target_pixel_offset = 0;
+  int source_pixel_offset = 0;
+
+  for(j = 0; j < target_height; j++)
+  {
+    for (i = 0; i < target_width; i++)
+    {
+      target_pixel_offset = (j * target_width) + i;
+      target_pixel = thumbnail + target_pixel_offset;
+      source_pixel_offset = (j * width * (width/target_width) * 3) + (i * (width/target_width) * 3); // * 3 for RGB
+      // get first color channel of the rgb image buffer
+      if(buffer[source_pixel_offset] > 127)
+      {
+        *target_pixel = 1;
+      }
+      else
+      {
+        *target_pixel = 0;
+      }
+      printf("%d", *target_pixel);
+    }
+    printf("\n");
+  }
+  printf("\n\n\n");
+
+  printf("BW Thumbnail\n");
+
+  for (i=0; i<target_height; i++)
+  {
+    for (j=0; j<target_width; j++)
+    {
+      printf("%d", thumbnail[i * target_width + j]);
+    }
+    printf("\n");
+  }
+  printf("\n\n\n");
+
+  return thumbnail;
 }
 
 static SN_STATUS sDistroyImage(FB_Image_t* image)
