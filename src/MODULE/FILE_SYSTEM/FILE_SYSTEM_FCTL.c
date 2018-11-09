@@ -137,7 +137,8 @@ SN_STATUS FileSystem_fctl_MakeDirectory(const char* dir)
 {
     if(mkdir(dir, 0755) < 0)
     {
-        if (errno != EEXIST) {
+        if (errno != EEXIST)
+        {
             SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Path Invalid.");
         }
     }

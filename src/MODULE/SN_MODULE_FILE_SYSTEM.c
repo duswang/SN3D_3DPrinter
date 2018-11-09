@@ -9,9 +9,6 @@
  *
  * @todo read XML File and Option File.
  * @todo read machine XML File.
- * @todo target folder check.
- * @todo optionConfig folder check.
- * @todo deviceConfigs folder check.
  */
 
 #include "SN_API.h"
@@ -198,12 +195,20 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemI
 
     const fsItem_t target = FileSystem_GetItem(moduleFileSystem.fs.pageHeader, pageIndex, itemIndex);
 
+    /* Folder Check */
+    retStatus = FileSystem_fctl_MakeDirectory(DEVICE_FILE_PATH);
+    retStatus = FileSystem_fctl_MakeDirectory(OPTION_FILE_PATH);
+    retStatus = FileSystem_fctl_MakeDirectory(TARGET_PATH);
+
+    /* Clean Folder */
     retStatus = FileSystem_fctl_RemoveFiles(TARGET_PATH);
 
+    /* Get Source Path */
     sprintf(srcTargetPath,"%s/%s.%s", USB_PATH, target.name, TARGET_CWS_FILE_EXT);
 
     sprintf(desTargetPath,"%s/%s.%s", TARGET_PATH, target.name, TARGET_CWS_FILE_EXT);
 
+    /* Create Target Files */
     retStatus = FileSystem_fctl_CopyFile(srcTargetPath, desTargetPath);
     retStatus = FileSystem_fctl_ExtractFile(desTargetPath, TARGET_PATH);
 
@@ -213,12 +218,11 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemI
     //@DEMO SETTING
     sDemoPrintSetting(); // Option Demo
 
-    /* Target */
+    /* Target Info Setting. */
     moduleFileSystem.printInfo.printTarget.targetPath                 = TARGET_PATH;
     //moduleFileSystem.printInfo.printTarget.targetName                 = sParseXML_TargetName(manifestPath);
     moduleFileSystem.printInfo.printTarget.targetName                 = target.name;
     moduleFileSystem.printInfo.printTarget.slice                      = FileSystem_CountFileNumWithExtetion(TARGET_PATH, TARGET_IMAGE_EXT);
-
 
     moduleFileSystem.printInfo.isInit = true;
 
@@ -421,8 +425,6 @@ static SN_STATUS sFileSystemRead(fs_t* fileSystem)
     {
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "pageHeader init failed");
     }
-
-
 
     if (dp != NULL)
     {
