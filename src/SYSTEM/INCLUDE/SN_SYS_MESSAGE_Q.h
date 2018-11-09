@@ -35,7 +35,8 @@ typedef struct sys_message_queue {
     key_t keyId;
 } sysMessageQId;
 
-/** @name System Message Queue
+/*************************************************************
+ * @name System Message Queue
  *  Description of Message Queue Init and Uninit funtions.
  *////@{
 
@@ -58,9 +59,10 @@ extern SN_STATUS     SN_SYS_MessageQInit(sysMessageQId *msgQId);
  */
 extern SN_STATUS     SN_SYS_MessageQRemove(sysMessageQId *msgQId);
 
-///@}
+/*************************************************************@}*/
 
-/** @name System Message Queue :: Send & Receive Message
+/*************************************************************
+ *  @name System Message Queue :: Send & Receive Message
  *  Description of Message Queue Init and Uninit funtions.
  *////@{
 
@@ -86,7 +88,7 @@ extern SN_STATUS     SN_SYS_MessagePut(sysMessageQId *msgQId, event_id_t evtId, 
  */
 extern general_evt_t SN_SYS_MessageGet(sysMessageQId *msgQId);
 
-///@}
+/*************************************************************@}*/
 
 
 #endif /* INCLUDE_SN_SYS_MESSAGE_Q_H_ */

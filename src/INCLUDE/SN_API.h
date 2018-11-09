@@ -56,14 +56,17 @@
 
 /* Library */
 #ifdef __APPLE__
+#include <png.h>
+#include <zlib.h>
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
 #include <libusb-1.0/libusb.h>
 
-#include <libxml/xmlreader.h>
-#include <libxml/xmlmemory.h>
-#include <libxml/parser.h>
+#include <libxml2/libxml/xmlreader.h>
+#include <libxml2/libxml/xmlmemory.h>
+#include <libxml2/libxml/parser.h>
 #endif
 
 #ifdef linux

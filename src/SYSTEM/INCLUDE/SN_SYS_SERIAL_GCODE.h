@@ -21,7 +21,8 @@
 #ifndef SN_SYS_SERIAL_GCODE_H_
 #define SN_SYS_SERIAL_GCODE_H_
 
-/** @name GCODE
+/*************************************************************
+ * @name GCODE
  *
  * @see https://reprap.org/wiki/G-code
  *////@{
@@ -43,20 +44,26 @@
 #define GCODE_GET_CURRENT_POSITION       "M114"
 
 #define GCODE_LIFT_UNINIT                ""
-///@}
 
-/** @name GCODE DEFAULT VALUE
+/*************************************************************@}*/
+
+/*************************************************************
+ * @name GCODE DEFAULT VALUE
  *
  *////@{
+
 #define DEFAULT_FEEDRATE                 (150.0)
-///@}
 
-/** @name GCODE RESPONSE CONDITION
+/*************************************************************@}*/
+
+/*************************************************************
+ * @name GCODE RESPONSE CONDITION
  *
  *////@{
+
 #define GCODE_MOTOR_RESPONSE                "k"
 #define GCODE_GET_CURRENT_POSITION_RESPONSE "X"
-///@}
 
+/*************************************************************@}*/
 #endif /* APP_COMMANDS_H_ */
 /**@}*/

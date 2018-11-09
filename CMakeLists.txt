@@ -181,9 +181,10 @@ set(
 	-DMOTOR_DISALBE=false
 
     # DISPLAY #
-    -DDISPLAY_RX_DEBUG=false
+    -DDISPLAY_RX_DEBUG=true
 
-    -DTX_DEBUG=false
+	# Serial #
+    -DTX_DEBUG=true
     
     # IMAGE VIEWER #
     -DIMAGE_VIEWER_FIX_RESOLUTION=true

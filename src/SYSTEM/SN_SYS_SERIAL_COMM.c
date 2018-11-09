@@ -233,18 +233,6 @@ SN_STATUS SN_SYS_SerialTx(sysSerialId serialId, char* buffer, size_t bufferSize)
  *  SERIAL CONTROL
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-//OPEN THE UART
-//The flags (defined in fcntl.h):
-//      Access modes (use 1 of these):
-//              O_RDONLY - Open for reading only.
-//              O_RDWR - Open for reading and writing.
-//              O_WRONLY - Open for writing only.
-//
-//      O_NDELAY / O_NONBLOCK (same function) - Enables nonblocking mode. When set read requests on the file can return immediately with a failure status
-//                                                                                      if there is no input immediately available (instead of blocking). Likewise, write requests can also return
-//                                                                                      immediately with a failure status if the output can't be written immediately.
-//
-//      O_NOCTTY - When set and path identifies a terminal device, open() shall not cause the terminal device to become the controlling terminal for the process.
 static uint32_t sSerialInterfaceInit(const char *device, uint32_t oflags)
 {
     uint32_t uartID = 0;

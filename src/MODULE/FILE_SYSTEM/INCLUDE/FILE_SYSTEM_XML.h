@@ -16,8 +16,18 @@
 #ifndef SYSTEM_XML_H_
 #define SYSTEM_XML_H_
 
+/*************************************************************
+ * @name File System XML
+ * @brief
+ * @{
+ */
 
+/** @brief
+ *
+ *  @return SN_STATUS
+ *  @note
+ */
 
-
+/*************************************************************@}*/
 
 #endif /* SN_MODULE_FILE_SYSTEM_XML_H_ */

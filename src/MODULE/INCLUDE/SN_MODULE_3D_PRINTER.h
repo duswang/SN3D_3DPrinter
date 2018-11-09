@@ -15,7 +15,9 @@
 
 #ifndef SN_MODUEL_3D_PRINTER
 #define SN_MODUEL_3D_PRINTER
-/** @name 3D Printr Module
+
+/*************************************************************
+ * @name 3D Printr Module
  *  Description of 3D Printr Module Init and Uninit funtions.
  *////@{
 /** @brief
@@ -33,12 +35,13 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Init(void);
  *  @note
  */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Uninit(void);
-///@}
 
-/** @name 3D Printer Module :: Printing.
+/*************************************************************@}*/
+
+/*************************************************************
+ * @name 3D Printer Module :: Printing.
  *  Description of 3D Printr Module funtions.
  *////@{
-
 
 /** @brief
  *
@@ -78,10 +81,10 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Pause(void);
  */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Resume(void);
 
-///@}
+/*************************************************************@}*/
 
-
-/** @name 3D Printer Module :: Z Control.
+/*************************************************************
+ * @name 3D Printer Module :: Z Control.
  *  Description of 3D Printr Module funtions.
  *////@{
 
@@ -134,11 +137,7 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Z_Up(float mm);
  */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Z_Down(float mm);
 
-
-///@}
-
-
-extern SN_STATUS SN_MODULE_3D_PRINTER_Test(void);
+/*************************************************************@}*/
 
 #endif /* SN_MODULE_3D_PRINTER */
 /**@}*/

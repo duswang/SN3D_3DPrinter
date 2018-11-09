@@ -7,7 +7,7 @@
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
- * @todo Nextion display image drawing.
+ * @todo Nextion display draw line.
  */
 
 #include "SN_API.h"
@@ -30,8 +30,11 @@
 ///@}
 
 /** @name Other Define */ ///@{
-#define DEFAULT_BUFFER_SIZE 256
-#define TIMER_INDICATE_INTERVAL 1000 /**< 1 second */
+#define DEFAULT_BUFFER_SIZE             256
+#define NEXTION_COMMAND_BUFFER_SIZE     DEFAULT_BUFFER_SIZE
+#define TIMER_INDICATE_INTERVAL         1000 /**< 1 second */
+#define NEXTION_INIT_PAGE_DELAY         3000 /**< 3 second */
+
 ///@}
 
 typedef struct time_display {
@@ -65,6 +68,8 @@ static sysMessageQId   msgQIdDisplay;
 typedef enum event_display_message {
     MSG_DISPLAY_EVENT_GET         = 0,      /**< Serial message get from nextion display */
     MSG_DISPLAY_UPDATE_IMAGE,               /**< Update Image on printing page */
+    MSG_DISPLAY_TIME_INFO_TIMER_START,
+    MSG_DISPLAY_TIME_INFO_TIMER_STOP,
     MSG_DISPLAY_TIME_INFO_TIMER_UPDATE,     /**< Time Info Update */
     MSG_DISPLAY_NONE,                       /**< BAD ACCESS */
 } evtDisplay_t;
@@ -100,7 +105,6 @@ static timeInfo_t sSecToTimeInfo(uint32_t sec);
  *  Extern Functions
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-
 SN_STATUS SN_MODULE_DISPLAY_Init(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
@@ -162,7 +166,7 @@ SN_STATUS SN_MODULE_DISPLAY_EnterState(nx_page_t state)
     case NX_PAGE_SETUP:
     case NX_PAGE_INIT:
         retStatus = sSendCommand(NX_COMMAND_RESET, sizeof(NX_COMMAND_RESET));
-        SN_SYS_Delay(3000);
+        SN_SYS_Delay(NEXTION_INIT_PAGE_DELAY);
         break;
     case NX_PAGE_LOADING:
         retStatus = sSendCommand(NX_PAGE_LOADING_COMMAND, sizeof(NX_PAGE_LOADING_COMMAND));
@@ -180,7 +184,7 @@ SN_STATUS SN_MODULE_DISPLAY_EnterState(nx_page_t state)
 SN_STATUS SN_MODULE_DISPLAY_PrintingInfoInit(const char* fileName, const char* optionName)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-    char buffer[256];
+    char buffer[NEXTION_COMMAND_BUFFER_SIZE];
 
     if(fileName == NULL)
     {
@@ -216,14 +220,13 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingInfoUpdate(uint32_t slice, uint32_t targetSl
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
 
-
     return retStatus;
 }
 
 SN_STATUS SN_MODULE_DISPLAY_PrintingTimerInit(uint32_t sec)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-    char buffer[30];
+    char buffer[NEXTION_COMMAND_BUFFER_SIZE];
 
     moduleDisplay.estimatedBuildTime = sSecToTimeInfo(sec);
     moduleDisplay.nowTime.hour       = 0;
@@ -298,16 +301,20 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerStop(void)
     return retStatus;
 }
 
-
 SN_STATUS SN_MODULE_DISPLAY_FileSelectUpdate(uint32_t pageIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    char buffer[MAX_PATH_LENGTH];
+    char buffer[NEXTION_COMMAND_BUFFER_SIZE];
     uint32_t itemIndex = 0;
 
     const fs_t fileSystem       = SN_MODULE_FILE_SYSTEM_GetFileSystem();
     const fsPage_t* currentPage = SN_MODULE_FILE_SYSTEM_GetPage(pageIndex);
+
+    if(currentPage == NULL)
+    {
+        SN_SYS_ERROR_CHECK(retStatus, "page not initialzied.");
+    }
 
     if(fileSystem.pageHeader->isItemExist)
     {
@@ -349,6 +356,25 @@ SN_STATUS SN_MODULE_DISPLAY_FileSelectUpdate(uint32_t pageIndex)
 
     return retStatus;
 }
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  Nextion GUI Tool
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+
+SN_STATUS SN_MODULE_DISPLAY_NextionDrawLine(int x, int y, const char* color)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    char buffer[NEXTION_COMMAND_BUFFER_SIZE];
+
+    sprintf(buffer,"line %d, %d, %d, %d, %s", x, x, y, y, color);
+    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+
+    return retStatus;
+}
+
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
  *  Module Thread

@@ -26,7 +26,8 @@
 extern SN_STATUS SN_SYSTEM_SendAppMessage(event_id_t evtId, event_msg_t evtMessage);
 /**@}*/
 
-/** @defgroup APP_MSG_TYPE Message Type
+/*************************************************************
+ *  @defgroup APP_MSG_TYPE Message Type
  *  @ingroup APP_MSG
  *  @{
  *  */
@@ -38,7 +39,8 @@ typedef enum {
 } evtAppType_t;
 /**@}*/
 
-/** @defgroup APP_MSG_MODULE_3D_PRINTER 3D Printer Message
+/*************************************************************
+ *  @defgroup APP_MSG_MODULE_3D_PRINTER 3D Printer Message
  *  @ingroup APP_MSG_TYPE
  *  @{
  * */
@@ -49,11 +51,12 @@ typedef enum {
     APP_EVT_MSG_3D_PRINTER_STOP                  = 0x0004,  /**< 0x0004*/
     APP_EVT_MSG_3D_PRINTER_FINISH                = 0x0005,  /**< 0x0005*/
     APP_EVT_MSG_3D_PRINTER_RAMPS_BOARD_INIT_DONE = 0x0006,  /**< 0x0006*/
-    APP_EVT_MSG_3D_PRINTER_NONE                  = 0xFF01   /**< 0xFF01*/
 } evtAppMsg_3DPrinter_t;
-/**@}*/
 
-/** @defgroup APP_MSG_MODULE_FILE_SYSTEM File System Message
+/*************************************************************@}*/
+
+/*************************************************************
+ *  @defgroup APP_MSG_MODULE_FILE_SYSTEM File System Message
  *  @ingroup APP_MSG_TYPE
  *  @{
  */
@@ -62,26 +65,30 @@ typedef enum {
     APP_EVT_MSG_FILE_SYSTEM_USB_UNMOUNT          = 0x0002,  /**< 0x0002*/
     APP_EVT_MSG_FILE_SYSTEM_READ_DONE            = 0x0003,  /**< 0x0003*/
     APP_EVT_MSG_FILE_SYSTEM_UPDATE               = 0x0004,  /**< 0x0004*/
-    APP_EVT_FILE_SYSTEM_NONE                     = 0xFF01   /**< 0xFF01*/
 } evtAppMsg_FileSystem_t;
-/**@}*/
 
-/** @defgroup APP_MSG_MODULE_DISPLAY Display Message
+/*************************************************************@}*/
+
+/*************************************************************
+ *  @defgroup APP_MSG_MODULE_DISPLAY Display Message
  *  @ingroup APP_MSG_TYPE
  *  @{
  */
 typedef enum {
-    APP_EVT_DISPLAY_NONE                         = 0xFF01   /**< 0xFF01*/
+    APP_EVT_DISPLAY_RESERVE                       = 0x0001   /**< 0x0001*/
 } evtAppMsg_Display_t;
-/**@}*/
 
-/** @defgroup APP_MSG_MODULE_IMAGE_VIEWER Image Viewer Message
+/*************************************************************@}*/
+
+/*************************************************************
+ *  @defgroup APP_MSG_MODULE_IMAGE_VIEWER Image Viewer Message
  *  @ingroup APP_MSG_TYPE
  *  @{
  */
 typedef enum {
-    APP_EVT_IMAGE_VIEWER_NONE                    = 0xFF01   /**< 0xFF01*/
+    APP_EVT_IMAGE_VIEWER_RESERVE                  = 0x0001   /**< 0x0001*/
 } evtAppMsg_ImageViewr_t;
-/**@}*/
+
+/*************************************************************@}*/
 
 #endif /* INCLUDE_SN_SYSTEM_MESSAGES_H_ */

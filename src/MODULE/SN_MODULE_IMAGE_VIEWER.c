@@ -10,6 +10,7 @@
  * @bug  SDL :: 2048 x 2048 Over Resolution it can't make Window(surface)
  *
  * @todo memory test
+ * @todo nextion display thumbnail.
  */
 
 #include "SN_API.h"
@@ -36,8 +37,8 @@
 #define SN_SYS_ERROR_CHECK_SDL_IMAGE(msg) \
         sCheckError_SDL_Image((msg), __FILE__, __FUNCTION__, __LINE__)
 
-#define DEFAULT_WINDOW_WIDTH 1920
-#define DEFAULT_WINDOW_HEIGHT 1080
+#define DEFAULT_WINDOW_WIDTH  1440
+#define DEFAULT_WINDOW_HEIGHT 2560
 
 #if(IMAGE_VIEWER_USE_SDL)
 #define WINDOW_NAME "sn3d"
@@ -95,6 +96,7 @@ typedef struct image_viewer
 
     FB_Window_t window;
     FB_Image_t  image;
+    FB_Image_t  thumbnail;
 } moduleImageViewer_t;
 #endif
 
@@ -114,14 +116,20 @@ static void sCheckError_SDL(const char* message, const char* _file, const char* 
 static void sCheckError_SDL_Image(const char* message, const char* _file, const char* _func, const int _line);
 #else
 /* *** IMAGE *** */
+static SN_STATUS sRotateImage(FB_Image_t* imagem,int mode);
 static SN_STATUS sLoadImage(const char* filename, FB_Image_t* image);
+static SN_STATUS sLoadThumbnail(FB_Image_t* image, FB_Image_t* thumbnail, int thumbnailWidth);
 static SN_STATUS sDistroyImage(FB_Image_t* pImage);
 
-/* FRAME BUFFER */
+/* *** FRAME BUFFER *** */
 static SN_STATUS sLoadWindow(const char* devicename, FB_Window_t* window);
 static SN_STATUS sUpdateWindow(const FB_Window_t window, const FB_Image_t image);
 static SN_STATUS sCleanWindow(const FB_Window_t window);
 static SN_STATUS sDistroyWindow(FB_Window_t* window);
+
+/* *** THUMBNAIL *** */
+static SN_STATUS sUpdateNextionThumbnail(FB_Image_t* thumbnail);
+static SN_STATUS sCleanNextionThumbnail(void);
 
 /* *** UTIL *** */
 inline static unsigned char make8color(unsigned char r, unsigned char g, unsigned char b);
@@ -211,7 +219,7 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void)
     return retStatus;
 }
 
-SN_STATUS SN_MODULE_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex)
+SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowUpdate(uint32_t sliceIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     ERROR_T error = 0;
@@ -252,7 +260,7 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex)
     return retStatus;
 }
 
-SN_STATUS SN_MODULE_IMAGE_VIEWER_CLEAR(void)
+SN_STATUS SN_MODULE_IMAGE_VIEWER_Window(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     ERROR_T error = 0;
@@ -270,7 +278,7 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_CLEAR(void)
     return retStatus;
 }
 
-SN_STATUS SN_MODULE_IMAGE_VIEWER_Destroy(void)
+SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowDestroy(void)
 {
     SDL_DestroyTexture(moduleImageViewer.texture);
     IMG_Quit();
@@ -301,7 +309,7 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void)
     return retStatus;
 }
 
-SN_STATUS SN_MODULE_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex)
+SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowUpdate(uint32_t sliceIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     char path[MAX_PATH_LENGTH] = {'\0', };
@@ -313,12 +321,14 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex)
          return SN_STATUS_NOT_INITIALIZED;
     }
 
-    /* Load Image */
+    /* Load Image & thumbnail */
     sprintf(path,"%s/%s%04d.png", printInfo.printTarget.targetPath, printInfo.printTarget.targetName, sliceIndex);
     retStatus = sLoadImage(path, &moduleImageViewer.image);
     SN_SYS_ERROR_CHECK(retStatus, "Load Image Failed.");
 
-    /* Display */
+    retStatus = sLoadThumbnail(&moduleImageViewer.image, &moduleImageViewer.thumbnail, 40);
+    SN_SYS_ERROR_CHECK(retStatus, "Load thumbnail Failed.");
+
     retStatus = sUpdateWindow(moduleImageViewer.window, moduleImageViewer.image);
     SN_SYS_ERROR_CHECK(retStatus, "Window Update Failed.");
 
@@ -329,7 +339,7 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex)
     return retStatus;
 }
 
-SN_STATUS SN_MODULE_IMAGE_VIEWER_CLEAR(void)
+SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowClean(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
@@ -338,11 +348,32 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_CLEAR(void)
     return retStatus;
 }
 
-SN_STATUS SN_MODULE_IMAGE_VIEWER_Destroy(void)
+SN_STATUS SN_MODULE_IMAGE_VIEWER_NextionUpdate(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    retStatus = sUpdateNextionThumbnail(&moduleImageViewer.thumbnail);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Thumbnail Update Failed.");
+
+    return retStatus;
+}
+
+SN_STATUS SN_MODULE_IMAGE_VIEWER_NextionClean(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    retStatus = sCleanNextionThumbnail();
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Thumbnail Clean Failed.");
+
+    return retStatus;
+}
+
+SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowDestroy(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
     sDistroyImage(&moduleImageViewer.image);
+    sDistroyImage(&moduleImageViewer.thumbnail);
     sDistroyWindow(&moduleImageViewer.window);
 
     return retStatus;
@@ -350,20 +381,23 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_Destroy(void)
 
 #endif
 #else
-SN_STATUS SN_MODULE_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex)
-{
-    SN_STATUS retStatus = SN_STATUS_OK;
-    return retStatus;
-}
 SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void)
 {
     return SN_STATUS_OK;
 }
-SN_STATUS SN_MODULE_IMAGE_VIEWER_CLEAR(void)
+
+SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowUpdate(uint32_t sliceIndex)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    return retStatus;
+}
+
+SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowClear(void)
 {
     return SN_STATUS_OK;
 }
-SN_STATUS SN_MODULE_IMAGE_VIEWER_Destroy(void)
+
+SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowDestroy(void)
 {
     return SN_STATUS_OK;
 }
@@ -549,66 +583,161 @@ static SN_STATUS sLoadImage(const char* filename, FB_Image_t* pImage)
 
     fclose(fp);
 
-    //printf("\nImage Info : [ %d x %d], %dbpp %d\n", pImage->w, pImage->h, bit_depth, color_type);
+    printf("\nImage Info : [ %d x %d], %dbpp %d\n", pImage->w, pImage->h, pImage->bpp, pImage->colorType);
 
     return retStatus;
 }
-unsigned char* make_thumbnail(const unsigned char* buffer, int width, int height, int target_width)
+
+static SN_STATUS sRotateImage(FB_Image_t* image, int mode)
 {
-  int target_height = 0;
-  unsigned char* thumbnail = NULL;
-  int i = 0;
-  int j = 0;
+    SN_STATUS retStatus = SN_STATUS_OK;
 
-  unsigned char * target_pixel = NULL;
+    FB_Image_t rotatedImage;
+    int i = 0;
+    int j = 0;
 
-  target_height = target_width * height / width;
+    int rotatedPixel_offset = 0;
+    int ImagePixel_offset = 0;
 
-  thumbnail = (unsigned char*)malloc(target_width * target_height * sizeof(unsigned char));
-
-  if (thumbnail == NULL)
-  {
-    printf("Failed to allocate thumbnail buffer.\n");
-  }
-
-  int target_pixel_offset = 0;
-  int source_pixel_offset = 0;
-
-  for(j = 0; j < target_height; j++)
-  {
-    for (i = 0; i < target_width; i++)
+    if(image == NULL)
     {
-      target_pixel_offset = (j * target_width) + i;
-      target_pixel = thumbnail + target_pixel_offset;
-      source_pixel_offset = (j * width * (width/target_width) * 3) + (i * (width/target_width) * 3); // * 3 for RGB
-      // get first color channel of the rgb image buffer
-      if(buffer[source_pixel_offset] > 127)
-      {
-        *target_pixel = 1;
-      }
-      else
-      {
-        *target_pixel = 0;
-      }
-      printf("%d", *target_pixel);
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "image is NULL");
     }
-    printf("\n");
-  }
-  printf("\n\n\n");
 
-  printf("BW Thumbnail\n");
-
-  for (i=0; i<target_height; i++)
-  {
-    for (j=0; j<target_width; j++)
+    if(image->rgb == NULL)
     {
-      printf("%d", thumbnail[i * target_width + j]);
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "image rgb is NULL");
     }
-    printf("\n");
-  }
-  printf("\n\n\n");
 
-  return thumbnail;
+    rotatedImage.rgb = (unsigned char*)malloc(((image->w * image->h) * sizeof(unsigned char)));
+    if (rotatedImage.rgb == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "thumbnail rgb failed memory allocate.");
+    }
+
+    rotatedImage.bpp       = image->bpp;
+    rotatedImage.colorType = image->colorType;
+    rotatedImage.h         = image->w;
+    rotatedImage.w         = image->h;
+
+    for(i = 0; i < rotatedImage.h; i++)
+    {
+        for(j = 0; j < rotatedImage.w; j++)
+        {
+
+            switch(mode)
+            {
+                case 0:
+                    rotatedPixel_offset = (i * rotatedImage.w) + j;
+                    ImagePixel_offset = (((image->h - 1) * image->w) - (j * image->w)) + i;
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                default :
+                    break;
+            }
+
+            rotatedImage.rgb[rotatedPixel_offset] = image->rgb[ImagePixel_offset];
+        }
+    }
+
+    free(image->rgb);
+    free(image->alpha);
+
+    *image = rotatedImage;
+
+    return retStatus;
+}
+static SN_STATUS sLoadThumbnail(FB_Image_t* image, FB_Image_t* thumbnail, int thumbnailWidth)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    int thumbnailHeight = 0;
+
+    int i = 0;
+    int j = 0;
+
+    unsigned char *thumbnailPixel = NULL;
+    int thumbnailPixel_offset = 0;
+    int ImagePixel_offset = 0;
+
+    if(image == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "image is NULL");
+    }
+
+    if(thumbnail == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "thumbnail is NULL");
+    }
+
+    thumbnailHeight = image->h * ((float)thumbnailWidth / (float)image->w);
+
+    thumbnail->rgb = (unsigned char*)malloc(((thumbnailWidth * thumbnailHeight) * sizeof(unsigned char)));
+    if (thumbnail->rgb == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "thumbnail rgb failed memory allocate.");
+    }
+
+    thumbnail->alpha = NULL;
+
+    thumbnail->bpp       = image->bpp;
+    thumbnail->colorType = image->colorType;
+    thumbnail->h         = thumbnailHeight;
+    thumbnail->w         = thumbnailWidth;
+
+    for(i = 0; i < thumbnailHeight; i++)
+    {
+        for (j = 0; j < thumbnailWidth; j++)
+        {
+            thumbnailPixel_offset = (i * thumbnailWidth) + j;
+            thumbnailPixel = thumbnail->rgb + thumbnailPixel_offset;
+
+            ImagePixel_offset = ((i * image->w) * (image->w / thumbnailWidth) * 3) + (j * (image->w / thumbnailWidth) * 3); // * 3 for RGB
+
+            // get first color channel of the rgb image buffer
+            if(image->rgb[ImagePixel_offset] > 127)
+            {
+                *thumbnailPixel = 1;
+            }
+            else
+            {
+                *thumbnailPixel = 0;
+            }
+        }
+    }
+
+    /*
+    printf("\nThumbnail Info : [ %d x %d], %dbpp %d\n",thumbnail->w, thumbnail->h, thumbnail->bpp, thumbnail->colorType);
+    for (i = 0; i < thumbnail->h; i++)
+    {
+        for (j = 0; j < thumbnail->w; j++)
+        {
+            printf("%d", !thumbnail->rgb[i * thumbnail->w + j]);
+        }
+        printf("\n");
+    }
+    printf("\n\n\n");
+    */
+
+    sRotateImage(thumbnail, 0);
+
+    /*
+    printf("\nThumbnail Info : [ %d x %d], %dbpp %d\n",thumbnail->w, thumbnail->h, thumbnail->bpp, thumbnail->colorType);
+    for (i = 0; i < thumbnail->h; i++)
+    {
+        for (j = 0; j < thumbnail->w; j++)
+        {
+            printf("%d", !thumbnail->rgb[i * thumbnail->w + j]);
+        }
+        printf("\n");
+    }
+    printf("\n\n\n");
+
+    */
+    return retStatus;
 }
 
 static SN_STATUS sDistroyImage(FB_Image_t* image)
@@ -888,6 +1017,57 @@ static SN_STATUS sDistroyWindow(FB_Window_t* window)
     window->h          = 0;
     window->w          = 0;
     window->bpp        = 0;
+
+    return retStatus;
+}
+
+static SN_STATUS sUpdateNextionThumbnail(FB_Image_t* thumbnail)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    int i = 0, j = 0;
+    //int offset_x = 0;
+    //int offset_y = 0;
+
+    if(thumbnail == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "thumbnail is not initialized.");
+    }
+
+    if(thumbnail->rgb == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "thumbnail image is not initialized.");
+    }
+
+    for(i = 0; i < thumbnail->h; i++)
+    {
+        for(j = 0; j < thumbnail->w; j++)
+        {
+            //SN_MODULE_DISPLAY_NextionDrawLine(offset_x + j, offset_y + i, NX_COLOR_BLACK);
+        }
+    }
+
+    return retStatus;
+}
+
+static SN_STATUS sCleanNextionThumbnail(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    int i = 0, j = 0;
+    int offset_x = 0;
+    int offset_y = 0;
+
+    if(moduleImageViewer.thumbnail.rgb == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "thumbnail is image not initialized.");
+    }
+
+    for(i = 0; i < moduleImageViewer.thumbnail.h; i++)
+    {
+        SN_MODULE_DISPLAY_NextionDrawLine(offset_x + j, offset_y + i, NX_COLOR_BLACK);
+        SDL_Delay(3);
+    }
 
     return retStatus;
 }

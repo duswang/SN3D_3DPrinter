@@ -16,17 +16,23 @@
 #ifndef MODUEL_INCLUDE_SN_MODUEL_FILE_SYSTEM_H_
 #define MODUEL_INCLUDE_SN_MODUEL_FILE_SYSTEM_H_
 
-/** @name File Sysetm Define *////@{
+/*************************************************************
+ * @name File Sysetm Define
+ *
+ *////@{
 #define MAX_PAGE_SIZE               10
 #define MAX_ITEM_SIZE                5
 #define MAX_OPTION_SIZE              5
 
 #define MAX_FILENAME_LENGTH        256
 #define MAX_PATH_LENGTH            256
-///@}
 
+/*************************************************************@}*/
 
-/** @name File System Structure *////@{
+/*************************************************************
+ * @name File System Structure
+ *
+ *////@{
 typedef struct file_system_option {
     char name[MAX_FILENAME_LENGTH];
 } fsOption_t;
@@ -55,10 +61,13 @@ typedef struct file_system {
     fsOption_t  option[MAX_OPTION_SIZE];
     fsPageHeader_t*    pageHeader;
 } fs_t;
-///@}
+/*************************************************************@}*/
 
+/*************************************************************
+ * @name Print Info Structure
+ *
+ *////@{
 
-/** @name Print Info Structure *////@{
 typedef struct print_prameter {
     float    layerThickness;            //mm
 
@@ -90,15 +99,17 @@ typedef struct print_information {
     printTarget_t    printTarget;
     bool                  isInit;
 } printInfo_t;
-///@}
+/*************************************************************@}*/
 
-/** @name Machine Info Structure *////@{
+/*************************************************************
+ * @name Machine Info Structure
+ *////@{
 typedef struct machine_information {
     char             name[MAX_FILENAME_LENGTH];
     char                height;
     bool                isInit;
 } machineInfo_t;
-///@}
+/*************************************************************@}*/
 
 /*************************************************************
  * @name File System Module

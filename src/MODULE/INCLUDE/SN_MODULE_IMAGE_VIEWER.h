@@ -16,9 +16,11 @@
 #ifndef MODUEL_INCLUDE_SN_MODUEL_IMAGE_VIEWER_H_
 #define MODUEL_INCLUDE_SN_MODUEL_IMAGE_VIEWER_H_
 
-/** @name Image Viewer Module
+/*************************************************************
+ * @name Image Viewer Module
  *  @brief Description of Display Module Init and Uninit funtions.
  *////@{
+
 /** @brief
  *
  *  @return SN_STATUS
@@ -32,9 +34,12 @@ extern SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void);
  *  @note
  */
 extern SN_STATUS SN_MODULE_IMAGE_VIEWER_Destroy(void);
-///@}
 
-/** @name Image Viewer Module :: Printing
+/*************************************************************@}*/
+
+
+/*************************************************************
+ * @name Image Viewer Module :: Window Control
  *  @brief
  *////@{
 /** @brief
@@ -44,18 +49,41 @@ extern SN_STATUS SN_MODULE_IMAGE_VIEWER_Destroy(void);
  *  @return SN_STATUS
  *  @note
  */
-extern SN_STATUS SN_MODULE_IMAGE_VIEWER_UPDATE(uint32_t sliceIndex);
-///@}
+extern SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowUpdate(uint32_t sliceIndex);
 
-/** @name Image Viewer Module :: Screen Control
- *  @brief
- *////@{
 /** @brief
  *
  *  @return SN_STATUS
  *  @note
  */
-extern SN_STATUS SN_MODULE_IMAGE_VIEWER_CLEAR(void);
-///@}
+extern SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowClean(void);
+
+/*************************************************************@}*/
+
+/*************************************************************
+ * @name Image Viewer Module :: Nextion LCD Control
+ *  @brief
+ *  @warning this functions only call after 'SN_MODULE_IMAGE_VIEWER_WindowUpdate' -!!
+ *
+ *////@{
+
+/** @brief
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
+extern SN_STATUS SN_MODULE_IMAGE_VIEWER_NextionUpdate(void);
+
+/** @brief
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
+extern SN_STATUS SN_MODULE_IMAGE_VIEWER_NextionClean(void);
+
+/*************************************************************@}*/
+
 #endif /* MODUEL_INCLUDE_SN_MODUEL_IMAGE_VIEWER_H_ */
 /**@}*/

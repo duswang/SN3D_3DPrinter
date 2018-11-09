@@ -16,7 +16,8 @@
 #ifndef SN_MODUEL_DISPLAY
 #define SN_MODUEL_DISPLAY
 
-/** @name Display Module
+/*************************************************************
+ * @name Display Module
  *  @brief Description of Display Module Init and Uninit funtions.
  *////@{
 
@@ -35,9 +36,10 @@ extern SN_STATUS SN_MODULE_DISPLAY_Init(void);
  */
 extern SN_STATUS SN_MODULE_DISPLAY_Uninit(void);
 
-///@}
+/*************************************************************@}*/
 
-/** @name Display Module :: Page Change
+/*************************************************************
+ * @name Display Module :: Page Change
  *  @brief
  *////@{
 
@@ -83,9 +85,10 @@ extern SN_STATUS SN_MODULE_DISPLAY_PrintingInfoInit(const char* fileName, const 
  */
 extern SN_STATUS SN_MODULE_DISPLAY_PrintingInfoUpdate(uint32_t slice, uint32_t targetSlice);
 
-///@}
+/*************************************************************@}*/
 
-/** @name Display Module :: Print Page Time Info
+/*************************************************************
+ * @name Display Module :: Print Page Time Info
  *  @brief
  *////@{
 
@@ -126,7 +129,21 @@ extern SN_STATUS SN_MODULE_DISPLAY_PrintingTimerResume(void);
  */
 extern SN_STATUS SN_MODULE_DISPLAY_PrintingTimerStop(void);
 
-///@}
+/*************************************************************@}*/
+
+/*************************************************************
+ * @name Display Module :: Nextion GUI Tool
+ *  @brief
+ *////@{
+/** @brief
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
+extern SN_STATUS SN_MODULE_DISPLAY_NextionDrawLine(int x, int y, const char* color);
+
+/*************************************************************@}*/
 
 #endif /* SN_MODUEL_DISPLAY */
 /**@}*/

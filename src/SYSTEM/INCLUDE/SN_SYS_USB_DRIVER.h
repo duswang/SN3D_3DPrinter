@@ -16,7 +16,8 @@
 #ifndef SN_SYS_USB_DRIVER_H_
 #define SN_SYS_USB_DRIVER_H_
 
-/** @name USB Event Macro
+/*************************************************************
+ * @name USB Event Macro
  *
  *////@{
 enum usb_driver_event
@@ -26,9 +27,11 @@ enum usb_driver_event
     MSG_USB_EVT_WAITING     = 0x03,
     MSG_SB_EVT_NONE         = 0x04
 } usbEvt_t;
-///@}
 
-/** @name USB Driver Structure
+/*************************************************************@}*/
+
+/*************************************************************
+ * @name USB Driver Structure
  *
  *////@{
 struct usb_dev_handle {
@@ -44,9 +47,11 @@ struct usb_dev_handle {
   /* Added by RMT so implementations can store other per-open-device data */
   void *impl_info;
 };
-///@}
 
-/** @name USB Driver System
+/*************************************************************@}*/
+
+/*************************************************************
+ *  @name USB Driver System
  *  @brief Description of Serial System Init and Uninit funtions.
  *////@{
 
@@ -68,9 +73,10 @@ extern SN_STATUS SN_SYS_USBDriverInit(void* (pfCallBack)(int evt));
  */
 extern SN_STATUS SN_SYS_USBDriverTerminate(void);
 
-///@}
+/*************************************************************@}*/
 
-/** @name USB Driver System :: Util
+/*************************************************************
+ *  @name USB Driver System :: Util
  *  @brief Description of Serial System Init and Uninit funtions.
  *////@{
 /** @brief
@@ -81,8 +87,8 @@ extern SN_STATUS SN_SYS_USBDriverTerminate(void);
  */
 
 extern bool SN_SYS_USBDriverIsMount(void);
-///@}
 
+/*************************************************************@}*/
 
 #endif /* SN_SYS_USB_DRIVER_H_ */
 /**@}*/

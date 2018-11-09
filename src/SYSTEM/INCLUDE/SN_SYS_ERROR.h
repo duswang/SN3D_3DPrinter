@@ -36,11 +36,9 @@ typedef enum sn_status {
 /** @typedef ERROR_T */
 typedef int        ERROR_T;
 
-/** @name Error System
- *  @brief
- */
 
-/** @name System Error Handler
+/*************************************************************
+ * @name System Error Handler
  *  Description of Message Queue Init and Uninit funtions.
  *////@{
 
@@ -67,8 +65,10 @@ extern void SN_SYS_ErrorCheck(SN_STATUS errorStatus, const char* errorMessage, c
  */
 extern void SN_SYS_Log(const char* log);
 
+/*************************************************************@}*/
 
-/** @def SN_SYS_ERROR_CHECK(error, msg)
+/*************************************************************
+ * @def SN_SYS_ERROR_CHECK(error, msg)
  *  @brief
  *
  *  @param error
@@ -80,7 +80,7 @@ extern void SN_SYS_Log(const char* log);
 #define SN_SYS_ERROR_CHECK(error, msg) \
 SN_SYS_ErrorCheck((error), (msg), __FILE__, __FUNCTION__, __LINE__)
 
-///@}
+/*************************************************************@}*/
 
 #endif /* SN_ERROR_H_ */
 /**@}*/

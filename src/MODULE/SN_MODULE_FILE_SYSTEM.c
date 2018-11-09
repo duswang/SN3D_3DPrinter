@@ -21,17 +21,17 @@
 /* ******* STATIC DEFINE ******* */
 /** @name USB Driver Config *////@{
 #ifdef __APPLE__
-#define USB_PATH              "/Volumes/USB_0"
+#define USB_PATH                      "/Volumes/USB_0"
 #endif
 #ifdef linux
-#define USB_PATH              "/mnt/volume"
+#define USB_PATH                      "/mnt/volume"
 #endif
 
 #ifdef __APPLE__
-#define TARGET_PATH              "../res/tempFile"
+#define TARGET_PATH                   "../res/tempFile"
 #endif
 #ifdef linux
-#define TARGET_PATH              "/SN3D/sn3d-project/res/target"
+#define TARGET_PATH                   "/SN3D/sn3d-project/res/target"
 #endif
 
 #ifdef __APPLE__

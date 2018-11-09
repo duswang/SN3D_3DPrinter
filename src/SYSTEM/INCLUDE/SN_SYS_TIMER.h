@@ -16,14 +16,17 @@
 #ifndef SN_SYS_TIMER_H_
 #define SN_SYS_TIMER_H_
 
-/** @name Timer Config
+/*************************************************************
+ * @name Timer Config
  *
  *////@{
 #define MAX_NUM_OF_TSR 32
 #define UNALLOCATED_TSR_ID          (0xFFFFFFFF)
-///@}
 
-/** @name Timer Structure
+/*************************************************************@}*/
+
+/*************************************************************
+ * @name Timer Structure
  *
  *////@{
 typedef struct sys_timer_id {
@@ -35,16 +38,34 @@ typedef struct sys_timer_id {
 } sysTimerQ_t;
 
 typedef uint32_t sysTimerId_t;
-///@}
 
-/** @name Timer System
+/*************************************************************@}*/
+
+/*************************************************************
+ *  @name Timer System
  *  @brief Description of Timer System Init and Uninit funtions.
  *////@{
-extern SN_STATUS SN_SYS_TimerInit(void);
-extern SN_STATUS SN_SYS_TimerUninit(void);
-///@}
 
-/** @name Serial System :: Create & Cancle
+/** @brief
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
+extern SN_STATUS SN_SYS_TimerInit(void);
+
+/** @brief
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
+extern SN_STATUS SN_SYS_TimerUninit(void);
+
+/*************************************************************@}*/
+
+/*************************************************************
+ * @name Serial System :: Create & Cancle
  *  @brief
  *////@{
 
@@ -68,9 +89,11 @@ extern SN_STATUS SN_SYS_TimerCreate(sysTimerId_t* pIdTSR, uint32_t msDuration, v
  *  @note
  */
 extern SN_STATUS SN_SYS_TimerCancle(sysTimerId_t* pIdTSR);
-///@}
 
-/** @name Serial System :: Delay
+/*************************************************************@}*/
+
+/*************************************************************
+ * @name Serial System :: Delay
  *  @brief
  *  @note Now use SDL_Delay()
  *////@{
@@ -83,8 +106,8 @@ extern SN_STATUS SN_SYS_TimerCancle(sysTimerId_t* pIdTSR);
  *  @note
  */
 extern SN_STATUS SN_SYS_Delay(uint32_t msec);
-///@}
 
+/*************************************************************@}*/
 
 #endif /* SN_SYS_TIMER_H_ */
 /**@}*/

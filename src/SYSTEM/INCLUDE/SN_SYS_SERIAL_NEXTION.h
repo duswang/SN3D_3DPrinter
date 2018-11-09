@@ -16,33 +16,11 @@
 #ifndef SN_SYS_SERIAL_NEXTION_H_
 #define SN_SYS_SERIAL_NEXTION_H_
 
-typedef union Nextion_message {
-
-   struct {
-           uint8_t page;
-           uint8_t type;
-           uint8_t id;
-           uint8_t value;
-           uint8_t command;
-           uint8_t endcode[3];
-   };
-   uint8_t  NXmessage8bit[8];
-   uint32_t NXmessage[2];
-} msgNX_t;
-
-/* * Nextion Display UART Message * */
-/* * * * * * * * * * * * * * * * * * * * * * * *
-
-    Nextion Display TX Command.
-
-    [page] [TYPE] [ID] [value]       32bit
-
-    [reserve] [endCode[][][]]        32bit
-
- * * * * * * * * * * * * * * * * * * * * * * * */
-/**
+/*************************************************************
+ * @name NEXTION REQUEST PAGE COMMAND
  *
- */
+ *////@{
+
 #define NX_PAGE_BOOT_COMMAND        "page Boot"
 #define NX_PAGE_WAITING_COMMAND     "page Waiting"
 #define NX_PAGE_CONTROL_COMMAND     "page Control"
@@ -51,19 +29,23 @@ typedef union Nextion_message {
 #define NX_PAGE_LOADING_COMMAND     "page Loading"
 
 #define NX_COMMAND_RESET            "rest"
+/*************************************************************@}*/
 
-/* * * * * * * * * * * * * * * * * * * * * * * *
+/*************************************************************
+ * @name NEXTION REQUEST PAGE COMMAND
+ *
+ *////@{
 
-    Nextion Display RX EVENT.
+#define NX_COLOR_RED   "RED"
+#define NX_COLOR_BLACK "BLACK"
+#define NX_COLOR_WHITE "WHITE"
 
-    [Command]                        8bit
+/*************************************************************@}*/
 
-    [page] [TYPE] [ID] [value]       32bit
-
-    [endCode[][][]]                  24bit
-
- * * * * * * * * * * * * * * * * * * * * * * * */
-/** RX DATA HEAD COMMAND **/
+/*************************************************************
+ * @name NEXTION SERIAL HEAD COMMAND
+ *
+ *////@{
 typedef enum
 {
     /* RESPONSE */
@@ -91,9 +73,40 @@ typedef enum
     NX_COMMAND_INVALID_BAUD             = 0x11,//!< NX_COMMAND_INVALID_BAUD
     NX_COMMAND_INVALID_VARIABLE         = 0x1A,//!< NX_COMMAND_INVALID_VARIABLE
     NX_COMMAND_INVALID_OPERATION        = 0x1B //!< NX_COMMAND_INVALID_OPERATION
-}nx_command_t;
+} nx_command_t;
 
-/** PAGE **/
+/*************************************************************@}*/
+
+/*************************************************************
+ * @name Nextion SN3D Custom Serial Message.
+ * @brief
+ *  [Command]                        8bit
+ *  [page] [TYPE] [ID] [value]       32bit
+ *  [endCode[][][]]                  24bit
+ *
+ *  COMMAND FORMAT.
+ *
+ *  0x[command] [page] [type] [id] [value] [endcode] [endcode] [endcode]
+ *
+ *////@{
+typedef union Nextion_message {
+
+   struct {
+           uint8_t page;        /**< 2 byte */
+           uint8_t type;        /**< 3 byte */
+           uint8_t id;          /**< 4 byte */
+           uint8_t value;       /**< 5 byte */
+           uint8_t command;     /**< 1 byte */
+           uint8_t endcode[3];  /**< 6 7 8 byte */
+   };
+   uint8_t  NXmessage8bit[8];
+   uint32_t NXmessage[2];
+} msgNX_t;
+
+/*************************************************************
+ * @name NEXTION SN3D PAGE COMMAND
+ *
+ *////@{
 typedef enum
 {
     NX_PAGE_WAITING             = 0x01,
@@ -107,7 +120,12 @@ typedef enum
     NX_PAGE_NONE
 } nx_page_t; /* It Need to sync ref : 'app_state_t' */
 
-/** TYPE **/
+/*************************************************************@}*/
+
+/*************************************************************
+ * @name NEXTION SN3D TYPE COMMAND
+ *
+ *////@{
 typedef enum
 {
     NX_TYPE_BUTTON              = 0x01,
@@ -117,14 +135,20 @@ typedef enum
     NX_TYPE_NONE
 } nx_type_t;
 
-/** ID  **/
+/*************************************************************@}*/
+
+/*************************************************************
+ * @name NEXTION SN3D ID COMMAND
+ *
+ *////@{
+
 typedef enum
 {
-    NX_ID_BUTTON_HOME           = 0x1F,
-    NX_ID_BUTTON_PRINT          = 0x2F,
-    NX_ID_BUTTON_YES            = 0x3F,
-    NX_ID_BUTTON_NO             = 0x4F,
-    NX_ID_NONE
+    NX_ID_BUTTON_HOME           = 0x1F,//!< NX_ID_BUTTON_HOME
+    NX_ID_BUTTON_PRINT          = 0x2F,//!< NX_ID_BUTTON_PRINT
+    NX_ID_BUTTON_YES            = 0x3F,//!< NX_ID_BUTTON_YES
+    NX_ID_BUTTON_NO             = 0x4F,//!< NX_ID_BUTTON_NO
+    NX_ID_NONE                         //!< NX_ID_NONE
 } nx_id_t;
 
 typedef enum
@@ -175,8 +199,12 @@ typedef enum
     NX_ID_INIT_BUTTON_RESERVE   = 0x01,
 } nx_init_id_t;
 
-/** VALUE :: PAGE **/
+/*************************************************************@}*/
 
+/*************************************************************
+ * @name NEXTION SN3D VALUE COMMAND
+ *
+ *////@{
 typedef enum
 {
     NX_VALUE_CONTROL_Z_000_1_MM  = 0x01,
@@ -187,6 +215,8 @@ typedef enum
     NX_VALUE_CONTROL_Z_100_0_MM
 } nx_control_value_t;
 
+/*************************************************************@}*/
 
+/*************************************************************@}*/
 #endif /* SN_SYS_SERIAL_NEXTION_ */
 /**@}*/

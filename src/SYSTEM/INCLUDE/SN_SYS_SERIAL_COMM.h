@@ -16,7 +16,8 @@
 #ifndef SN_SYS_SERIAL_COMM
 #define SN_SYS_SERIAL_COMM
 
-/** @name Serial Return Macro
+/*************************************************************
+ * @name Serial Return Macro
  *
  *////@{
 
@@ -25,9 +26,11 @@
 #define NX_RETURN       0xFF
 
 #define RETURN_SIZE     1
-///@}
 
-/** @name Serial Config
+/*************************************************************@}*/
+
+/*************************************************************
+ * @name Serial Config
  *
  *////@{
 #define MAX_NUM_OF_SERIAL 4 /**< Max Serial Terminal */
@@ -35,9 +38,10 @@
 #define SN_SYS_SERIAL_COMM_BUFFER_SIZE 255
 #define SN_SYS_SERIAL_COMM_INVAILD_UART_ID (-1)
 
-///@}
+/*************************************************************@}*/
 
-/** @name Serial Structure
+/*************************************************************
+ * @name Serial Structure
  *
  *////@{
 typedef struct sys_serial_stat {
@@ -68,9 +72,10 @@ typedef struct sys_serial_q {
     bool isAvailable;
 } sysSerialQ;
 
-///@}
+/*************************************************************@}*/
 
-/** @name Serial Macro Function
+/*************************************************************
+ * @name Serial Macro Function
  *
  *////@{
 
@@ -109,10 +114,12 @@ typedef struct sys_serial_q {
 #define sysSerialThreadFunc(num) \
     (sSerialThread_##num)
 
-///@}
+/*************************************************************@}*/
 
 
-/** @name Serial Baud Rate Paramter Macro
+
+/*************************************************************
+ * @name Serial Baud Rate Paramter Macro
  *
  *////@{
 #define SN_SYS_SERIAL_COMM_BAUD_RATE_9600     B9600 /**< Baud Rate 9600    */
@@ -120,7 +127,8 @@ typedef struct sys_serial_q {
 #define SN_SYS_SERIAL_COMM_BAUD_RATE_115200 B115200 /**< Baud Rate 115200  */
 ///@}
 
-/** @name Serial Send Parameter Macro
+/*************************************************************
+ * @name Serial Send Parameter Macro
  *
  *////@{
 #define SN_SYS_SERIAL_COMM_RX_REALTIME   0   /**< RX real time    */
@@ -130,7 +138,8 @@ typedef struct sys_serial_q {
 #define SN_SYS_SERIAL_COMM_RX_BYTE_32   32   /**< RX read 32 byte */
 ///@}
 
-/** @name Serial Return Parameter Macro
+/*************************************************************
+ * @name Serial Return Parameter Macro
  *
  *////@{
 #define SN_SYS_SERIAL_COMM_TX_RETURN          0 /**< Send with no return  */
@@ -139,7 +148,8 @@ typedef struct sys_serial_q {
 #define SN_SYS_SERIAL_COMM_TX_NX_RETURN       3 /**< Send with Nextion endcode return    */
 ///@}
 
-/** @name Serial System
+/**
+ * @name Serial System
  *  @brief Description of Serial System Init and Uninit funtions.
  *////@{
 
@@ -159,9 +169,11 @@ extern SN_STATUS   SN_SYS_SerialInit (void);
  *  @note
  */
 extern SN_STATUS SN_SYS_SerialUninit(void);
-///@}
 
-/** @name Serial System :: Create & Remove
+/*************************************************************@}*/
+
+/*************************************************************
+ * @name Serial System :: Create & Remove
  *  @brief
  *////@{
 
@@ -184,10 +196,11 @@ extern sysSerialId SN_SYS_SerialCreate(const sysSerialDef_t* serialDef, void* (*
  *  @note
  */
 extern SN_STATUS   SN_SYS_SerialRemove(sysSerialId serialId);
-///@}
 
+/*************************************************************@}*/
 
-/** @name Serial System :: Tx & Rx
+/*************************************************************
+ * @name Serial System :: Tx & Rx
  *  @brief
  *  @note RX is Callback, you create 'SN_SYS_SerialCreate' you can get rxBuffer from pfCallback.
  *////@{
@@ -202,7 +215,9 @@ extern SN_STATUS   SN_SYS_SerialRemove(sysSerialId serialId);
  *  @note
  */
 extern SN_STATUS  SN_SYS_SerialTx(sysSerialId serialId, char* buffer, size_t bufferSize);
-///@}
+
+/*************************************************************@}*/
+
 
 #endif /* SN_SYS_SERIAL_COMM */
 /**@}*/
