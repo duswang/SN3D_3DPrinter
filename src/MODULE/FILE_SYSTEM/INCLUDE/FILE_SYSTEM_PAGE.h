@@ -16,18 +16,14 @@
 #ifndef FILE_SYSTEM_PAGE_H_
 #define FILE_SYSTEM_PAGE_H_
 
-SN_STATUS FileSystem_PageInit(fsPageHeader_t* pageHeader);
-SN_STATUS FileSystem_PageUninit(fsPageHeader_t* pageHeader);
-
+fsPageHeader_t* FileSystem_PageInit(void);
 
 SN_STATUS FileSystem_PageDestroy(fsPageHeader_t* pageHeader);
 
 SN_STATUS FileSystem_AddPage(fsPageHeader_t* pageHeader);
 SN_STATUS FileSystem_RemovePage(fsPageHeader_t* pageHeader, int pageIndex);
 
-SN_STATUS FileSystem_GetPage(fsPageHeader_t* pageHeader, int pageIndex);
-SN_STATUS FileSystem_GetItem(fsPageHeader_t* pageHeader, int pageIndex, int itemIndex);
-
-bool FileSystem_IsPageEmpty(fsPageHeader_t* pageHeader);
+fsPage_t* FileSystem_GetPage(fsPageHeader_t* pageHeader, int pageIndex);
+fsItem_t FileSystem_GetItem(fsPageHeader_t* pageHeader, int pageIndex, int itemIndex);
 
 #endif /* SN_MODUL_FILE_SYSTEM_PAGE_H_ */

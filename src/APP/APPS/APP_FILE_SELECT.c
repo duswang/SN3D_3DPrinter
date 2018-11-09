@@ -12,7 +12,6 @@
 /* ******* STATIC DEFINE ******* */
 
 /* ******* GLOBAL VARIABLE ******* */
-static fs_t     fs;
 static uint32_t pageIndex;
 static uint32_t itemIndex;
 static uint32_t optionIndex;
@@ -27,8 +26,8 @@ static SN_STATUS sImageViewerHdlr(event_msg_t evtMessage);
 
 /* *** BUTTON *** */
 /* PAGE */
-static void sUpPageIndex(void);
-static void sDownPageIndex(void);
+static bool sUpPageIndex(void);
+static bool sDownPageIndex(void);
 static uint32_t sGetPageIndex(void);
 
 /* OPTION */
@@ -80,7 +79,6 @@ SN_STATUS APP_STATE_EnterStateFileSelect(void)
 
     sResetIndexs();
 
-    retStatus = SN_MODULE_FILE_SYSTEM_Get(&fs);
     retStatus = SN_MODULE_DISPLAY_FileSelectUpdate(pageIndex);
 
     return retStatus;
@@ -139,26 +137,29 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                     sDownOptionIndex();
                     break;
                 case NX_ID_FILE_SELECT_BUTTON_PAGE_UP:
-                    SN_SYS_Log("PAGE UP");
-                    if(fs.isItemExist)
+                    if(SN_MODULE_FILE_SYSTEM_isItemExist())
                     {
-                        sUpPageIndex();
-                        retStatus = SN_MODULE_DISPLAY_FileSelectUpdate(pageIndex);
+                        if(sUpPageIndex())
+                        {
+                            retStatus = SN_MODULE_DISPLAY_FileSelectUpdate(pageIndex);
+                        }
                     }
                     break;
                 case NX_ID_FILE_SELECT_BUTTON_PAGE_DOWN:
-                    SN_SYS_Log("PAGE DOWN");
-                    if(fs.isItemExist)
+
+                    if(SN_MODULE_FILE_SYSTEM_isItemExist())
                     {
-                        sDownPageIndex();
-                        retStatus = SN_MODULE_DISPLAY_FileSelectUpdate(pageIndex);
+                        if(sDownPageIndex())
+                        {
+                            retStatus = SN_MODULE_DISPLAY_FileSelectUpdate(pageIndex);
+                        }
                     }
                     break;
                 case NX_ID_FILE_SELECT_BUTTON_FILE_SELECT:
                     itemIndex = msgNXId.value;
                     break;
                 case NX_ID_FILE_SELECT_BUTTON_PRINT_START:
-                    if(fs.isItemExist && sItemOverIndexCheck(msgNXId.value - 1))
+                    if(SN_MODULE_FILE_SYSTEM_isItemExist() && sItemOverIndexCheck(msgNXId.value - 1))
                     {
                         retStatus = SN_MODULE_DISPLAY_EnterState(NX_PAGE_LOADING);
                         SN_MODULE_3D_PRINTER_Start(sGetPageIndex(), (msgNXId.value - 1));
@@ -186,15 +187,10 @@ static SN_STATUS sFileSystemHdlr(event_msg_t evtMessage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    SN_MODULE_FILE_SYSTEM_Get(&fs);
-    SN_MODULE_DISPLAY_FileSelectUpdate(pageIndex);
-
     switch(evtMessage)
     {
     case APP_EVT_MSG_FILE_SYSTEM_USB_MOUNT:
-        break;
     case APP_EVT_MSG_FILE_SYSTEM_READ_DONE:
-        break;
     case APP_EVT_MSG_FILE_SYSTEM_USB_UNMOUNT:
     case APP_EVT_MSG_FILE_SYSTEM_UPDATE:
         /* USB MOUNT or USER TOUCH PRINT BUTTON */
@@ -227,19 +223,31 @@ static uint32_t sGetPageIndex(void)
     return pageIndex;
 }
 
-static void sUpPageIndex(void)
+static bool sUpPageIndex(void)
 {
-    if(pageIndex < fs.pageCnt)
+    if((pageIndex + 1) < SN_MODULE_FILE_SYSTEM_GetPageCnt())
     {
         pageIndex++;
+
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }
 
-static void sDownPageIndex(void)
+static bool sDownPageIndex(void)
 {
     if(pageIndex > 0)
     {
         pageIndex--;
+
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }
 
@@ -255,7 +263,7 @@ static void sDownOptionIndex(void)
 
 static bool sItemOverIndexCheck(uint32_t itemIndex)
 {
-    return (fs.page[pageIndex].itemCnt > itemIndex);
+    return (SN_MODULE_FILE_SYSTEM_GetPage(pageIndex)->itemCnt > itemIndex);
 }
 
 static void sResetIndexs(void)

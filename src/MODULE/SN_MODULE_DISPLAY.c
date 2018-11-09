@@ -16,7 +16,7 @@
 /* ******* STATIC DEFINE ******* */
 /** @name Serial Config Define */ ///@{
 #define BYTE_SIZE   SN_SYS_SERIAL_COMM_RX_REALTIME
-#define BAUD_RATE   SN_SYS_SERIAL_COMM_BAUD_RATE_9600
+#define BAUD_RATE   SN_SYS_SERIAL_COMM_BAUD_RATE_115200
 #define RETURN_MODE SN_SYS_SERIAL_COMM_TX_NX_RETURN
 
 #ifdef __APPLE__
@@ -48,8 +48,6 @@ typedef struct moduel_display {
     timeInfo_t nowTime;
     uint32_t   secNowTime;
     bool       IsTimerInfoInit;
-
-    fs_t fs;
 } moduleDisplay_t;
 
 /* ******* SYSTEM DEFINE ******* */
@@ -69,7 +67,6 @@ typedef enum event_display_message {
     MSG_DISPLAY_UPDATE_IMAGE,               /**< Update Image on printing page */
     MSG_DISPLAY_TIME_INFO_TIMER_UPDATE,     /**< Time Info Update */
     MSG_DISPLAY_NONE,                       /**< BAD ACCESS */
-    MSG_DISPLAY_IGNORE            = 0xFF01  /**< Came From Timer - Don't Care */
 } evtDisplay_t;
 
 /* *** MODULE TIMER *** */
@@ -302,28 +299,26 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerStop(void)
 }
 
 
-SN_STATUS SN_MODULE_DISPLAY_FileSelectUpdate(uint32_t page)
+SN_STATUS SN_MODULE_DISPLAY_FileSelectUpdate(uint32_t pageIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-    int itemIndex = 0;
-    char buffer[256];
 
-    /* Get File System */
-    retStatus = SN_MODULE_FILE_SYSTEM_Get(&moduleDisplay.fs);
-    SN_SYS_ERROR_CHECK(retStatus, "Get File System Failed.");
+    char buffer[MAX_PATH_LENGTH];
+    uint32_t itemIndex = 0;
 
-    if(moduleDisplay.fs.isItemExist)
+    const fs_t fileSystem       = SN_MODULE_FILE_SYSTEM_GetFileSystem();
+    const fsPage_t* currentPage = SN_MODULE_FILE_SYSTEM_GetPage(pageIndex);
+
+    if(fileSystem.pageHeader->isItemExist)
     {
         /* Send to Nextion Display */
-        if(page <= moduleDisplay.fs.pageCnt)
+        if(pageIndex <= fileSystem.pageHeader->pageCnt)
         {
             for(itemIndex = 0; itemIndex < MAX_ITEM_SIZE; itemIndex++)
             {
-                if(itemIndex <= moduleDisplay.fs.page[page].itemCnt)
+                if(itemIndex <= currentPage->itemCnt)
                 {
-                    sprintf(buffer,"Index_%d.txt=\"%s\"", itemIndex, moduleDisplay.fs.page[page].item[itemIndex].name);
-
-
+                    sprintf(buffer,"Index_%d.txt=\"%s\"", itemIndex, currentPage->item[itemIndex].name);
                 }
                 else
                 {
@@ -347,7 +342,7 @@ SN_STATUS SN_MODULE_DISPLAY_FileSelectUpdate(uint32_t page)
     }
 
     /* Item Count Send */
-    sprintf(buffer,"Item_Cnt.val=%d", moduleDisplay.fs.page[page].itemCnt);
+    sprintf(buffer,"Item_Cnt.val=%d", currentPage->itemCnt);
 
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
@@ -379,8 +374,6 @@ static void* sDisplayThread()
                 break;
             case MSG_DISPLAY_TIME_INFO_TIMER_UPDATE:
                 sDisplay_TimerInfoUpdate();
-                break;
-            case MSG_DISPLAY_IGNORE:
                 break;
             default:
                 SN_SYS_ERROR_CHECK(SN_STATUS_UNKNOWN_MESSAGE, "Display Get Unknown Message.");

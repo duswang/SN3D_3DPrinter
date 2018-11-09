@@ -14,8 +14,9 @@
 #include "SN_API.h"
 #include "SN_MODULE_FILE_SYSTEM.h"
 
-#include "FILE_SYSTEM/INCLUDE/FILE_SYSTEM_PAGE.h"
-#include "FILE_SYSTEM/INCLUDE/FILE_SYSTEM_XML.h"
+#include "FILE_SYSTEM_FCTL.h"
+#include "FILE_SYSTEM_PAGE.h"
+#include "FILE_SYSTEM_XML.h"
 
 /* ******* STATIC DEFINE ******* */
 /** @name USB Driver Config *////@{
@@ -49,15 +50,16 @@
 ///@}
 
 /** @name File path & name config *////@{
-#define TARGET_FILE_EXT           "cws"
-#define TARGET_IMAGE_EXT     "png"
+#define TARGET_CWS_FILE_EXT     "cws"
+#define TARGET_ZIP_FILE_EXT     "zip"
+#define TARGET_IMAGE_EXT        "png"
 
 #define MANIFEST_FILE_NAME      "manifest"
-#define MANIFEST_FILE_EXT  "xml"
+#define MANIFEST_FILE_EXT       "xml"
 
-#define DEVICE_FILE_EXT    "xml"
+#define DEVICE_FILE_EXT         "xml"
 
-#define OPTION_FILE_EXT    "xml"
+#define OPTION_FILE_EXT         "xml"
 ///@}
 
 /** @name Z config *////@{
@@ -111,7 +113,6 @@ typedef enum {
     MSG_FILE_SYSTEM_UPDATE,                     /**< Update File System - when read USB Finish */
     MSG_FILE_SYSTEM_WAITING,                    /**< Waiting Next Event */
     MSG_FILE_SYSTEM_NONE,                       /**< BAD ACCESS */
-    MSG_FILE_SYSTEM_IGNORE          = 0xFF01    /**< Came From Timer - Don't Care */
 
 } evtFileSystem_t;
 
@@ -129,12 +130,9 @@ static void*       sFileSystemThread();
 static SN_STATUS   sFileSystemMessagePut(evtFileSystem_t evtId, event_msg_t evtMessage);
 
 /* *** FILE SYSTEM CONTROL *** */
-static SN_STATUS   sFileSystemRead(void);
-static SN_STATUS   sFileSystemRemove(void);
-static SN_STATUS   sFileSystemPrint(void);
-
-/* *** TARGET FILE CONTROL *** */
-static uint32_t    sCountSlice(const char* srcPath);
+static SN_STATUS   sFileSystemRead(fs_t* fileSystem);
+static SN_STATUS   sFileSystemRemove(fs_t* fileSystem);
+static SN_STATUS   sFileSystemPrint(const fs_t* fileSystem);
 
 /* *** DEMO *** */
 static void        sDemoPrintSetting(void);
@@ -145,16 +143,25 @@ static void        sDemoMachineSetting(void);
  *  Extern Functions
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-SN_STATUS SN_MODULE_FILE_SYSTEM_Get(fs_t* pFs)
+
+bool SN_MODULE_FILE_SYSTEM_isItemExist(void)
 {
-    if(pFs == NULL)
-    {
-        return SN_STATUS_INVALID_PARAM;
-    }
+    return moduleFileSystem.fs.pageHeader->isItemExist;
+}
 
-    *pFs = moduleFileSystem.fs;
+int SN_MODULE_FILE_SYSTEM_GetPageCnt(void)
+{
+    return moduleFileSystem.fs.pageHeader->pageCnt;
+}
 
-    return SN_STATUS_OK;
+const fsPage_t* SN_MODULE_FILE_SYSTEM_GetPage(int pageIndex)
+{
+    return FileSystem_GetPage(moduleFileSystem.fs.pageHeader, pageIndex);
+}
+
+const fs_t SN_MODULE_FILE_SYSTEM_GetFileSystem(void)
+{
+    return moduleFileSystem.fs;
 }
 
 SN_STATUS SN_MODULE_FILE_SYSTEM_Update(void)
@@ -182,36 +189,32 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_MachineInfoInit(void)
 SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemIndex/*,  uint32_t optionIndex */)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-    char srcTempFilePath[MAX_PATH_LENGTH], desTempFilePath[MAX_PATH_LENGTH];
-    char optionFilePath[MAX_PATH_LENGTH];
+    char srcTargetPath[MAX_PATH_LENGTH], desTargetPath[MAX_PATH_LENGTH];
+    //char optionFilePath[MAX_PATH_LENGTH];
     char manifestPath[MAX_PATH_LENGTH];
 
-    FileSystem_GetItem(&moduleFileSystem.fs.pageHeader, pageIndex, itemIndex);
+    const fsItem_t target = FileSystem_GetItem(moduleFileSystem.fs.pageHeader, pageIndex, itemIndex);
 
     retStatus = FileSystem_fctl_RemoveFiles(TARGET_PATH);
 
-    sprintf(srcTempFilePath,"%s/%s.%s", USB_PATH, \
-                                moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, \
-                                TARGET_FILE_EXT); fflush(stdout);
+    sprintf(srcTargetPath,"%s/%s.%s", USB_PATH, target.name, TARGET_CWS_FILE_EXT);
 
-    sprintf(desTempFilePath,"%s/%s.%s", TARGET_PATH, \
-                                moduleFileSystem.fs.page[pageIndex].item[itemIndex].name, \
-                                TARGET_FILE_EXT); fflush(stdout);
+    sprintf(desTargetPath,"%s/%s.%s", TARGET_PATH, target.name, TARGET_CWS_FILE_EXT);
 
-    retStatus = FileSystem_fctl_CopyFile(srcTempFilePath, desTempFilePath);
-    retStatus = FileSystem_fctl_ExtractFile(desTempFilePath, TARGET_PATH);
+    retStatus = FileSystem_fctl_CopyFile(srcTargetPath, desTargetPath);
+    retStatus = FileSystem_fctl_ExtractFile(desTargetPath, TARGET_PATH);
 
-    sprintf(manifestPath,"%s/%s.%s", TARGET_PATH, \
-                                MANIFEST_FILE_NAME, \
-                                MANIFEST_FILE_EXT); fflush(stdout);
+    /** @todo target file checker (mango netfabb cws 9b) */
+    sprintf(manifestPath,"%s/%s.%s", TARGET_PATH, MANIFEST_FILE_NAME, MANIFEST_FILE_EXT);
 
     //@DEMO SETTING
     sDemoPrintSetting(); // Option Demo
 
     /* Target */
     moduleFileSystem.printInfo.printTarget.targetPath                 = TARGET_PATH;
-    moduleFileSystem.printInfo.printTarget.targetName                 = sParseXML_TargetName(manifestPath);
-    moduleFileSystem.printInfo.printTarget.slice                      = sCountSlice(TARGET_PATH);
+    //moduleFileSystem.printInfo.printTarget.targetName                 = sParseXML_TargetName(manifestPath);
+    moduleFileSystem.printInfo.printTarget.targetName                 = target.name;
+    moduleFileSystem.printInfo.printTarget.slice                      = FileSystem_CountFileNumWithExtetion(TARGET_PATH, TARGET_IMAGE_EXT);
 
 
     moduleFileSystem.printInfo.isInit = true;
@@ -248,7 +251,7 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoUninit(void)
     if(moduleFileSystem.printInfo.isInit)
     {
         moduleFileSystem.printInfo.isInit = false;
-        sRemoveTempFile(TARGET_PATH);
+        FileSystem_fctl_RemoveFiles(TARGET_PATH);
     }
 
     return retStatus;
@@ -320,14 +323,14 @@ static void* sFileSystemThread()
             case MSG_FILE_SYSTEM_USB_UNMOUNT:
 
                 SN_SYS_Log("File System => Module => USB Unmount.");
-                retStatus = sFileSystemRemove();
+                retStatus = sFileSystemRemove(&moduleFileSystem.fs);
                 SN_SYS_ERROR_CHECK(retStatus, "File System Remove Failed.");
 
                 retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_FILE_SYSTEM, APP_EVT_MSG_FILE_SYSTEM_USB_UNMOUNT);
                 SN_SYS_ERROR_CHECK(retStatus, "App Message Send Failed.");
                 break;
             case MSG_FILE_SYSTEM_READ:
-                retStatus = sFileSystemRead();
+                retStatus = sFileSystemRead(&moduleFileSystem.fs);
                 SN_SYS_ERROR_CHECK(retStatus, "File System Read Failed.");
 
                 retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_UPDATE, 0);
@@ -336,16 +339,11 @@ static void* sFileSystemThread()
                 retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_FILE_SYSTEM, APP_EVT_MSG_FILE_SYSTEM_READ_DONE);
                 SN_SYS_ERROR_CHECK(retStatus, "App Message Send Failed.");
                 break;
-
             case MSG_FILE_SYSTEM_UPDATE:
                 retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_FILE_SYSTEM, APP_EVT_MSG_FILE_SYSTEM_UPDATE);
                 SN_SYS_ERROR_CHECK(retStatus, "App Message Send Failed.");
                 break;
-
             case MSG_FILE_SYSTEM_WAITING:
-                break;
-
-            case MSG_FILE_SYSTEM_IGNORE:
                 break;
             default:
                 SN_SYS_ERROR_CHECK(SN_STATUS_UNKNOWN_MESSAGE, "File System Get Unknown Message.");
@@ -395,44 +393,61 @@ static void* USBEvent_Callback(int evt)
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 
-static SN_STATUS sFileSystemRead(void)
+static SN_STATUS sFileSystemRead(fs_t* fileSystem)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
     DIR *dp;
     struct dirent *ep;
     char* nameBuffer = NULL;
-    int pageIndex = 0, itemIndex = 0;
+
+    fsPage_t* currentPage = NULL;
+
+    if(fileSystem == NULL)
+    {
+        return SN_STATUS_INVALID_PARAM;
+    }
 
     dp = opendir(USB_PATH);
 
-    sFileSystemRemove();
+    sFileSystemRemove(fileSystem);
 
-    pageIndex = 0;
+    /* Page Init */
+    fileSystem->pageHeader = FileSystem_PageInit();
+    if(fileSystem->pageHeader == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "pageHeader init failed");
+    }
+
+
 
     if (dp != NULL)
     {
+        /* Add First Page */
+        FileSystem_AddPage(fileSystem->pageHeader);
+        if(fileSystem->pageHeader->firstPage == NULL)
+        {
+            SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "first page is can't open.");
+        }
+        currentPage = fileSystem->pageHeader->firstPage;
+
         while((ep = readdir (dp)))
         {
             nameBuffer = ep->d_name;
 
-            if(!strcmp(TARGET_FILE_EXT, sGetFilenameExt(nameBuffer)))
+            if(!strcmp(TARGET_CWS_FILE_EXT, FileSystem_fctl_ExtractFileExtention(nameBuffer)))
             {
-                if(MAX_ITEM_SIZE <= itemIndex)
+                strcpy(currentPage->item[currentPage->itemCnt].name, FileSystem_fctl_Extarct_FileName(nameBuffer));
+
+                if((currentPage->itemCnt + 1) >= MAX_ITEM_SIZE)
                 {
-                    if(MAX_PAGE_SIZE <= pageIndex)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        moduleFileSystem.fs.pageCnt++;
-                        pageIndex++;
-                        itemIndex = 0;
-                    }
+                    FileSystem_AddPage(fileSystem->pageHeader);
+                    currentPage = currentPage->nextPage;
                 }
-                moduleFileSystem.fs.page[pageIndex].itemCnt++;
-                strcpy(moduleFileSystem.fs.page[pageIndex].item[itemIndex++].name, sGetFilename(nameBuffer));
+                else
+                {
+                    currentPage->itemCnt++;
+                }
             }
         }
         (void) closedir (dp);
@@ -442,114 +457,58 @@ static SN_STATUS sFileSystemRead(void)
         perror ("Couldn't open the directory");
     }
 
-    if(moduleFileSystem.fs.page[0].itemCnt != 0)
-    {
-        moduleFileSystem.fs.isItemExist = true;
-    }
-    else
-    {
-        moduleFileSystem.fs.isItemExist = false;
-    }
 
-    sFileSystemPrint();
+    fileSystem->pageHeader->isItemExist = (fileSystem->pageHeader->firstPage->itemCnt != 0);
+
+    sFileSystemPrint(fileSystem);
 
     return retStatus;
 }
 
-static SN_STATUS sFileSystemRemove(void)
+static SN_STATUS sFileSystemRemove(fs_t* fileSystem)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    int pageIndex = 0;
-
-    /* Init FS */
-    for(pageIndex = 0; pageIndex <= moduleFileSystem.fs.pageCnt; pageIndex++)
-    {
-        moduleFileSystem.fs.page[pageIndex].itemCnt = 0;
-    }
-    moduleFileSystem.fs.pageCnt = 0;
-
-    moduleFileSystem.fs.isItemExist = false;
+    FileSystem_PageDestroy(fileSystem->pageHeader);
 
     return retStatus;
 }
 
 
-static SN_STATUS sFileSystemPrint(void)
+static SN_STATUS sFileSystemPrint(const fs_t* fileSystem)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
     int pageIndex = 0;
     int itemIndex = 0;
 
-    for(pageIndex = 0; pageIndex <= moduleFileSystem.fs.pageCnt; pageIndex++)
+    fsPage_t* currentPage = NULL;
+
+    if(fileSystem == NULL)
     {
-        printf("\nPage    [%d]\n", pageIndex);
-        for(itemIndex = 0; itemIndex < moduleFileSystem.fs.page[pageIndex].itemCnt; itemIndex++)
-        {
-            printf("  ---item [%d] %s\n", itemIndex, moduleFileSystem.fs.page[pageIndex].item[itemIndex].name); fflush(stdout);
-        }
-        printf("max item[%d]\n", moduleFileSystem.fs.page[pageIndex].itemCnt);
+        return SN_STATUS_INVALID_PARAM;
     }
 
-    printf("max page[%d]\n", moduleFileSystem.fs.pageCnt);
+    currentPage = fileSystem->pageHeader->firstPage;
+
+    for(pageIndex = 0; pageIndex < fileSystem->pageHeader->pageCnt; pageIndex++)
+    {
+        printf("\nPage    [%d]\n", (pageIndex + 1));
+
+        for(itemIndex = 0; itemIndex < currentPage->itemCnt; itemIndex++)
+        {
+            printf("  ---item [%d] %s\n", (itemIndex + 1),currentPage->item[itemIndex].name); fflush(stdout);
+        }
+
+        printf("max item[%d]\n", currentPage->itemCnt);
+
+        currentPage = currentPage->nextPage;
+    }
+
+    printf("max page[%d]\n", fileSystem->pageHeader->pageCnt);
 
     return retStatus;
 }
-
-/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
- *
- *  TEMP FILE CONTROL
- *
- * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-static uint32_t sCountSlice(const char* srcPath)
-{
-    DIR *d = opendir(srcPath);
-    uint32_t slice = 0;
-
-    int r = -1;
-
-    if(d)
-    {
-        struct dirent *p;
-
-        r = 0;
-
-        while(!r &&( p=readdir(d)))
-        {
-            if(!strcmp(p->d_name, ".") || !strcmp(p->d_name, ".."))
-            {
-                continue;
-            }
-
-            if(strstr(p->d_name, TARGET_IMAGE_EXT) != NULL)
-            {
-                slice++;
-            }
-        }
-        closedir(d);
-    }
-    else
-    {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Path Invalid.");
-    }
-
-    if(!r)
-    {
-        printf("Module => File System => Slice File Number : [ %04d ]\n", slice); fflush(stdout);
-    }
-
-    return slice;
-}
-
-
-
-
-/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
- *
- *  UTIL
- *
- * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *

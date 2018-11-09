@@ -75,14 +75,7 @@ general_evt_t SN_SYS_MessageGet(sysMessageQId *msgQId)
 
     if((msgrcv(msgQId->keyId, (void *)msgQId, sizeof(sysMessageQId), msgQId->mtype, 0) == -1))
     {
-        if (errno == EINTR)
-        {
-            msgQId->mevt.evt_id = APP_EVT_ID_IGNORE;
-        }
-        else
-        {
             perror("msgrcv error : ");
-        }
     }
 
     return msgQId->mevt;

@@ -13,6 +13,7 @@
 #include "SN_MODULE_FILE_SYSTEM.h"
 
 #include "FILE_SYSTEM_XML.h"
+#include "FILE_SYSTEM_FCTL.h"
 
 /* ******* STATIC DEFINE ******* */
 
@@ -43,7 +44,7 @@ static const char* parse_ProjectName(xmlDocPtr doc, xmlNodePtr cur)
             {
                 return NULL;
             }
-            strcpy(retStr, (const char *)sGetFilename((const char *)key));
+            strcpy(retStr, (const char *)FileSystem_fctl_Extarct_FileName((const char *)key));
 
             xmlFree(key);
         }

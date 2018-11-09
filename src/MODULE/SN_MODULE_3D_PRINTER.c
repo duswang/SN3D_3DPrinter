@@ -114,7 +114,6 @@ typedef enum event_3d_printer_message {
     MSG_3D_PRINTER_HOMMING,                 /**< Z Homing */
     MSG_3D_PRINTER_STANDBY,                 /**< Device Standby */
     MSG_3D_PRINTER_NONE,                    /**< BAD ACCESS */
-    MSG_3D_PRINTER_IGNORE       = 0xFF01    /**< Came From Timer - Don't Care */
 } evt3DPrinter_t;
 
 /* *** MODULE HANDLER  *** */
@@ -432,8 +431,6 @@ static void* s3DPrinterThread()
             break;
         case MSG_3D_PRINTER_STANDBY:
             s3DPrinterEnterState(DEVICE_STANDBY);
-            break;
-        case MSG_3D_PRINTER_IGNORE:
             break;
         default:
             SN_SYS_ERROR_CHECK(SN_STATUS_UNKNOWN_MESSAGE, "3D Printer Get Unknown Message.");

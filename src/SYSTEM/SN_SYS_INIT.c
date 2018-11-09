@@ -59,10 +59,6 @@ int main(void)
     retStatus = APP_Init();
     SN_SYS_ERROR_CHECK(retStatus,"APP INIT FAILD.");
 
-    /* TEST */
-    //SN_MODULE_3D_PRINTER_Test();
-
-
     /* APP main() */
     while(true)
     {
@@ -70,9 +66,6 @@ int main(void)
 
         switch(evt.evt_id)
         {
-            case APP_EVT_ID_IGNORE:
-                /* FROM TIMER message => Interrupted Signal */
-                break;
             case APP_EVT_ID_3D_PRINTER:
             case APP_EVT_ID_DISPLAY:
             case APP_EVT_ID_FILE_SYSTEM:

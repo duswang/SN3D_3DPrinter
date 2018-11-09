@@ -49,7 +49,7 @@ SN_STATUS FileSystem_fctl_CopyFile(const char* srcPath, const char* desPath)
 
         if(readCnt < sizeof(buf))
         {
-            if(feof(src)!=0)
+            if(feof(src) != 0)
             {
                 fwrite((void*)buf, 1, readCnt, des);
                 SN_SYS_Log("Module => File System => MAKE TEMP FILE.");
@@ -106,7 +106,7 @@ SN_STATUS FileSystem_fctl_RemoveFiles(const char* folderPath)
                 {
                     if(S_ISDIR(statbuf.st_mode))
                     {
-                        r2 = sRemoveTempFile(buf);
+                        r2 = FileSystem_fctl_RemoveFiles(buf);
                     }
                     else
                     {
@@ -221,6 +221,48 @@ SN_STATUS FileSystem_fctl_ExtractFile(const char* srcPath, const char* desPath)
     SN_SYS_Log("Module => File System => EXTRACT TEMP FILE.");
 
     return retStatus;
+}
+
+
+uint32_t FileSystem_CountFileNumWithExtetion(const char* srcPath, const char* fileExtention)
+{
+    DIR *d = opendir(srcPath);
+    uint32_t slice = 0;
+
+    int r = -1;
+
+    if(d)
+    {
+        struct dirent *p;
+
+        r = 0;
+
+        while(!r &&( p=readdir(d)))
+        {
+            if(!strcmp(p->d_name, ".") || !strcmp(p->d_name, ".."))
+            {
+                continue;
+            }
+
+            if(strstr(p->d_name, fileExtention) != NULL)
+            {
+                slice++;
+            }
+        }
+        closedir(d);
+    }
+
+    else
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Path Invalid.");
+    }
+
+    if(!r)
+    {
+        printf("Module => File System => Slice File Number : [ %04d ]\n", slice); fflush(stdout);
+    }
+
+    return slice;
 }
 
 const char* FileSystem_fctl_ExtractFileExtention(const char *filename)

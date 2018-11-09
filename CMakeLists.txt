@@ -100,6 +100,7 @@ set(
 
 
 	# Module :: File System #
+	${MODULE_PATH}/FILE_SYSTEM/FILE_SYSTEM_FCTL.c
 	${MODULE_PATH}/FILE_SYSTEM/FILE_SYSTEM_XML.c
 	${MODULE_PATH}/FILE_SYSTEM/FILE_SYSTEM_PAGE.c
 	
@@ -165,7 +166,7 @@ set(
 	-DMOTOR_DISALBE=false
 
     # DISPLAY #
-    -DDISPLAY_RX_DEBUG=true
+    -DDISPLAY_RX_DEBUG=false
 
     -DTX_DEBUG=false
     
