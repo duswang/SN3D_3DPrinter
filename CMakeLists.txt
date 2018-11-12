@@ -53,18 +53,19 @@ include_directories(
 	# API #
 	${PRJ_SOURCE_PATH}/INCLUDE
 	
-	# SYSTEM #
+	# System #
 	${SYSTEM_PATH}/INCLUDE
 	
-	# MODULE #
+	# Module #
 	${MODULE_PATH}/INCLUDE
 	
-	# MODULE :: FILE SYSTEM #
+	# Module :: File System #
 	${MODULE_PATH}/FILE_SYSTEM/INCLUDE
 	
-
+	# Module :: Image Viewer #
+	${MODULE_PATH}/IMAGE_VIEWER/INCLUDE
 	
-	# APP #
+	# App #
 	${APP_PATH}/INCLUDE
 	${APPS_PATH}/INCLUDE
 )
@@ -92,17 +93,25 @@ set(
 	${APPS_PATH}/APP_WAITING.c
 	${APPS_PATH}/APP_INIT.c
 
-	# Moduel #
-	${MODULE_PATH}/SN_MODULE_FILE_SYSTEM.c
-	${MODULE_PATH}/SN_MODULE_IMAGE_VIEWER.c
+	# Moduel :: 3D Printer #
 	${MODULE_PATH}/SN_MODULE_3D_PRINTER.c
+	
+	# Module :: Display #
 	${MODULE_PATH}/SN_MODULE_DISPLAY.c
 
 
 	# Module :: File System #
+	${MODULE_PATH}/SN_MODULE_FILE_SYSTEM.c
+		
 	${MODULE_PATH}/FILE_SYSTEM/FILE_SYSTEM_FCTL.c
 	${MODULE_PATH}/FILE_SYSTEM/FILE_SYSTEM_XML.c
 	${MODULE_PATH}/FILE_SYSTEM/FILE_SYSTEM_PAGE.c
+	
+	# Module :: Image Viewer #
+	${MODULE_PATH}/SN_MODULE_IMAGE_VIEWER.c
+	
+	${MODULE_PATH}/IMAGE_VIEWER/IMAGE_VIEWER_FB.c
+	${MODULE_PATH}/IMAGE_VIEWER/IMAGE_VIEWER_SDL.c
 	
 	# Main #
 	${SYSTEM_PATH}/SN_SYS_INIT.c
@@ -178,13 +187,12 @@ set(
 
     # 3D PRINTER #
     -DPRINTER_RX_DEBUG=false
+    -DPRINTER_TX_DEBUG=false
 	-DMOTOR_DISALBE=false
 
     # DISPLAY #
-    -DDISPLAY_RX_DEBUG=true
-
-	# Serial #
-    -DTX_DEBUG=true
+    -DDISPLAY_RX_DEBUG=false
+	-DDISPLAY_TX_DEBUG=false
     
     # IMAGE VIEWER #
     -DIMAGE_VIEWER_FIX_RESOLUTION=true

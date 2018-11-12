@@ -6,8 +6,6 @@
  *
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
- *
- * @todo serial path finder
  */
 
 #include "SN_API.h"
@@ -193,9 +191,6 @@ SN_STATUS SN_SYS_SerialTx(sysSerialId serialId, char* buffer, size_t bufferSize)
 
     if (serialId->uartId != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
     {
-#if(TX_DEBUG)
-        printf("TX DATA => %s\n", buffer); fflush(stdout);
-#endif
         count = write(serialId->uartId, buffer, bufferSize - 1);
 
         switch(serialId->_serialDef->returnMode)

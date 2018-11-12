@@ -9,6 +9,7 @@
  *
  * @todo read XML File and Option File.
  * @todo read machine XML File.
+ * @todo getFunctions must be allocate pointer value not ref.
  */
 
 #include "SN_API.h"
@@ -220,8 +221,7 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemI
 
     /* Target Info Setting. */
     moduleFileSystem.printInfo.printTarget.targetPath                 = TARGET_PATH;
-    //moduleFileSystem.printInfo.printTarget.targetName                 = sParseXML_TargetName(manifestPath);
-    moduleFileSystem.printInfo.printTarget.targetName                 = target.name;
+    moduleFileSystem.printInfo.printTarget.targetName                 = FileSystem_GetProjectName(manifestPath);
     moduleFileSystem.printInfo.printTarget.slice                      = FileSystem_CountFileNumWithExtetion(TARGET_PATH, TARGET_IMAGE_EXT);
 
     moduleFileSystem.printInfo.isInit = true;
@@ -527,14 +527,12 @@ static void sDemoPrintSetting(void)
     moduleFileSystem.printInfo.printParameter.layerThickness          = 0.05000;//mm
 
     /* Bottom Layer */
-    //moduleFileSystem.printInfo.printParameter.bottomLayerExposureTime =     50;//ms
     moduleFileSystem.printInfo.printParameter.bottomLayerExposureTime =   35000;//ms
     moduleFileSystem.printInfo.printParameter.bottomLayerNumber       =       7;//layer
     moduleFileSystem.printInfo.printParameter.bottomLiftFeedRate      =  150.00;//mm/s
 
     /* Normal Layer */
     moduleFileSystem.printInfo.printParameter.layerExposureTime       =    3000;//ms
-    //moduleFileSystem.printInfo.printParameter.layerExposureTime       =      50;//ms
     moduleFileSystem.printInfo.printParameter.liftDistance            =       7;//mm
     moduleFileSystem.printInfo.printParameter.liftFeedRate            =  150.00;//mm/s
 

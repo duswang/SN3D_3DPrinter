@@ -29,18 +29,28 @@
 #define NX_PAGE_LOADING_COMMAND     "page Loading"
 
 #define NX_COMMAND_RESET            "rest"
+
 /*************************************************************@}*/
 
 /*************************************************************
- * @name NEXTION REQUEST PAGE COMMAND
+ * @name NEXTION SERIAL HEAD COMMAND
  *
  *////@{
 
-#define NX_COLOR_RED   "RED"
-#define NX_COLOR_BLACK "BLACK"
-#define NX_COLOR_WHITE "WHITE"
+enum NEXTION_COLOR_TABLE
+{
+    NX_COLOR_TABLE_BLACK  = 0,
+    NX_COLOR_TABLE_BLUE   = 31,
+    NX_COLOR_TABLE_BROWN  = 48192,
+    NX_COLOR_TABLE_GREEN  = 2016,
+    NX_COLOR_TABLE_YELLOW = 65504,
+    NX_COLOR_TABLE_RED    = 63488,
+    NX_COLOR_TABLE_GRAY   = 33840,
+    NX_COLOR_TABLE_WHITE  = 65535
+};
 
 /*************************************************************@}*/
+
 
 /*************************************************************
  * @name NEXTION SERIAL HEAD COMMAND

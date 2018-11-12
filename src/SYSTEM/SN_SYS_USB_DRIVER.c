@@ -10,6 +10,14 @@
  * @bug USB_UNMOUNT_EVENT not working
  */
 
+#ifdef __APPLE__
+#include <libusb-1.0/libusb.h>
+#endif
+
+#ifdef linux
+#include <libusb-1.0/libusb.h>
+#endif
+
 #include "SN_API.h"
 #include "SN_SYS_USB_DRIVER.h"
 

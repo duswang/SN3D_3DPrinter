@@ -6,6 +6,8 @@
  *
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
+ *
+ * @todo bootUp and Resolution Settup.
  */
 #include "APPS.h"
 
@@ -19,6 +21,8 @@ static SN_STATUS s3DPrinterHdlr(event_msg_t evtMessage);
 static SN_STATUS sDisplayHdlr(event_msg_t evtMessage);
 static SN_STATUS sFileSystemHdlr(event_msg_t evtMessage);
 static SN_STATUS sImageViewerHdlr(event_msg_t evtMessage);
+
+static SN_STATUS sBootup(void);
 
 SN_STATUS APP_INIT_EvtHdlr(general_evt_t evt)
 {
@@ -56,6 +60,8 @@ SN_STATUS APP_STATE_EnterStateInit(void)
     APP_SetAppState(APP_STATE_INIT);
     SN_MODULE_DISPLAY_EnterState(APP_STATE_INIT);
 
+    sBootup();
+
     return retStatus;
 }
 
@@ -66,7 +72,6 @@ static SN_STATUS s3DPrinterHdlr(event_msg_t evtMessage)
     switch(evtMessage)
     {
     case APP_EVT_MSG_3D_PRINTER_RAMPS_BOARD_INIT_DONE:
-        retStatus = APP_STATE_EnterStateWaiting();
         break;
     default:
         break;
@@ -138,6 +143,38 @@ static SN_STATUS sImageViewerHdlr(event_msg_t evtMessage)
     return retStatus;
 }
 
+static SN_STATUS sBootup(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    SN_MODULE_DISPLAY_BootProgressUpdate(20, "System Booting...");
+    SN_SYS_Delay(500);
+
+    SN_MODULE_DISPLAY_BootProgressUpdate(30, "Ramps Board Initialized...");
+    SN_SYS_Delay(500);
+
+    SN_MODULE_DISPLAY_BootProgressUpdate(40, "Screen Initialized...");
+    SN_SYS_Delay(500);
+
+    SN_MODULE_DISPLAY_BootProgressUpdate(45, "USB File Read...");
+    SN_SYS_Delay(500);
+
+    SN_MODULE_DISPLAY_BootProgressUpdate(50, "Option File Read...");
+    SN_SYS_Delay(500);
+
+    SN_MODULE_DISPLAY_BootProgressUpdate(55, "Device Concifg Read...");
+    SN_SYS_Delay(500);
+
+    SN_MODULE_DISPLAY_BootProgressUpdate(80, "System Initialzied...");
+    SN_SYS_Delay(500);
+
+    SN_MODULE_DISPLAY_BootProgressUpdate(100, "init finished...");
+    SN_SYS_Delay(500);
+
+    retStatus = APP_STATE_EnterStateWaiting();
+
+    return retStatus;
+}
 
 
 

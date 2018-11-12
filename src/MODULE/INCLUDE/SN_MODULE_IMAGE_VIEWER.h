@@ -62,26 +62,16 @@ extern SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowClean(void);
 
 /*************************************************************
  * @name Image Viewer Module :: Nextion LCD Control
- *  @brief
- *  @warning this functions only call after 'SN_MODULE_IMAGE_VIEWER_WindowUpdate' -!!
- *
+ *  @brief nextion display thumbnail control functions
+ *  @warning thumbnail functions work with 'window' functions
+ *  @note It take 0.8 msec task time on 120 width thumbnail image.
  *////@{
 
-/** @brief
- *
- *  @return SN_STATUS
- *
- *  @note
- */
-extern SN_STATUS SN_MODULE_IMAGE_VIEWER_NextionUpdate(void);
+//SN_STATUS SN_MODULE_IMAGE_VIEWER_ThumbnailUpdate(void);
 
-/** @brief
- *
- *  @return SN_STATUS
- *
- *  @note
- */
-extern SN_STATUS SN_MODULE_IMAGE_VIEWER_NextionClean(void);
+//SN_STATUS SN_MODULE_IMAGE_VIEWER_ThumbnailClean(void);
+
+//SN_STATUS SN_MODULE_IMAGE_VIEWER_ThumbnailDistroy(void);
 
 /*************************************************************@}*/
 

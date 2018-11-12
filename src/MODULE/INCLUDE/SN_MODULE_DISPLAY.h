@@ -58,9 +58,20 @@ extern SN_STATUS SN_MODULE_DISPLAY_EnterState(nx_page_t state);
  */
 extern SN_STATUS SN_MODULE_DISPLAY_FileSelectUpdate(uint32_t page);
 
-///@}
+/*************************************************************@}*/
 
-/** @name Display Module :: Print Page Info
+/*************************************************************
+ * @name Display Module :: Boot Page
+ *  @brief
+ *////@{
+
+extern SN_STATUS SN_MODULE_DISPLAY_BootProgressUpdate(uint32_t progressValue, const char* progressStr);
+
+/*************************************************************@}*/
+
+
+/*************************************************************
+ * @name Display Module :: Print Page Info
  *  @brief
  *////@{
 
@@ -135,13 +146,33 @@ extern SN_STATUS SN_MODULE_DISPLAY_PrintingTimerStop(void);
  * @name Display Module :: Nextion GUI Tool
  *  @brief
  *////@{
+
 /** @brief
  *
  *  @return SN_STATUS
  *
  *  @note
  */
-extern SN_STATUS SN_MODULE_DISPLAY_NextionDrawLine(int x, int y, const char* color);
+SN_STATUS SN_MODULE_DISPLAY_NextionDrawLine(int startX, int startY, int endX, int endY, int color);
+
+
+/** @brief
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
+extern SN_STATUS SN_MODULE_DISPLAY_NextionDrawDot(int coorX, int coorY, int color);
+
+
+/** @brief
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
+extern SN_STATUS SN_MODULE_DISPLAY_NextionDrawFill(int startX, int startY, int width, int height, int color);
+
 
 /*************************************************************@}*/
 

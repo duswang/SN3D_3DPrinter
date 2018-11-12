@@ -8,9 +8,6 @@
 #include <png.h>
 #include <zlib.h>
 
-
-
-
 void read_png(const char* filename, unsigned char **buffer, unsigned char **alpha, int* width, int * height)
 {
   char header[8];    // 8 is the maximum size that can be checked

@@ -13,8 +13,8 @@
  * @{
  */
 
-#ifndef INCLUDE_SN_SYSTEM_MESSAGES_H_
-#define INCLUDE_SN_SYSTEM_MESSAGES_H_
+#ifndef SN_SYSTEM_MESSAGES_H_
+#define SN_SYSTEM_MESSAGES_H_
 
 /** @brief
  *
@@ -91,4 +91,4 @@ typedef enum {
 
 /*************************************************************@}*/
 
-#endif /* INCLUDE_SN_SYSTEM_MESSAGES_H_ */
+#endif /* SN_SYSTEM_MESSAGES_H_ */

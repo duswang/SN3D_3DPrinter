@@ -602,9 +602,6 @@ static SN_STATUS s3DPrinter_PrintInit(void)
         retStatus = SN_MODULE_IMAGE_VIEWER_WindowClean();
         SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Window Clear Failed.");
 
-        retStatus = SN_MODULE_IMAGE_VIEWER_NextionClean();
-        SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Nextion Thumbnail Clear Failed.");
-
         printf("Module => 3D Printer  => TARGET NAME [ %s ]\n", module3DPrinter.printInfo.printTarget.targetName);
 
         retStatus = SN_SYS_TimerCreate(&timerPrint, FIRST_SLICE_DELAY_TIME, sTMR_NextCycle_Callback);
@@ -637,7 +634,6 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
 
         SN_MODULE_DISPLAY_PrintingInfoUpdate((module3DPrinter.sliceIndex + 1), module3DPrinter.printInfo.printTarget.slice);
         printf("Module => 3D Printer  => SLICE %04d  =========", (module3DPrinter.sliceIndex + 1)); fflush(stdout);
-
 
         /* UV Turn On */
         retStatus = SN_SYS_SerialTx(serialId3DPrinter, GCODE_LCD_ON, sizeof(GCODE_LCD_ON));
@@ -691,10 +687,9 @@ static SN_STATUS s3DPrinter_PrintLift(void)
 #else
         /* IMAGE VIEWER CLEAER */
         retStatus = SN_MODULE_IMAGE_VIEWER_WindowClean();
-        SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Clear Failed.");
+        SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Window Clear Failed.");
 
         /* Z LIFT */
-
         retStatus = sSendGCode(module3DPrinter.gcodeLiftUp, sizeof(module3DPrinter.gcodeLiftUp));
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
         retStatus = sSendGCode(module3DPrinter.gcodeLiftDown, sizeof(module3DPrinter.gcodeLiftDown));
@@ -976,6 +971,11 @@ static SN_STATUS sSendGCode(char* command, size_t bufferSize)
     {
         return SN_STATUS_INVALID_PARAM;
     }
+
+#if(PRINTER_TX_DEBUG)
+        printf("3D Printer => Module => GCODE TX : %s\n", command); fflush(stdout);
+#endif
+
 
     pthread_mutex_lock(&ptm3DPrinter);
     SN_SYS_SerialTx(serialId3DPrinter, command, bufferSize);

@@ -8,6 +8,17 @@
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  */
 
+#ifdef __APPLE__
+#include <libxml2/libxml/xmlreader.h>
+#include <libxml2/libxml/xmlmemory.h>
+#include <libxml2/libxml/parser.h>
+#endif
+
+#ifdef linux
+#include <libxml/xmlreader.h>
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
+#endif
 
 #include "SN_API.h"
 #include "SN_MODULE_FILE_SYSTEM.h"
@@ -20,41 +31,21 @@
 /* ******* GLOBAL VARIABLE ******* */
 
 /* ******* STATIC FUNCTIONS ******* */
+/* PROJECT XML */
+static const char* sParse_ProjectName(xmlDocPtr doc, xmlNodePtr cur);
+
+/* CONFIG XML */
+static SN_STATUS sParseXML_ConfigFile(const char* srcPath);
+
+/* OPTION XML */
+static SN_STATUS sParseXML_OptionFile(const char* srcPath);
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
  *  Extern Functions
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-
-static const char* parse_ProjectName(xmlDocPtr doc, xmlNodePtr cur)
-{
-    char *retStr = NULL;
-    xmlChar *key;
-
-    cur = cur->xmlChildrenNode;
-
-    while(cur != NULL)
-    {
-        if((!xmlStrcmp(cur->name, (const xmlChar *)"name")))
-        {
-            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-
-            if ((retStr = malloc (strlen((const char *)key) + 1)) == NULL)
-            {
-                return NULL;
-            }
-            strcpy(retStr, (const char *)FileSystem_fctl_Extarct_FileName((const char *)key));
-
-            xmlFree(key);
-        }
-        cur = cur->next;
-    }
-
-    return retStr;
-}
-
-static const char* sParseXML_TargetName(const char *srcPath)
+const char* FileSystem_GetProjectName(const char *srcPath)
 {
     const char         *docname;
     xmlDocPtr           doc;
@@ -87,7 +78,7 @@ static const char* sParseXML_TargetName(const char *srcPath)
     {
         if ((!xmlStrcmp(cur->name, (const xmlChar *)"GCode")))
         {
-            retStr = parse_ProjectName(doc, cur);
+            retStr = sParse_ProjectName(doc, cur);
 
             if(retStr == NULL)
             {
@@ -98,6 +89,33 @@ static const char* sParseXML_TargetName(const char *srcPath)
     }
 
     xmlFreeDoc(doc);
+
+    return retStr;
+}
+
+static const char* sParse_ProjectName(xmlDocPtr doc, xmlNodePtr cur)
+{
+    char *retStr = NULL;
+    xmlChar *key;
+
+    cur = cur->xmlChildrenNode;
+
+    while(cur != NULL)
+    {
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"name")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+
+            if ((retStr = malloc (strlen((const char *)key) + 1)) == NULL)
+            {
+                return NULL;
+            }
+            strcpy(retStr, (const char *)FileSystem_fctl_Extarct_FileName((const char *)key));
+
+            xmlFree(key);
+        }
+        cur = cur->next;
+    }
 
     return retStr;
 }

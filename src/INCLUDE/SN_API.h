@@ -17,8 +17,8 @@
  * @{
  */
 
-#ifndef SN_API
-#define SN_API
+#ifndef SN_API_H_
+#define SN_API_H_
 
 /* Standard */
 #include <stdio.h>
@@ -27,72 +27,14 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include <fcntl.h>
-
-/* POSIX */
-#include <pthread.h>
-#include <semaphore.h>
-#include <signal.h>
-#include <time.h>
-
-/* System */
-#include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/msg.h>
-#include <sys/stat.h>
-#include <sys/poll.h>
-#include <sys/time.h>
-#include <sys/mman.h>
-#include <sys/ioctl.h>
-
-#include <errno.h>
-
 /* File System */
 #include <dirent.h>
+#include <fcntl.h>
 
 /* Serial */
 #include <termios.h>
 #include <unistd.h>
 
-/* Library */
-#ifdef __APPLE__
-#include <png.h>
-#include <zlib.h>
-
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-
-#include <libusb-1.0/libusb.h>
-
-#include <libxml2/libxml/xmlreader.h>
-#include <libxml2/libxml/xmlmemory.h>
-#include <libxml2/libxml/parser.h>
-#endif
-
-#ifdef linux
-#include <linux/fb.h>
-#include <png.h>
-#include <zlib.h>
-
-#include <SDL.h>
-#include <SDL_image.h>
-
-#include <libusb-1.0/libusb.h>
-
-#include <libxml/xmlreader.h>
-#include <libxml/xmlmemory.h>
-#include <libxml/parser.h>
-#endif
-
-#include <zip.h>
-
-#if(DEMO_MODE)
-{
-
-}
-#else
-
-#endif
 /* Type */
 #ifndef bool
 typedef int bool;
@@ -101,14 +43,40 @@ typedef int bool;
 #endif
 
 
-/* * * * * * * * * * * System * * * * * * * * * * * */
+/*************************************************************
+ * @name SN3D System
+ * @brief
+ * @{
+ */
 #include "SN_SYSTEM.h"
 
-/* * * * * * * * * * * Modules * * * * * * * * * * * */
+/*************************************************************@}*/
+
+
+
+/*************************************************************
+ * @name SN3D Module
+ * @brief
+ * @{
+ */
 #include "SN_MODULE.h"
 
-/* * * * * * * * * * * Applications * * * * * * * * * * * */
+/*************************************************************@}*/
+
+
+
+
+
+
+/*************************************************************
+ * @name APP Message
+ * @brief
+ * @{
+ */
 #include "APP_MESSAGES.h"
 
-#endif /* SN_API */
+/*************************************************************@}*/
+
+
+#endif /* SN_API_H_ */
 /**@}*/

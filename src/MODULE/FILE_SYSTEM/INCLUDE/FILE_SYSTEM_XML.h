@@ -27,6 +27,7 @@
  *  @return SN_STATUS
  *  @note
  */
+const char* FileSystem_GetProjectName(const char *srcPath);
 
 /*************************************************************@}*/
 

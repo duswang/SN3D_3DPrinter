@@ -159,7 +159,11 @@ SN_STATUS SN_SYS_Delay(uint32_t msec)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
+#if(IMAGE_VIEWER_USE_SDL)
     SDL_Delay(msec);
+#else
+    usleep(msec * 1000);
+#endif
 
     return retStatus;
 }

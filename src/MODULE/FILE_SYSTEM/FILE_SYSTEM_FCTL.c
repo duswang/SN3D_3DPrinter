@@ -8,6 +8,16 @@
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  */
 
+#ifdef __APPLE__
+
+#include <zip.h>
+#endif
+
+#ifdef linux
+
+#include <zip.h>
+#endif
+
 #include "SN_API.h"
 #include "SN_MODULE_FILE_SYSTEM.h"
 

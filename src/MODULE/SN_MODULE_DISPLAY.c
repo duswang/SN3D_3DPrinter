@@ -7,7 +7,7 @@
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
- * @todo Nextion display draw line.
+ * @todo Serial Communication Check and retry & timeout functions
  */
 
 #include "SN_API.h"
@@ -181,6 +181,29 @@ SN_STATUS SN_MODULE_DISPLAY_EnterState(nx_page_t state)
     return retStatus;
 }
 
+SN_STATUS SN_MODULE_DISPLAY_BootProgressUpdate(uint32_t progressValue, const char* progressStr)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    char buffer[NEXTION_COMMAND_BUFFER_SIZE];
+
+    if(progressStr == NULL)
+    {
+        return SN_STATUS_INVALID_PARAM;
+    }
+
+    sprintf(buffer,"Boot.CurrentStatus.val=%d", progressValue);
+
+    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+
+    sprintf(buffer,"Boot.ProgressText.txt=\"%s\"", progressStr);
+
+    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+
+    return retStatus;
+}
+
 SN_STATUS SN_MODULE_DISPLAY_PrintingInfoInit(const char* fileName, const char* optionName)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
@@ -215,7 +238,7 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingInfoUpdate(uint32_t slice, uint32_t targetSl
     SN_STATUS retStatus = SN_STATUS_OK;
     char buffer[DEFAULT_BUFFER_SIZE];
 
-    sprintf(buffer,"Print.Image.txt=\"%3d/ %3d\"", slice, targetSlice);
+    sprintf(buffer,"Print.Slice.txt=\"%3d/ %3d\"", slice, targetSlice);
 
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
@@ -235,7 +258,7 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerInit(uint32_t sec)
 
     moduleDisplay.IsTimerInfoInit = true;
 
-    sprintf(buffer,"Print.FinishTime.txt=\">%02d:%02d:%02d\"", \
+    sprintf(buffer,"Print.ETA_Time.txt=\">%02d:%02d:%02d\"", \
             moduleDisplay.estimatedBuildTime.hour, \
             moduleDisplay.estimatedBuildTime.min, \
             moduleDisplay.estimatedBuildTime.sec);
@@ -362,15 +385,43 @@ SN_STATUS SN_MODULE_DISPLAY_FileSelectUpdate(uint32_t pageIndex)
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 
-SN_STATUS SN_MODULE_DISPLAY_NextionDrawLine(int x, int y, const char* color)
+SN_STATUS SN_MODULE_DISPLAY_NextionDrawLine(int startX, int startY, int endX, int endY, int color)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
     char buffer[NEXTION_COMMAND_BUFFER_SIZE];
 
-    sprintf(buffer,"line %d, %d, %d, %d, %s", x, x, y, y, color);
+    sprintf(buffer,"line %d,%d,%d,%d,%d", startX, startY, endX, endY, color);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Draw Vertical Line Failed.");
+
+    return retStatus;
+}
+
+SN_STATUS SN_MODULE_DISPLAY_NextionDrawDot(int coorX, int coorY, int color)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    char buffer[NEXTION_COMMAND_BUFFER_SIZE];
+
+    sprintf(buffer,"draw %d,%d,%d,%d,%d", coorX, coorY, coorX, coorY, color);
+    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Draw Dot Failed.");
+
+    return retStatus;
+}
+
+SN_STATUS SN_MODULE_DISPLAY_NextionDrawFill(int startX, int startY, int width, int height, int color)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    char buffer[NEXTION_COMMAND_BUFFER_SIZE];
+
+    sprintf(buffer,"fill %d,%d,%d,%d,%d", startX, startY, width, height, color);
+    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Draw Fill Failed.");
 
     return retStatus;
 }
@@ -428,7 +479,7 @@ static void* sSerialRx_Callback(char * rxBuffer)
     {
     case NX_COMMAND_SN_MESSAGE_HEAD:
 #if(DISPLAY_RX_DEBUG)
-        printf("DATA RX <= "); fflush(stdout);
+        printf("Module => Display => Nextion RX : "); fflush(stdout);
         while(rxBuffer[i] != '\0')
         {
             if(i == 0)
@@ -463,18 +514,28 @@ static void* sSerialRx_Callback(char * rxBuffer)
         retStatus = sDisplayMessagePut(MSG_DISPLAY_EVENT_GET, msgNXId.NXmessage[0]);
         SN_SYS_ERROR_CHECK(retStatus, "Display Send Message Failed.");
         break;
-    case NX_COMMAND_FINISHED:
+    case NX_COMMAND_INVALID_CMD:
 #if(DISPLAY_RX_DEBUG)
-        SN_SYS_Log("RESPONSE OK.");
-#endif
+        SN_SYS_Log("Module => Display => Nextion RX : NEXTION INVALID COMMAND.");
+    case NX_COMMAND_FINISHED:
+        SN_SYS_Log("Module => Display => Nextion RX : NEXTION RESPONSE OK.");
         break;
     case NX_COMMAND_EVT_LAUNCHED:
-#if(DISPLAY_RX_DEBUG)
-        SN_SYS_Log("NEXTION DISPLAY LAUNCHED.");
-#endif
+        SN_SYS_Log("Module => Display => Nextion RX : NEXTION DISPLAY LAUNCHED.");
+        break;
+    case NX_COMMAND_INVALID_BAUD:
+        SN_SYS_Log("Module => Display => Nextion RX : NEXTION BAUD RATE NOT MATCHING.");
+        break;
+    case NX_COMMAND_INVALID_VARIABLE:
+        SN_SYS_Log("Module => Display => Nextion RX : NEXTION INVALID VARIABLE.");
         break;
     default:
+        printf("Module => Display => Nextion RX : 0x%02x\n", rxBuffer[0]);
         break;
+#else
+    default:
+        break;
+#endif
     }
 
     return NULL;
@@ -511,7 +572,7 @@ static SN_STATUS sDisplay_TimerInfoUpdate(void)
     {
         moduleDisplay.nowTime = sSecToTimeInfo(moduleDisplay.secNowTime);
 
-        sprintf(buffer,"Print.Time.txt=\"%02d:%02d:%02d\"", \
+        sprintf(buffer,"Print.CurrentTime.txt=\"%02d:%02d:%02d\"", \
                 moduleDisplay.nowTime.hour, \
                 moduleDisplay.nowTime.min, \
                 moduleDisplay.nowTime.sec);
@@ -572,6 +633,10 @@ static SN_STATUS sSendCommand(char* command, size_t bufferSize)
     {
         return SN_STATUS_INVALID_PARAM;
     }
+
+#if(DISPLAY_TX_DEBUG)
+        printf("Module => Display => Nextion TX : %s\n", command); fflush(stdout);
+#endif
 
     pthread_mutex_lock(&ptmDisplay);
     retStatus = SN_SYS_SerialTx(serialIdDisplay, command, bufferSize);
