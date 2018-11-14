@@ -7,6 +7,7 @@
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
+ * @todo Thumbnail Serial Update with 3msec. need fix it.
  */
 
 #ifdef __APPLE__
@@ -114,6 +115,7 @@ SN_STATUS ImageVIewer_WindowUpdate(moduleImageViewer_t* moduleImageViewer, uint3
     SN_SYS_ERROR_CHECK(retStatus, "Image Distroy Failed.");
 
     free(path);
+    path = NULL;
 
     return retStatus;
 }
@@ -281,6 +283,7 @@ static SN_STATUS sLoadImage(const char* filename, FB_Image_t* pImage)
         }
 
         free(row_pointer);
+        row_pointer = NULL;
     }
     else
     {
@@ -362,7 +365,10 @@ static SN_STATUS sRotateImage(FB_Image_t* image, int mode)
     }
 
     free(image->rgb);
+    image->rgb = NULL;
+
     free(image->alpha);
+    image->alpha = NULL;
 
     *image = rotatedImage;
 
@@ -472,11 +478,13 @@ static SN_STATUS sDistroyImage(FB_Image_t* image)
     if(image->rgb != NULL)
     {
         free(image->rgb);
+        image->rgb = NULL;
     }
 
     if(image->alpha != NULL)
     {
         free(image->alpha);
+        image->alpha = NULL;
     }
 
     image->h = 0;
@@ -587,6 +595,7 @@ static SN_STATUS sUpdateWindow(const FB_Window_t window, const FB_Image_t image)
     }
 
     free(fbbuff);
+    fbbuff = NULL;
 
     munmap(fbp, window.screenSize);
 
@@ -728,8 +737,7 @@ static SN_STATUS sUpdateNextionThumbnail(const FB_Image_t thumbnail)
                                                   DEFAULT_NEXTION_THUMBNAIL_OFFSET_X + lineEnd, \
                                                   DEFAULT_NEXTION_THUMBNAIL_OFFSET_Y + lineOffset + i, \
                                                   DEFAULT_NEXTION_THUMBNAIL_ON_PIXEL_COLOR);
-
-                SN_SYS_Delay(2);
+                SN_SYS_Delay(3);
             }
             else
             {

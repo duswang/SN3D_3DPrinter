@@ -500,6 +500,7 @@ static SN_STATUS sMachineInfoPageLoad(fileSystem_t* fileSystem)
                 nameBuffer = FileSystem_fctl_Extarct_FileName(nameList[i]->d_name);
                 strcpy(currentPage->item[currentPage->itemCnt].name, nameBuffer);
                 free(nameBuffer);
+                nameBuffer = NULL;
 
                 sprintf(path,"%s/%s.%s", MACHINE_FILE_PATH, currentPage->item[currentPage->itemCnt].name, MACHINE_FILE_EXT);
                 currentPage->item[currentPage->itemCnt].contents = FileSystem_machineInfoXMLLoad(path);
@@ -515,8 +516,10 @@ static SN_STATUS sMachineInfoPageLoad(fileSystem_t* fileSystem)
             }
 
             free(nameList[i]);
+            nameList[i] = NULL;
         }
         free(nameList);
+        nameList = NULL;
     }
 
     fileSystem->machineInfoPageHeader = pageHeader;
@@ -583,6 +586,7 @@ static SN_STATUS sOptionPageLoad(fileSystem_t* fileSystem)
                 nameBuffer = FileSystem_fctl_Extarct_FileName(nameList[i]->d_name);
                 strcpy(currentPage->item[currentPage->itemCnt].name, nameBuffer);
                 free(nameBuffer);
+                nameBuffer = NULL;
 
                 sprintf(path,"%s/%s.%s", OPTION_FILE_PATH, currentPage->item[currentPage->itemCnt].name, OPTION_FILE_EXT);
                 currentPage->item[currentPage->itemCnt].contents = (printOption_t *)FileSystem_optionXMLLoad(path);
@@ -598,8 +602,10 @@ static SN_STATUS sOptionPageLoad(fileSystem_t* fileSystem)
             }
 
             free(nameList[i]);
+            nameList[i] = NULL;
         }
         free(nameList);
+        nameList = NULL;
     }
 
     fileSystem->optionPageHeader = pageHeader;
@@ -673,8 +679,10 @@ static SN_STATUS sFilePageLoad(fileSystem_t* fileSystem)
             }
 
             free(nameList[i]);
+            nameList[i] = NULL;
         }
         free(nameList);
+        nameList = NULL;
     }
 
     fileSystem->filePageHeader = pageHeader;
@@ -837,7 +845,6 @@ static SN_STATUS sTargetLoad(uint32_t pageIndex, uint32_t itemIndex)
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "printTarget memroy allocate failed.");
     }
 
-
     /* Target Info Setting. */
     strcpy(printTarget->targetPath, TARGET_PATH);
     strcpy(printTarget->targetName, TargetFile.name);
@@ -845,8 +852,7 @@ static SN_STATUS sTargetLoad(uint32_t pageIndex, uint32_t itemIndex)
     nameBuffer = FileSystem_fctl_Extarct_FileName(TargetFile.name);
     strcpy(printTarget->projectName, FileSystem_fctl_Extarct_FileName(TargetFile.name));
     free(nameBuffer);
-
-
+    nameBuffer = NULL;
 
     retStatus = sTargetFileCreate(printTarget->projectName, FileSystem_fctl_ExtractFileExtention(TargetFile.name));
     SN_SYS_ERROR_CHECK(retStatus, "Faild Create Target Files.");
@@ -885,10 +891,10 @@ static SN_STATUS sTargetDestroy(void)
     if(moduleFileSystem.printTarget != NULL)
     {
         free(moduleFileSystem.printTarget);
+        moduleFileSystem.printTarget = NULL;
     }
 
-    /* Folder Check */
-    retStatus = FileSystem_fctl_MakeDirectory(TARGET_PATH);
+    moduleFileSystem.printTarget = NULL;
 
     /* Clean Folder */
     retStatus = FileSystem_fctl_RemoveFiles(TARGET_PATH);

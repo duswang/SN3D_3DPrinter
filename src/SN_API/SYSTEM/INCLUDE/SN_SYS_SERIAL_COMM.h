@@ -21,12 +21,12 @@
  *
  *////@{
 
-#define CARRIAGE_RETURN "\r"
-#define NEW_LINE_RETURN "\n"
-#define NX_RETURN       0xFF
+#define CARRIAGE_RETURN  "\r"
+#define NEW_LINE_RETURN  "\n"
+#define NX_RETURN        { 0xFF, 0XFF, 0xFF }
 
-#define RETURN_SIZE     1
-
+#define RETURN_SIZE      1
+#define NX_RETURN_SIZE   5
 /*************************************************************@}*/
 
 /*************************************************************

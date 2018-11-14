@@ -662,18 +662,7 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
         }
 
         /* Slice Sequence */
-        /* Update Image Viewer */
-        retStatus = SN_MODULE_IMAGE_VIEWER_WindowUpdate(module3DPrinter.sliceIndex);
-        SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Update Failed.");
-
-        SN_MODULE_DISPLAY_PrintingInfoUpdate((module3DPrinter.sliceIndex + 1), printTarget->slice);
-        printf("Module => 3D Printer  => SLICE %04d  =========", (module3DPrinter.sliceIndex + 1)); fflush(stdout);
-
-        /* UV Turn On */
-        retStatus = SN_SYS_SerialTx(serialId3DPrinter, GCODE_LCD_ON, sizeof(GCODE_LCD_ON));
-        SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
-
-        /* Exposure */
+        /* Exposure Timer Call */
         if(module3DPrinter.sliceIndex < printOption->bottomLayerNumber)
         {
             exposureTime = printOption->bottomLayerExposureTime;
@@ -685,6 +674,24 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
 
         retStatus = SN_SYS_TimerCreate(&timerPrint , exposureTime, sTMR_Lift_Callback);
         SN_SYS_ERROR_CHECK(retStatus, "Timer Create Failed.");
+
+        /* IMAGE VIEWER CLEAER */
+        retStatus = SN_MODULE_IMAGE_VIEWER_WindowClean();
+        SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Window Clear Failed.");
+
+        retStatus = SN_MODULE_IMAGE_VIEWER_ThumbnailClean();
+        SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Update Failed.");
+
+        /* IMAGE VIEWER UPDATE */
+        retStatus = SN_MODULE_IMAGE_VIEWER_WindowUpdate(module3DPrinter.sliceIndex);
+        SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Update Failed.");
+
+        SN_MODULE_DISPLAY_PrintingInfoUpdate((module3DPrinter.sliceIndex + 1), printTarget->slice);
+        printf("Module => 3D Printer  => SLICE %04d  =========", (module3DPrinter.sliceIndex + 1)); fflush(stdout);
+
+        /* UV Turn On */
+        retStatus = SN_SYS_SerialTx(serialId3DPrinter, GCODE_LCD_ON, sizeof(GCODE_LCD_ON));
+        SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
     }
     else if(module3DPrinter.state == DEVICE_PAUSE)
     {
@@ -695,6 +702,13 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
 
         retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, APP_EVT_MSG_3D_PRINTER_PAUSE);
         SN_SYS_ERROR_CHECK(retStatus, "App Message Send Failed.");
+
+        /* IMAGE VIEWER CLEAER */
+        retStatus = SN_MODULE_IMAGE_VIEWER_WindowClean();
+        SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Window Clear Failed.");
+
+        retStatus = SN_MODULE_IMAGE_VIEWER_ThumbnailClean();
+        SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Update Failed.");
     }
     else
     {
@@ -741,7 +755,6 @@ static SN_STATUS s3DPrinter_PrintLift(void)
 
         retStatus = SN_MODULE_IMAGE_VIEWER_ThumbnailClean();
         SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Update Failed.");
-
 
         /* Z LIFT */
         retStatus = sSendGCode(module3DPrinter.gcodeLiftUp, sizeof(module3DPrinter.gcodeLiftUp));

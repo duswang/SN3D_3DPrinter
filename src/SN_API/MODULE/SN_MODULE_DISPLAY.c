@@ -37,7 +37,7 @@
 
 ///@}
 
-typedef struct time_display {
+typedef struct time_info {
     uint32_t sec;
     uint32_t min;
     uint32_t hour;
@@ -45,6 +45,7 @@ typedef struct time_display {
 
 /* *** MODULE *** */
 typedef struct moduel_display {
+    nx_page_t state;
 
     /** Timer Info **/
     timeInfo_t estimatedBuildTime;
@@ -86,6 +87,7 @@ static moduleDisplay_t moduleDisplay;
 /* *** SYSTEM *** */
 static void* sDisplayThread();
 static SN_STATUS sDisplayMessagePut(event_id_t evtDisplay_t, event_msg_t evtMessage);
+static void      sDisplayEnterState(nx_page_t state);
 
 /* *** TIMER *** */
 static void sTMR_TimerUpdate_UpdateCallback(void);
@@ -147,6 +149,8 @@ SN_STATUS SN_MODULE_DISPLAY_Uninit(void)
 SN_STATUS SN_MODULE_DISPLAY_EnterState(nx_page_t state)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+
+    sDisplayEnterState(state);
 
     switch(state)
     {
@@ -410,10 +414,13 @@ SN_STATUS SN_MODULE_DISPLAY_NextionDrawLine(int startX, int startY, int endX, in
 
     char buffer[NEXTION_COMMAND_BUFFER_SIZE];
 
-    sprintf(buffer,"line %d,%d,%d,%d,%d", startX, startY, endX, endY, color);
-    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Draw Vertical Line Failed.");
-
+    if(moduleDisplay.state != NX_PAGE_LOADING && \
+       moduleDisplay.state != NX_PAGE_REQUEST)
+    {
+        sprintf(buffer,"line %d,%d,%d,%d,%d", startX, startY, endX, endY, color);
+        retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+        SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Draw Vertical Line Failed.");
+    }
     return retStatus;
 }
 
@@ -423,10 +430,13 @@ SN_STATUS SN_MODULE_DISPLAY_NextionDrawDot(int coorX, int coorY, int color)
 
     char buffer[NEXTION_COMMAND_BUFFER_SIZE];
 
-    sprintf(buffer,"draw %d,%d,%d,%d,%d", coorX, coorY, coorX, coorY, color);
-    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Draw Dot Failed.");
+    if(moduleDisplay.state != NX_PAGE_LOADING && \
+       moduleDisplay.state != NX_PAGE_REQUEST)
+    {
+        sprintf(buffer,"draw %d,%d,%d,%d,%d", coorX, coorY, coorX, coorY, color);
+        retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+        SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Draw Dot Failed.");
+    }
 
     return retStatus;
 }
@@ -437,10 +447,13 @@ SN_STATUS SN_MODULE_DISPLAY_NextionDrawFill(int startX, int startY, int width, i
 
     char buffer[NEXTION_COMMAND_BUFFER_SIZE];
 
-    sprintf(buffer,"fill %d,%d,%d,%d,%d", startX, startY, width, height, color);
-    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Draw Fill Failed.");
+    if(moduleDisplay.state != NX_PAGE_LOADING && \
+       moduleDisplay.state != NX_PAGE_REQUEST)
+    {
+        sprintf(buffer,"fill %d,%d,%d,%d,%d", startX, startY, width, height, color);
+        retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+        SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Draw Fill Failed.");
+    }
 
     return retStatus;
 }
@@ -662,4 +675,11 @@ static SN_STATUS sSendCommand(char* command, size_t bufferSize)
     pthread_mutex_unlock(&ptmDisplay);
 
     return retStatus;
+}
+
+static void sDisplayEnterState(nx_page_t state)
+{
+    pthread_mutex_lock(&ptmDisplay);
+    moduleDisplay.state = state;
+    pthread_mutex_unlock(&ptmDisplay);
 }

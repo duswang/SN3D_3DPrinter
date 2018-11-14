@@ -66,24 +66,28 @@ SN_STATUS FileSystem_PageDestroy(fsPageHeader_t* pageHeader)
                 if(currentPage->item[i].contents != NULL)
                 {
                     free(currentPage->item[i].contents);
+                    currentPage->item[i].contents = NULL;
                 }
             }
 
             if(currentPage->nextPage == NULL)
             {
                 free(currentPage);
+                currentPage = NULL;
                 break;
             }
             else
             {
                 nextPage = currentPage->nextPage;
                 free(currentPage);
+                currentPage = NULL;
             }
 
             currentPage = nextPage;
         }
 
         free(pageHeader);
+        pageHeader = NULL;
     }
     else
     {
@@ -153,6 +157,7 @@ SN_STATUS FileSystem_RemovePage(fsPageHeader_t* pageHeader, int pageIndex)
     nextPage->prevPage = prevPage;
 
     free(currentPage);
+    currentPage = NULL;
 
     return retStatus;
 }

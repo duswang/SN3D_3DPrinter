@@ -125,6 +125,8 @@ SN_STATUS FileSystem_fctl_RemoveFiles(const char* folderPath)
                 }
 
                 free(buf);
+
+                buf = NULL;
             }
             r = r2;
         }

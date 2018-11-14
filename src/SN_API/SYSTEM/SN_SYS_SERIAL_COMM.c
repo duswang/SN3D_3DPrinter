@@ -96,6 +96,8 @@ sysSerialId SN_SYS_SerialCreate(const sysSerialDef_t* serialDef, void* (*pfCallB
     if(guiNumSerial == (MAX_NUM_OF_SERIAL - 1))
     {
         free(serialId);
+        serialId = NULL;
+
         return NULL;
     }
 
@@ -160,6 +162,7 @@ SN_STATUS SN_SYS_SerialRemove(sysSerialId serialId)
             aSerial[i].isAvailable = false;
 
             free(aSerial[i]._serialId);
+            aSerial[i]._serialId = NULL;
 
             if(guiNumSerial != 0)
             {
@@ -176,8 +179,9 @@ SN_STATUS SN_SYS_SerialRemove(sysSerialId serialId)
 SN_STATUS SN_SYS_SerialTx(sysSerialId serialId, char* buffer, size_t bufferSize)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-    int count = 0;
-    unsigned char nxReturn[1];
+    int error = 0;
+    char nxReturn[3] = NX_RETURN;
+
 
     if(serialId == NULL)
     {
@@ -191,32 +195,28 @@ SN_STATUS SN_SYS_SerialTx(sysSerialId serialId, char* buffer, size_t bufferSize)
 
     if (serialId->uartId != SN_SYS_SERIAL_COMM_INVAILD_UART_ID)
     {
-        count = write(serialId->uartId, buffer, bufferSize - 1);
+        error = write(serialId->uartId, buffer, bufferSize - 1);
 
         switch(serialId->_serialDef->returnMode)
         {
         case SN_SYS_SERIAL_COMM_TX_RETURN:
             break;
         case SN_SYS_SERIAL_COMM_TX_CARRIAGE_RETURN:
-            count = write(serialId->uartId, CARRIAGE_RETURN, RETURN_SIZE);
+            error = write(serialId->uartId, CARRIAGE_RETURN, RETURN_SIZE);
             break;
         case SN_SYS_SERIAL_COMM_TX_NEW_LINE_RETURN:
-            count = write(serialId->uartId, CARRIAGE_RETURN, RETURN_SIZE);
+            error = write(serialId->uartId, NEW_LINE_RETURN, RETURN_SIZE);
             break;
         case SN_SYS_SERIAL_COMM_TX_NX_RETURN:
-            nxReturn[0] = NX_RETURN;
-            count = write(serialId->uartId, nxReturn, RETURN_SIZE);
-            count = write(serialId->uartId, nxReturn, RETURN_SIZE);
-            count = write(serialId->uartId, nxReturn, RETURN_SIZE);
+            error = write(serialId->uartId, nxReturn, RETURN_SIZE * 3);
             break;
         default:
             break;
         }
 
-        if (count < 0)
+        if(error < 0)
         {
-            printf("UART TX error\n");
-            fflush(stdout);
+            //TX ERROR
         }
     }
 
@@ -273,7 +273,7 @@ static uint32_t sSerialinterfaceSetattribs(uint32_t uartID, uint32_t baud_rate, 
                                     // no canonical processing
     tty.c_oflag = 0;                // no remapping, no delays
     tty.c_cc[VMIN]  = 0;            // read doesn't block
-    tty.c_cc[VTIME] = 10;            // 0.5 seconds read timeou
+    tty.c_cc[VTIME] = 5;            // 0.5 seconds read timeou
 
     tty.c_iflag &= ~(IXON | IXOFF | IXANY); // shut off xon/xoff ctrl
 
