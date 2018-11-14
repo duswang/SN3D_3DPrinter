@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<machine>
+  <name>PORARIS 500</name>
+  <RES_Y>1440</RES_Y>
+  <RES_X>2560</RES_X>
+  <touchScreenSize>3.5</touchScreenSize>
+  <z>200</z>
+</machine>

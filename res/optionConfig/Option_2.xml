@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<option>
+  <name>Option_2</name>
+  <layerThickness>0.05000</layerThickness>
+
+  <bottomLayerExposureTime>35000</bottomLayerExposureTime>
+  <bottomLayerNumber>7</bottomLayerNumber>
+  <bottomLiftFeedRate>150</bottomLiftFeedRate>
+
+  <layerExposureTime>3000</layerExposureTime>
+  <liftDistance>7</liftDistance>
+  <liftFeedRate>150.00</liftFeedRate>
+</option>
