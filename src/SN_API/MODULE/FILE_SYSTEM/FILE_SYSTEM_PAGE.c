@@ -39,8 +39,8 @@ fsPageHeader_t* FileSystem_PageInit(void)
 
     pageHeader->firstPage = NULL;
     pageHeader->lastPage  = NULL;
-    pageHeader->isItemExist = false;
     pageHeader->pageCnt   = 0;
+    pageHeader->itemCnt   = 0;
 
     return pageHeader;
 }
@@ -52,12 +52,23 @@ SN_STATUS FileSystem_PageDestroy(fsPageHeader_t* pageHeader)
     fsPage_t* currentPage = NULL;
     fsPage_t* nextPage    = NULL;
 
+    int i = 0;
+
     if(pageHeader != NULL)
     {
         currentPage = pageHeader->firstPage;
 
         while(currentPage != NULL)
         {
+
+            for(i = 0; i < MAX_ITEM_SIZE; i++)
+            {
+                if(currentPage->item[i].contents != NULL)
+                {
+                    free(currentPage->item[i].contents);
+                }
+            }
+
             if(currentPage->nextPage == NULL)
             {
                 free(currentPage);
@@ -86,6 +97,7 @@ SN_STATUS FileSystem_AddPage(fsPageHeader_t* pageHeader)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     fsPage_t* newPage = NULL;
+    int i = 0;
 
     if(pageHeader == NULL)
     {
@@ -96,6 +108,11 @@ SN_STATUS FileSystem_AddPage(fsPageHeader_t* pageHeader)
     if(newPage == NULL)
     {
         return SN_STATUS_NOT_OK;
+    }
+
+    for(i = 0; i < MAX_ITEM_SIZE; i++)
+    {
+        newPage->item[i].contents = NULL;
     }
 
     newPage->itemCnt = 0;
@@ -144,7 +161,7 @@ fsPage_t* FileSystem_GetPage(fsPageHeader_t* pageHeader, int pageIndex)
 {
     int i = 0;
     fsPage_t* retPage = NULL;
-    fsPage_t* currentPage = pageHeader->firstPage;
+    fsPage_t* currentPage = NULL;
 
     if(pageHeader == NULL)
     {
@@ -155,6 +172,8 @@ fsPage_t* FileSystem_GetPage(fsPageHeader_t* pageHeader, int pageIndex)
     {
         SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "pageIndex pointing over page.");
     }
+
+    currentPage = pageHeader->firstPage;
 
     for(i = 0; i < pageIndex; i++)
     {

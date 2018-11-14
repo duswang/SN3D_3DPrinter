@@ -39,6 +39,8 @@
 #define FIRST_SLICE_DELAY_TIME     5000 /**< first slice getin delay - @return msec */
 #define FINISH_DEVICE_DELAY_TIME  90000 /**< finish device delay - @return msec */
 #define STOP_DEVICE_DELAY_TIME    15000 /**< stop device delay - @return msec */
+
+#define MAHCINE_Z_MARGIN             10 /**< z margin of top */
 ///@}
 
 /** @name Other Define */ ///@{
@@ -80,8 +82,6 @@ typedef enum device_state {
 typedef struct moduel_3d_printer {
     deviceState_t       state;              /**< device state */
 
-    machineInfo_t machineInfo;              /**< machine info for print */
-    printInfo_t     printInfo;              /**< print target info for print */
     uint32_t       sliceIndex;              /**< count slice when printing */
 
     char gcodeLiftUp[GCODE_BUFFER_SIZE];    /** gcode lift   up buffer */
@@ -322,13 +322,13 @@ SN_STATUS SN_MODULE_3D_PRINTER_Z_Down(float mm)
     return retStatus;
 }
 
-SN_STATUS SN_MODULE_3D_PRINTER_Start(uint32_t pageIndex, uint32_t itemIndex)
+SN_STATUS SN_MODULE_3D_PRINTER_Start(uint32_t pageIndex, uint32_t itemIndex, uint32_t optionIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    /* PrintInfo Init */
-    retStatus = SN_MODULE_FILE_SYSTEM_PrintInfoInit(pageIndex, itemIndex);
-    SN_SYS_ERROR_CHECK(retStatus, "Get Print Info Failed.");
+    SN_MODULE_FILE_SYSTEM_TargetLoad(pageIndex, itemIndex);
+
+    SN_MODULE_FILE_SYSTEM_OptionLoad(optionIndex);
 
     /* Start Hardware Sequence */
     retStatus = s3DPrinterMessagePut(MSG_3D_PRINTER_HOMMING, 0);
@@ -547,52 +547,64 @@ static SN_STATUS s3DPrinter_PrintInit(void)
     SN_STATUS retStatus = SN_STATUS_OK;
     uint32_t estimatedBuildTime = 0;
 
+    const printOption_t* printOption = NULL;
+    const printTarget_t* printTarget = NULL;
+    const machineInfo_t* machineInfo = NULL;
+
     if(module3DPrinter.state != DEVICE_BUSY || module3DPrinter.state != DEVICE_INIT)
     {
         s3DPrinterEnterState(DEVICE_INIT);
 
-        /* Get Print Info */
-        module3DPrinter.printInfo = SN_MODULE_FILE_SYSTEM_PrintInfoGet();
-        if(!module3DPrinter.printInfo.isInit)
+        /* Get Mahcine Info */
+        machineInfo = SN_MODULE_FILE_SYSTEM_MachineInfoGet();
+        if(machineInfo == NULL)
         {
-            return SN_STATUS_NOT_INITIALIZED;
+            SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "machineInfo not initialized.");
         }
 
-        /* Get Mahcine Info */
-        module3DPrinter.machineInfo = SN_MODULE_FILE_SYSTEM_MachineInfoGet();
-        if(!module3DPrinter.machineInfo.isInit)
+        /* Get Option */
+        printOption = SN_MODULE_FILE_SYSTEM_OptionGet();
+        if(printOption == NULL)
         {
-            return SN_STATUS_NOT_INITIALIZED;
+            SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Option not initialized.");
+        }
+
+        /* Get Target */
+        printTarget = SN_MODULE_FILE_SYSTEM_TargetGet();
+        if(printTarget == NULL)
+        {
+            SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Target not initialized.");
         }
 
         /* Get Lift GCode */
         sGcodeParser_ZMove(module3DPrinter.gcodeLiftUp,     \
-                (float)module3DPrinter.printInfo.printParameter.liftDistance, \
-                (float)module3DPrinter.printInfo.printParameter.layerThickness, \
-                (float)module3DPrinter.printInfo.printParameter.liftFeedRate,
+                (float)printOption->liftDistance, \
+                (float)printOption->layerThickness, \
+                (float)printOption->liftFeedRate,
                 true);
 
         sGcodeParser_ZMove(module3DPrinter.gcodeLiftDown,  \
-                (float)module3DPrinter.printInfo.printParameter.liftDistance, \
-                (float)module3DPrinter.printInfo.printParameter.layerThickness, \
-                (float)module3DPrinter.printInfo.printParameter.liftFeedRate,
+                (float)printOption->liftDistance, \
+                (float)printOption->layerThickness, \
+                (float)printOption->liftFeedRate,
                 false);
 
         estimatedBuildTime = ESTIMATED_BUILD_TIME_SEC_CAL( \
-                module3DPrinter.printInfo.printParameter.liftTime, \
-                module3DPrinter.printInfo.printParameter.layerExposureTime, \
-                module3DPrinter.printInfo.printParameter.bottomLayerExposureTime, \
-                module3DPrinter.printInfo.printTarget.slice, \
-                module3DPrinter.printInfo.printParameter.bottomLayerNumber);
+                printOption->liftTime, \
+                printOption->layerExposureTime, \
+                printOption->bottomLayerExposureTime, \
+                printTarget->slice, \
+                printOption->bottomLayerNumber);
 
         /* NEXTION TIMER INFO INIT */
         retStatus = SN_MODULE_DISPLAY_PrintingTimerInit(estimatedBuildTime);
         SN_SYS_ERROR_CHECK(retStatus, "Display Timer Info Update Failed.");
 
         /* NEXTION PAGE INFO INIT */
-        retStatus = SN_MODULE_DISPLAY_PrintingInfoInit(module3DPrinter.printInfo.printTarget.targetName , "Demo");
+        retStatus = SN_MODULE_DISPLAY_PrintingInfoInit(printTarget->targetName, printOption->name);
         SN_SYS_ERROR_CHECK(retStatus, "Display Base Info Update Failed.");
-        retStatus = SN_MODULE_DISPLAY_PrintingInfoUpdate((module3DPrinter.sliceIndex + 1), module3DPrinter.printInfo.printTarget.slice);
+
+        retStatus = SN_MODULE_DISPLAY_PrintingInfoUpdate((module3DPrinter.sliceIndex + 1), printTarget->slice);
         SN_SYS_ERROR_CHECK(retStatus, "Display Slice Info Update Failed.");
 
         /* Motor Init */
@@ -602,7 +614,13 @@ static SN_STATUS s3DPrinter_PrintInit(void)
         retStatus = SN_MODULE_IMAGE_VIEWER_WindowClean();
         SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Window Clear Failed.");
 
-        printf("Module => 3D Printer  => TARGET NAME [ %s ]\n", module3DPrinter.printInfo.printTarget.targetName);
+        retStatus = SN_MODULE_IMAGE_VIEWER_ThumbnailClean();
+        SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Update Failed.");
+
+
+        printf("Module => 3D Printer  => TARGET NAME  [ %s ]\n", printTarget->targetName);
+        printf("Module => 3D Printer  => TARGET SLICE [ %04d ]\n", printTarget->slice);
+        printf("Module => 3D Printer  => OPTION NAME  [ %s ]\n", printOption->name);
 
         retStatus = SN_SYS_TimerCreate(&timerPrint, FIRST_SLICE_DELAY_TIME, sTMR_NextCycle_Callback);
         SN_SYS_ERROR_CHECK(retStatus, "Timer Cretae Failed.");
@@ -619,6 +637,8 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     uint32_t exposureTime = 0;
+    const printTarget_t* printTarget = NULL;
+    const printOption_t* printOption = NULL;
 
     /* One Cylce Start */
     if((module3DPrinter.state == DEVICE_INIT)     || \
@@ -627,12 +647,26 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
     {
         s3DPrinterEnterState(DEVICE_PRINTING);
 
+        /* Get Option */
+        printOption = SN_MODULE_FILE_SYSTEM_OptionGet();
+        if(printOption == NULL)
+        {
+            SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Option not initialized.");
+        }
+
+        /* Get Target */
+        printTarget = SN_MODULE_FILE_SYSTEM_TargetGet();
+        if(printTarget == NULL)
+        {
+            SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Target not initialized.");
+        }
+
         /* Slice Sequence */
         /* Update Image Viewer */
         retStatus = SN_MODULE_IMAGE_VIEWER_WindowUpdate(module3DPrinter.sliceIndex);
         SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Update Failed.");
 
-        SN_MODULE_DISPLAY_PrintingInfoUpdate((module3DPrinter.sliceIndex + 1), module3DPrinter.printInfo.printTarget.slice);
+        SN_MODULE_DISPLAY_PrintingInfoUpdate((module3DPrinter.sliceIndex + 1), printTarget->slice);
         printf("Module => 3D Printer  => SLICE %04d  =========", (module3DPrinter.sliceIndex + 1)); fflush(stdout);
 
         /* UV Turn On */
@@ -640,13 +674,13 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
 
         /* Exposure */
-        if(module3DPrinter.sliceIndex < module3DPrinter.printInfo.printParameter.bottomLayerNumber)
+        if(module3DPrinter.sliceIndex < printOption->bottomLayerNumber)
         {
-            exposureTime = module3DPrinter.printInfo.printParameter.bottomLayerExposureTime;
+            exposureTime = printOption->bottomLayerExposureTime;
         }
         else
         {
-            exposureTime = module3DPrinter.printInfo.printParameter.layerExposureTime;
+            exposureTime = printOption->layerExposureTime;
         }
 
         retStatus = SN_SYS_TimerCreate(&timerPrint , exposureTime, sTMR_Lift_Callback);
@@ -673,10 +707,26 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
 static SN_STATUS s3DPrinter_PrintLift(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+    const printTarget_t* printTarget = NULL;
+    const printOption_t* printOption = NULL;
 
     if((module3DPrinter.state == DEVICE_PRINTING) || \
        (module3DPrinter.state == DEVICE_PAUSE))
     {
+        /* Get Option */
+        printOption = SN_MODULE_FILE_SYSTEM_OptionGet();
+        if(printOption == NULL)
+        {
+            SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Option not initialized.");
+        }
+
+        /* Get Target */
+        printTarget = SN_MODULE_FILE_SYSTEM_TargetGet();
+        if(printTarget == NULL)
+        {
+            SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Target not initialized.");
+        }
+
         /* Lift Sequence */
         /* UV OFF */
         retStatus = SN_SYS_SerialTx(serialId3DPrinter,GCODE_LCD_OFF, sizeof(GCODE_LCD_OFF));
@@ -689,6 +739,10 @@ static SN_STATUS s3DPrinter_PrintLift(void)
         retStatus = SN_MODULE_IMAGE_VIEWER_WindowClean();
         SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Window Clear Failed.");
 
+        retStatus = SN_MODULE_IMAGE_VIEWER_ThumbnailClean();
+        SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Update Failed.");
+
+
         /* Z LIFT */
         retStatus = sSendGCode(module3DPrinter.gcodeLiftUp, sizeof(module3DPrinter.gcodeLiftUp));
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
@@ -696,9 +750,9 @@ static SN_STATUS s3DPrinter_PrintLift(void)
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
 #endif
         /* One Cycle Done */
-        if((module3DPrinter.sliceIndex + 1) >= module3DPrinter.printInfo.printTarget.slice)
+        if((module3DPrinter.sliceIndex + 1) >= printTarget->slice)
         {
-            printf("=========> FINISH. [ %4d/ %4d ]\n", (module3DPrinter.sliceIndex + 1), module3DPrinter.printInfo.printTarget.slice); fflush(stdout);
+            printf("=========> FINISH. [ %4d/ %4d ]\n", (module3DPrinter.sliceIndex + 1), printTarget->slice); fflush(stdout);
 
             /* Printing Finish */
             retStatus = s3DPrinterMessagePut(MSG_3D_PRINTER_PRINTING_FINISH, 0);
@@ -706,7 +760,7 @@ static SN_STATUS s3DPrinter_PrintLift(void)
         }
         else
         {
-            printf("=========> DONE. [ %4d/ %4d ]\n", (module3DPrinter.sliceIndex + 1), module3DPrinter.printInfo.printTarget.slice); fflush(stdout);
+            printf("=========> DONE. [ %4d/ %4d ]\n", (module3DPrinter.sliceIndex + 1), printTarget->slice); fflush(stdout);
 
             /* Slice Index Update */
             module3DPrinter.sliceIndex++;
@@ -716,7 +770,7 @@ static SN_STATUS s3DPrinter_PrintLift(void)
             retStatus = SN_SYS_TimerCreate(&timerPrint, 50, sTMR_NextCycle_Callback);
             SN_SYS_ERROR_CHECK(retStatus, "Timer Create Failed.");
 #else
-            retStatus = SN_SYS_TimerCreate(&timerPrint, module3DPrinter.printInfo.printParameter.liftTime, sTMR_NextCycle_Callback);
+            retStatus = SN_SYS_TimerCreate(&timerPrint, printOption->liftTime, sTMR_NextCycle_Callback);
             SN_SYS_ERROR_CHECK(retStatus, "Timer Create Failed.");
 #endif
         }
@@ -803,11 +857,20 @@ static SN_STATUS s3DPrinter_PrintFinish(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     char finishGCode[30];
+    const machineInfo_t* machineInfo = NULL;
 
     if((module3DPrinter.state == DEVICE_PRINTING) || \
        (module3DPrinter.state == DEVICE_PAUSE)    || \
        (module3DPrinter.state == DEVICE_RESUME))
     {
+        /* Get Mahcine Info */
+        machineInfo = SN_MODULE_FILE_SYSTEM_MachineInfoGet();
+        if(machineInfo == NULL)
+        {
+            SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "machineInfo not initialized.");
+        }
+
+
         /* Stop Sequence */
         s3DPrinterEnterState(DEVICE_FINISH);
 
@@ -822,7 +885,7 @@ static SN_STATUS s3DPrinter_PrintFinish(void)
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
 
         sGcodeParser_ZMove(finishGCode,     \
-                (float)(module3DPrinter.machineInfo.height - 5), \
+                (float)(machineInfo->machineHeight - MAHCINE_Z_MARGIN), \
                 (float)0, \
                 (float)DEFAULT_FEEDRATE,
                 true);
@@ -858,9 +921,9 @@ static SN_STATUS s3DPrinter_PrintUninit(void)
     retStatus = SN_MODULE_IMAGE_VIEWER_WindowClean();
     SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Clear Failed.");
 
-    /* Remove TempFile & Print Info Uninit */
-    retStatus = SN_MODULE_FILE_SYSTEM_PrintInfoUninit();
-    SN_SYS_ERROR_CHECK(retStatus, "Target Data Unint Failed.");
+    /* Remove Target & Option */
+    retStatus = SN_MODULE_FILE_SYSTEM_TargetDestroy();
+    SN_SYS_ERROR_CHECK(retStatus, "Target Data Remove Failed.");
 
     /* STOP DISPLAY TIME INFO TIMER */
     retStatus = SN_MODULE_DISPLAY_PrintingTimerStop();

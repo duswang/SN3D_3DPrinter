@@ -71,13 +71,6 @@ SN_STATUS ImageVIewer_Init(moduleImageViewer_t* moduleImageViewer)
         return SN_STATUS_NOT_INITIALIZED;
     }
 
-    /* GET MACHINE INFO */
-    moduleImageViewer->machineInfo = SN_MODULE_FILE_SYSTEM_MachineInfoGet();
-    if(!moduleImageViewer->machineInfo.isInit)
-    {
-        return SN_STATUS_NOT_INITIALIZED;
-    }
-
     /* Load FrameBuffer Window */
     retStatus = sLoadWindow(WINDOW_NAME, &moduleImageViewer->window);
 
@@ -90,17 +83,19 @@ SN_STATUS ImageVIewer_Init(moduleImageViewer_t* moduleImageViewer)
 SN_STATUS ImageVIewer_WindowUpdate(moduleImageViewer_t* moduleImageViewer, uint32_t sliceIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-    char path[MAX_PATH_LENGTH] = {'\0', };
+    char* path = NULL;
+    const printTarget_t* printTarget = NULL;
 
     /* GET PRINT TARGET INFO */
-    printInfo_t printInfo = SN_MODULE_FILE_SYSTEM_PrintInfoGet();
-    if(!printInfo.isInit)
+    printTarget = SN_MODULE_FILE_SYSTEM_TargetGet();
+    if(printTarget == NULL)
     {
          return SN_STATUS_NOT_INITIALIZED;
     }
 
     /* Load and Update Image to Screen */
-    sprintf(path,"%s/%s%04d.png", printInfo.printTarget.targetPath, printInfo.printTarget.targetName, sliceIndex);
+    path = SN_MODULE_FILE_SYSTEM_TargetSlicePathGet(sliceIndex);
+
     retStatus = sLoadImage(path, &moduleImageViewer->image);
     SN_SYS_ERROR_CHECK(retStatus, "Load Image Failed.");
 
@@ -112,12 +107,13 @@ SN_STATUS ImageVIewer_WindowUpdate(moduleImageViewer_t* moduleImageViewer, uint3
     SN_SYS_ERROR_CHECK(retStatus, "Load thumbnail Failed.");
 
     retStatus = sUpdateNextionThumbnail(moduleImageViewer->thumbnail);
-    SN_SYS_ERROR_CHECK(retStatus, "Window Update Failed.");
-
+    SN_SYS_ERROR_CHECK(retStatus, "Thumbnail Update Failed.");
 
     /* Distroy Image */
     retStatus = sDistroyImage(&moduleImageViewer->image);
     SN_SYS_ERROR_CHECK(retStatus, "Image Distroy Failed.");
+
+    free(path);
 
     return retStatus;
 }
@@ -128,9 +124,6 @@ SN_STATUS ImageViewer_WindowClean(moduleImageViewer_t* moduleImageViewer)
 
     retStatus= sCleanWindow(moduleImageViewer->window);
     SN_SYS_ERROR_CHECK(retStatus, "Image Clean Failed.");
-
-    retStatus= sCleanNextionThumbnail();
-    SN_SYS_ERROR_CHECK(retStatus, "Thumbnail Clean Failed.");
 
     return retStatus;
 }
@@ -146,6 +139,15 @@ SN_STATUS ImageViewer_WindowDestroy(moduleImageViewer_t* moduleImageViewer)
     return retStatus;
 }
 
+SN_STATUS ImageViewer_ThumbnailClean(moduleImageViewer_t* moduleImageViewer)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    retStatus= sCleanNextionThumbnail();
+    SN_SYS_ERROR_CHECK(retStatus, "Thumbnail Clean Failed.");
+
+    return retStatus;
+}
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
@@ -692,7 +694,7 @@ static SN_STATUS sUpdateNextionThumbnail(const FB_Image_t thumbnail)
 
     if(thumbnail.h > DEFAULT_NEXTION_THUMBNAIL_HEIGHT)
     {
-        return SN_STATUS_INVALID_PARAM;
+        //return SN_STATUS_INVALID_PARAM;
     }
 
     lineOffset = (DEFAULT_NEXTION_THUMBNAIL_HEIGHT - thumbnail.h) / 2;
@@ -726,15 +728,14 @@ static SN_STATUS sUpdateNextionThumbnail(const FB_Image_t thumbnail)
                                                   DEFAULT_NEXTION_THUMBNAIL_OFFSET_X + lineEnd, \
                                                   DEFAULT_NEXTION_THUMBNAIL_OFFSET_Y + lineOffset + i, \
                                                   DEFAULT_NEXTION_THUMBNAIL_ON_PIXEL_COLOR);
+
+                SN_SYS_Delay(2);
             }
             else
             {
                 /* Skip This Line */
             }
         }
-
-
-        SN_SYS_Delay(3);
     }
 
     return retStatus;

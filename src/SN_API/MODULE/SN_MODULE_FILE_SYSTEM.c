@@ -7,9 +7,8 @@
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
- * @todo read XML File and Option File.
- * @todo read machine XML File.
- * @todo getFunctions must be allocate pointer value not ref.
+ * @todo need clean.
+ * @todo memory test.
  */
 
 #include "SN_API.h"
@@ -29,74 +28,46 @@
 #endif
 
 #ifdef __APPLE__
-#define TARGET_PATH                   "../res/tempFile"
+#define TARGET_PATH                   "../res/target"
 #endif
 #ifdef linux
 #define TARGET_PATH                   "/SN3D/sn3d-project/res/target"
 #endif
 
 #ifdef __APPLE__
-#define OPTION_FILE_PATH              "../res/profileConfig"
+#define OPTION_FILE_PATH               "../res/optionConfig"
 #endif
 #ifdef linux
-#define OPTION_FILE_PATH              "/SN3D/sn3d-project/res/profileConfig"
+#define OPTION_FILE_PATH               "/SN3D/sn3d-project/res/optionConfig"
 #endif
 
 #ifdef __APPLE__
-#define DEVICE_FILE_PATH              "../res/deviceConfig"
+#define MACHINE_FILE_PATH              "../res/machineConfig"
 #endif
 #ifdef linux
-#define DEVICE_FILE_PATH              "/SN3D/sn3d-project/res/deviceConfig"
+#define MACHINE_FILE_PATH              "/SN3D/sn3d-project/res/machineConfig"
 #endif
 ///@}
 
-/** @name File path & name config *////@{
-#define TARGET_CWS_FILE_EXT     "cws"
-#define TARGET_ZIP_FILE_EXT     "zip"
-#define TARGET_IMAGE_EXT        "png"
-
-#define MANIFEST_FILE_NAME      "manifest"
-#define MANIFEST_FILE_EXT       "xml"
-
-#define DEVICE_FILE_EXT         "xml"
-
-#define OPTION_FILE_EXT         "xml"
-///@}
-
-/** @name Z config *////@{
-#define Z_DELAY_OFFSET (1600)
-
-/** @def SPEED_MM_MIN_TO_MM_MSEC(speed_mm_min)
- *  @brief mm/m to mm/s
- *
- *  @param speed_mm_min
- *
- *  @return mm/s
- */
-#define SPEED_MM_MIN_TO_MM_MSEC(speed_mm_min) \
-        ((speed_mm_min) / (60 * 1000))
-
-/** @def Z_DELAY_MSEC_CAL(distnace, speed)
- *  @brief calculate z delay
- *
- *  @param distance
- *  @param speed
- *
- *  @return z_delay (msec)
- */
-#define Z_DELAY_MSEC_CAL(distnace, speed) \
-    ((((distnace) * 2) / (SPEED_MM_MIN_TO_MM_MSEC(speed))) + Z_DELAY_OFFSET)
-///@}
+#define MACHINE_DEFAULT_FILE_NAME       "SN3D_Default"
 
 /** @name Other Define *////@{
-#define DEFAULT_DEVICE_NAME "POLARIS 500"
+#define OPTION_DEFAULT_INDEX       (0)
+
+
+#define NETFABB_CONDITION_STR   "index.xml"
+#define MANGO_CONDITION_STR     ""
+#define B9_CONDITION_STR        ""
+#define CWS_CONDITION_STR       "cws"
 ///@}
 
 /* *** MODULE *** */
 typedef struct moduel_file_system {
-    fs_t                     fs;
-    printInfo_t       printInfo;
-    machineInfo_t   machineInfo;
+    fileSystem_t    fileSystem;
+
+    printTarget_t*   printTarget;
+    printOption_t*   printOption;
+    machineInfo_t*   machineInfo;
 } moduleFileSystem_t;
 
 /* ******* SYSTEM DEFINE ******* */
@@ -114,7 +85,6 @@ typedef enum {
     MSG_FILE_SYSTEM_UPDATE,                     /**< Update File System - when read USB Finish */
     MSG_FILE_SYSTEM_WAITING,                    /**< Waiting Next Event */
     MSG_FILE_SYSTEM_NONE,                       /**< BAD ACCESS */
-
 } evtFileSystem_t;
 
 /* *** MODULE HANDLER  *** */
@@ -124,20 +94,35 @@ static moduleFileSystem_t moduleFileSystem;
 
 /* ******* STATIC FUNCTIONS ******* */
 /* **** USB Callback *** */
-static void*       USBEvent_Callback(int evt);
+static void*            USBEvent_Callback(int evt);
 
 /* *** SYSTEM *** */
-static void*       sFileSystemThread();
-static SN_STATUS   sFileSystemMessagePut(evtFileSystem_t evtId, event_msg_t evtMessage);
+static void*            sFileSystemThread();
+static SN_STATUS        sFileSystemMessagePut(evtFileSystem_t evtId, event_msg_t evtMessage);
 
 /* *** FILE SYSTEM CONTROL *** */
-static SN_STATUS   sFileSystemRead(fs_t* fileSystem);
-static SN_STATUS   sFileSystemRemove(fs_t* fileSystem);
-static SN_STATUS   sFileSystemPrint(const fs_t* fileSystem);
+static SN_STATUS sMachineInfoPageLoad(fileSystem_t* fileSystem);
+static SN_STATUS sMachineInfoPageDestroy(fileSystem_t* fileSystem);
 
-/* *** DEMO *** */
-static void        sDemoPrintSetting(void);
-static void        sDemoMachineSetting(void);
+static SN_STATUS sOptionPageLoad(fileSystem_t* fileSystem);
+static SN_STATUS sOptionPageDestroy(fileSystem_t* fileSystem);
+
+static SN_STATUS sFilePageLoad(fileSystem_t* fileSystem);
+static SN_STATUS sFilePageDestroy(fileSystem_t* fileSystem);
+
+static SN_STATUS sFileSystemPrint(const fileSystem_t* fileSystem);
+
+/* *** OPTION *** */
+static SN_STATUS sOptionLoad(machineType_t optionIndex);
+
+/* *** MAHCINE *** */
+static SN_STATUS sMachineInfoLoad(machineType_t machineInfoIndex);
+static SN_STATUS sMachineInfoFileCreate(machineType_t machineInfoIndex);
+
+/* *** TARGET *** */
+static SN_STATUS sTargetLoad(uint32_t pageIndex, uint32_t itemIndex);
+static SN_STATUS sTargetDestroy(void);
+static SN_STATUS sTargetFileCreate(const char* fileName, const char* fileExtention);
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
@@ -145,131 +130,11 @@ static void        sDemoMachineSetting(void);
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 
-bool SN_MODULE_FILE_SYSTEM_isItemExist(void)
-{
-    return moduleFileSystem.fs.pageHeader->isItemExist;
-}
-
-int SN_MODULE_FILE_SYSTEM_GetPageCnt(void)
-{
-    return moduleFileSystem.fs.pageHeader->pageCnt;
-}
-
-const fsPage_t* SN_MODULE_FILE_SYSTEM_GetPage(int pageIndex)
-{
-    return FileSystem_GetPage(moduleFileSystem.fs.pageHeader, pageIndex);
-}
-
-const fs_t SN_MODULE_FILE_SYSTEM_GetFileSystem(void)
-{
-    return moduleFileSystem.fs;
-}
-
-SN_STATUS SN_MODULE_FILE_SYSTEM_Update(void)
-{
-    SN_STATUS retStatus = SN_STATUS_OK;
-
-    retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_READ, 0);
-    SN_SYS_ERROR_CHECK(retStatus, "File System Send Message Failed.");
-
-    return retStatus;
-}
-
-SN_STATUS SN_MODULE_FILE_SYSTEM_MachineInfoInit(void)
-{
-    SN_STATUS retStatus = SN_STATUS_OK;
-
-    //@DEMO SETTING
-    sDemoMachineSetting();
-
-    moduleFileSystem.machineInfo.isInit = true;
-
-    return retStatus;
-}
-
-SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemIndex/*,  uint32_t optionIndex */)
-{
-    SN_STATUS retStatus = SN_STATUS_OK;
-    char srcTargetPath[MAX_PATH_LENGTH], desTargetPath[MAX_PATH_LENGTH];
-    //char optionFilePath[MAX_PATH_LENGTH];
-    char manifestPath[MAX_PATH_LENGTH];
-
-    const fsItem_t target = FileSystem_GetItem(moduleFileSystem.fs.pageHeader, pageIndex, itemIndex);
-
-    /* Folder Check */
-    retStatus = FileSystem_fctl_MakeDirectory(DEVICE_FILE_PATH);
-    retStatus = FileSystem_fctl_MakeDirectory(OPTION_FILE_PATH);
-    retStatus = FileSystem_fctl_MakeDirectory(TARGET_PATH);
-
-    /* Clean Folder */
-    retStatus = FileSystem_fctl_RemoveFiles(TARGET_PATH);
-
-    /* Get Source Path */
-    sprintf(srcTargetPath,"%s/%s.%s", USB_PATH, target.name, TARGET_CWS_FILE_EXT);
-
-    sprintf(desTargetPath,"%s/%s.%s", TARGET_PATH, target.name, TARGET_CWS_FILE_EXT);
-
-    /* Create Target Files */
-    retStatus = FileSystem_fctl_CopyFile(srcTargetPath, desTargetPath);
-    retStatus = FileSystem_fctl_ExtractFile(desTargetPath, TARGET_PATH);
-
-    /** @todo target file checker (mango netfabb cws 9b) */
-    sprintf(manifestPath,"%s/%s.%s", TARGET_PATH, MANIFEST_FILE_NAME, MANIFEST_FILE_EXT);
-
-    //@DEMO SETTING
-    sDemoPrintSetting(); // Option Demo
-
-    /* Target Info Setting. */
-    moduleFileSystem.printInfo.printTarget.targetPath                 = TARGET_PATH;
-    moduleFileSystem.printInfo.printTarget.targetName                 = FileSystem_GetProjectName(manifestPath);
-    moduleFileSystem.printInfo.printTarget.slice                      = FileSystem_CountFileNumWithExtetion(TARGET_PATH, TARGET_IMAGE_EXT);
-
-    moduleFileSystem.printInfo.isInit = true;
-
-    return retStatus;
-}
-
-machineInfo_t SN_MODULE_FILE_SYSTEM_MachineInfoGet(void)
-{
-    return moduleFileSystem.machineInfo;
-}
-
-printInfo_t SN_MODULE_FILE_SYSTEM_PrintInfoGet(void)
-{
-    return moduleFileSystem.printInfo;
-}
-
-SN_STATUS SN_MODULE_FILE_SYSTEM_MachineInfoUninit(void)
-{
-    SN_STATUS retStatus = SN_STATUS_OK;
-
-    if(moduleFileSystem.machineInfo.isInit)
-    {
-        moduleFileSystem.machineInfo.isInit = false;
-    }
-
-    return retStatus;
-}
-
-SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoUninit(void)
-{
-    SN_STATUS retStatus = SN_STATUS_OK;
-
-    if(moduleFileSystem.printInfo.isInit)
-    {
-        moduleFileSystem.printInfo.isInit = false;
-        FileSystem_fctl_RemoveFiles(TARGET_PATH);
-    }
-
-    return retStatus;
-}
-
 SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
     SN_SYS_Log("MODULE INIT => FILE SYSTEM.");
-
 
     /* USB DRIVER INIT */
     SN_SYS_USBDriverInit(USBEvent_Callback);
@@ -290,17 +155,203 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void)
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System Thread Init Failed.");
     }
 
-    /* MACHINE INFO INIT */
-    SN_MODULE_FILE_SYSTEM_MachineInfoInit();
+    /* Default Machine Info Setup */
+    /** @todo read from USB and update not just set 5.5 Inch. */
+    sMachineInfoPageLoad(&moduleFileSystem.fileSystem);
+    sMachineInfoFileCreate(MACHINE_DEFAULT);
+    sMachineInfoPageDestroy(&moduleFileSystem.fileSystem);
+
+    /* Load Option & Machine Files */
+    sOptionPageLoad(&moduleFileSystem.fileSystem);
+    sMachineInfoPageLoad(&moduleFileSystem.fileSystem);
+
+    sMachineInfoLoad(MACHINE_DEFAULT);
+    sOptionLoad(OPTION_DEFAULT_INDEX);
+    sFileSystemPrint(&moduleFileSystem.fileSystem);
+
 
     return retStatus;
 }
 
 SN_STATUS SN_MODULE_FILE_SYSTEM_Uninit(void)
 {
+    /* Page Destroy */
+    sOptionPageDestroy(&moduleFileSystem.fileSystem);
+    sMachineInfoPageDestroy(&moduleFileSystem.fileSystem);
+    sFilePageDestroy(&moduleFileSystem.fileSystem);
+
+    /* Module Controller Destroy */
+    moduleFileSystem.printOption = NULL;
+    moduleFileSystem.machineInfo = NULL;
+    SN_MODULE_FILE_SYSTEM_TargetDestroy();
+
     SN_SYS_MessageQRemove(&msgQIdFileSystem);
 
     return SN_STATUS_OK;
+}
+
+bool SN_MODULE_FILE_SYSTEM_isPrintFileExist(void)
+{
+    if(moduleFileSystem.fileSystem.filePageHeader == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System not initialized.");
+    }
+
+    return moduleFileSystem.fileSystem.filePageHeader->itemCnt;
+}
+
+int SN_MODULE_FILE_SYSTEM_GetFilePageCnt(void)
+{
+    if(moduleFileSystem.fileSystem.filePageHeader == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System not initialized.");
+    }
+
+    return moduleFileSystem.fileSystem.filePageHeader->pageCnt;
+}
+
+const fsPage_t* SN_MODULE_FILE_SYSTEM_GetFilePage(int pageIndex)
+{
+    if(moduleFileSystem.fileSystem.filePageHeader == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System not initialized.");
+    }
+
+    return FileSystem_GetPage(moduleFileSystem.fileSystem.filePageHeader, pageIndex);
+}
+
+SN_STATUS SN_MODULE_FILE_SYSTEM_FilePageUpdate(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_READ, 0);
+    SN_SYS_ERROR_CHECK(retStatus, "File System Send Message Failed.");
+
+    return retStatus;
+}
+
+const machineInfo_t* SN_MODULE_FILE_SYSTEM_MachineInfoGet(void)
+{
+    if(moduleFileSystem.machineInfo == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "machineInfo not loaded.");
+    }
+
+    return moduleFileSystem.machineInfo;
+}
+
+bool SN_MODULE_FILE_SYSTEM_isOptionExist(void)
+{
+    if(moduleFileSystem.fileSystem.filePageHeader == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System not initialized.");
+    }
+
+    return moduleFileSystem.fileSystem.filePageHeader->itemCnt;
+}
+
+int SN_MODULE_FILE_SYSTEM_GetOptionCnt(void)
+{
+    if(moduleFileSystem.fileSystem.filePageHeader == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System not initialized.");
+    }
+
+    return moduleFileSystem.fileSystem.optionPageHeader->itemCnt;
+}
+
+
+SN_STATUS SN_MODULE_FILE_SYSTEM_OptionLoad(uint32_t optionIndex)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    retStatus = sOptionLoad(optionIndex);
+    SN_SYS_ERROR_CHECK(retStatus, "option is not loaded.");
+
+    return retStatus;
+}
+
+const printOption_t* SN_MODULE_FILE_SYSTEM_OptionGet(void)
+{
+    if(moduleFileSystem.printOption == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "option is not loaded.");
+    }
+
+    return moduleFileSystem.printOption;
+}
+
+SN_STATUS SN_MODULE_FILE_SYSTEM_TargetLoad(uint32_t pageIndex, uint32_t itemIndex)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    if(moduleFileSystem.printTarget != NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_ALREADY_INITIALIZED, "target is already initialized. plase destroy target.");
+    }
+
+    retStatus = sTargetLoad(pageIndex, itemIndex);
+    SN_SYS_ERROR_CHECK(retStatus, "option is not loaded.");
+
+    return retStatus;
+}
+
+char* SN_MODULE_FILE_SYSTEM_TargetSlicePathGet(uint32_t sliceIndex)
+{
+    char* path = (char *)malloc(sizeof(char) * MAX_PATH_LENGTH);
+    int sliceIndex_Offset = 0;
+
+    if(moduleFileSystem.printTarget == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "target is not loaded.");
+    }
+
+    switch(moduleFileSystem.printTarget->targetType)
+    {
+        case NETFABB:
+            sliceIndex_Offset = 0;
+            sprintf(path,"%s/layer_%02d.png", moduleFileSystem.printTarget->targetPath, \
+                                              sliceIndex_Offset + sliceIndex);
+            break;
+        case MANGO:
+            sliceIndex_Offset = 1;
+            sprintf(path,"%s/%d.png", moduleFileSystem.printTarget->targetPath, \
+                                              sliceIndex_Offset + sliceIndex);
+            break;
+        case CWS:
+            sliceIndex_Offset = 0;
+            sprintf(path,"%s/%s%04d.png", moduleFileSystem.printTarget->targetPath, \
+                                          moduleFileSystem.printTarget->projectName, \
+                                          sliceIndex_Offset + sliceIndex);
+            break;
+        case B9:
+            break;
+        default:
+            break;
+    }
+
+    printf("IMAGE PATH : %s\n", path);
+
+    return path;
+}
+
+SN_STATUS SN_MODULE_FILE_SYSTEM_TargetDestroy(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    retStatus = sTargetDestroy();
+
+    return retStatus;
+}
+
+const printTarget_t* SN_MODULE_FILE_SYSTEM_TargetGet(void)
+{
+    if(moduleFileSystem.printTarget == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Target not loaded.");
+    }
+
+    return moduleFileSystem.printTarget;
 }
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
@@ -328,17 +379,19 @@ static void* sFileSystemThread()
                 SN_SYS_ERROR_CHECK(retStatus, "File System Message Send Failed.");
                 break;
             case MSG_FILE_SYSTEM_USB_UNMOUNT:
-
                 SN_SYS_Log("File System => Module => USB Unmount.");
-                retStatus = sFileSystemRemove(&moduleFileSystem.fs);
+                retStatus = sFilePageDestroy(&moduleFileSystem.fileSystem);
                 SN_SYS_ERROR_CHECK(retStatus, "File System Remove Failed.");
 
                 retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_FILE_SYSTEM, APP_EVT_MSG_FILE_SYSTEM_USB_UNMOUNT);
                 SN_SYS_ERROR_CHECK(retStatus, "App Message Send Failed.");
                 break;
             case MSG_FILE_SYSTEM_READ:
-                retStatus = sFileSystemRead(&moduleFileSystem.fs);
-                SN_SYS_ERROR_CHECK(retStatus, "File System Read Failed.");
+                sFilePageDestroy(&moduleFileSystem.fileSystem);
+
+                sFilePageLoad(&moduleFileSystem.fileSystem);
+
+                sFileSystemPrint(&moduleFileSystem.fileSystem);
 
                 retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_UPDATE, 0);
                 SN_SYS_ERROR_CHECK(retStatus, "File System Message Send Failed.");
@@ -396,91 +449,250 @@ static void* USBEvent_Callback(int evt)
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
- *  FILE SYSTEM CONTROL
+ *  FILE SYSTEM
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-
-static SN_STATUS sFileSystemRead(fs_t* fileSystem)
+static SN_STATUS sMachineInfoPageLoad(fileSystem_t* fileSystem)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    DIR *dp;
-    struct dirent *ep;
+    struct dirent **nameList;
+    int numberOfnameList = 0;
+    int i = 0;
+
+    char path[MAX_PATH_LENGTH];
     char* nameBuffer = NULL;
 
+    fsPageHeader_t* pageHeader = NULL;
     fsPage_t* currentPage = NULL;
 
     if(fileSystem == NULL)
     {
-        return SN_STATUS_INVALID_PARAM;
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "fileSysetm is NULL");
     }
 
-    dp = opendir(USB_PATH);
-
-    sFileSystemRemove(fileSystem);
-
     /* Page Init */
-    fileSystem->pageHeader = FileSystem_PageInit();
-    if(fileSystem->pageHeader == NULL)
+    pageHeader = FileSystem_PageInit();
+    if(pageHeader == NULL)
     {
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "pageHeader init failed");
     }
 
-    if (dp != NULL)
+    /* Add First Page */
+    FileSystem_AddPage(pageHeader);
+    if(pageHeader->firstPage == NULL)
     {
-        /* Add First Page */
-        FileSystem_AddPage(fileSystem->pageHeader);
-        if(fileSystem->pageHeader->firstPage == NULL)
-        {
-            SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "first page is can't open.");
-        }
-        currentPage = fileSystem->pageHeader->firstPage;
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "first page is can't open.");
+    }
+    currentPage = pageHeader->firstPage;
 
-        while((ep = readdir (dp)))
-        {
-            nameBuffer = ep->d_name;
-
-            if(!strcmp(TARGET_CWS_FILE_EXT, FileSystem_fctl_ExtractFileExtention(nameBuffer)))
-            {
-                strcpy(currentPage->item[currentPage->itemCnt].name, FileSystem_fctl_Extarct_FileName(nameBuffer));
-
-                if((currentPage->itemCnt + 1) >= MAX_ITEM_SIZE)
-                {
-                    FileSystem_AddPage(fileSystem->pageHeader);
-                    currentPage = currentPage->nextPage;
-                }
-                else
-                {
-                    currentPage->itemCnt++;
-                }
-            }
-        }
-        (void) closedir (dp);
+    numberOfnameList = scandir(MACHINE_FILE_PATH, &nameList, 0, alphasort);
+    if(numberOfnameList < 0)
+    {
+        perror("scandir");
     }
     else
     {
-        perror ("Couldn't open the directory");
+        for(i = 0; i < numberOfnameList; i++)
+        {
+            if(!strcmp(MACHINE_FILE_EXT, FileSystem_fctl_ExtractFileExtention(nameList[i]->d_name)))
+            {
+                nameBuffer = FileSystem_fctl_Extarct_FileName(nameList[i]->d_name);
+                strcpy(currentPage->item[currentPage->itemCnt].name, nameBuffer);
+                free(nameBuffer);
+
+                sprintf(path,"%s/%s.%s", MACHINE_FILE_PATH, currentPage->item[currentPage->itemCnt].name, MACHINE_FILE_EXT);
+                currentPage->item[currentPage->itemCnt].contents = FileSystem_machineInfoXMLLoad(path);
+
+                currentPage->itemCnt++;
+                pageHeader->itemCnt++;
+
+                if(currentPage->itemCnt >= MAX_ITEM_SIZE)
+                {
+                    FileSystem_AddPage(pageHeader);
+                    currentPage = currentPage->nextPage;
+                }
+            }
+
+            free(nameList[i]);
+        }
+        free(nameList);
     }
 
-
-    fileSystem->pageHeader->isItemExist = (fileSystem->pageHeader->firstPage->itemCnt != 0);
-
-    sFileSystemPrint(fileSystem);
+    fileSystem->machineInfoPageHeader = pageHeader;
 
     return retStatus;
 }
 
-static SN_STATUS sFileSystemRemove(fs_t* fileSystem)
+static SN_STATUS sMachineInfoPageDestroy(fileSystem_t* fileSystem)
+{
+    if(fileSystem->machineInfoPageHeader != NULL)
+    {
+        FileSystem_PageDestroy(fileSystem->machineInfoPageHeader);
+    }
+
+    return SN_STATUS_OK;
+}
+
+
+static SN_STATUS sOptionPageLoad(fileSystem_t* fileSystem)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    FileSystem_PageDestroy(fileSystem->pageHeader);
+    struct dirent **nameList;
+    int numberOfnameList = 0;
+    int i = 0;
+
+    char path[MAX_PATH_LENGTH];
+    char* nameBuffer = NULL;
+
+    fsPageHeader_t* pageHeader = NULL;
+    fsPage_t* currentPage = NULL;
+
+    if(fileSystem == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "fileSysetm is NULL");
+    }
+
+    /* Page Init */
+    pageHeader = FileSystem_PageInit();
+    if(pageHeader == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "pageHeader init failed");
+    }
+
+    /* Add First Page */
+    FileSystem_AddPage(pageHeader);
+    if(pageHeader->firstPage == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "first page is can't open.");
+    }
+    currentPage = pageHeader->firstPage;
+
+    numberOfnameList = scandir(OPTION_FILE_PATH, &nameList, 0, alphasort);
+    if(numberOfnameList < 0)
+    {
+        perror("scandir");
+    }
+    else
+    {
+        for(i = 0; i < numberOfnameList; i++)
+        {
+            if(!strcmp(OPTION_FILE_EXT, FileSystem_fctl_ExtractFileExtention(nameList[i]->d_name)))
+            {
+                nameBuffer = FileSystem_fctl_Extarct_FileName(nameList[i]->d_name);
+                strcpy(currentPage->item[currentPage->itemCnt].name, nameBuffer);
+                free(nameBuffer);
+
+                sprintf(path,"%s/%s.%s", OPTION_FILE_PATH, currentPage->item[currentPage->itemCnt].name, OPTION_FILE_EXT);
+                currentPage->item[currentPage->itemCnt].contents = (printOption_t *)FileSystem_optionXMLLoad(path);
+
+                currentPage->itemCnt++;
+                pageHeader->itemCnt++;
+
+                if(currentPage->itemCnt >= MAX_ITEM_SIZE)
+                {
+                    FileSystem_AddPage(pageHeader);
+                    currentPage = currentPage->nextPage;
+                }
+            }
+
+            free(nameList[i]);
+        }
+        free(nameList);
+    }
+
+    fileSystem->optionPageHeader = pageHeader;
 
     return retStatus;
 }
 
+static SN_STATUS sOptionPageDestroy(fileSystem_t* fileSystem)
+{
+    if(fileSystem->optionPageHeader != NULL)
+    {
+        FileSystem_PageDestroy(fileSystem->optionPageHeader);
+    }
 
-static SN_STATUS sFileSystemPrint(const fs_t* fileSystem)
+    return SN_STATUS_OK;
+}
+
+static SN_STATUS sFilePageLoad(fileSystem_t* fileSystem)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    struct dirent **nameList;
+    int numberOfnameList = 0;
+    int i = 0;
+
+    fsPageHeader_t* pageHeader = NULL;
+    fsPage_t* currentPage = NULL;
+
+    if(fileSystem == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "fileSysetm is NULL");
+    }
+
+    /* Page Init */
+    pageHeader = FileSystem_PageInit();
+    if(pageHeader == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "pageHeader init failed");
+    }
+
+    /* Add First Page */
+    FileSystem_AddPage(pageHeader);
+    if(pageHeader->firstPage == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "first page is can't open.");
+    }
+    currentPage = pageHeader->firstPage;
+
+    numberOfnameList = scandir(USB_PATH, &nameList, 0, alphasort);
+    if(numberOfnameList < 0)
+    {
+        perror("scandir");
+    }
+    else
+    {
+        for(i = 0; i < numberOfnameList; i++)
+        {
+            if(!strcmp(TARGET_CWS_FILE_EXT, FileSystem_fctl_ExtractFileExtention(nameList[i]->d_name)) || \
+               !strcmp(TARGET_ZIP_FILE_EXT, FileSystem_fctl_ExtractFileExtention(nameList[i]->d_name)))
+            {
+                strcpy(currentPage->item[currentPage->itemCnt].name, nameList[i]->d_name);
+
+                currentPage->itemCnt++;
+                pageHeader->itemCnt++;
+
+                if(currentPage->itemCnt >= MAX_ITEM_SIZE)
+                {
+                    FileSystem_AddPage(pageHeader);
+                    currentPage = currentPage->nextPage;
+                }
+            }
+
+            free(nameList[i]);
+        }
+        free(nameList);
+    }
+
+    fileSystem->filePageHeader = pageHeader;
+
+    return retStatus;
+}
+
+static SN_STATUS sFilePageDestroy(fileSystem_t* fileSystem)
+{
+    if(fileSystem->filePageHeader != NULL)
+    {
+        FileSystem_PageDestroy(fileSystem->filePageHeader);
+    }
+
+    return SN_STATUS_OK;
+}
+
+static SN_STATUS sFileSystemPrint(const fileSystem_t* fileSystem)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
@@ -494,23 +706,74 @@ static SN_STATUS sFileSystemPrint(const fs_t* fileSystem)
         return SN_STATUS_INVALID_PARAM;
     }
 
-    currentPage = fileSystem->pageHeader->firstPage;
-
-    for(pageIndex = 0; pageIndex < fileSystem->pageHeader->pageCnt; pageIndex++)
+    if(fileSystem->filePageHeader != NULL)
     {
-        printf("\nPage    [%d]\n", (pageIndex + 1));
+        currentPage = fileSystem->filePageHeader->firstPage;
 
-        for(itemIndex = 0; itemIndex < currentPage->itemCnt; itemIndex++)
+        printf("\nFile\n");
+        for(pageIndex = 0; pageIndex < fileSystem->filePageHeader->pageCnt; pageIndex++)
         {
-            printf("  ---item [%d] %s\n", (itemIndex + 1),currentPage->item[itemIndex].name); fflush(stdout);
+            printf("Page[%d]", pageIndex + 1);
+            for(itemIndex = 0; itemIndex < currentPage->itemCnt; itemIndex++)
+            {
+                printf("  ---item [%d] %s\n", (itemIndex + 1),currentPage->item[itemIndex].name); fflush(stdout);
+            }
+
+            printf("max item[%d]\n", currentPage->itemCnt);
+
+            currentPage = currentPage->nextPage;
         }
 
-        printf("max item[%d]\n", currentPage->itemCnt);
+        printf("max page[%d]\n", fileSystem->filePageHeader->pageCnt);
 
-        currentPage = currentPage->nextPage;
+    }
+    if(fileSystem->optionPageHeader != NULL)
+    {
+        currentPage = fileSystem->optionPageHeader->firstPage;
+
+        printf("\nOption\n");
+        for(pageIndex = 0; pageIndex < fileSystem->optionPageHeader->pageCnt; pageIndex++)
+        {
+            for(itemIndex = 0; itemIndex < currentPage->itemCnt; itemIndex++)
+            {
+                printf("  ---Option [%d] %s\n", (itemIndex + 1),currentPage->item[itemIndex].name); fflush(stdout);
+            }
+            currentPage = currentPage->nextPage;
+        }
     }
 
-    printf("max page[%d]\n", fileSystem->pageHeader->pageCnt);
+    if(fileSystem->machineInfoPageHeader != NULL)
+    {
+        currentPage = fileSystem->machineInfoPageHeader->firstPage;
+
+        printf("\nMachine Config\n");
+        for(pageIndex = 0; pageIndex < fileSystem->machineInfoPageHeader->pageCnt; pageIndex++)
+        {
+            for(itemIndex = 0; itemIndex < currentPage->itemCnt; itemIndex++)
+            {
+                printf("  ---Config [%d] %s\n", (itemIndex + 1),currentPage->item[itemIndex].name); fflush(stdout);
+            }
+            currentPage = currentPage->nextPage;
+        }
+    }
+
+    return retStatus;
+}
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  OPTION
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+static SN_STATUS sOptionLoad(machineType_t optionIndex)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    const fsItem_t optionFile = FileSystem_GetItem(moduleFileSystem.fileSystem.optionPageHeader, optionIndex / MAX_ITEM_SIZE, optionIndex % MAX_ITEM_SIZE);
+
+    moduleFileSystem.printOption = optionFile.contents;
+
+    /** @todo will fix it */
+    sprintf(moduleFileSystem.printOption->name, "Option %d", optionIndex + 1);
 
     return retStatus;
 }
@@ -518,35 +781,143 @@ static SN_STATUS sFileSystemPrint(const fs_t* fileSystem)
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
- *  DEMO
+ *  MACHINE
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-static void sDemoPrintSetting(void)
+static SN_STATUS sMachineInfoLoad(machineType_t machineInfoIndex)
 {
-    /* Base Paramter */
-    moduleFileSystem.printInfo.printParameter.layerThickness          = 0.05000;//mm
+    SN_STATUS retStatus = SN_STATUS_OK;
 
-    /* Bottom Layer */
-    moduleFileSystem.printInfo.printParameter.bottomLayerExposureTime =   35000;//ms
-    moduleFileSystem.printInfo.printParameter.bottomLayerNumber       =       7;//layer
-    moduleFileSystem.printInfo.printParameter.bottomLiftFeedRate      =  150.00;//mm/s
+    const fsItem_t machineInfoFile = FileSystem_GetItem(moduleFileSystem.fileSystem.machineInfoPageHeader, machineInfoIndex / MAX_ITEM_SIZE, machineInfoIndex % MAX_ITEM_SIZE);
 
-    /* Normal Layer */
-    moduleFileSystem.printInfo.printParameter.layerExposureTime       =    3000;//ms
-    moduleFileSystem.printInfo.printParameter.liftDistance            =       7;//mm
-    moduleFileSystem.printInfo.printParameter.liftFeedRate            =  150.00;//mm/s
+    moduleFileSystem.machineInfo = machineInfoFile.contents;
 
-    moduleFileSystem.printInfo.printParameter.liftTime                =  Z_DELAY_MSEC_CAL( \
-                             moduleFileSystem.printInfo.printParameter.liftDistance, \
-                             moduleFileSystem.printInfo.printParameter.liftFeedRate);
-
+    return retStatus;
 }
 
-static void sDemoMachineSetting(void)
+static SN_STATUS sMachineInfoFileCreate(machineType_t machineInfoIndex)
 {
-    strcpy(moduleFileSystem.machineInfo.name, DEFAULT_DEVICE_NAME);
-    moduleFileSystem.machineInfo.height                                =     200;//mm
+    SN_STATUS retStatus = SN_STATUS_OK;
+    char srcTargetPath[MAX_PATH_LENGTH], desTargetPath[MAX_PATH_LENGTH];
+
+    const fsItem_t machineInfoFile = FileSystem_GetItem(moduleFileSystem.fileSystem.machineInfoPageHeader, machineInfoIndex / MAX_ITEM_SIZE, machineInfoIndex % MAX_ITEM_SIZE);
+
+    /* Folder Check */
+    retStatus = FileSystem_fctl_MakeDirectory(MACHINE_FILE_PATH);
+
+    /* Get Source Path */
+    sprintf(srcTargetPath,"%s/%s.%s", MACHINE_FILE_PATH, machineInfoFile.name, MACHINE_FILE_EXT);
+
+    sprintf(desTargetPath,"%s/%s.%s", MACHINE_FILE_PATH, MACHINE_DEFAULT_FILE_NAME, MACHINE_FILE_EXT);
+
+    /* Create Target Files */
+    retStatus = FileSystem_fctl_CopyFile(srcTargetPath, desTargetPath);
+
+    return retStatus;
 }
+
+
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  TARGET
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+static SN_STATUS sTargetLoad(uint32_t pageIndex, uint32_t itemIndex)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    const fsItem_t TargetFile = FileSystem_GetItem(moduleFileSystem.fileSystem.filePageHeader, pageIndex, itemIndex);
+    printTarget_t* printTarget = NULL;
+
+    char* nameBuffer = NULL;
+
+    printTarget = (printTarget_t *)malloc(sizeof(printTarget_t));
+    if(printTarget == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "printTarget memroy allocate failed.");
+    }
+
+
+    /* Target Info Setting. */
+    strcpy(printTarget->targetPath, TARGET_PATH);
+    strcpy(printTarget->targetName, TargetFile.name);
+
+    nameBuffer = FileSystem_fctl_Extarct_FileName(TargetFile.name);
+    strcpy(printTarget->projectName, FileSystem_fctl_Extarct_FileName(TargetFile.name));
+    free(nameBuffer);
+
+
+
+    retStatus = sTargetFileCreate(printTarget->projectName, FileSystem_fctl_ExtractFileExtention(TargetFile.name));
+    SN_SYS_ERROR_CHECK(retStatus, "Faild Create Target Files.");
+
+    if(FileSystem_CountFileWithStr(TARGET_PATH, CWS_CONDITION_STR))
+    {
+        printTarget->targetType = CWS;
+    }
+    else if(FileSystem_CountFileWithStr(TARGET_PATH, NETFABB_CONDITION_STR))
+    {
+        printTarget->targetType = NETFABB;
+    }
+    /*
+    else if(FileSystem_CountFileWithStr(TARGET_PATH, MANGO_CONDITION_STR))
+    {
+        //B9 Not Support yet.
+    }
+    */
+    else
+    {
+        printTarget->targetType = MANGO;
+    }
+
+
+    printTarget->slice                      = FileSystem_CountFileWithStr(TARGET_PATH, TARGET_IMAGE_EXT);
+
+    moduleFileSystem.printTarget = printTarget;
+
+    return retStatus;
+}
+
+static SN_STATUS sTargetDestroy(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    if(moduleFileSystem.printTarget != NULL)
+    {
+        free(moduleFileSystem.printTarget);
+    }
+
+    /* Folder Check */
+    retStatus = FileSystem_fctl_MakeDirectory(TARGET_PATH);
+
+    /* Clean Folder */
+    retStatus = FileSystem_fctl_RemoveFiles(TARGET_PATH);
+
+    return retStatus;
+}
+
+static SN_STATUS sTargetFileCreate(const char* fileName, const char* fileExtention)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    char srcTargetPath[MAX_PATH_LENGTH], desTargetPath[MAX_PATH_LENGTH];
+
+    /* Folder Check */
+    retStatus = FileSystem_fctl_MakeDirectory(TARGET_PATH);
+
+    /* Clean Folder */
+    retStatus = FileSystem_fctl_RemoveFiles(TARGET_PATH);
+
+    /* Get Source Path */
+    sprintf(srcTargetPath,"%s/%s.%s", USB_PATH, fileName, fileExtention);
+    sprintf(desTargetPath,"%s/%s.%s", TARGET_PATH, fileName, fileExtention);
+
+    /* Create Target Files */
+    retStatus = FileSystem_fctl_CopyFile(srcTargetPath, desTargetPath);
+    retStatus = FileSystem_fctl_ExtractFile(desTargetPath, TARGET_PATH);
+
+    return retStatus;
+}
+
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
  * SYSTEM

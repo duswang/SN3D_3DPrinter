@@ -17,12 +17,10 @@
 #define MODUEL_INCLUDE_SN_MODUEL_FILE_SYSTEM_H_
 
 /*************************************************************
- * @name File Sysetm Define
+ * @name File System Define
  *
  *////@{
-#define MAX_PAGE_SIZE               10
 #define MAX_ITEM_SIZE                5
-#define MAX_OPTION_SIZE              5
 
 #define MAX_FILENAME_LENGTH        256
 #define MAX_PATH_LENGTH            256
@@ -30,15 +28,47 @@
 /*************************************************************@}*/
 
 /*************************************************************
+ * @name File Sysetm Define
+ *
+ *////@{
+#define MANIFEST_FILE_NAME      "manifest"
+#define MANIFEST_FILE_EXT       "xml"
+
+#define MACHINE_FILE_EXT        "xml"
+
+#define OPTION_FILE_EXT         "xml"
+
+#define TARGET_CWS_FILE_EXT     "cws"
+#define TARGET_ZIP_FILE_EXT     "zip"
+#define TARGET_IMAGE_EXT        "png"
+
+
+typedef enum {
+    NETFABB,                 //!< NETFABB
+    MANGO,                   //!< MANGO
+    B9,                      //!< B9
+    CWS,                     //!< CWS
+    TARGET_DEFAULT_TYPE = CWS//!< TARGET_DEFAULT_TYPE
+} targetType_t;
+
+typedef enum {
+    MACHINE_15_6,
+    MACHINE_23_8,
+    MACHINE_5_5,
+    MACHINE_8_9,
+    MACHINE_DEFAULT = MACHINE_5_5
+} machineType_t;
+
+/*************************************************************@}*/
+
+
+/*************************************************************
  * @name File System Structure
  *
  *////@{
-typedef struct file_system_option {
-    char name[MAX_FILENAME_LENGTH];
-} fsOption_t;
-
 typedef struct file_system_item {
     char name[MAX_FILENAME_LENGTH];
+    void* contents;
 } fsItem_t;
 
 typedef struct file_system_page {
@@ -49,18 +79,19 @@ typedef struct file_system_page {
 } fsPage_t;
 
 typedef struct file_system_page_header {
-    bool        isItemExist;
-
     fsPage_t* firstPage;
     fsPage_t* lastPage;
 
     uint32_t    pageCnt;
+    uint32_t    itemCnt;
 } fsPageHeader_t;
 
 typedef struct file_system {
-    fsOption_t  option[MAX_OPTION_SIZE];
-    fsPageHeader_t*    pageHeader;
-} fs_t;
+    fsPageHeader_t*    filePageHeader;
+    fsPageHeader_t*    machineInfoPageHeader;
+    fsPageHeader_t*    optionPageHeader;
+} fileSystem_t;
+
 /*************************************************************@}*/
 
 /*************************************************************
@@ -68,46 +99,44 @@ typedef struct file_system {
  *
  *////@{
 
-typedef struct print_prameter {
-    float    layerThickness;            //mm
+typedef struct print_option_prameter {
+    char     name[MAX_FILENAME_LENGTH];
 
-    /** Bottom Layer Parameter **/
-    long     bottomLayerExposureTime;   //ms
-    long     bottomLayerNumber;         //Layer
-    float    bottomLiftFeedRate;        //mm/s
+    float    layerThickness;            /**< mm */
 
-    /** Normal Layer Paramter **/
-    long     layerExposureTime;         //ms
-    float    liftFeedRate;              //mm/s
-    long     liftTime;                  //ms - Need Auto Calculate
-    long     liftDistance;              //mm
+    /* Bottom Layer Parameter */
+    long     bottomLayerExposureTime;   /**< ms */
+    long     bottomLayerNumber;         /**< Layer */
+    float    bottomLiftFeedRate;        /**< mm / s */
 
-    float    retractFeedRate;           //mm/s
+    /* Normal Layer Paramter */
+    long     layerExposureTime;         /**< ms */
+    float    liftFeedRate;              /**< mm / s */
+    long     liftTime;                  /**< ms - Need Auto Calculate */
+    long     liftDistance;              /**< mm */
 
-    float    stopPosition;              //mm
-} printParm_t;
-
+} printOption_t;
 
 typedef struct print_target {
-    const char* targetPath;
-    const char* targetName;
+    char  targetPath[MAX_PATH_LENGTH];
+    char  targetName[MAX_FILENAME_LENGTH];
+
+    char  projectName[MAX_FILENAME_LENGTH];
+
     uint32_t slice;
+    targetType_t targetType;
 } printTarget_t;
 
-typedef struct print_information {
-    printParm_t   printParameter;
-    printTarget_t    printTarget;
-    bool                  isInit;
-} printInfo_t;
 /*************************************************************@}*/
 
 /*************************************************************
  * @name Machine Info Structure
  *////@{
 typedef struct machine_information {
-    char             name[MAX_FILENAME_LENGTH];
-    char                height;
-    bool                isInit;
+    char    name[MAX_FILENAME_LENGTH];  /**< str */
+    long                  screenWdith;  /**< px */
+    long                 screenHeight;  /**< px */
+    long                machineHeight;  /**< mm */
 } machineInfo_t;
 /*************************************************************@}*/
 
@@ -140,21 +169,13 @@ extern SN_STATUS SN_MODULE_FILE_SYSTEM_Uninit(void);
  * @{
  */
 
-/** @brief
- *
- *
- *  @return SN_STATUS
- *  @note
- */
-extern const fsPage_t* SN_MODULE_FILE_SYSTEM_GetPage(int pageIndex);
 
 /** @brief
  *
- *
  *  @return SN_STATUS
  *  @note
  */
-extern int SN_MODULE_FILE_SYSTEM_GetPageCnt(void);
+extern SN_STATUS SN_MODULE_FILE_SYSTEM_FilePageUpdate(void);
 
 /** @brief
  *
@@ -162,23 +183,22 @@ extern int SN_MODULE_FILE_SYSTEM_GetPageCnt(void);
  *  @return SN_STATUS
  *  @note
  */
-extern const fs_t SN_MODULE_FILE_SYSTEM_GetFileSystem(void);
+extern const fsPage_t* SN_MODULE_FILE_SYSTEM_GetFilePage(int pageIndex);
 
+/** @brief
+
+ *  @return SN_STATUS
+ *  @note
+ */
+extern int SN_MODULE_FILE_SYSTEM_GetFilePageCnt(void);
 
 /** @brief
  *
  *  @return SN_STATUS
  *  @note
  */
-extern SN_STATUS SN_MODULE_FILE_SYSTEM_Update(void);
+extern bool SN_MODULE_FILE_SYSTEM_isPrintFileExist(void);
 
-
-/** @brief
- *
- *  @return SN_STATUS
- *  @note
- */
-extern bool SN_MODULE_FILE_SYSTEM_isItemExist(void);
 /*************************************************************@}*/
 
 /*************************************************************
@@ -189,26 +209,57 @@ extern bool SN_MODULE_FILE_SYSTEM_isItemExist(void);
 
 /** @brief
  *
- *  @return SN_STATUS
- *  @note
- */
-extern SN_STATUS SN_MODULE_FILE_SYSTEM_MachineInfoInit(void);
-
-/** @brief
+ *  @param optionIndex
  *
  *  @return SN_STATUS
  *  @note
  */
-extern SN_STATUS SN_MODULE_FILE_SYSTEM_MachineInfoUninit(void);
+extern const machineInfo_t* SN_MODULE_FILE_SYSTEM_MachineInfoGet(void);
 
-/** @brief
- *
- *  @return machineInfo_t
- *  @note
- */
-extern machineInfo_t SN_MODULE_FILE_SYSTEM_MachineInfoGet(void);
 
 /*************************************************************@}*/
+
+/*************************************************************
+ * @name File System Module :: Print Option
+ * @brief
+ * @{
+ */
+
+/** @brief
+
+ *  @return SN_STATUS
+ *  @note
+ */
+extern int SN_MODULE_FILE_SYSTEM_GetOptionCnt(void);
+
+/** @brief
+ *
+ *  @return SN_STATUS
+ *  @note
+ */
+extern bool SN_MODULE_FILE_SYSTEM_isOptionExist(void);
+
+/** @brief
+ *
+ *  @param optionIndex
+ *
+ *  @return SN_STATUS
+ *  @note
+ */
+extern SN_STATUS SN_MODULE_FILE_SYSTEM_OptionLoad(uint32_t optionIndex);
+
+/** @brief
+ *
+ *  @param optionIndex
+ *
+ *  @return SN_STATUS
+ *  @note
+ */
+extern const printOption_t* SN_MODULE_FILE_SYSTEM_OptionGet(void);
+
+
+/*************************************************************@}*/
+
 
 /*************************************************************
  * @name File System Module :: Print Target Info
@@ -223,23 +274,43 @@ extern machineInfo_t SN_MODULE_FILE_SYSTEM_MachineInfoGet(void);
  *  @return SN_STATUS
  *  @note
  */
-extern SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoInit(uint32_t pageIndex, uint32_t itemIndex);
+extern SN_STATUS SN_MODULE_FILE_SYSTEM_TargetLoad(uint32_t pageIndex, uint32_t itemIndex);
 
 /** @brief
  *
  *  @return SN_STATUS
  *  @note
  */
-extern SN_STATUS SN_MODULE_FILE_SYSTEM_PrintInfoUninit(void);
+extern SN_STATUS SN_MODULE_FILE_SYSTEM_TargetDestroy(void);
 
 /** @brief
  *
- *  @return printInfo_t
+ *  @param optionIndex
+ *
+ *  @return SN_STATUS
  *  @note
  */
-extern printInfo_t   SN_MODULE_FILE_SYSTEM_PrintInfoGet(void);
+extern const printTarget_t* SN_MODULE_FILE_SYSTEM_TargetGet(void);
 
 /*************************************************************@}*/
+
+/*************************************************************
+ * @name File System Module :: Utils
+ * @brief
+ * @{
+ */
+
+/** @brief
+ *
+ *  @param
+ *
+ *  @return SN_STATUS
+ *  @note
+ */
+extern char* SN_MODULE_FILE_SYSTEM_TargetSlicePathGet(uint32_t sliceIndex);
+
+/*************************************************************@}*/
+
 
 #endif /* MODUEL_INCLUDE_SN_MODUEL_FILE_SYSTEM_H_ */
 /**@}*/

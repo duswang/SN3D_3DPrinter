@@ -11,6 +11,7 @@
  *
  * @todo Image allocate & free Memory test
  * @todo Nextion Thumbnail need more test.
+ * @bug  Nextion Thumbnail pageQ and reback.
  */
 
 #include "SN_API.h"
@@ -92,6 +93,9 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_ThumbnailUpdate(void)
 SN_STATUS SN_MODULE_IMAGE_VIEWER_ThumbnailClean(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+
+    retStatus = ImageViewer_ThumbnailClean(&moduleImageViewer);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Thumbnail Clean Failed.");
 
     return retStatus;
 }

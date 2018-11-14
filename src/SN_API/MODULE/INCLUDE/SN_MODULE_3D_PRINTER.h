@@ -52,7 +52,7 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Uninit(void);
  *
  *  @note
  */
-extern SN_STATUS SN_MODULE_3D_PRINTER_Start(uint32_t pageIndex, uint32_t itemIndex);
+extern SN_STATUS SN_MODULE_3D_PRINTER_Start(uint32_t pageIndex, uint32_t itemIndex, uint32_t option);
 
 
 /** @brief

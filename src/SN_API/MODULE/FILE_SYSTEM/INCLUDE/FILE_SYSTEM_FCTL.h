@@ -67,21 +67,23 @@ extern SN_STATUS FileSystem_fctl_MakeDirectory(const char* dir);
  *  @return SN_STATUS
  *  @note
  */
-extern const char* FileSystem_fctl_ExtractFileExtention(const char *filename);
+extern char* FileSystem_fctl_Extarct_FileName(const char* filename);
+
 
 /** @brief
  *
  *  @return SN_STATUS
  *  @note
  */
-uint32_t FileSystem_CountFileNumWithExtetion(const char* srcPath, const char* fileExtention);
+extern const char* FileSystem_fctl_ExtractFileExtention(const char* filename);
 
 /** @brief
  *
  *  @return SN_STATUS
  *  @note
  */
-extern const char* FileSystem_fctl_Extarct_FileName(const char *filename);
+uint32_t FileSystem_CountFileWithStr(const char* srcPath, const char* condStr);
+
 
 /*************************************************************@}*/
 

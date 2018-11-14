@@ -90,9 +90,6 @@ typedef struct frameBuffer_Window
  */
 typedef struct image_viewer
 {
-    machineInfo_t   machineInfo;
-    printInfo_t     printInfo;
-
     FB_Window_t window;
     FB_Image_t  image;
     FB_Image_t  thumbnail;

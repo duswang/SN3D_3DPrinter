@@ -323,26 +323,45 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerStop(void)
 
     return retStatus;
 }
+SN_STATUS SN_MODULE_DISPLAY_FileSelectOptionUpdate(uint32_t optionIndex)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    char buffer[NEXTION_COMMAND_BUFFER_SIZE];
 
-SN_STATUS SN_MODULE_DISPLAY_FileSelectUpdate(uint32_t pageIndex)
+    if(SN_MODULE_FILE_SYSTEM_isOptionExist())
+    {
+        sprintf(buffer,"Option.txt=\"Option %d\"", optionIndex + 1);
+    }
+    else
+    {
+        sprintf(buffer,"Option.txt=\" \"");
+    }
+
+    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+
+
+    return retStatus;
+}
+SN_STATUS SN_MODULE_DISPLAY_FileSelectPageUpdate(uint32_t pageIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
     char buffer[NEXTION_COMMAND_BUFFER_SIZE];
     uint32_t itemIndex = 0;
 
-    const fs_t fileSystem       = SN_MODULE_FILE_SYSTEM_GetFileSystem();
-    const fsPage_t* currentPage = SN_MODULE_FILE_SYSTEM_GetPage(pageIndex);
+    const fsPage_t* currentPage      = NULL;
 
+    currentPage = SN_MODULE_FILE_SYSTEM_GetFilePage(pageIndex);
     if(currentPage == NULL)
     {
         SN_SYS_ERROR_CHECK(retStatus, "page not initialzied.");
     }
 
-    if(fileSystem.pageHeader->isItemExist)
+    if(SN_MODULE_FILE_SYSTEM_isPrintFileExist())
     {
         /* Send to Nextion Display */
-        if(pageIndex <= fileSystem.pageHeader->pageCnt)
+        if(pageIndex <= SN_MODULE_FILE_SYSTEM_GetFilePageCnt())
         {
             for(itemIndex = 0; itemIndex < MAX_ITEM_SIZE; itemIndex++)
             {

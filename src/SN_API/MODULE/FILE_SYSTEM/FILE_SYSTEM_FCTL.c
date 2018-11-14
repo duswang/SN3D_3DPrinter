@@ -62,7 +62,7 @@ SN_STATUS FileSystem_fctl_CopyFile(const char* srcPath, const char* desPath)
             if(feof(src) != 0)
             {
                 fwrite((void*)buf, 1, readCnt, des);
-                SN_SYS_Log("Module => File System => MAKE TEMP FILE.");
+                SN_SYS_Log("Module => File System => COPY FILE.");
                 break;
             }
             else
@@ -132,12 +132,12 @@ SN_STATUS FileSystem_fctl_RemoveFiles(const char* folderPath)
     }
     else
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Folder Open Failed.");
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Folder Open Failed.");
     }
 
     if(!r)
     {
-        SN_SYS_Log("Module => File System => REMOVE TEMP FILE.");
+        SN_SYS_Log("Module => File System => REMOVE FOLDER FILES.");
     }
 
     return SN_STATUS_OK;
@@ -149,7 +149,7 @@ SN_STATUS FileSystem_fctl_MakeDirectory(const char* dir)
     {
         if (errno != EEXIST)
         {
-            SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Path Invalid.");
+            SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "File Path Invalid.");
         }
     }
 
@@ -174,7 +174,7 @@ SN_STATUS FileSystem_fctl_ExtractFile(const char* srcPath, const char* desPath)
 
     if ((za = zip_open(srcPath, 0, &err)) == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Folder Open Failed.");
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "xFile Folder Open Failed.");
     }
 
     for (i = 0; i < zip_get_num_entries(za, 0); i++)
@@ -192,7 +192,7 @@ SN_STATUS FileSystem_fctl_ExtractFile(const char* srcPath, const char* desPath)
                 zf = zip_fopen_index(za, i, 0);
 
                 if (!zf) {
-                    SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "Temp File Extract Failed.");
+                    SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "File Extract Failed.");
                 }
 
                 len = strlen(desPath) + strlen(sb.name);
@@ -202,7 +202,7 @@ SN_STATUS FileSystem_fctl_ExtractFile(const char* srcPath, const char* desPath)
                 fd = open(fullFilePath, O_RDWR | O_TRUNC | O_CREAT, 0644);
 
                 if (fd < 0) {
-                    SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Path Invalid.");
+                    SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "File Path Invalid.");
                 }
 
                 sum = 0;
@@ -212,7 +212,7 @@ SN_STATUS FileSystem_fctl_ExtractFile(const char* srcPath, const char* desPath)
                     len = zip_fread(zf, buf, 1000);
                     if (len < 0)
                     {
-                        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "Temp File Extract Failed.");
+                        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "File Extract Failed.");
                     }
                     write(fd, buf, len);
                     sum += len;
@@ -226,16 +226,14 @@ SN_STATUS FileSystem_fctl_ExtractFile(const char* srcPath, const char* desPath)
 
     if (zip_close(za) == -1)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "Temp File Extract Failed.");
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "File Extract Failed.");
     }
 
-    SN_SYS_Log("Module => File System => EXTRACT TEMP FILE.");
+    SN_SYS_Log("Module => File System => EXTRACT FILE.");
 
     return retStatus;
 }
-
-
-uint32_t FileSystem_CountFileNumWithExtetion(const char* srcPath, const char* fileExtention)
+uint32_t FileSystem_CountFileWithStr(const char* srcPath, const char* condStr)
 {
     DIR *d = opendir(srcPath);
     uint32_t slice = 0;
@@ -255,7 +253,7 @@ uint32_t FileSystem_CountFileNumWithExtetion(const char* srcPath, const char* fi
                 continue;
             }
 
-            if(strstr(p->d_name, fileExtention) != NULL)
+            if(strstr(p->d_name, condStr) != NULL)
             {
                 slice++;
             }
@@ -265,18 +263,18 @@ uint32_t FileSystem_CountFileNumWithExtetion(const char* srcPath, const char* fi
 
     else
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Temp File Path Invalid.");
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "File Path Invalid.");
     }
 
     if(!r)
     {
-        printf("Module => File System => Slice File Number : [ %04d ]\n", slice); fflush(stdout);
+
     }
 
     return slice;
 }
 
-const char* FileSystem_fctl_ExtractFileExtention(const char *filename)
+const char* FileSystem_fctl_ExtractFileExtention(const char* filename)
 {
     const char *dot = strrchr(filename, '.');
 
@@ -285,7 +283,7 @@ const char* FileSystem_fctl_ExtractFileExtention(const char *filename)
     return dot + 1;
 }
 
-const char* FileSystem_fctl_Extarct_FileName(const char *filename)
+char* FileSystem_fctl_Extarct_FileName(const char *filename)
 {
     char *retStr;
     char *lastDot;
@@ -295,7 +293,7 @@ const char* FileSystem_fctl_Extarct_FileName(const char *filename)
          return NULL;
     }
 
-    if ((retStr = malloc (strlen (filename) + 1)) == NULL)
+    if ((retStr = malloc (strlen(filename) + 1)) == NULL)
     {
         return NULL;
     }

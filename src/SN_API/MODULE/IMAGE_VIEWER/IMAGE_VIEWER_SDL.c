@@ -88,7 +88,7 @@ SN_STATUS ImageVIewer_WindowUpdate(moduleImageViewer_t* moduleImageViewer, uint3
     SN_STATUS retStatus = SN_STATUS_OK;
     ERROR_T error = 0;
 
-    char path[MAX_PATH_LENGTH] = {'\0', };
+    char* path = NULL;
     int image_w = 0, image_h = 0;
 
     /* GET PRINT TARGET INFO */
@@ -99,7 +99,7 @@ SN_STATUS ImageVIewer_WindowUpdate(moduleImageViewer_t* moduleImageViewer, uint3
     }
 
     /* Load Texture */
-    sprintf(path,"%s%s%04d.png", printInfo.printTarget.targetPath, printInfo.printTarget.targetName, sliceIndex);
+    path = SN_MODULE_FILE_SYSTEM_TargetSlicePathGet(sliceIndex);
 
     moduleImageViewer->texture = sLoadTexture(path, moduleImageViewer->renderer);
     error += SDL_QueryTexture(moduleImageViewer->texture, NULL, NULL, &image_w, &image_h);
@@ -121,6 +121,8 @@ SN_STATUS ImageVIewer_WindowUpdate(moduleImageViewer_t* moduleImageViewer, uint3
     SDL_RenderPresent(moduleImageViewer->renderer);
 
     SDL_DestroyTexture(moduleImageViewer->texture);
+
+    free(path);
 
     return retStatus;
 }

@@ -89,7 +89,7 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                 break;
             /* IN PAGE BUTTONS */
             case NX_ID_WAITING_BUTTON_PRINT:
-                SN_MODULE_FILE_SYSTEM_Update();
+                SN_MODULE_FILE_SYSTEM_FilePageUpdate();
                 break;
             case NX_ID_WAITING_BUTTON_CONTROL:
                 APP_STATE_EnterStateControl();

@@ -58,6 +58,13 @@ extern SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowUpdate(uint32_t sliceIndex);
  */
 extern SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowClean(void);
 
+/** @brief
+ *
+ *  @return SN_STATUS
+ *  @note
+ */
+extern SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowDestroy(void);
+
 /*************************************************************@}*/
 
 /*************************************************************
@@ -67,11 +74,11 @@ extern SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowClean(void);
  *  @note It take 0.8 msec task time on 120 width thumbnail image.
  *////@{
 
-//SN_STATUS SN_MODULE_IMAGE_VIEWER_ThumbnailUpdate(void);
+//extern  SN_STATUS SN_MODULE_IMAGE_VIEWER_ThumbnailUpdate(void);
 
-//SN_STATUS SN_MODULE_IMAGE_VIEWER_ThumbnailClean(void);
+extern SN_STATUS SN_MODULE_IMAGE_VIEWER_ThumbnailClean(void);
 
-//SN_STATUS SN_MODULE_IMAGE_VIEWER_ThumbnailDistroy(void);
+//extern  SN_STATUS SN_MODULE_IMAGE_VIEWER_ThumbnailDistroy(void);
 
 /*************************************************************@}*/
 

@@ -50,14 +50,6 @@ extern SN_STATUS SN_MODULE_DISPLAY_Uninit(void);
  */
 extern SN_STATUS SN_MODULE_DISPLAY_EnterState(nx_page_t state);
 
-
-/** @brief
- *
- *  @return SN_STATUS
- *  @note
- */
-extern SN_STATUS SN_MODULE_DISPLAY_FileSelectUpdate(uint32_t page);
-
 /*************************************************************@}*/
 
 /*************************************************************
@@ -141,6 +133,28 @@ extern SN_STATUS SN_MODULE_DISPLAY_PrintingTimerResume(void);
 extern SN_STATUS SN_MODULE_DISPLAY_PrintingTimerStop(void);
 
 /*************************************************************@}*/
+
+/*************************************************************
+ * @name Display Module :: File Select Page
+ *  @brief
+ *////@{
+
+/** @brief
+ *
+ *  @return SN_STATUS
+ *  @note
+ */
+extern SN_STATUS SN_MODULE_DISPLAY_FileSelectOptionUpdate(uint32_t optionIndex);
+
+/** @brief
+ *
+ *  @return SN_STATUS
+ *  @note
+ */
+extern SN_STATUS SN_MODULE_DISPLAY_FileSelectPageUpdate(uint32_t pageIndex);
+
+/*************************************************************@}*/
+
 
 /*************************************************************
  * @name Display Module :: Nextion GUI Tool

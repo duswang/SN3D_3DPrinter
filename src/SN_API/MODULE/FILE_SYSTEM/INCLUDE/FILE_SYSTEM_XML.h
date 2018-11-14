@@ -27,7 +27,21 @@
  *  @return SN_STATUS
  *  @note
  */
-const char* FileSystem_GetProjectName(const char *srcPath);
+extern printTarget_t* FileSystem_targetXMLLoad(const char *srcPath);
+
+/** @brief
+ *
+ *  @return SN_STATUS
+ *  @note
+ */
+extern printOption_t* FileSystem_optionXMLLoad(const char *srcPath);
+
+/** @brief
+ *
+ *  @return SN_STATUS
+ *  @note
+ */
+extern machineInfo_t* FileSystem_machineInfoXMLLoad(const char *srcPath);
 
 /*************************************************************@}*/
 
