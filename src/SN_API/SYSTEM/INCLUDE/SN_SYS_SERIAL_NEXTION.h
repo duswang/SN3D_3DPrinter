@@ -27,6 +27,7 @@
 #define NX_PAGE_FILE_SYSTEM_COMMAND "page FileSelect"
 #define NX_PAGE_PRINTING_COMMAND    "page Print"
 #define NX_PAGE_LOADING_COMMAND     "page Loading"
+#define NX_PAGE_NOTIFY_COMMAND      "page Notify"
 
 #define NX_COMMAND_RESET            "rest"
 
@@ -127,7 +128,8 @@ typedef enum
     NX_PAGE_SETUP               = 0x06,
     NX_PAGE_INIT                = 0x07,
     NX_PAGE_LOADING             = 0xF1, //ONLY NEXTION DISPLAY. FOR LOADING or WAITING MOTOR.
-    NX_PAGE_REQUEST             = 0xF2,
+    NX_PAGE_NOTIFY              = 0xF2,
+    NX_PAGE_REQUEST             = 0xF4,
     NX_PAGE_NONE
 } nx_page_t; /* It Need to sync ref : 'app_state_t' */
 

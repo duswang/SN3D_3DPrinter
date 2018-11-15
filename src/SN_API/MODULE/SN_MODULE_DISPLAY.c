@@ -175,6 +175,9 @@ SN_STATUS SN_MODULE_DISPLAY_EnterState(nx_page_t state)
     case NX_PAGE_LOADING:
         retStatus = sSendCommand(NX_PAGE_LOADING_COMMAND, sizeof(NX_PAGE_LOADING_COMMAND));
         break;
+    case NX_PAGE_NOTIFY:
+        retStatus = sSendCommand(NX_PAGE_NOTIFY_COMMAND, sizeof(NX_PAGE_NOTIFY_COMMAND));
+        break;
     default:
         retStatus = SN_STATUS_INVALID_PARAM;
         break;
@@ -274,6 +277,17 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerInit(uint32_t sec)
     retStatus = sDisplayMessagePut(MSG_DISPLAY_TIME_INFO_TIMER_UPDATE, 0);
     SN_SYS_ERROR_CHECK(retStatus, "Display Send Message Failed.");
 
+    return retStatus;
+}
+
+SN_STATUS SN_MODULE_DISPLAY_PrintingTimerSync(uint32_t sec)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    if(moduleDisplay.IsTimerInfoInit)
+    {
+        moduleDisplay.secNowTime = sec;
+    }
     return retStatus;
 }
 

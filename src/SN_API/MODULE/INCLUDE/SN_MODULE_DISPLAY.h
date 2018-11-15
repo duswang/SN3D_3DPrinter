@@ -105,6 +105,15 @@ extern SN_STATUS SN_MODULE_DISPLAY_PrintingInfoUpdate(uint32_t slice, uint32_t t
  */
 extern SN_STATUS SN_MODULE_DISPLAY_PrintingTimerInit(uint32_t sec);
 
+/** @brief
+ *
+ *  @param sec
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
+extern SN_STATUS SN_MODULE_DISPLAY_PrintingTimerSync(uint32_t sec);
 
 /** @brief
  *

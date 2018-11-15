@@ -703,7 +703,7 @@ static SN_STATUS sUpdateNextionThumbnail(const FB_Image_t thumbnail)
 
     if(thumbnail.h > DEFAULT_NEXTION_THUMBNAIL_HEIGHT)
     {
-        //return SN_STATUS_INVALID_PARAM;
+        return SN_STATUS_INVALID_PARAM;
     }
 
     lineOffset = (DEFAULT_NEXTION_THUMBNAIL_HEIGHT - thumbnail.h) / 2;

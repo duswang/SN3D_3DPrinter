@@ -64,6 +64,22 @@
 #define ESTIMATED_BUILD_TIME_SEC_CAL(z_delay, uv_delay, uv_bottom_deleay, num_of_layer, num_of_bottom_layer) \
 ((((z_delay) + (uv_delay)) / 1000) * ((num_of_layer) - (num_of_bottom_layer)) + (((uv_bottom_deleay + z_delay) / 1000) * (num_of_bottom_layer)))
 
+/** @def ESTIMATED_BUILD_TIME_SEC_CAL(z_delay, uv_delay, uv_bottom_deleay, num_of_layer, num_of_bottom_layer)
+ *  @brief estimated build time calculator
+ *  ESTIMATED_BUILD_TIME_SEC_CAL - Def. funtion
+ *
+ *  @param z_delay
+ *  @param uv_delay
+ *  @param uv_bottom_delay
+ *  @param num_of_layer
+ *  @param num_of_bottom_layer
+ *
+ *  @return estimated build time (sec)
+ *  @note
+ */
+#define CURRENT_TIME_SEC_CAL(z_delay, uv_delay, uv_bottom_deleay, current_num_of_layer, num_of_bottom_layer) \
+(((((z_delay) + (uv_delay)) / 1000) * ((current_num_of_layer > num_of_bottom_layer) ? ((current_num_of_layer) - (num_of_bottom_layer)) : (0))) + \
+(((uv_bottom_deleay + z_delay) / 1000) * ((current_num_of_layer > num_of_bottom_layer) ? (num_of_bottom_layer) : (current_num_of_layer))))
 
 /* *** MODULE *** */
 typedef enum device_state {
@@ -662,19 +678,6 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
         }
 
         /* Slice Sequence */
-        /* Exposure Timer Call */
-        if(module3DPrinter.sliceIndex < printOption->bottomLayerNumber)
-        {
-            exposureTime = printOption->bottomLayerExposureTime;
-        }
-        else
-        {
-            exposureTime = printOption->layerExposureTime;
-        }
-
-        retStatus = SN_SYS_TimerCreate(&timerPrint , exposureTime, sTMR_Lift_Callback);
-        SN_SYS_ERROR_CHECK(retStatus, "Timer Create Failed.");
-
         /* IMAGE VIEWER CLEAER */
         retStatus = SN_MODULE_IMAGE_VIEWER_WindowClean();
         SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Window Clear Failed.");
@@ -692,6 +695,19 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
         /* UV Turn On */
         retStatus = SN_SYS_SerialTx(serialId3DPrinter, GCODE_LCD_ON, sizeof(GCODE_LCD_ON));
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
+
+        /* Exposure Timer Call */
+        if(module3DPrinter.sliceIndex < printOption->bottomLayerNumber)
+        {
+            exposureTime = printOption->bottomLayerExposureTime;
+        }
+        else
+        {
+            exposureTime = printOption->layerExposureTime;
+        }
+
+        retStatus = SN_SYS_TimerCreate(&timerPrint , exposureTime, sTMR_Lift_Callback);
+        SN_SYS_ERROR_CHECK(retStatus, "Timer Create Failed.");
     }
     else if(module3DPrinter.state == DEVICE_PAUSE)
     {
@@ -723,6 +739,7 @@ static SN_STATUS s3DPrinter_PrintLift(void)
     SN_STATUS retStatus = SN_STATUS_OK;
     const printTarget_t* printTarget = NULL;
     const printOption_t* printOption = NULL;
+    uint32_t currentTime = 0;
 
     if((module3DPrinter.state == DEVICE_PRINTING) || \
        (module3DPrinter.state == DEVICE_PAUSE))
@@ -761,6 +778,7 @@ static SN_STATUS s3DPrinter_PrintLift(void)
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
         retStatus = sSendGCode(module3DPrinter.gcodeLiftDown, sizeof(module3DPrinter.gcodeLiftDown));
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
+
 #endif
         /* One Cycle Done */
         if((module3DPrinter.sliceIndex + 1) >= printTarget->slice)
@@ -774,6 +792,16 @@ static SN_STATUS s3DPrinter_PrintLift(void)
         else
         {
             printf("=========> DONE. [ %4d/ %4d ]\n", (module3DPrinter.sliceIndex + 1), printTarget->slice); fflush(stdout);
+
+            /* Time Sync */
+            currentTime = CURRENT_TIME_SEC_CAL( \
+                    printOption->liftTime, \
+                    printOption->layerExposureTime, \
+                    printOption->bottomLayerExposureTime, \
+                    module3DPrinter.sliceIndex + 1, \
+                    printOption->bottomLayerNumber);
+
+            SN_MODULE_DISPLAY_PrintingTimerSync(currentTime);
 
             /* Slice Index Update */
             module3DPrinter.sliceIndex++;
