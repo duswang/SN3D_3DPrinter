@@ -20,6 +20,26 @@
  * @name NEXTION REQUEST PAGE COMMAND
  *
  *////@{
+#define DEFAULT_NEXTION_THUMBNAIL_OFFSET_X 12
+#define DEFAULT_NEXTION_THUMBNAIL_OFFSET_Y 45
+/* 16:10 */
+#define DEFAULT_NEXTION_THUMBNAIL_WIDTH    192
+#define DEFAULT_NEXTION_THUMBNAIL_HEIGHT   120
+
+/* 16:9
+#define DEFAULT_NEXTION_THUMBNAIL_WIDTH    192
+#define DEFAULT_NEXTION_THUMBNAIL_HEIGHT   108
+*/
+
+#define DEFAULT_NEXTION_THUMBNAIL_ON_PIXEL_COLOR        NX_COLOR_TABLE_WHITE
+#define DEFAULT_NEXTION_THUMBNAIL_OFF_PIXEL_COLOR       NX_COLOR_TABLE_BLACK
+
+/*************************************************************@}*/
+
+/*************************************************************
+ * @name NEXTION REQUEST PAGE COMMAND
+ *
+ *////@{
 
 #define NX_PAGE_BOOT_COMMAND        "page Boot"
 #define NX_PAGE_WAITING_COMMAND     "page Waiting"
@@ -121,7 +141,7 @@ typedef union Nextion_message {
 typedef enum
 {
     NX_PAGE_WAITING             = 0x01,
-    NX_PAGE_CONTROl             = 0x02,
+    NX_PAGE_CONTROL             = 0x02,
     NX_PAGE_FILE_SELECT         = 0x03,
     NX_PAGE_PRINTING            = 0x04,
     NX_PAGE_PAUSE               = 0x05,
@@ -129,7 +149,7 @@ typedef enum
     NX_PAGE_INIT                = 0x07,
     NX_PAGE_LOADING             = 0xF1, //ONLY NEXTION DISPLAY. FOR LOADING or WAITING MOTOR.
     NX_PAGE_NOTIFY              = 0xF2,
-    NX_PAGE_REQUEST             = 0xF4,
+    NX_PAGE_REQUEST             = 0xF3,
     NX_PAGE_NONE
 } nx_page_t; /* It Need to sync ref : 'app_state_t' */
 

@@ -72,7 +72,7 @@ static SN_STATUS s3DPrinterHdlr(event_msg_t evtMessage)
     switch(evtMessage)
     {
     case APP_EVT_MSG_3D_PRINTER_HOMING_DONE:
-        retStatus = SN_MODULE_DISPLAY_EnterState(NX_PAGE_CONTROl);
+        retStatus = SN_MODULE_DISPLAY_EnterState(NX_PAGE_CONTROL);
         break;
     case APP_EVT_MSG_3D_PRINTER_Z_MOVE_DONE:
         break;

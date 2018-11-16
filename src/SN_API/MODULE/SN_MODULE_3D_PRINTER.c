@@ -183,6 +183,9 @@ SN_STATUS SN_MODULE_3D_PRINTER_Init(void)
 
     SN_SYS_Log("MODULE INIT => 3D PRINTER");
 
+    SN_MODULE_DISPLAY_BootProgressUpdate(60, "Printer Module Loading...");
+    SN_SYS_Delay(500);
+
     /* MESSAGE INIT */
     retStatus = SN_SYS_MessageQInit(&msgQId3DPrinter);
     SN_SYS_ERROR_CHECK(retStatus, "3D Printer Module Message Q Init Failed.");
@@ -718,13 +721,6 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
 
         retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, APP_EVT_MSG_3D_PRINTER_PAUSE);
         SN_SYS_ERROR_CHECK(retStatus, "App Message Send Failed.");
-
-        /* IMAGE VIEWER CLEAER */
-        retStatus = SN_MODULE_IMAGE_VIEWER_WindowClean();
-        SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Window Clear Failed.");
-
-        retStatus = SN_MODULE_IMAGE_VIEWER_ThumbnailClean();
-        SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Update Failed.");
     }
     else
     {

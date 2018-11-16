@@ -34,29 +34,6 @@
  * @{
  */
 
-#define DEFAULT_NEXTION_THUMBNAIL_OFFSET_X 12
-#define DEFAULT_NEXTION_THUMBNAIL_OFFSET_Y 45
-/* 16:10 */
-#define DEFAULT_NEXTION_THUMBNAIL_WIDTH    192
-#define DEFAULT_NEXTION_THUMBNAIL_HEIGHT   120
-
-/* 16:9
-#define DEFAULT_NEXTION_THUMBNAIL_WIDTH    192
-#define DEFAULT_NEXTION_THUMBNAIL_HEIGHT   108
-*/
-
-#define DEFAULT_NEXTION_THUMBNAIL_ON_PIXEL_COLOR        NX_COLOR_TABLE_WHITE
-#define DEFAULT_NEXTION_THUMBNAIL_OFF_PIXEL_COLOR       NX_COLOR_TABLE_BLACK
-
-/*************************************************************@}*/
-
-
-/*************************************************************
- * @name
- * @brief
- * @{
- */
-
 typedef struct frameBuffer_Image
 {
     unsigned char *rgb;

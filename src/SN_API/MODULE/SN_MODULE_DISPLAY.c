@@ -96,6 +96,9 @@ static void sTMR_TimerUpdate_UpdateCallback(void);
 static void* sSerialRx_Callback(char *rxBuffer);
 static SN_STATUS sSendCommand(char* command, size_t bufferSize);
 
+/* *** NEXTION *** */
+static SN_STATUS sDisplay_NextionInit(void);
+
 /* *** TIME INFO *** */
 static SN_STATUS sDisplay_TimerInfoUpdate(void);
 
@@ -136,6 +139,13 @@ SN_STATUS SN_MODULE_DISPLAY_Init(void)
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Display Thread Init Failed.");
     }
 
+    /* Nextion Display LCD Reset */
+    retStatus = sSendCommand(NX_COMMAND_RESET, sizeof(NX_COMMAND_RESET));
+    SN_SYS_Delay(NEXTION_INIT_PAGE_DELAY);
+
+    SN_MODULE_DISPLAY_BootProgressUpdate(30, "Display Module Loading...");
+
+
     return retStatus;
 }
 
@@ -157,7 +167,7 @@ SN_STATUS SN_MODULE_DISPLAY_EnterState(nx_page_t state)
     case NX_PAGE_WAITING:
         retStatus = sSendCommand(NX_PAGE_WAITING_COMMAND, sizeof(NX_PAGE_WAITING_COMMAND));
         break;
-    case NX_PAGE_CONTROl:
+    case NX_PAGE_CONTROL:
         retStatus = sSendCommand(NX_PAGE_CONTROL_COMMAND, sizeof(NX_PAGE_CONTROL_COMMAND));
         break;
     case NX_PAGE_FILE_SELECT:
@@ -169,8 +179,9 @@ SN_STATUS SN_MODULE_DISPLAY_EnterState(nx_page_t state)
         break;
     case NX_PAGE_SETUP:
     case NX_PAGE_INIT:
-        retStatus = sSendCommand(NX_COMMAND_RESET, sizeof(NX_COMMAND_RESET));
+        retStatus = sSendCommand(NX_PAGE_BOOT_COMMAND, sizeof(NX_COMMAND_RESET));
         SN_SYS_Delay(NEXTION_INIT_PAGE_DELAY);
+        sDisplay_NextionInit();
         break;
     case NX_PAGE_LOADING:
         retStatus = sSendCommand(NX_PAGE_LOADING_COMMAND, sizeof(NX_PAGE_LOADING_COMMAND));
@@ -245,7 +256,7 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingInfoUpdate(uint32_t slice, uint32_t targetSl
     SN_STATUS retStatus = SN_STATUS_OK;
     char buffer[DEFAULT_BUFFER_SIZE];
 
-    sprintf(buffer,"Print.Slice.txt=\"%3d/ %3d\"", slice, targetSlice);
+    sprintf(buffer,"Print.Slice.txt=\"%3d / %3d\"", slice, targetSlice);
 
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
@@ -265,7 +276,7 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerInit(uint32_t sec)
 
     moduleDisplay.IsTimerInfoInit = true;
 
-    sprintf(buffer,"Print.ETA_Time.txt=\">%02d:%02d:%02d\"", \
+    sprintf(buffer,"Print.ETA_Time.txt=\"> %02d:%02d:%02d\"", \
             moduleDisplay.estimatedBuildTime.hour, \
             moduleDisplay.estimatedBuildTime.min, \
             moduleDisplay.estimatedBuildTime.sec);
@@ -557,6 +568,11 @@ static void* sSerialRx_Callback(char * rxBuffer)
             i++;
         }
 #endif
+        if(msgNXId.type == NX_TYPE_NOTIFY)
+        {
+            sDisplayEnterState(msgNXId.page);
+        }
+
         retStatus = sDisplayMessagePut(MSG_DISPLAY_EVENT_GET, msgNXId.NXmessage[0]);
         SN_SYS_ERROR_CHECK(retStatus, "Display Send Message Failed.");
         break;
@@ -633,6 +649,55 @@ static SN_STATUS sDisplay_TimerInfoUpdate(void)
     {
         SN_SYS_Log("BAD WAY ACCESS Timer Info Update.");
     }
+
+    return retStatus;
+}
+
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  Global Variables
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+
+static SN_STATUS sDisplay_NextionInit(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    const machineInfo_t* machineInfo = NULL;
+    char buffer[DEFAULT_BUFFER_SIZE];
+
+    SN_SYS_Delay(3);
+
+    /* Get Mahcine Info */
+    machineInfo = SN_MODULE_FILE_SYSTEM_MachineInfoGet();
+    if(machineInfo == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "machineInfo not initialized.");
+    }
+
+    sprintf(buffer,"Boot.DeviceName.txt=\"%s\"", machineInfo->name);
+    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_Delay(3);
+
+    sprintf(buffer,"Boot.thumbnail_W.val=%d", DEFAULT_NEXTION_THUMBNAIL_WIDTH);
+    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_Delay(3);
+
+    sprintf(buffer,"Boot.thumbnail_H.val=%d", DEFAULT_NEXTION_THUMBNAIL_HEIGHT);
+    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_Delay(3);
+
+    sprintf(buffer,"Boot.thumbnail_X.val=%d", DEFAULT_NEXTION_THUMBNAIL_OFFSET_X);
+    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_Delay(3);
+
+    sprintf(buffer,"Boot.thumbnail_Y.val=%d", DEFAULT_NEXTION_THUMBNAIL_OFFSET_Y);
+    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_Delay(3);
 
     return retStatus;
 }

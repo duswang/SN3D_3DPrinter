@@ -136,6 +136,12 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void)
 
     SN_SYS_Log("MODULE INIT => FILE SYSTEM.");
 
+    SN_MODULE_DISPLAY_BootProgressUpdate(40, "FS Module Loading...");
+    SN_SYS_Delay(500);
+
+    SN_MODULE_DISPLAY_BootProgressUpdate(42, "USB Read...");
+    SN_SYS_Delay(500);
+
     /* USB DRIVER INIT */
     SN_SYS_USBDriverInit(USBEvent_Callback);
 
@@ -156,12 +162,18 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void)
     }
 
     /* Default Machine Info Setup */
+    SN_MODULE_DISPLAY_BootProgressUpdate(45, "Mahcine Info Read...");
+    SN_SYS_Delay(500);
+
     /** @todo read from USB and update not just set 5.5 Inch. */
     sMachineInfoPageLoad(&moduleFileSystem.fileSystem);
     sMachineInfoFileCreate(MACHINE_DEFAULT);
     sMachineInfoPageDestroy(&moduleFileSystem.fileSystem);
 
     /* Load Option & Machine Files */
+    SN_MODULE_DISPLAY_BootProgressUpdate(50, "Option File Read...");
+    SN_SYS_Delay(250);
+
     sOptionPageLoad(&moduleFileSystem.fileSystem);
     sMachineInfoPageLoad(&moduleFileSystem.fileSystem);
 

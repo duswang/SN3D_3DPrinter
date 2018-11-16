@@ -147,30 +147,6 @@ static SN_STATUS sBootup(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    SN_MODULE_DISPLAY_BootProgressUpdate(20, "System Booting...");
-    SN_SYS_Delay(500);
-
-    SN_MODULE_DISPLAY_BootProgressUpdate(30, "Ramps Board Initialized...");
-    SN_SYS_Delay(500);
-
-    SN_MODULE_DISPLAY_BootProgressUpdate(40, "Screen Initialized...");
-    SN_SYS_Delay(500);
-
-    SN_MODULE_DISPLAY_BootProgressUpdate(45, "USB File Read...");
-    SN_SYS_Delay(500);
-
-    SN_MODULE_DISPLAY_BootProgressUpdate(50, "Option File Read...");
-    SN_SYS_Delay(500);
-
-    SN_MODULE_DISPLAY_BootProgressUpdate(55, "Device Concifg Read...");
-    SN_SYS_Delay(500);
-
-    SN_MODULE_DISPLAY_BootProgressUpdate(80, "System Initialzied...");
-    SN_SYS_Delay(500);
-
-    SN_MODULE_DISPLAY_BootProgressUpdate(100, "init finished...");
-    SN_SYS_Delay(500);
-
     retStatus = APP_STATE_EnterStateWaiting();
 
     return retStatus;
