@@ -507,6 +507,12 @@ static SN_STATUS sMachineInfoPageLoad(fileSystem_t* fileSystem)
     {
         for(i = 0; i < numberOfnameList; i++)
         {
+            if(currentPage->itemCnt >= MAX_ITEM_SIZE)
+            {
+                FileSystem_AddPage(pageHeader);
+                currentPage = currentPage->nextPage;
+            }
+
             if(!strcmp(MACHINE_FILE_EXT, FileSystem_fctl_ExtractFileExtention(nameList[i]->d_name)))
             {
                 nameBuffer = FileSystem_fctl_Extarct_FileName(nameList[i]->d_name);
@@ -519,12 +525,6 @@ static SN_STATUS sMachineInfoPageLoad(fileSystem_t* fileSystem)
 
                 currentPage->itemCnt++;
                 pageHeader->itemCnt++;
-
-                if(currentPage->itemCnt >= MAX_ITEM_SIZE)
-                {
-                    FileSystem_AddPage(pageHeader);
-                    currentPage = currentPage->nextPage;
-                }
             }
 
             free(nameList[i]);
@@ -593,6 +593,12 @@ static SN_STATUS sOptionPageLoad(fileSystem_t* fileSystem)
     {
         for(i = 0; i < numberOfnameList; i++)
         {
+            if(currentPage->itemCnt >= MAX_ITEM_SIZE)
+            {
+                FileSystem_AddPage(pageHeader);
+                currentPage = currentPage->nextPage;
+            }
+
             if(!strcmp(OPTION_FILE_EXT, FileSystem_fctl_ExtractFileExtention(nameList[i]->d_name)))
             {
                 nameBuffer = FileSystem_fctl_Extarct_FileName(nameList[i]->d_name);
@@ -605,12 +611,6 @@ static SN_STATUS sOptionPageLoad(fileSystem_t* fileSystem)
 
                 currentPage->itemCnt++;
                 pageHeader->itemCnt++;
-
-                if(currentPage->itemCnt >= MAX_ITEM_SIZE)
-                {
-                    FileSystem_AddPage(pageHeader);
-                    currentPage = currentPage->nextPage;
-                }
             }
 
             free(nameList[i]);
@@ -675,6 +675,12 @@ static SN_STATUS sFilePageLoad(fileSystem_t* fileSystem)
     {
         for(i = 0; i < numberOfnameList; i++)
         {
+            if(currentPage->itemCnt >= MAX_ITEM_SIZE)
+            {
+                FileSystem_AddPage(pageHeader);
+                currentPage = currentPage->nextPage;
+            }
+
             if(!strcmp(TARGET_CWS_FILE_EXT, FileSystem_fctl_ExtractFileExtention(nameList[i]->d_name)) || \
                !strcmp(TARGET_ZIP_FILE_EXT, FileSystem_fctl_ExtractFileExtention(nameList[i]->d_name)))
             {
@@ -682,12 +688,6 @@ static SN_STATUS sFilePageLoad(fileSystem_t* fileSystem)
 
                 currentPage->itemCnt++;
                 pageHeader->itemCnt++;
-
-                if(currentPage->itemCnt >= MAX_ITEM_SIZE)
-                {
-                    FileSystem_AddPage(pageHeader);
-                    currentPage = currentPage->nextPage;
-                }
             }
 
             free(nameList[i]);

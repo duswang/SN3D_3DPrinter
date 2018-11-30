@@ -13,6 +13,14 @@
 #include "SN_API.h"
 #include "SN_MODULE_DISPLAY.h"
 
+#ifdef __APPLE__
+
+#endif
+
+#ifdef linux
+#include <iconv.h>
+#endif
+
 /* ******* STATIC DEFINE ******* */
 /** @name Serial Config Define */ ///@{
 #define BYTE_SIZE   SN_SYS_SERIAL_COMM_RX_REALTIME
@@ -104,6 +112,7 @@ static SN_STATUS sDisplay_TimerInfoUpdate(void);
 
 /* *** UTIL *** */
 static timeInfo_t sSecToTimeInfo(uint32_t sec);
+static char* UTF8toEUC_KR(char* utf8String);
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
@@ -226,6 +235,7 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingInfoInit(const char* fileName, const char* o
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     char buffer[NEXTION_COMMAND_BUFFER_SIZE];
+    char* korBuffer = NULL;
 
     if(fileName == NULL)
     {
@@ -238,14 +248,19 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingInfoInit(const char* fileName, const char* o
     }
 
     sprintf(buffer,"Print.FileName.txt=\"%s\"", fileName);
+    korBuffer = UTF8toEUC_KR(buffer);
 
-    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+    retStatus = sSendCommand(korBuffer, strlen(korBuffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+    free(korBuffer);
 
     sprintf(buffer,"Print.Option.txt=\"%s\"", optionName);
+    korBuffer = UTF8toEUC_KR(buffer);
 
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+    free(korBuffer);
+
 
 
     return retStatus;
@@ -356,6 +371,7 @@ SN_STATUS SN_MODULE_DISPLAY_FileSelectOptionUpdate(uint32_t optionIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     char buffer[NEXTION_COMMAND_BUFFER_SIZE];
+    char* korBuffer = NULL;
 
     if(SN_MODULE_FILE_SYSTEM_isOptionExist())
     {
@@ -366,9 +382,11 @@ SN_STATUS SN_MODULE_DISPLAY_FileSelectOptionUpdate(uint32_t optionIndex)
         sprintf(buffer,"Option.txt=\" \"");
     }
 
-    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+    korBuffer = UTF8toEUC_KR(buffer);
 
+    retStatus = sSendCommand(korBuffer, strlen(korBuffer) + 1);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+    free(korBuffer);
 
     return retStatus;
 }
@@ -377,6 +395,7 @@ SN_STATUS SN_MODULE_DISPLAY_FileSelectPageUpdate(uint32_t pageIndex)
     SN_STATUS retStatus = SN_STATUS_OK;
 
     char buffer[NEXTION_COMMAND_BUFFER_SIZE];
+    char* korBuffer = NULL;
     uint32_t itemIndex = 0;
 
     const fsPage_t* currentPage      = NULL;
@@ -402,9 +421,11 @@ SN_STATUS SN_MODULE_DISPLAY_FileSelectPageUpdate(uint32_t pageIndex)
                 {
                     sprintf(buffer,"Index_%d.txt=\" \"", itemIndex);
                 }
+                korBuffer = UTF8toEUC_KR(buffer);
 
-                retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+                retStatus = sSendCommand(korBuffer, strlen(korBuffer) + 1);
                 SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+                free(korBuffer);
             }
         }
     }
@@ -655,7 +676,7 @@ static SN_STATUS sDisplay_TimerInfoUpdate(void)
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
- *  Global Variables
+ *  Nextion Display Init
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 
@@ -719,6 +740,39 @@ static timeInfo_t sSecToTimeInfo(uint32_t sec)
     return temp;
 }
 
+static char* UTF8toEUC_KR(char* utf8String)
+{
+    size_t in_size = strlen(utf8String);
+    size_t out_size = sizeof(wchar_t) * in_size * 4;
+    char* out_buf = malloc(out_size);
+    if(out_buf == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "memory allocate failed");
+    }
+
+    memset(out_buf, 0x00, out_size);
+
+    iconv_t ic = iconv_open("EUC-KR" /*tocode*/, "UTF-8" /*fromcode*/ );
+    if(ic == (iconv_t)-1)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "iconv init failed");
+    }
+
+    char* in_ptr = utf8String;
+    char* out_ptr = out_buf;
+
+    size_t out_buf_left = out_size;
+
+    size_t result = iconv(ic, &in_ptr, &in_size, &out_ptr, &out_buf_left);
+    if(result == -1)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Convert to EUC-KR from UTF-8 failed");
+    }
+
+    iconv_close(ic);
+
+    return out_buf;
+}
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
@@ -730,6 +784,8 @@ static SN_STATUS sDisplayMessagePut(evtDisplay_t evtId, event_msg_t evtMessage)
 {
     return SN_SYS_MessagePut(&msgQIdDisplay, evtId, evtMessage);
 }
+
+
 
 static SN_STATUS sSendCommand(char* command, size_t bufferSize)
 {

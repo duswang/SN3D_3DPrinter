@@ -41,12 +41,15 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PRJ_BINARY_PATH}/lib)
 set(CMAKE_MODULE_PATH "${PRJ_ROOT_PATH}/cmake/CMAKE_MODULE")
 
 ################### Library & Source & Include Setting ###################
-# Library #
+
+# Library Package #
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(png REQUIRED)
 find_package(libzip REQUIRED)
 find_package(libxml2 REQUIRED)
+find_package(libiconv REQUIRED)
+
 
 # Include - Local #
 include_directories(
@@ -76,6 +79,7 @@ include_directories(
 	${PNG_INCLUDE_DIRS}
 	${LIBZIP_INCLUDE_DIRS}
 	${LIBXML2_INCLUDE_DIRS}
+	${LIBICONV_INCLUDE_DIRS}
 )
 # Source #
 set(
@@ -148,6 +152,9 @@ set(
 	
 	# XML #
 	${LIBXML2_LIBRARIES}
+	
+	# ICONV #
+	${LIBICONV_LIBRARYS}
 )
 
 # Flags #
