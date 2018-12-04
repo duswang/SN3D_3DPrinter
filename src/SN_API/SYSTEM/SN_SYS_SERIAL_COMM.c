@@ -458,7 +458,7 @@ static SN_STATUS sSerial_RX_Hdlr_r(sysSerialId serialId)
         printf("error read UART\n"); fflush(stdout);
     }
 
-    SN_SYS_Delay(10);
+    SN_SYS_Delay(25);
 
     return SN_STATUS_OK;
 }

@@ -61,8 +61,10 @@
  *
  *////@{
 
-#define GCODE_MOTOR_RESPONSE                "k"
-#define GCODE_GET_CURRENT_POSITION_RESPONSE "X"
+#define GCODE_MOTOR_RESPONSE                    "k"
+#define GCODE_GET_CURRENT_X_POSITION_RESPONSE     "X:"
+#define GCODE_GET_CURRENT_Y_POSITION_RESPONSE     "Y:"
+#define GCODE_GET_CURRENT_Z_POSITION_RESPONSE     "Z:"
 
 /*************************************************************@}*/
 #endif /* APP_COMMANDS_H_ */
