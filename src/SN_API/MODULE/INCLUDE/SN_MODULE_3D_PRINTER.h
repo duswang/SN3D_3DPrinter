@@ -124,8 +124,7 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Z_Homing(void);
  *
  *  @note
  */
-extern SN_STATUS SN_MODULE_3D_PRINTER_Z_Up(float mm);
-
+extern SN_STATUS SN_MODULE_3D_PRINTER_Z_Move(float mm);
 
 /** @brief
  *
@@ -135,7 +134,7 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Z_Up(float mm);
  *
  *  @note
  */
-extern SN_STATUS SN_MODULE_3D_PRINTER_Z_Down(float mm);
+extern bool SN_MODULE_3D_PRINTER_IsMotorBusy(void);
 
 /*************************************************************@}*/
 

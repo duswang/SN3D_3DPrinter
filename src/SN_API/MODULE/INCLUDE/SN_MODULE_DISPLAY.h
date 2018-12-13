@@ -143,6 +143,26 @@ extern SN_STATUS SN_MODULE_DISPLAY_PrintingTimerStop(void);
 
 /*************************************************************@}*/
 
+
+/*************************************************************
+ * @name Display Module :: Print Page Time Info
+ *  @brief
+ *////@{
+
+/** @brief
+ *
+ *  @param sec
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
+extern SN_STATUS SN_MODULE_DISPLAY_ControlZPosition(float mm);
+
+/*************************************************************@}*/
+
+
+
 /*************************************************************
  * @name Display Module :: File Select Page
  *  @brief

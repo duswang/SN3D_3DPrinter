@@ -205,6 +205,9 @@ static SN_STATUS sFileSystemHdlr(event_msg_t evtMessage)
     case APP_EVT_MSG_FILE_SYSTEM_USB_MOUNT:
     case APP_EVT_MSG_FILE_SYSTEM_READ_DONE:
     case APP_EVT_MSG_FILE_SYSTEM_USB_UNMOUNT:
+        /* REFRESH FILE SELECT PAGE */
+        APP_STATE_EnterStateFileSelect();
+        break;
     case APP_EVT_MSG_FILE_SYSTEM_UPDATE:
         /* USB MOUNT or USER TOUCH PRINT BUTTON */
         retStatus = SN_MODULE_DISPLAY_FileSelectPageUpdate(pageIndex);

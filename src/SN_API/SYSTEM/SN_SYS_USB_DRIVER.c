@@ -76,7 +76,16 @@ SN_STATUS SN_SYS_USBDriverInit(void* (pfCallBack)(int evt))
     }
 
     error = libusb_hotplug_register_callback(NULL, \
-                                               LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED | \
+                                               LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED, \
+                                               0, \
+                                               LIBUSB_HOTPLUG_MATCH_ANY, \
+                                               LIBUSB_HOTPLUG_MATCH_ANY, \
+                                               LIBUSB_HOTPLUG_MATCH_ANY, \
+                                               hotplug_callback, \
+                                               NULL,
+                                               &handle);
+
+    error = libusb_hotplug_register_callback(NULL, \
                                                LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT, \
                                                0, \
                                                LIBUSB_HOTPLUG_MATCH_ANY, \
@@ -120,34 +129,22 @@ static ERROR_T LIBUSB_CALL hotplug_callback(struct libusb_context *ctx, struct l
 
     (void)libusb_get_device_descriptor(dev, &desc);
 
-    if(SN_SYS_USBDriverIsMount() != USB_MOUNT)
+    if(LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED == event)
     {
-        if(LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED == event)
-        {
-            rc = libusb_open(dev, &handle);
-            isMount = USB_MOUNT;
-            USBEvent_callBack(MSG_USB_EVT_MOUNT);
-            if(LIBUSB_SUCCESS != rc)
-            {
-                SN_SYS_Log("USB Driver => System => Could not Open USB Device.");
-            }
-        }
-        else if (LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT == event)
-        {
-            if (handle)
-            {
-                isMount = USB_UNMOUNT;
-                USBEvent_callBack(MSG_USB_EVT_UNMOUNT);
-                libusb_close(handle);
-                handle = NULL;
-            }
-        }
-        else
-        {
-            SN_SYS_Log("USB Driver => System => Unhandled event.");
-        }
+        isMount = USB_MOUNT;
+        USBEvent_callBack(MSG_USB_EVT_MOUNT);
     }
-    return rc;
+    else if (LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT == event)
+    {
+        isMount = USB_UNMOUNT;
+        USBEvent_callBack(MSG_USB_EVT_UNMOUNT);
+    }
+    else
+    {
+        SN_SYS_Log("USB Driver => System => Unhandled event.");
+    }
+
+    return rc = LIBUSB_SUCCESS;
 }
 
 static void* sUSBDriverThread()
@@ -155,7 +152,7 @@ static void* sUSBDriverThread()
     while (true)
     {
       libusb_handle_events_completed(NULL, NULL);
-      usleep(10000);
+      SN_SYS_Delay(1);
     }
     return NULL;
 }

@@ -30,8 +30,6 @@
 /* File System */
 #include <dirent.h>
 #include <fcntl.h>
-
-/* Serial */
 #include <termios.h>
 #include <unistd.h>
 

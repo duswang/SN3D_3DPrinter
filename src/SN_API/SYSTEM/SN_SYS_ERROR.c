@@ -43,5 +43,6 @@ void sReboot(void)
 
 void sExit(void)
 {
+    //while(true);
     exit(-1);
 }

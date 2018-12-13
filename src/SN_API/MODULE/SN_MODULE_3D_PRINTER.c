@@ -144,10 +144,10 @@ typedef enum event_3d_printer_message {
 static module3DPrinter_t module3DPrinter;
 
 /* ******* GLOBAL VARIABLE ******* */
-static int inputChain;
 
 /* ******* STATIC FUNCTIONS ******* */
 /* *** TIMER *** */
+static void sTMR_Z_Busy_Callback(void);
 static void sTMR_NextCycle_Callback(void);
 static void sTMR_Lift_Callback(void);
 static void sTMR_StopDevice_Callback(void);
@@ -265,7 +265,7 @@ SN_STATUS SN_MODULE_3D_PRINTER_Z_Homing(void)
     return retStatus;
 }
 
-SN_STATUS SN_MODULE_3D_PRINTER_Z_Up(float mm)
+SN_STATUS SN_MODULE_3D_PRINTER_Z_Move(float mm)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
@@ -273,6 +273,7 @@ SN_STATUS SN_MODULE_3D_PRINTER_Z_Up(float mm)
     {
         s3DPrinterEnterState(DEVICE_BUSY);
 
+        /* Z UP */
         retStatus = sGcodeZMove((float)mm, (float)DEFAULT_FEEDRATE);
     }
     else if(module3DPrinter.state == DEVICE_HOMING)
@@ -281,49 +282,15 @@ SN_STATUS SN_MODULE_3D_PRINTER_Z_Up(float mm)
     }
     else
     {
-        inputChain++;
-
-        if(inputChain >= INPUT_CHAIN_CONDITION)
-        {
-            inputChain = 0;
-            s3DPrinterEnterState(DEVICE_STANDBY);
-        }
-
         SN_SYS_Log("Module => 3D Printer  => MOTOR ALREADY WORKING.");
     }
 
     return retStatus;
 }
 
-SN_STATUS SN_MODULE_3D_PRINTER_Z_Down(float mm)
+bool SN_MODULE_3D_PRINTER_IsMotorBusy(void)
 {
-    SN_STATUS retStatus = SN_STATUS_OK;
-
-    if((module3DPrinter.state != DEVICE_BUSY) && (module3DPrinter.state != DEVICE_HOMING))
-    {
-        s3DPrinterEnterState(DEVICE_BUSY);
-
-        /* Z DOWN */
-        retStatus = sGcodeZMove((float)-mm, (float)DEFAULT_FEEDRATE);
-    }
-    else if(module3DPrinter.state == DEVICE_HOMING)
-    {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "BAD WAY ACCESS TO Z CONTROL.");
-    }
-    else
-    {
-        inputChain++;
-
-        if(inputChain >= INPUT_CHAIN_CONDITION)
-        {
-            inputChain = 0;
-            s3DPrinterEnterState(DEVICE_STANDBY);
-        }
-
-        SN_SYS_Log("Module => 3D Printer  => MOTOR ALREADY WORKING.");
-    }
-
-    return retStatus;
+    return (module3DPrinter.state != DEVICE_STANDBY);
 }
 
 SN_STATUS SN_MODULE_3D_PRINTER_Start(uint32_t pageIndex, uint32_t itemIndex, uint32_t optionIndex)
@@ -454,12 +421,7 @@ static void* sSerialRx_Callback(char* rxBuffer)
             s3DPrinterEnterState(DEVICE_STANDBY);
             break;
         case DEVICE_BUSY:
-            SN_SYS_Log("Module => 3D Printer  => Z MOVE DONE.");
-
-            retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, APP_EVT_MSG_3D_PRINTER_Z_MOVE_DONE);
-            SN_SYS_ERROR_CHECK(retStatus, "APP Send Message Failed.");
-
-            s3DPrinterEnterState(DEVICE_STANDBY);
+            /* Check 'sTMR_Z_Busy_Callback(void)' function */
             break;
         case DEVICE_PRINTING:
         case DEVICE_PAUSE:
@@ -542,6 +504,19 @@ static void* sSerialRx_Callback(char* rxBuffer)
  *  Timer Callback
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+static void sTMR_Z_Busy_Callback(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    SN_SYS_Log("Module => 3D Printer  => Z MOVE DONE.");
+
+    retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, APP_EVT_MSG_3D_PRINTER_Z_MOVE_DONE);
+    SN_SYS_ERROR_CHECK(retStatus, "APP Send Message Failed.");
+
+    s3DPrinterEnterState(DEVICE_STANDBY);
+}
+
+
 static void sTMR_NextCycle_Callback(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
@@ -563,10 +538,6 @@ static void sTMR_FinishDevice_Callback(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    /* MOTOR DISABLE */
-    retStatus = s3DPrinter_MotorUninit();
-    SN_SYS_ERROR_CHECK(retStatus, "Motor Uninit Failed.");
-
     SN_SYS_Log("Module => 3D Printer  => PRINT FINISH.");
 
     retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, APP_EVT_MSG_3D_PRINTER_FINISH);
@@ -576,10 +547,6 @@ static void sTMR_FinishDevice_Callback(void)
 static void sTMR_StopDevice_Callback(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-
-    /* MOTOR DISABLE */
-    retStatus = s3DPrinter_MotorUninit();
-    SN_SYS_ERROR_CHECK(retStatus, "Motor Uninit Failed.");
 
     SN_SYS_Log("Module => 3D Printer  => PRINT STOP.");
 
@@ -702,31 +669,29 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
         }
 
         /* Slice Sequence */
-        /* IMAGE VIEWER CLEAER */
-        retStatus = SN_MODULE_IMAGE_VIEWER_WindowClean();
-        SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Window Clear Failed.");
-
-        retStatus = SN_MODULE_IMAGE_VIEWER_ThumbnailClean();
-        SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Update Failed.");
+        printf("\n\n===============> SLICE %04d >===============================>\n\n", (module3DPrinter.sliceIndex + 1)); fflush(stdout);
 
         /* IMAGE VIEWER UPDATE */
+        SN_SYS_Log("    SCREEN & NEXTION THUMBNAIL UPDATE.\n");
         retStatus = SN_MODULE_IMAGE_VIEWER_WindowUpdate(module3DPrinter.sliceIndex);
         SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Update Failed.");
 
         SN_MODULE_DISPLAY_PrintingInfoUpdate((module3DPrinter.sliceIndex + 1), printTarget->slice);
-        printf("\n\n=======================================> SLICE %04d \n", (module3DPrinter.sliceIndex + 1)); fflush(stdout);
 
         /* UV Turn On */
+        SN_SYS_Log("    UV LAMP ON.\n");
         retStatus = SN_SYS_SerialTx(serialId3DPrinter, GCODE_LCD_ON, sizeof(GCODE_LCD_ON));
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
 
         /* Exposure Timer Call */
         if(module3DPrinter.sliceIndex < printOption->bottomLayerNumber)
         {
+            printf("    WAIT UV EXPOSURE TIME[ %ld msec ].\n", printOption->bottomLayerExposureTime);
             exposureTime = printOption->bottomLayerExposureTime;
         }
         else
         {
+            printf("    WAIT UV EXPOSURE TIME[ %ld msec ].\n", printOption->layerExposureTime);
             exposureTime = printOption->layerExposureTime;
         }
 
@@ -777,6 +742,7 @@ static SN_STATUS s3DPrinter_PrintLift(void)
 
         /* Lift Sequence */
         /* UV OFF */
+        SN_SYS_Log("    UV LAMP OFF.\n");
         retStatus = SN_SYS_SerialTx(serialId3DPrinter,GCODE_LCD_OFF, sizeof(GCODE_LCD_OFF));
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
 
@@ -784,6 +750,7 @@ static SN_STATUS s3DPrinter_PrintLift(void)
 
 #else
         /* IMAGE VIEWER CLEAER */
+        SN_SYS_Log("    SCREEN & NEXTION THUMBNAIL CLEAR.\n");
         retStatus = SN_MODULE_IMAGE_VIEWER_WindowClean();
         SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Window Clear Failed.");
 
@@ -791,8 +758,13 @@ static SN_STATUS s3DPrinter_PrintLift(void)
         SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Update Failed.");
 
         /* Z LIFT */
+        SN_SYS_Log("    CALL 'Z LIFT UP' function.\n");
         retStatus = sSendGCode(module3DPrinter.gcodeLiftUp, sizeof(module3DPrinter.gcodeLiftUp));
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
+
+        printf("    WAIT LIFT TIME[    %ld msec ].\n", printOption->liftTime);
+
+        SN_SYS_Log("    CALL 'Z LIFT DOWN' function.\n");
         retStatus = sSendGCode(module3DPrinter.gcodeLiftDown, sizeof(module3DPrinter.gcodeLiftDown));
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
 
@@ -800,7 +772,7 @@ static SN_STATUS s3DPrinter_PrintLift(void)
         /* One Cycle Done */
         if((module3DPrinter.sliceIndex + 1) >= printTarget->slice)
         {
-            printf("\n\n FINISH. [ %4d/ %4d ] <===================================== \n", (module3DPrinter.sliceIndex + 1), printTarget->slice); fflush(stdout);
+            printf("\n=========================================> FINISH. ======>\n\n\n\n");
 
             /* Printing Finish */
             retStatus = s3DPrinterMessagePut(MSG_3D_PRINTER_PRINTING_FINISH, 0);
@@ -808,7 +780,7 @@ static SN_STATUS s3DPrinter_PrintLift(void)
         }
         else
         {
-            printf("\n\n DONE. [ %4d/ %4d ] <======================================= \n", (module3DPrinter.sliceIndex + 1), printTarget->slice); fflush(stdout);
+            printf("\n=========================================> DONE. ========>\n\n\n\n");
 
             /* Time Sync */
             currentTime = CURRENT_TIME_SEC_CAL( \
@@ -928,7 +900,7 @@ static SN_STATUS s3DPrinter_PrintFinish(void)
         }
 
 
-        /* Stop Sequence */
+        /* Finish Sequence */
         s3DPrinterEnterState(DEVICE_FINISH);
 
         /* Print Uninit */
@@ -936,10 +908,6 @@ static SN_STATUS s3DPrinter_PrintFinish(void)
 
         /* Nextion Display to Loading */
         SN_MODULE_DISPLAY_EnterState(NX_PAGE_LOADING);
-
-        /* Z Position Init */
-        retStatus = sSendGCode(GCODE_INIT_POSITION_ABSOLUTE, sizeof(GCODE_INIT_POSITION_ABSOLUTE));
-        SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
 
         sGcodeZMove((float)(machineInfo->machineHeight), (float)DEFAULT_FEEDRATE);
 
@@ -1058,9 +1026,11 @@ static SN_STATUS sGetCoordinates(float x, float y, float z)
 
 
     /* PRINT POSITION */
-    printf("\nX POSITION : %.2f",   module3DPrinter.current_position[DEVICE_AXIS_X]);
-    printf(", Y POSITION : %.2f",   module3DPrinter.current_position[DEVICE_AXIS_Y]);
-    printf(", Z POSITION : %.2f\n", module3DPrinter.current_position[DEVICE_AXIS_Z]);
+    printf("\n    X POSITION : %.2f mm",   module3DPrinter.current_position[DEVICE_AXIS_X]);
+    printf(", Y POSITION : %.2f mm",   module3DPrinter.current_position[DEVICE_AXIS_Y]);
+    printf(", Z POSITION : %.2f mm\n", module3DPrinter.current_position[DEVICE_AXIS_Z]);
+
+    SN_MODULE_DISPLAY_ControlZPosition(module3DPrinter.current_position[DEVICE_AXIS_Z]);
 
     return retStatus;
 }
@@ -1078,20 +1048,26 @@ static SN_STATUS sGcodeZMove(float liftDistance, float liftFeedRate)
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "machineInfo not initialized.");
     }
 
-
-    //if(machineInfo->machineHeight - DEVICE_AXIS_MARGIN >= (module3DPrinter.current_position[DEVICE_AXIS_Z] + liftDistance))
-    if(50 - DEVICE_AXIS_MARGIN <= (module3DPrinter.current_position[DEVICE_AXIS_Z] + liftDistance))
+    if((machineInfo->machineHeight - DEVICE_AXIS_MARGIN) <= (module3DPrinter.current_position[DEVICE_AXIS_Z] + liftDistance))
     {
-        //liftDistance = (machineInfo->machineHeight - DEVICE_AXIS_MARGIN) - module3DPrinter.current_position[DEVICE_AXIS_Z];
-        liftDistance = (50 - DEVICE_AXIS_MARGIN) - module3DPrinter.current_position[DEVICE_AXIS_Z];
+        liftDistance = (machineInfo->machineHeight - DEVICE_AXIS_MARGIN) - module3DPrinter.current_position[DEVICE_AXIS_Z];
     }
-
+    else if(0 > module3DPrinter.current_position[DEVICE_AXIS_Z] + liftDistance)
+    {
+        liftDistance = -module3DPrinter.current_position[DEVICE_AXIS_Z];
+    }
 
     sprintf(gcodeBuffer,"G1 Z%.3f F%.3f", liftDistance, liftFeedRate);
 
-
-
     retStatus = sSendGCode(gcodeBuffer, sizeof(gcodeBuffer));
+
+    /* Wait Next Key with Z Delay */
+    if(liftDistance < 0)
+    {
+        liftDistance *= (-1);
+    }
+
+    retStatus = SN_SYS_TimerCreate(&timerPrint, liftDistance / ((DEFAULT_FEEDRATE) / (60 * 1000)), sTMR_Z_Busy_Callback);
 
     return retStatus;
 }

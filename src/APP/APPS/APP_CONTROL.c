@@ -111,10 +111,10 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                     break;
                 /* IN PAGE BUTTONS */
                 case NX_ID_CONTROL_BUTTON_Z_UP:
-                        retStatus = SN_MODULE_3D_PRINTER_Z_Up(sGetZmmFromValue(msgNXId.value));
+                        retStatus = SN_MODULE_3D_PRINTER_Z_Move(sGetZmmFromValue(msgNXId.value));
                     break;
                 case NX_ID_CONTROL_BUTTON_Z_DOWN:
-                        retStatus = SN_MODULE_3D_PRINTER_Z_Down(sGetZmmFromValue(msgNXId.value));
+                        retStatus = SN_MODULE_3D_PRINTER_Z_Move(sGetZmmFromValue(msgNXId.value) * (-1));
                     break;
                 case NX_ID_CONTROL_BUTTON_Z_HOMMING:
                     retStatus = SN_MODULE_DISPLAY_EnterState(NX_PAGE_LOADING);

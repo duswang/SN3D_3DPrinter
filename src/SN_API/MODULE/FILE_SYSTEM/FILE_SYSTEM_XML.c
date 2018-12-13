@@ -230,13 +230,19 @@ static SN_STATUS sParseXML_machineInfoFile(machineInfo_t* machineInfo, xmlDocPtr
         if((!xmlStrcmp(cur->name, (const xmlChar *)"RES_X")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &machineInfo->screenWdith);
+            sscanf((const char *)key, "%ld", &machineInfo->screenWidth);
             xmlFree(key);
         }
         if((!xmlStrcmp(cur->name, (const xmlChar *)"Z")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             sscanf((const char *)key, "%ld", &machineInfo->machineHeight);
+            xmlFree(key);
+        }
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"Inch")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            sscanf((const char *)key, "%ld", &machineInfo->inch);
             xmlFree(key);
         }
         cur = cur->next;

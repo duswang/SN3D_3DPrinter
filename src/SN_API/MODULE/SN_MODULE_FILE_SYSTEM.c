@@ -19,46 +19,10 @@
 #include "FILE_SYSTEM_XML.h"
 
 /* ******* STATIC DEFINE ******* */
-/** @name USB Driver Config *////@{
-#ifdef __APPLE__
-#define USB_PATH                      "/Volumes/USB_0"
-#endif
-#ifdef linux
-#define USB_PATH                      "/mnt/volume"
-#endif
-
-#ifdef __APPLE__
-#define TARGET_PATH                   "../res/target"
-#endif
-#ifdef linux
-#define TARGET_PATH                   "/SN3D/sn3d-project/res/target"
-#endif
-
-#ifdef __APPLE__
-#define OPTION_FILE_PATH               "../res/optionConfig"
-#endif
-#ifdef linux
-#define OPTION_FILE_PATH               "/SN3D/sn3d-project/res/optionConfig"
-#endif
-
-#ifdef __APPLE__
-#define MACHINE_FILE_PATH              "../res/machineConfig"
-#endif
-#ifdef linux
-#define MACHINE_FILE_PATH              "/SN3D/sn3d-project/res/machineConfig"
-#endif
-///@}
-
 #define MACHINE_DEFAULT_FILE_NAME       "SN3D_Default"
 
 /** @name Other Define *////@{
 #define OPTION_DEFAULT_INDEX       (0)
-
-
-#define NETFABB_CONDITION_STR   "index.xml"
-#define MANGO_CONDITION_STR     ""
-#define B9_CONDITION_STR        ""
-#define CWS_CONDITION_STR       "cws"
 ///@}
 
 /* *** MODULE *** */
@@ -326,6 +290,7 @@ char* SN_MODULE_FILE_SYSTEM_TargetSlicePathGet(uint32_t sliceIndex)
                                               sliceIndex_Offset + sliceIndex);
             break;
         case MANGO:
+        case SN3D:
             sliceIndex_Offset = 1;
             sprintf(path,"%s/%d.png", moduleFileSystem.printTarget->targetPath, \
                                               sliceIndex_Offset + sliceIndex);
@@ -339,10 +304,11 @@ char* SN_MODULE_FILE_SYSTEM_TargetSlicePathGet(uint32_t sliceIndex)
         case B9:
             break;
         default:
+            SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "Invalid File Type.");
             break;
     }
 
-    printf("IMAGE PATH : %s\n", path);
+    //printf("IMAGE PATH : %s\n", path);
 
     return path;
 }
@@ -383,21 +349,15 @@ static void* sFileSystemThread()
         switch(evt.evt_id)
         {
             case MSG_FILE_SYSTEM_USB_MOUNT:
-                SN_SYS_Log("File System => Module => USB Mount.");
+            case MSG_FILE_SYSTEM_USB_UNMOUNT:
+                SN_SYS_Log("File System => Module => USB Event.");
 
-                SN_SYS_Delay(2000);
+                SN_SYS_Delay(1500);
 
                 retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_READ, 0);
                 SN_SYS_ERROR_CHECK(retStatus, "File System Message Send Failed.");
                 break;
-            case MSG_FILE_SYSTEM_USB_UNMOUNT:
-                SN_SYS_Log("File System => Module => USB Unmount.");
-                retStatus = sFilePageDestroy(&moduleFileSystem.fileSystem);
-                SN_SYS_ERROR_CHECK(retStatus, "File System Remove Failed.");
 
-                retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_FILE_SYSTEM, APP_EVT_MSG_FILE_SYSTEM_USB_UNMOUNT);
-                SN_SYS_ERROR_CHECK(retStatus, "App Message Send Failed.");
-                break;
             case MSG_FILE_SYSTEM_READ:
                 sFilePageDestroy(&moduleFileSystem.fileSystem);
 
@@ -437,6 +397,8 @@ static void* sFileSystemThread()
 static void* USBEvent_Callback(int evt)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+
+    SN_SYS_Log("Get USB Event");
 
     switch(evt)
     {
@@ -681,8 +643,9 @@ static SN_STATUS sFilePageLoad(fileSystem_t* fileSystem)
                 currentPage = currentPage->nextPage;
             }
 
-            if(!strcmp(TARGET_CWS_FILE_EXT, FileSystem_fctl_ExtractFileExtention(nameList[i]->d_name)) || \
-               !strcmp(TARGET_ZIP_FILE_EXT, FileSystem_fctl_ExtractFileExtention(nameList[i]->d_name)))
+            if((!strcmp(TARGET_CWS_FILE_EXT, FileSystem_fctl_ExtractFileExtention(nameList[i]->d_name)) || \
+               !strcmp(TARGET_ZIP_FILE_EXT, FileSystem_fctl_ExtractFileExtention(nameList[i]->d_name))) &&
+               !strstr(nameList[i]->d_name, SN3D_FW_STR))
             {
                 strcpy(currentPage->item[currentPage->itemCnt].name, nameList[i]->d_name);
 
@@ -876,18 +839,26 @@ static SN_STATUS sTargetLoad(uint32_t pageIndex, uint32_t itemIndex)
     else if(FileSystem_CountFileWithStr(TARGET_PATH, NETFABB_CONDITION_STR))
     {
         printTarget->targetType = NETFABB;
+        strcpy(printTarget->projectName, printTarget->targetName);
     }
     /*
-    else if(FileSystem_CountFileWithStr(TARGET_PATH, MANGO_CONDITION_STR))
+    else if(FileSystem_CountFileWithStr(TARGET_PATH, B9_CONDITION_STR))
     {
         //B9 Not Support yet.
     }
     */
+    /*
     else
     {
         printTarget->targetType = MANGO;
+        strcpy(printTarget->projectName, printTarget->targetName);
     }
-
+    */
+    else
+    {
+        printTarget->targetType = SN3D;
+        strcpy(printTarget->projectName, printTarget->targetName);
+    }
 
     printTarget->slice                      = FileSystem_CountFileWithStr(TARGET_PATH, TARGET_IMAGE_EXT);
 

@@ -188,6 +188,7 @@ static SN_STATUS sLoadImage(const char* filename, FB_Image_t* pImage)
     FILE *fp = fopen(filename, "rb");
     if (!fp)
     {
+        printf("PATH => %s \n", filename);
         SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "load image faild. check image path.");
     }
 
@@ -446,8 +447,10 @@ static SN_STATUS sLoadThumbnail(FB_Image_t* image, FB_Image_t* thumbnail, int th
     }
     printf("\n\n\n");
     */
-
-    sRotateImage(thumbnail, 0);
+    if(thumbnail->h > thumbnail->w)
+    {
+        sRotateImage(thumbnail, 0);
+    }
 
     /*
     printf("\nThumbnail Info : [ %d x %d], %dbpp %d\n",thumbnail->w, thumbnail->h, thumbnail->bpp, thumbnail->colorType);

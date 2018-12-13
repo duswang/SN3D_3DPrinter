@@ -367,6 +367,22 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerStop(void)
 
     return retStatus;
 }
+
+SN_STATUS SN_MODULE_DISPLAY_ControlZPosition(float mm)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    char buffer[NEXTION_COMMAND_BUFFER_SIZE];
+
+    moduleDisplay.IsTimerInfoInit = true;
+
+    sprintf(buffer,"Control.ZPosition.txt=\"%0.2f mm\"", mm);
+
+    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display ZPosition Failed.");
+
+    return retStatus;
+}
+
 SN_STATUS SN_MODULE_DISPLAY_FileSelectOptionUpdate(uint32_t optionIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
@@ -390,6 +406,7 @@ SN_STATUS SN_MODULE_DISPLAY_FileSelectOptionUpdate(uint32_t optionIndex)
 
     return retStatus;
 }
+
 SN_STATUS SN_MODULE_DISPLAY_FileSelectPageUpdate(uint32_t pageIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
@@ -448,6 +465,7 @@ SN_STATUS SN_MODULE_DISPLAY_FileSelectPageUpdate(uint32_t pageIndex)
 
     return retStatus;
 }
+
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
  *  Nextion GUI Tool

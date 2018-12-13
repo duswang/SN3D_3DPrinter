@@ -25,6 +25,36 @@
 #define MAX_FILENAME_LENGTH        256
 #define MAX_PATH_LENGTH            256
 
+/** @name USB Driver Config *////@{
+#ifdef __APPLE__
+#define USB_PATH                      "/Volumes/USB_0"
+#endif
+#ifdef linux
+#define USB_PATH                      "/mnt/volume"
+#endif
+
+#ifdef __APPLE__
+#define TARGET_PATH                   "../res/target"
+#endif
+#ifdef linux
+#define TARGET_PATH                   "/SN3D/sn3d-project/res/target"
+#endif
+
+#ifdef __APPLE__
+#define OPTION_FILE_PATH               "../res/optionConfig"
+#endif
+#ifdef linux
+#define OPTION_FILE_PATH               "/SN3D/sn3d-project/res/optionConfig"
+#endif
+
+#ifdef __APPLE__
+#define MACHINE_FILE_PATH              "../res/machineConfig"
+#endif
+#ifdef linux
+#define MACHINE_FILE_PATH              "/SN3D/sn3d-project/res/machineConfig"
+#endif
+///@}
+
 /*************************************************************@}*/
 
 /*************************************************************
@@ -42,8 +72,16 @@
 #define TARGET_ZIP_FILE_EXT     "zip"
 #define TARGET_IMAGE_EXT        "png"
 
+#define SN3D_FW_STR             "sn3d_fw"
+#define SN3D_FW_EXTENTION       "zip"
+
+#define NETFABB_CONDITION_STR   "index.xml"
+#define MANGO_CONDITION_STR     ""
+#define B9_CONDITION_STR        ""
+#define CWS_CONDITION_STR       "cws"
 
 typedef enum {
+    SN3D,                    //!< SN3D
     NETFABB,                 //!< NETFABB
     MANGO,                   //!< MANGO
     B9,                      //!< B9
@@ -134,9 +172,10 @@ typedef struct print_target {
  *////@{
 typedef struct machine_information {
     char    name[MAX_FILENAME_LENGTH];  /**< str */
-    long                  screenWdith;  /**< px */
+    long                  screenWidth;  /**< px */
     long                 screenHeight;  /**< px */
     long                machineHeight;  /**< mm */
+    long                         inch;  /** inch **/
 } machineInfo_t;
 /*************************************************************@}*/
 
