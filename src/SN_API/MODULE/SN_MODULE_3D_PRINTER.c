@@ -770,8 +770,7 @@ static SN_STATUS s3DPrinter_PrintLift(void)
 
 #endif
         /* One Cycle Done */
-        //if((module3DPrinter.sliceIndex + 1) >= printTarget->slice)
-        if(true)
+        if((module3DPrinter.sliceIndex + 1) >= printTarget->slice)
         {
             printf("\n=========================================> FINISH. ========>\n\n\n\n");
 
