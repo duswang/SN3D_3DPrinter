@@ -37,8 +37,7 @@
 
 /** @name Printing Config Define */ ///@{
 #define FIRST_SLICE_DELAY_TIME     5000 /**< first slice getin delay - @return msec */
-#define FINISH_DEVICE_DELAY_TIME  90000 /**< finish device delay - @return msec */
-#define STOP_DEVICE_DELAY_TIME    15000 /**< stop device delay - @return msec */
+#define STOP_DEVICE_DELAY_TIME     5000 /**< stop device delay - @return msec */
 
 ///@}
 
@@ -540,8 +539,9 @@ static void sTMR_FinishDevice_Callback(void)
 
     SN_SYS_Log("Module => 3D Printer  => PRINT FINISH.");
 
-    retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, APP_EVT_MSG_3D_PRINTER_FINISH);
-    SN_SYS_ERROR_CHECK(retStatus,"App Message Send Failed.");
+    /* Printing Finish */
+    retStatus = s3DPrinterMessagePut(MSG_3D_PRINTER_PRINTING_FINISH, 0);
+    SN_SYS_ERROR_CHECK(retStatus, "3D Printer Message Failed.");
 }
 
 static void sTMR_StopDevice_Callback(void)
@@ -770,17 +770,16 @@ static SN_STATUS s3DPrinter_PrintLift(void)
 
 #endif
         /* One Cycle Done */
-        if((module3DPrinter.sliceIndex + 1) >= printTarget->slice)
+        //if((module3DPrinter.sliceIndex + 1) >= printTarget->slice)
+        if(true)
         {
-            printf("\n=========================================> FINISH. ======>\n\n\n\n");
+            printf("\n=========================================> FINISH. ========>\n\n\n\n");
 
-            /* Printing Finish */
-            retStatus = s3DPrinterMessagePut(MSG_3D_PRINTER_PRINTING_FINISH, 0);
-            SN_SYS_ERROR_CHECK(retStatus, "3D Printer Message Failed.");
+            retStatus = SN_SYS_TimerCreate(&timerPrint, printOption->liftTime, sTMR_FinishDevice_Callback);
         }
         else
         {
-            printf("\n=========================================> DONE. ========>\n\n\n\n");
+            printf("\n=========================================> DONE. ==========>\n\n\n\n");
 
             /* Time Sync */
             currentTime = CURRENT_TIME_SEC_CAL( \
@@ -898,10 +897,8 @@ static SN_STATUS s3DPrinter_PrintFinish(void)
         {
             SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "machineInfo not initialized.");
         }
-
-
         /* Finish Sequence */
-        s3DPrinterEnterState(DEVICE_FINISH);
+        s3DPrinterEnterState(DEVICE_BUSY);
 
         /* Print Uninit */
         s3DPrinter_PrintUninit();
@@ -911,9 +908,13 @@ static SN_STATUS s3DPrinter_PrintFinish(void)
 
         sGcodeZMove((float)(machineInfo->machineHeight), (float)DEFAULT_FEEDRATE);
 
-        /* Wait Z Position */
-        retStatus = SN_SYS_TimerCreate(&timerPrint, FINISH_DEVICE_DELAY_TIME, sTMR_FinishDevice_Callback);
-        SN_SYS_ERROR_CHECK(retStatus, "Timer Cretae Failed.");
+        while(module3DPrinter.state == DEVICE_BUSY); /* NEED TO TIME OUT */
+
+        s3DPrinterEnterState(DEVICE_FINISH);
+
+        /* Send App Message */
+        retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, APP_EVT_MSG_3D_PRINTER_FINISH);
+        SN_SYS_ERROR_CHECK(retStatus,"App Message Send Failed.");
     }
     else
     {
