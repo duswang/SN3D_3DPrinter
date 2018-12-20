@@ -24,7 +24,7 @@ typedef struct machine_information {
     long                  screenWidth;  /**< px */
     long                 screenHeight;  /**< px */
     long                machineHeight;  /**< mm */
-    long                         inch;  /** inch **/
+    float                        inch;  /** inch **/
 } machineInfo_t;
 /*************************************************************@}*/
 
@@ -32,10 +32,10 @@ typedef struct machine_information {
  * @name Version Info Structure
  *////@{
 typedef struct version_information {
-    char           name[MAX_FILENAME_LENGTH];  /**< str */
-    long                       releaseNumber;  /**< px */
-    long                         majorNumber;  /**< px */
-    long                         minorNumber;  /**< mm */
+    char           name[MAX_FILENAME_LENGTH];
+    long                       releaseNumber;
+    long                         majorNumber;
+    long                         minorNumber;
     char      timestamp[MAX_FILENAME_LENGTH];
     char     binaryName[MAX_FILENAME_LENGTH];
 } versionInfo_t;
@@ -53,6 +53,13 @@ typedef struct version_information {
  *  @note
  */
 extern machineInfo_t* FileSystem_machineInfoXMLLoad(const char *srcPath);
+
+/** @brief
+ *
+ *  @return SN_STATUS
+ *  @note
+ */
+extern versionInfo_t* FileSystem_versionInfoXMLLoad(const char *srcPath);
 
 /*************************************************************@}*/
 

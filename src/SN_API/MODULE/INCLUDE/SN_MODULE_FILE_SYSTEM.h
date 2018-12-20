@@ -75,6 +75,9 @@
 #define SN3D_FW_STR             "sn3d_fw"
 #define SN3D_FW_EXTENTION       "zip"
 
+#define SN3D_OPTION_STR             "sn3d_option"
+#define SN3D_OPTION_EXTENTION       "zip"
+
 #define NETFABB_CONDITION_STR   "index.xml"
 #define MANGO_CONDITION_STR     ""
 #define B9_CONDITION_STR        ""
@@ -88,14 +91,6 @@ typedef enum {
     CWS,                     //!< CWS
     TARGET_DEFAULT_TYPE = CWS//!< TARGET_DEFAULT_TYPE
 } targetType_t;
-
-typedef enum {
-    MACHINE_15_6,
-    MACHINE_23_8,
-    MACHINE_5_5,
-    MACHINE_8_9,
-    MACHINE_DEFAULT = MACHINE_5_5
-} machineType_t;
 
 /*************************************************************@}*/
 
@@ -175,7 +170,7 @@ typedef struct machine_information {
     long                  screenWidth;  /**< px */
     long                 screenHeight;  /**< px */
     long                machineHeight;  /**< mm */
-    long                         inch;  /** inch **/
+    float                        inch;  /** inch **/
 } machineInfo_t;
 /*************************************************************@}*/
 

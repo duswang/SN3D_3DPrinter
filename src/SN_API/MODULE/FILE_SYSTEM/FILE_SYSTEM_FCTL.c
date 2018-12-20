@@ -166,6 +166,9 @@ SN_STATUS FileSystem_fctl_ExtractFile(const char* srcPath, const char* desPath)
     struct zip_file *zf;
     struct zip_stat sb;
 
+
+    printf("%s\n", desPath);
+
     char buf[1000];
 
     int err;
@@ -183,11 +186,15 @@ SN_STATUS FileSystem_fctl_ExtractFile(const char* srcPath, const char* desPath)
     {
         if (zip_stat_index(za, i, 0, &sb) == 0)
         {
-            len = strlen(sb.name);
+            len = strlen(desPath) + strlen(sb.name);
 
-            if (sb.name[len - 1] == '/')
+            snprintf(fullFilePath, len + 2, "%s/%s", desPath, sb.name);
+
+            printf("%s\n", fullFilePath);
+
+            if (sb.name[strlen(sb.name) - 1] == '/')
             {
-                FileSystem_fctl_MakeDirectory(sb.name);
+                FileSystem_fctl_MakeDirectory(fullFilePath);
             }
             else
             {
@@ -196,10 +203,6 @@ SN_STATUS FileSystem_fctl_ExtractFile(const char* srcPath, const char* desPath)
                 if (!zf) {
                     SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "File Extract Failed.");
                 }
-
-                len = strlen(desPath) + strlen(sb.name);
-
-                snprintf(fullFilePath, len + 2, "%s/%s", desPath, sb.name);
 
                 fd = open(fullFilePath, O_RDWR | O_TRUNC | O_CREAT, 0644);
 
@@ -235,6 +238,7 @@ SN_STATUS FileSystem_fctl_ExtractFile(const char* srcPath, const char* desPath)
 
     return retStatus;
 }
+
 uint32_t FileSystem_CountFileWithStr(const char* srcPath, const char* condStr)
 {
     DIR *d = opendir(srcPath);

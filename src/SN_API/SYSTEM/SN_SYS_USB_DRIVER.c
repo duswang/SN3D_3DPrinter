@@ -123,7 +123,6 @@ static ERROR_T LIBUSB_CALL hotplug_callback(struct libusb_context *ctx, struct l
 {
     ERROR_T rc;
 
-    static libusb_device_handle *handle = NULL;
     struct libusb_device_descriptor desc;
 
 

@@ -17,6 +17,7 @@
 
 /* System */
 #include <sys/stat.h>
+#include <sys/reboot.h>
 
 /* File System */
 #include <dirent.h>
@@ -24,8 +25,10 @@
 #include <termios.h>
 #include <unistd.h>
 
-#include <errno.h>
+/* Display */
 
+
+#include <errno.h>
 
 #ifdef __APPLE__
 #define USB_PATH                      "/Volumes/USB_0"
@@ -37,12 +40,12 @@
 #define MAX_FILENAME_LENGTH        256
 #define MAX_PATH_LENGTH            256
 
-#define SN3D_FW_STR         "sn3d_fw"
-#define SN3D_FW_EXTENTION   "zip"
-
 #include "SN_SYS_ERROR.h"
 
 #include "FILE_SYSTEM_FCTL.h"
 #include "FILE_SYSTEM_XML.h"
+
+#include "SN_MACHINE_CONTROL.h"
+#include "SN_VERSION_CONTROL.h"
 
 #endif /* SN3D_BOOTLOADER_SRC_INCLUDE_SN_BOOTLOADER_MAIN_H_ */

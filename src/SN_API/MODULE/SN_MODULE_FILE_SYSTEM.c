@@ -19,10 +19,10 @@
 #include "FILE_SYSTEM_XML.h"
 
 /* ******* STATIC DEFINE ******* */
-#define MACHINE_DEFAULT_FILE_NAME       "SN3D_Default"
-
 /** @name Other Define *////@{
 #define OPTION_DEFAULT_INDEX       (0)
+
+#define MACHINE_DEFAULT_INDEX      (0)
 ///@}
 
 /* *** MODULE *** */
@@ -77,11 +77,10 @@ static SN_STATUS sFilePageDestroy(fileSystem_t* fileSystem);
 static SN_STATUS sFileSystemPrint(const fileSystem_t* fileSystem);
 
 /* *** OPTION *** */
-static SN_STATUS sOptionLoad(machineType_t optionIndex);
+static SN_STATUS sOptionLoad(uint32_t optionIndex);
 
 /* *** MAHCINE *** */
-static SN_STATUS sMachineInfoLoad(machineType_t machineInfoIndex);
-static SN_STATUS sMachineInfoFileCreate(machineType_t machineInfoIndex);
+static SN_STATUS sMachineInfoLoad(uint32_t machineInfoIndex);
 
 /* *** TARGET *** */
 static SN_STATUS sTargetLoad(uint32_t pageIndex, uint32_t itemIndex);
@@ -129,11 +128,6 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void)
     SN_MODULE_DISPLAY_BootProgressUpdate(45, "Mahcine Info Read...");
     SN_SYS_Delay(500);
 
-    /** @todo read from USB and update not just set 5.5 Inch. */
-    sMachineInfoPageLoad(&moduleFileSystem.fileSystem);
-    sMachineInfoFileCreate(MACHINE_DEFAULT);
-    sMachineInfoPageDestroy(&moduleFileSystem.fileSystem);
-
     /* Load Option & Machine Files */
     SN_MODULE_DISPLAY_BootProgressUpdate(50, "Option File Read...");
     SN_SYS_Delay(250);
@@ -141,7 +135,7 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void)
     sOptionPageLoad(&moduleFileSystem.fileSystem);
     sMachineInfoPageLoad(&moduleFileSystem.fileSystem);
 
-    sMachineInfoLoad(MACHINE_DEFAULT);
+    sMachineInfoLoad(MACHINE_DEFAULT_INDEX);
     sOptionLoad(OPTION_DEFAULT_INDEX);
     sFileSystemPrint(&moduleFileSystem.fileSystem);
 
@@ -644,8 +638,9 @@ static SN_STATUS sFilePageLoad(fileSystem_t* fileSystem)
             }
 
             if((!strcmp(TARGET_CWS_FILE_EXT, FileSystem_fctl_ExtractFileExtention(nameList[i]->d_name)) || \
-               !strcmp(TARGET_ZIP_FILE_EXT, FileSystem_fctl_ExtractFileExtention(nameList[i]->d_name))) &&
-               !strstr(nameList[i]->d_name, SN3D_FW_STR))
+               !strcmp(TARGET_ZIP_FILE_EXT, FileSystem_fctl_ExtractFileExtention(nameList[i]->d_name))) && \
+               !strstr(nameList[i]->d_name, SN3D_FW_STR) && \
+               !strstr(nameList[i]->d_name, SN3D_OPTION_STR))
             {
                 strcpy(currentPage->item[currentPage->itemCnt].name, nameList[i]->d_name);
 
@@ -747,7 +742,7 @@ static SN_STATUS sFileSystemPrint(const fileSystem_t* fileSystem)
  *  OPTION
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-static SN_STATUS sOptionLoad(machineType_t optionIndex)
+static SN_STATUS sOptionLoad(uint32_t optionIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
@@ -767,7 +762,7 @@ static SN_STATUS sOptionLoad(machineType_t optionIndex)
  *  MACHINE
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-static SN_STATUS sMachineInfoLoad(machineType_t machineInfoIndex)
+static SN_STATUS sMachineInfoLoad(uint32_t machineInfoIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
@@ -777,28 +772,6 @@ static SN_STATUS sMachineInfoLoad(machineType_t machineInfoIndex)
 
     return retStatus;
 }
-
-static SN_STATUS sMachineInfoFileCreate(machineType_t machineInfoIndex)
-{
-    SN_STATUS retStatus = SN_STATUS_OK;
-    char srcTargetPath[MAX_PATH_LENGTH], desTargetPath[MAX_PATH_LENGTH];
-
-    const fsItem_t machineInfoFile = FileSystem_GetItem(moduleFileSystem.fileSystem.machineInfoPageHeader, machineInfoIndex / MAX_ITEM_SIZE, machineInfoIndex % MAX_ITEM_SIZE);
-
-    /* Folder Check */
-    retStatus = FileSystem_fctl_MakeDirectory(MACHINE_FILE_PATH);
-
-    /* Get Source Path */
-    sprintf(srcTargetPath,"%s/%s.%s", MACHINE_FILE_PATH, machineInfoFile.name, MACHINE_FILE_EXT);
-
-    sprintf(desTargetPath,"%s/%s.%s", MACHINE_FILE_PATH, MACHINE_DEFAULT_FILE_NAME, MACHINE_FILE_EXT);
-
-    /* Create Target Files */
-    retStatus = FileSystem_fctl_CopyFile(srcTargetPath, desTargetPath);
-
-    return retStatus;
-}
-
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *

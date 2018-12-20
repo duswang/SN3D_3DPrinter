@@ -33,6 +33,8 @@
 /* MAHCINEINFO XML */
 static SN_STATUS sParseXML_machineInfoFile(machineInfo_t* machineInfo, xmlDocPtr doc, xmlNodePtr cur);
 
+static SN_STATUS sParseXML_VersionFile(versionInfo_t* versionInfo, xmlDocPtr doc, xmlNodePtr cur);
+
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
  *  Extern Functions
@@ -120,11 +122,115 @@ static SN_STATUS sParseXML_machineInfoFile(machineInfo_t* machineInfo, xmlDocPtr
             sscanf((const char *)key, "%ld", &machineInfo->machineHeight);
             xmlFree(key);
         }
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"Display")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            sscanf((const char *)key, "%f", &machineInfo->inch);
+            xmlFree(key);
+        }
         cur = cur->next;
     }
 
     return retStatus;
 }
 
+versionInfo_t* FileSystem_versionInfoXMLLoad(const char *srcPath)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    versionInfo_t* versionInfo = NULL;
+
+    const char         *docname;
+    xmlDocPtr           doc;
+    xmlNodePtr          cur;
+
+    docname = srcPath;
+    doc = xmlParseFile(docname);
+    if(doc == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+    }
+
+    cur = xmlDocGetRootElement(doc);
+    if(cur == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+    }
+
+    if (xmlStrcmp(cur->name, (const xmlChar *)"version"))
+    {
+        cur = cur->xmlChildrenNode;
+        xmlFreeDoc(doc);
+
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "XMl File is Invlaid.");
+
+        return NULL;
+    }
+
+    versionInfo = (versionInfo_t *)malloc(sizeof(versionInfo_t));
+    if(versionInfo == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "printOption memory allocate failed.");
+    }
+
+    retStatus = sParseXML_VersionFile(versionInfo, doc, cur);
+    SN_SYS_ERROR_CHECK(retStatus, "machine Info XML File Load Failed.");
+
+    xmlFreeDoc(doc);
+
+    return versionInfo;
+}
+
+static SN_STATUS sParseXML_VersionFile(versionInfo_t* versionInfo, xmlDocPtr doc, xmlNodePtr cur)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    xmlChar *key;
+
+    cur = cur->xmlChildrenNode;
+
+    while(cur != NULL)
+    {
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"Project")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            strcpy(versionInfo->name, (const char *)key);
+            xmlFree(key);
+        }
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"ReleaseNumber")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            sscanf((const char *)key, "%ld", &versionInfo->releaseNumber);
+            xmlFree(key);
+        }
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"MajorNumber")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            sscanf((const char *)key, "%ld", &versionInfo->majorNumber);
+            xmlFree(key);
+        }
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"MinorNumber")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            sscanf((const char *)key, "%ld", &versionInfo->minorNumber);
+            xmlFree(key);
+        }
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"Timestamp")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            strcpy(versionInfo->timestamp, (const char *)key);
+            xmlFree(key);
+        }
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"BinraryName")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            strcpy(versionInfo->binaryName, (const char *)key);
+            xmlFree(key);
+        }
+        cur = cur->next;
+    }
+
+    return retStatus;
+}
 
 

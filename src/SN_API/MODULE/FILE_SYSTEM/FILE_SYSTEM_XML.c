@@ -242,7 +242,7 @@ static SN_STATUS sParseXML_machineInfoFile(machineInfo_t* machineInfo, xmlDocPtr
         if((!xmlStrcmp(cur->name, (const xmlChar *)"Inch")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &machineInfo->inch);
+            sscanf((const char *)key, "%f", &machineInfo->inch);
             xmlFree(key);
         }
         cur = cur->next;
