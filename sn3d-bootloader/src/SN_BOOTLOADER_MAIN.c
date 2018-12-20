@@ -139,7 +139,7 @@ static void sBootloader_Terminate(bool isNeedReboot)
     {
         SN_SYS_Log("System Reboot. \n\n");
 
-        //sync();
-        //reboot(RB_AUTOBOOT);
+        sync();
+        reboot(RB_AUTOBOOT);
     }
 }
