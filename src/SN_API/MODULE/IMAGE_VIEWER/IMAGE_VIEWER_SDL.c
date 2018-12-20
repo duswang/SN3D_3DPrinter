@@ -43,7 +43,7 @@ static void sCheckError_SDL_Image(const char* message, const char* _file, const 
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 
-SN_STATUS ImageVIewer_Init(moduleImageViewer_t* moduleImageViewer)
+SN_STATUS ImageViewer_Init(moduleImageViewer_t* moduleImageViewer)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
@@ -83,7 +83,7 @@ SN_STATUS ImageVIewer_Init(moduleImageViewer_t* moduleImageViewer)
         return retStatus;
 }
 
-SN_STATUS ImageVIewer_WindowUpdate(moduleImageViewer_t* moduleImageViewer, uint32_t slice)
+SN_STATUS ImageViewer_WindowUpdate(moduleImageViewer_t* moduleImageViewer, uint32_t slice)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     ERROR_T error = 0;

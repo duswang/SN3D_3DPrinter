@@ -1,24 +1,35 @@
-/*
- * SN_MACHINE_CONTROL.h
+/**
+ * @file SN_MACHINE_CONTROL.h
+ * @author Bato
+ * @date 21 Nov 2018
+ * @brief
  *
- *  Created on: 2018. 12. 13.
- *      Author: BartKim
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
+ *
+ * @defgroup MACHINE_CONTROL Machine Control
+ * @ingroup BOOTLOADER_MODULE
+ * @brief Machine Control Functions.
+ * @{
  */
 
-#ifndef SN_MACHINE_CONTROL_H_
-#define SN_MACHINE_CONTROL_H_
+#ifndef SN_MACHINE_CONTROL
+#define SN_MACHINE_CONTROL
 
-typedef struct frameBuffer_Window
-{
-    const char* name;
+/*************************************************************
+ * @name Machine Control
+ *  Description of 3D Printr Module Init and Uninit funtions.
+ *////@{
+/** @brief
+ *
+ *  @param filename - Firmware fileName.
+ *  @return isNeedReboot - When need reboot it return 'true'
+ *
+ *  @note Machine info always update(copy & pasted) bootconfig when calling this function.
+ */
+extern bool SN_VERSION_CONTROL_MachineInfoUpdate(const char* fileName);
 
-    int            w;
-    int            h;
-    int          bpp;
+/*************************************************************@}*/
 
-    long  screenSize;
-} FB_Window_t;
-
-extern FB_Window_t* SN_MACHINE_CONTROL_DisplayCheck(void);
-
-#endif /* SN_MACHINE_CONTROL_H_ */
+#endif /* SN_MACHINE_CONTROL */
+/**@}*/

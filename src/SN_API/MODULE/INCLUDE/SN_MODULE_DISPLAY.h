@@ -21,7 +21,7 @@
  *  @brief Description of Display Module Init and Uninit funtions.
  *////@{
 
-/** @brief
+/** @brief Nextion Display Init with Serial Comm
  *
  *  @return SN_STATUS
  *  @note
@@ -29,7 +29,7 @@
 extern SN_STATUS SN_MODULE_DISPLAY_Init(void);
 
 
-/** @brief
+/** @brief Nextion Display Uninit
  *
  *  @return SN_STATUS
  *  @note
@@ -43,9 +43,13 @@ extern SN_STATUS SN_MODULE_DISPLAY_Uninit(void);
  *  @brief
  *////@{
 
-/** @brief
+/** @brief Nextoin Display Page Change
  *
+ *  @param state - page state check header below ref link.
  *  @return SN_STATUS
+ *
+ *  @ref Reference => SN_API/SYSTEM/INCLUDE/SN_SYS_SERIAL_NEXTION.h
+ *
  *  @note
  */
 extern SN_STATUS SN_MODULE_DISPLAY_EnterState(nx_page_t state);
@@ -57,6 +61,15 @@ extern SN_STATUS SN_MODULE_DISPLAY_EnterState(nx_page_t state);
  *  @brief
  *////@{
 
+/** @brief Boot ProgressBar Controller
+ *
+ *  @param progressValue - Current progress value.
+ *  @param progressStr - Current progress information string.
+ *  @return SN_STATUS
+ *
+ *
+ *  @note
+ */
 extern SN_STATUS SN_MODULE_DISPLAY_BootProgressUpdate(uint32_t progressValue, const char* progressStr);
 
 /*************************************************************@}*/
@@ -67,10 +80,10 @@ extern SN_STATUS SN_MODULE_DISPLAY_BootProgressUpdate(uint32_t progressValue, co
  *  @brief
  *////@{
 
-/** @brief
+/** @brief Nextion Display Printing Page Info Init
  *
- *  @param fileName
- *  @param optionName
+ *  @param fileName - Filename of string
+ *  @param optionName - Optionname of string
  *
  *  @return SN_STATUS
  *  @note
@@ -78,10 +91,10 @@ extern SN_STATUS SN_MODULE_DISPLAY_BootProgressUpdate(uint32_t progressValue, co
 extern SN_STATUS SN_MODULE_DISPLAY_PrintingInfoInit(const char* fileName, const char* optionName);
 
 
-/** @brief
+/** @brief Nextion Display Printing Page Info Update
  *
- *  @param slice
- *  @param targetSlice
+ *  @param slice - Current slice index of number
+ *  @param targetSlice - All slice of number
  *
  *  @return SN_STATUS
  *  @note
@@ -95,9 +108,9 @@ extern SN_STATUS SN_MODULE_DISPLAY_PrintingInfoUpdate(uint32_t slice, uint32_t t
  *  @brief
  *////@{
 
-/** @brief
+/** @brief Nextion Display Printing Page Timer Info Init
  *
- *  @param sec
+ *  @param sec - ETA Time per sec
  *
  *  @return SN_STATUS
  *
@@ -105,9 +118,9 @@ extern SN_STATUS SN_MODULE_DISPLAY_PrintingInfoUpdate(uint32_t slice, uint32_t t
  */
 extern SN_STATUS SN_MODULE_DISPLAY_PrintingTimerInit(uint32_t sec);
 
-/** @brief
+/** @brief Nextion Display Printing Page Timer Info Sync by Current Slice Info
  *
- *  @param sec
+ *  @param sec - Synced Time per sec
  *
  *  @return SN_STATUS
  *
@@ -115,29 +128,29 @@ extern SN_STATUS SN_MODULE_DISPLAY_PrintingTimerInit(uint32_t sec);
  */
 extern SN_STATUS SN_MODULE_DISPLAY_PrintingTimerSync(uint32_t sec);
 
-/** @brief
+/** @brief Nextoin Display Printing Page Timer Pause
  *
  *  @return SN_STATUS
  *
- *  @note
+ *  @note This function called when printing pause event
  */
 extern SN_STATUS SN_MODULE_DISPLAY_PrintingTimerPause(void);
 
 
-/** @brief
+/** @brief Nextoin Display Printing Page Timer Resume
  *
  *  @return SN_STATUS
  *
- *  @note
+ *  @note This function called when printing resume event
  */
 extern SN_STATUS SN_MODULE_DISPLAY_PrintingTimerResume(void);
 
 
-/** @brief
+/** @brief Nextoin Display Printing Page Timer Stop
  *
  *  @return SN_STATUS
  *
- *  @note
+ *  @note This function called when printing stop event
  */
 extern SN_STATUS SN_MODULE_DISPLAY_PrintingTimerStop(void);
 
@@ -145,13 +158,13 @@ extern SN_STATUS SN_MODULE_DISPLAY_PrintingTimerStop(void);
 
 
 /*************************************************************
- * @name Display Module :: Print Page Time Info
+ * @name Display Module :: Control Page
  *  @brief
  *////@{
 
-/** @brief
+/** @brief Nextion Display Control Page Current Z Position Update
  *
- *  @param sec
+ *  @param mm - current z position
  *
  *  @return SN_STATUS
  *
@@ -168,16 +181,20 @@ extern SN_STATUS SN_MODULE_DISPLAY_ControlZPosition(float mm);
  *  @brief
  *////@{
 
-/** @brief
+/** @brief Nextion Display File Select Page OptionMenu Update
  *
+ *  @param optionIndex - Option index of showing Option Name
  *  @return SN_STATUS
+ *
  *  @note
  */
 extern SN_STATUS SN_MODULE_DISPLAY_FileSelectOptionUpdate(uint32_t optionIndex);
 
-/** @brief
+/** @brief Nextion Display File Select Page FileList Update
  *
+ *  @param pageIndexs - Page index of showing Files
  *  @return SN_STATUS
+ *
  *  @note
  */
 extern SN_STATUS SN_MODULE_DISPLAY_FileSelectPageUpdate(uint32_t pageIndex);
@@ -186,12 +203,18 @@ extern SN_STATUS SN_MODULE_DISPLAY_FileSelectPageUpdate(uint32_t pageIndex);
 
 
 /*************************************************************
- * @name Display Module :: Nextion GUI Tool
+ * @name Display Module :: Nextion GUI or Drawing Tool
  *  @brief
  *////@{
 
-/** @brief
+/** @brief Drawing Line on Nextion Display Screen
  *
+ *
+ *  @param startX
+ *  @param startY
+ *  @param endX
+ *  @param endY
+ *  @param color
  *  @return SN_STATUS
  *
  *  @note
@@ -199,7 +222,11 @@ extern SN_STATUS SN_MODULE_DISPLAY_FileSelectPageUpdate(uint32_t pageIndex);
 SN_STATUS SN_MODULE_DISPLAY_NextionDrawLine(int startX, int startY, int endX, int endY, int color);
 
 
-/** @brief
+/** @brief Drawing Dot on Nextion Display Screen
+ *
+ *  @param coorX
+ *  @param coorY
+ *  @param color
  *
  *  @return SN_STATUS
  *
@@ -208,7 +235,13 @@ SN_STATUS SN_MODULE_DISPLAY_NextionDrawLine(int startX, int startY, int endX, in
 extern SN_STATUS SN_MODULE_DISPLAY_NextionDrawDot(int coorX, int coorY, int color);
 
 
-/** @brief
+/** @brief Drawing Fill on Nextion Display Screen
+ *
+ *  @param startX
+ *  @param startY
+ *  @param width
+ *  @param height
+ *  @param color
  *
  *  @return SN_STATUS
  *

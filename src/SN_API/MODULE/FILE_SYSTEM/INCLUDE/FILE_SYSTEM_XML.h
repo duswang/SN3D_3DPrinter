@@ -22,23 +22,29 @@
  * @{
  */
 
-/** @brief
+/** @brief Target XML file Reader.
  *
- *  @return SN_STATUS
- *  @note
+ *  @param srcPath - Source path
+ *  @return Return pointer of printTarget_t structure.
+ *
+ *  @note only used 'cws' file.
  */
 extern printTarget_t* FileSystem_targetXMLLoad(const char *srcPath);
 
-/** @brief
+/** @brief Option XML file Reader.
  *
- *  @return SN_STATUS
+ *  @param srcPath - Source path
+ *  @return Return pointer of printOption_t structure.
+ *
  *  @note
  */
 extern printOption_t* FileSystem_optionXMLLoad(const char *srcPath);
 
-/** @brief
+/** @brief Machine info XML file Reader.
  *
- *  @return SN_STATUS
+ *  @param srcPath - Source path
+ *  @return Return pointer of machineInfo structure.
+ *
  *  @note
  */
 extern machineInfo_t* FileSystem_machineInfoXMLLoad(const char *srcPath);

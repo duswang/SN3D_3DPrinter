@@ -9,9 +9,7 @@
  *
  * @bug  SDL :: 2048 x 2048 Over Resolution it can't make Window(surface)
  *
- * @todo Image allocate & free Memory test
  * @todo Nextion Thumbnail need more test.
- * @bug  Nextion Thumbnail pageQ and reback.
  */
 
 #include "SN_API.h"
@@ -46,7 +44,7 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    retStatus = ImageVIewer_Init(&moduleImageViewer);
+    retStatus = ImageViewer_Init(&moduleImageViewer);
     SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Init Failed.");
 
     return retStatus;
@@ -56,7 +54,7 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowUpdate(uint32_t sliceIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    retStatus = ImageVIewer_WindowUpdate(&moduleImageViewer, sliceIndex);
+    retStatus = ImageViewer_WindowUpdate(&moduleImageViewer, sliceIndex);
     SN_SYS_ERROR_CHECK(retStatus, "Window Update Failed.");
 
     return retStatus;

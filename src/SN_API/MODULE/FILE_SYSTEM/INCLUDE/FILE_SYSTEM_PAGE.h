@@ -22,33 +22,40 @@
  * @{
  */
 
-/** @brief
+/** @brief Init page data structure
  *
- *  @return SN_STATUS
+ *  @return fsPageHeader_t pointer
  *  @note
  */
 fsPageHeader_t* FileSystem_PageInit(void);
 
-/** @brief
+/** @brief Destory page data structure
  *
+ *  @param pageHeader - fsPageHeader_t pointer
  *  @return SN_STATUS
+ *
  *  @note
  */
 SN_STATUS FileSystem_PageDestroy(fsPageHeader_t* pageHeader);
 
-/** @brief
+/** @brief Add new page in pageHeader
  *
+ *  @param pageHeader - fsPageHeader_t pointer
  *  @return SN_STATUS
+ *
  *  @note
  */
 SN_STATUS FileSystem_AddPage(fsPageHeader_t* pageHeader);
 
-/** @brief
+/** @brief Remove one page
  *
+ *  @param pageHeader - fsPageHeader_t pointer
+ *  @param pageIndex - Page index number
  *  @return SN_STATUS
+ *
  *  @note
  */
-SN_STATUS FileSystem_RemovePage(fsPageHeader_t* pageHeader, int pageIndex);
+SN_STATUS FileSystem_RemovePage(fsPageHeader_t* pageHeader, uint32_t pageIndex);
 
 /*************************************************************@}*/
 
@@ -58,19 +65,25 @@ SN_STATUS FileSystem_RemovePage(fsPageHeader_t* pageHeader, int pageIndex);
  * @{
  */
 
-/** @brief
+/** @brief Get one page Data
  *
+ *  @param pageHeader - fsPageHeader_t pointer
+ *  @param pageIndex - Page index number
  *  @return SN_STATUS
  *  @note
  */
-fsPage_t* FileSystem_GetPage(fsPageHeader_t* pageHeader, int pageIndex);
+fsPage_t* FileSystem_GetPage(fsPageHeader_t* pageHeader, uint32_t pageIndex);
 
-/** @brief
+/** @brief Get one item
  *
+ *  @param pageHeader - fsPageHeader_t pointer
+ *  @param pageIndex - Page index of number
+ *  @param itemIndex - Item index of number
  *  @return SN_STATUS
- *  @note
+ *
+ *  @note Item index can't over index MAX_ITEM_SIZE
  */
-fsItem_t FileSystem_GetItem(fsPageHeader_t* pageHeader, int pageIndex, int itemIndex);
+fsItem_t FileSystem_GetItem(fsPageHeader_t* pageHeader, uint32_t pageIndex, uint32_t itemIndex);
 
 /*************************************************************@}*/
 

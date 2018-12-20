@@ -7,7 +7,6 @@
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
- * @todo Thumbnail Serial Update with 3msec. need fix it.
  */
 
 #ifdef __APPLE__
@@ -63,7 +62,7 @@ static SN_STATUS sRotateImage(FB_Image_t* imagem,int mode);
  *  Extern Functions
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-SN_STATUS ImageVIewer_Init(moduleImageViewer_t* moduleImageViewer)
+SN_STATUS ImageViewer_Init(moduleImageViewer_t* moduleImageViewer)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
@@ -81,7 +80,7 @@ SN_STATUS ImageVIewer_Init(moduleImageViewer_t* moduleImageViewer)
     return retStatus;
 }
 
-SN_STATUS ImageVIewer_WindowUpdate(moduleImageViewer_t* moduleImageViewer, uint32_t sliceIndex)
+SN_STATUS ImageViewer_WindowUpdate(moduleImageViewer_t* moduleImageViewer, uint32_t sliceIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     char* path = NULL;

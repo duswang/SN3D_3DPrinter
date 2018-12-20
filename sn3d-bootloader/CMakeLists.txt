@@ -139,12 +139,11 @@ set(
 add_custom_target(gdb gdb ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/exe)
 add_custom_target(run ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/exe)
 
-add_custom_target(start sudo systemctl restart SN3D.service)
-add_custom_target(stop sudo systemctl stop SN3D.service)
+add_custom_target(start sudo systemctl restart SN3D_Bootloader.service)
+add_custom_target(stop sudo systemctl stop SN3D_Bootloader.service)
+add_custom_target(status sudo systemctl status SN3D_Bootloader.service)
 
-add_custom_target(doxygen doxygen ${PRJ_ROOT_PATH}/sn3d_doxygen)
-
-add_custom_target(all_clean rm -rf ${PRJ_ROOT_PATH}/CMakeFiles ${PRJ_ROOT_PATH}/cmake_install.cmake ${PRJ_ROOT_PATH}/CMakeCache.txt)
+add_custom_target(all_clean rm -rf ${BOOTLOADER_ROOT_PATH}/CMakeFiles ${BOOTLOADER_ROOT_PATH}/cmake_install.cmake ${BOOTLOADER_ROOT_PATH}/CMakeCache.txt)
 
 ################### Target Setting ###################
 # Install exe file #

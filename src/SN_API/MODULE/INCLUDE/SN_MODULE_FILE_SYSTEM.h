@@ -89,7 +89,7 @@ typedef enum {
     MANGO,                   //!< MANGO
     B9,                      //!< B9
     CWS,                     //!< CWS
-    TARGET_DEFAULT_TYPE = CWS//!< TARGET_DEFAULT_TYPE
+    TARGET_DEFAULT_TYPE = SN3D//!< SN3D
 } targetType_t;
 
 /*************************************************************@}*/
@@ -145,7 +145,7 @@ typedef struct print_option_prameter {
     /* Normal Layer Paramter */
     long     layerExposureTime;         /**< ms */
     float    liftFeedRate;              /**< mm / s */
-    long     liftTime;                  /**< ms - Need Auto Calculate */
+    long     liftTime;                  /**< ms */
     long     liftDistance;              /**< mm */
 
 } printOption_t;
@@ -181,14 +181,14 @@ typedef struct machine_information {
  */
 
 
-/** @brief
+/** @brief File System Init
  *
  *  @return SN_STATUS
  *  @note
  */
 extern SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void);
 
-/** @brief
+/** @brief File System Uninit
  *
  *  @return SN_STATUS
  *  @note
@@ -204,31 +204,34 @@ extern SN_STATUS SN_MODULE_FILE_SYSTEM_Uninit(void);
  */
 
 
-/** @brief
+/** @brief Read USB File List and Update File System Strucutre
  *
  *  @return SN_STATUS
  *  @note
  */
 extern SN_STATUS SN_MODULE_FILE_SYSTEM_FilePageUpdate(void);
 
-/** @brief
+/** @brief Get one page
  *
- *
+ *  @param pageIndex - Page index
  *  @return SN_STATUS
+ *
  *  @note
  */
 extern const fsPage_t* SN_MODULE_FILE_SYSTEM_GetFilePage(int pageIndex);
 
-/** @brief
+/** @brief Get All file page number
 
- *  @return SN_STATUS
+ *  @return All File page number
+ *
  *  @note
  */
 extern int SN_MODULE_FILE_SYSTEM_GetFilePageCnt(void);
 
-/** @brief
+/** @brief Is any print file exist there?
  *
- *  @return SN_STATUS
+ *  @return bool
+ *
  *  @note
  */
 extern bool SN_MODULE_FILE_SYSTEM_isPrintFileExist(void);
@@ -241,11 +244,10 @@ extern bool SN_MODULE_FILE_SYSTEM_isPrintFileExist(void);
  * @{
  */
 
-/** @brief
+/** @brief Get Machine Info
  *
- *  @param optionIndex
+ *  @return machineInfo_t pointer
  *
- *  @return SN_STATUS
  *  @note
  */
 extern const machineInfo_t* SN_MODULE_FILE_SYSTEM_MachineInfoGet(void);
@@ -259,21 +261,22 @@ extern const machineInfo_t* SN_MODULE_FILE_SYSTEM_MachineInfoGet(void);
  * @{
  */
 
-/** @brief
+/** @brief Get Option Count
 
  *  @return SN_STATUS
  *  @note
  */
 extern int SN_MODULE_FILE_SYSTEM_GetOptionCnt(void);
 
-/** @brief
+/** @brief Is any option file exist there?
  *
- *  @return SN_STATUS
+ *  @return bool
+ *
  *  @note
  */
 extern bool SN_MODULE_FILE_SYSTEM_isOptionExist(void);
 
-/** @brief
+/** @brief Option File Load
  *
  *  @param optionIndex
  *
@@ -282,11 +285,10 @@ extern bool SN_MODULE_FILE_SYSTEM_isOptionExist(void);
  */
 extern SN_STATUS SN_MODULE_FILE_SYSTEM_OptionLoad(uint32_t optionIndex);
 
-/** @brief
- *
- *  @param optionIndex
+/** @brief Get Loaded Option Info
  *
  *  @return SN_STATUS
+ *
  *  @note
  */
 extern const printOption_t* SN_MODULE_FILE_SYSTEM_OptionGet(void);
@@ -300,7 +302,7 @@ extern const printOption_t* SN_MODULE_FILE_SYSTEM_OptionGet(void);
  * @brief
  * @{
  */
-/** @brief
+/** @brief Print Target Info Load
  *
  *  @param pageIndex
  *  @param itemIndex
@@ -310,14 +312,14 @@ extern const printOption_t* SN_MODULE_FILE_SYSTEM_OptionGet(void);
  */
 extern SN_STATUS SN_MODULE_FILE_SYSTEM_TargetLoad(uint32_t pageIndex, uint32_t itemIndex);
 
-/** @brief
+/** @brief Print Target Info Destory
  *
  *  @return SN_STATUS
  *  @note
  */
 extern SN_STATUS SN_MODULE_FILE_SYSTEM_TargetDestroy(void);
 
-/** @brief
+/** @brief Get Loaded Print Target Info
  *
  *  @param optionIndex
  *
@@ -334,11 +336,13 @@ extern const printTarget_t* SN_MODULE_FILE_SYSTEM_TargetGet(void);
  * @{
  */
 
-/** @brief
+/** @brief Get Path by sliceindex
  *
- *  @param
+ *  @param sliceIndex - Image slice index
+ *  @return Image path by file type
  *
- *  @return SN_STATUS
+ *  @ref targetType_t
+ *
  *  @note
  */
 extern char* SN_MODULE_FILE_SYSTEM_TargetSlicePathGet(uint32_t sliceIndex);

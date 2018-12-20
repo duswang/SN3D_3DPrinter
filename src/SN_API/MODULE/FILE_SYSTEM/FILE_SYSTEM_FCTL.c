@@ -80,10 +80,10 @@ SN_STATUS FileSystem_fctl_CopyFile(const char* srcPath, const char* desPath)
     return SN_STATUS_OK;
 }
 
-SN_STATUS FileSystem_fctl_RemoveFiles(const char* folderPath)
+SN_STATUS FileSystem_fctl_RemoveFiles(const char* dir)
 {
-    DIR *d = opendir(folderPath);
-    size_t path_len = strlen(folderPath);
+    DIR *d = opendir(dir);
+    size_t path_len = strlen(dir);
     int r = -1;
 
     if(d)
@@ -110,7 +110,7 @@ SN_STATUS FileSystem_fctl_RemoveFiles(const char* folderPath)
             {
                 struct stat statbuf;
 
-                snprintf(buf, len,"%s/%s", folderPath, p->d_name);
+                snprintf(buf, len,"%s/%s", dir, p->d_name);
 
                 if(!stat(buf, &statbuf))
                 {

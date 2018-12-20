@@ -8,9 +8,23 @@
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  */
 
-#ifndef APP_INCLUDE_APP_PRINTING_H_
-#define APP_INCLUDE_APP_PRINTING_H_
+#ifndef APP_PRINTING_H_
+#define APP_PRINTING_H_
 
+/*************************************************************
+ * @name Event Handler
+ * @brief
+ * @{
+ */
+/** @brief
+ *
+ *  @param evt - Application MessageQ message
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
 extern SN_STATUS APP_PRINTING_EvtHdlr(general_evt_t evt);
 
-#endif /* APP_INCLUDE_APP_PRINTING_H_ */
+/*************************************************************@}*/
+
+#endif /* APP_PRINTING_H_ */

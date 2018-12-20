@@ -11,7 +11,20 @@
 #ifndef APP_CONTROL_H_
 #define APP_CONTROL_H_
 
+/*************************************************************
+ * @name Event Handler
+ * @brief
+ * @{
+ */
+/** @brief
+ *
+ *  @param evt - Application MessageQ message
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
 extern SN_STATUS APP_CONTROL_EvtHdlr(general_evt_t evt);
 
+/*************************************************************@}*/
 
 #endif /* APP_CONTROL_H_ */

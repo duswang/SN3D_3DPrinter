@@ -52,7 +52,7 @@ SN_STATUS FileSystem_PageDestroy(fsPageHeader_t* pageHeader)
     fsPage_t* currentPage = NULL;
     fsPage_t* nextPage    = NULL;
 
-    int i = 0;
+    uint32_t i = 0;
 
     if(pageHeader != NULL)
     {
@@ -101,7 +101,7 @@ SN_STATUS FileSystem_AddPage(fsPageHeader_t* pageHeader)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     fsPage_t* newPage = NULL;
-    int i = 0;
+    uint32_t i = 0;
 
     if(pageHeader == NULL)
     {
@@ -145,7 +145,7 @@ SN_STATUS FileSystem_AddPage(fsPageHeader_t* pageHeader)
     return retStatus;
 }
 
-SN_STATUS FileSystem_RemovePage(fsPageHeader_t* pageHeader, int pageIndex)
+SN_STATUS FileSystem_RemovePage(fsPageHeader_t* pageHeader, uint32_t pageIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
@@ -162,9 +162,9 @@ SN_STATUS FileSystem_RemovePage(fsPageHeader_t* pageHeader, int pageIndex)
     return retStatus;
 }
 
-fsPage_t* FileSystem_GetPage(fsPageHeader_t* pageHeader, int pageIndex)
+fsPage_t* FileSystem_GetPage(fsPageHeader_t* pageHeader, uint32_t pageIndex)
 {
-    int i = 0;
+    uint32_t i = 0;
     fsPage_t* retPage = NULL;
     fsPage_t* currentPage = NULL;
 
@@ -190,7 +190,7 @@ fsPage_t* FileSystem_GetPage(fsPageHeader_t* pageHeader, int pageIndex)
     return retPage;
 }
 
-fsItem_t FileSystem_GetItem(fsPageHeader_t* pageHeader, int pageIndex, int itemIndex)
+fsItem_t FileSystem_GetItem(fsPageHeader_t* pageHeader, uint32_t pageIndex, uint32_t itemIndex)
 {
     fsPage_t* currentPage = FileSystem_GetPage(pageHeader, pageIndex);
 

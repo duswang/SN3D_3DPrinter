@@ -20,7 +20,7 @@
  * @name 3D Printr Module
  *  Description of 3D Printr Module Init and Uninit funtions.
  *////@{
-/** @brief
+/** @brief 3D Printer Initiation
  *
  *  @return SN_STATUS
  *
@@ -28,7 +28,7 @@
  */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Init(void);
 
-/** @brief
+/** @brief 3D Printer Uninitiation
  *
  *  @return SN_STATUS
  *
@@ -43,10 +43,11 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Uninit(void);
  *  Description of 3D Printr Module funtions.
  *////@{
 
-/** @brief
+/** @brief 3D Printer start printing
  *
- *  @param pageIndex
- *  @param itemIndex
+ *  @param pageIndex - Page index of number
+ *  @param itemIndex - Item index of number
+ *  @param optionIndex - Option index of number
  *
  *  @return SN_STATUS
  *
@@ -55,7 +56,7 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Uninit(void);
 extern SN_STATUS SN_MODULE_3D_PRINTER_Start(uint32_t pageIndex, uint32_t itemIndex, uint32_t option);
 
 
-/** @brief
+/** @brief 3D Printer All stop
  *
  *  @return SN_STATUS
  *
@@ -64,7 +65,7 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Start(uint32_t pageIndex, uint32_t itemInd
 extern SN_STATUS SN_MODULE_3D_PRINTER_Stop(void);
 
 
-/** @brief
+/** @brief 3D Printer Pause
  *
  *  @return SN_STATUS
  *
@@ -73,7 +74,7 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Stop(void);
 extern SN_STATUS SN_MODULE_3D_PRINTER_Pause(void);
 
 
-/** @brief
+/** @brief 3D Printer Resume
  *
  *  @return SN_STATUS
  *
@@ -89,7 +90,7 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Resume(void);
  *////@{
 
 
-/** @brief
+/** @brief Motor Initialization
  *
  *  @return SN_STATUS
  *
@@ -98,16 +99,16 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Resume(void);
 extern SN_STATUS SN_MODULE_3D_PRINTER_MotorInit(void);
 
 
-/** @brief
+/** @brief Motor Uninitialization
  *
  *  @return SN_STATUS
  *
- *  @note
+ *  @note Now Doing Noting.
  */
 extern SN_STATUS SN_MODULE_3D_PRINTER_MotorUninit(void);
 
 
-/** @brief
+/** @brief Motor Z Axis Homing
  *
  *  @return SN_STATUS
  *
@@ -116,21 +117,19 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_MotorUninit(void);
 extern SN_STATUS SN_MODULE_3D_PRINTER_Z_Homing(void);
 
 
-/** @brief
+/** @brief Motor Z Move.
  *
- *  @param mm
+ *  @param mm - mm
  *
  *  @return SN_STATUS
  *
- *  @note
+ *  @note Z Limit variable get from 'machieninfo.xml' file
  */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Z_Move(float mm);
 
-/** @brief
+/** @brief Check Motor State
  *
- *  @param mm
- *
- *  @return SN_STATUS
+ *  @return IsMotorBusy?s
  *
  *  @note
  */

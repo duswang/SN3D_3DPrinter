@@ -16,6 +16,8 @@
  * @defgroup IMAGE_VIEWER_SDL SDL
  * @ingroup MODULE_IMAGE_VIEWER
  * @brief Image Viewer SDL Functions.
+ *
+ * @warning NOW NOT SUPPORT SDL. It Need Update.
  * @{
  */
 #ifndef IMAGE_VIEWER_SDL_H_
@@ -115,35 +117,60 @@ typedef struct image_viewer
  * @brief
  * @{
  */
-/** @brief
+/** @brief Screen Window Initiation
  *
+ *  @param moduleImageViewer - moduleImageViewer_t pointer
  *  @return SN_STATUS
+ *
  *  @note
  */
-extern SN_STATUS ImageVIewer_Init(moduleImageViewer_t* moduleImageViewer);
+extern SN_STATUS ImageViewer_Init(moduleImageViewer_t* moduleImageViewer);
 
-/** @brief
+/** @brief Update Target Image to Main Screen with Thumbnail on Nextion Display
  *
+ *  @param moduleImageViewer - moduleImageViewer_t pointer
+ *  @param sliceIndex - Slice index of number
  *  @return SN_STATUS
- *  @note
+ *
+ *  @note Slice image path get from MODULE :: FileSystem :: SN_MODULE_FILE_SYSTEM_TargetSlicePathGet
  */
-extern SN_STATUS ImageVIewer_WindowUpdate(moduleImageViewer_t* moduleImageViewer, uint32_t sliceIndex);
+extern SN_STATUS ImageViewer_WindowUpdate(moduleImageViewer_t* moduleImageViewer, uint32_t sliceIndex);
 
-/** @brief
+/** @brief Clean Target Image to Main Screen with Thumbnail on Nextion Display
  *
+ *  @param moduleImageViewer - moduleImageViewer_t pointer
  *  @return SN_STATUS
+ *
  *  @note
  */
 extern SN_STATUS ImageViewer_WindowClean(moduleImageViewer_t* moduleImageViewer);
 
-/** @brief
+/** @brief Display Image Viewer
  *
+ *  @param moduleImageViewer - moduleImageViewer_t pointer
  *  @return SN_STATUS
+ *
  *  @note
  */
 extern SN_STATUS ImageViewer_WindowDestroy(moduleImageViewer_t* moduleImageViewer);
 
 /*************************************************************@}*/
 
+/*************************************************************
+ * @name Image Viewer Thumbnail
+ * @brief
+ * @{
+ */
+
+/** @brief Clean thumbnail on Nextion Display
+ *
+ *  @param moduleImageViewer - moduleImageViewer_t pointer
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
+extern SN_STATUS ImageViewer_ThumbnailClean(moduleImageViewer_t* moduleImageViewer);
+
+/*************************************************************@}*/
 
 #endif /* IMAGE_VIEWER_SDL_H_ */

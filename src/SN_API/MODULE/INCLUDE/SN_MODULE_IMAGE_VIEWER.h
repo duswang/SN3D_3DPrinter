@@ -42,23 +42,23 @@ extern SN_STATUS SN_MODULE_IMAGE_VIEWER_Destroy(void);
  * @name Image Viewer Module :: Window Control
  *  @brief
  *////@{
-/** @brief
+/** @brief Update Machine Screen and Thumbnail on Nextion Display
  *
- *  @param sliceIndex
+ *  @param sliceIndex - Current slice index
  *
  *  @return SN_STATUS
  *  @note
  */
 extern SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowUpdate(uint32_t sliceIndex);
 
-/** @brief
+/** @brief Clean Machine Screen and Thumbnail on Nextion Display
  *
  *  @return SN_STATUS
  *  @note
  */
 extern SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowClean(void);
 
-/** @brief
+/** @brief Destory Window
  *
  *  @return SN_STATUS
  *  @note

@@ -1,12 +1,18 @@
-/*
- * SN_BOOTLOADER_MAIN.h
+/**
+ * @file SN_BOOTLOADER_MAIN.h
+ * @author Bato
+ * @date 18 Nov 2018
+ * @brief
  *
- *  Created on: 2018. 12. 7.
- *      Author: BartKim
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
+ *
+ * @defgroup SN_BOOTLOADER Bootloader
+ * @brief Bootloader Version 0.1v
+ * @{
  */
-
-#ifndef SN_BOOTLOADER_MAIN_H_
-#define SN_BOOTLOADER_MAIN_H_
+#ifndef SN_BOOTLOADER_MAIN_H
+#define SN_BOOTLOADER_MAIN_H
 
 /* Standard */
 #include <stdio.h>
@@ -25,27 +31,38 @@
 #include <termios.h>
 #include <unistd.h>
 
-/* Display */
-
-
 #include <errno.h>
 
-#ifdef __APPLE__
-#define USB_PATH                      "/Volumes/USB_0"
-#endif
-#ifdef linux
-#define USB_PATH                      "/mnt/volume"
-#endif
-
-#define MAX_FILENAME_LENGTH        256
-#define MAX_PATH_LENGTH            256
-
+/**
+ * @defgroup BOOTLOADER_SYSTEM System
+ * @ingroup SN_BOOTLOADER
+ * @brief Bootloader System
+ * @{
+ */
 #include "SN_SYS_ERROR.h"
 
+#include "SN_PATH.h"
+/**@}*/
+
+/**
+ * @defgroup BOOTLOADER_FILE_SYSTEM File System
+ * @ingroup SN_BOOTLOADER
+ * @brief Bootloader File System
+ * @{
+ */
 #include "FILE_SYSTEM_FCTL.h"
 #include "FILE_SYSTEM_XML.h"
+/**@}*/
 
+/**
+ * @defgroup BOOTLOADER_MODULE Module
+ * @ingroup SN_BOOTLOADER
+ * @brief Bootloader Module
+ * @{
+ */
 #include "SN_MACHINE_CONTROL.h"
 #include "SN_VERSION_CONTROL.h"
+/**@}*/
 
-#endif /* SN3D_BOOTLOADER_SRC_INCLUDE_SN_BOOTLOADER_MAIN_H_ */
+#endif /* SN_BOOTLOADER_MAIN_H */
+/**@}*/

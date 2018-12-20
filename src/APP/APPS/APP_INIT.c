@@ -6,8 +6,6 @@
  *
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
- *
- * @todo bootUp and Resolution Settup.
  */
 #include "APPS.h"
 

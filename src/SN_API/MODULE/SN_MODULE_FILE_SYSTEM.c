@@ -7,8 +7,6 @@
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
- * @todo need clean.
- * @todo memory test.
  */
 
 #include "SN_API.h"

@@ -7,8 +7,8 @@
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
- * @defgroup FILE_SYSTEM_XML XML
- * @ingroup MODULE_FILE_SYSTEM
+ * @defgroup BOOTLOADER_FILE_SYSTEM_XML XML
+ * @ingroup BOOTLOADER_FILE_SYSTEM
  * @brief File System XML Functions.
  * @{
  */
@@ -17,7 +17,7 @@
 #define SYSTEM_XML_H_
 
 /*************************************************************
- * @name Machine Info Structure
+ * @struct Machine Info Structure
  *////@{
 typedef struct machine_information {
     char    name[MAX_FILENAME_LENGTH];  /**< str */
@@ -29,15 +29,15 @@ typedef struct machine_information {
 /*************************************************************@}*/
 
 /*************************************************************
- * @name Version Info Structure
+ * @struct Version Info Structure
  *////@{
 typedef struct version_information {
-    char           name[MAX_FILENAME_LENGTH];
-    long                       releaseNumber;
-    long                         majorNumber;
-    long                         minorNumber;
-    char      timestamp[MAX_FILENAME_LENGTH];
-    char     binaryName[MAX_FILENAME_LENGTH];
+    char           name[MAX_FILENAME_LENGTH];  /**< str */
+    long                       releaseNumber;  /**< num */
+    long                         majorNumber;  /**< num */
+    long                         minorNumber;  /**< num */
+    char      timestamp[MAX_FILENAME_LENGTH];  /**< str */
+    char     binaryName[MAX_FILENAME_LENGTH];  /**< str */
 } versionInfo_t;
 /*************************************************************@}*/
 
@@ -47,16 +47,20 @@ typedef struct version_information {
  * @{
  */
 
-/** @brief
+/** @brief Machine info XML file Reader.
  *
- *  @return SN_STATUS
+ *  @param srcPath - Source path
+ *  @return machineInfo_t* - Return pointer of machineInfo structure.
+ *
  *  @note
  */
 extern machineInfo_t* FileSystem_machineInfoXMLLoad(const char *srcPath);
 
-/** @brief
+/** @brief Firmware version info XML file Reader.
  *
- *  @return SN_STATUS
+ *  @param srcPath - Source path
+ *  @return versionInfo_t* - Return pointer of machineInfo structure.
+ *
  *  @note
  */
 extern versionInfo_t* FileSystem_versionInfoXMLLoad(const char *srcPath);

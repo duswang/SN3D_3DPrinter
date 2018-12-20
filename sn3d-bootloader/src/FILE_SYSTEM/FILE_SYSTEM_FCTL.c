@@ -81,10 +81,10 @@ SN_STATUS FileSystem_fctl_CopyFile(const char* srcPath, const char* desPath)
     return SN_STATUS_OK;
 }
 
-SN_STATUS FileSystem_fctl_RemoveFiles(const char* folderPath)
+SN_STATUS FileSystem_fctl_RemoveFiles(const char* dir)
 {
-    DIR *d = opendir(folderPath);
-    size_t path_len = strlen(folderPath);
+    DIR *d = opendir(dir);
+    size_t path_len = strlen(dir);
     int r = -1;
 
     if(d)
@@ -111,7 +111,7 @@ SN_STATUS FileSystem_fctl_RemoveFiles(const char* folderPath)
             {
                 struct stat statbuf;
 
-                snprintf(buf, len,"%s/%s", folderPath, p->d_name);
+                snprintf(buf, len,"%s/%s", dir, p->d_name);
 
                 if(!stat(buf, &statbuf))
                 {
@@ -191,12 +191,19 @@ SN_STATUS FileSystem_fctl_ExtractFile(const char* srcPath, const char* desPath)
 
             snprintf(fullFilePath, len + 2, "%s/%s", desPath, sb.name);
 
-            printf("%s\n", fullFilePath);
-
             if (sb.name[strlen(sb.name) - 1] == '/')
             {
+                // Not Extract.
+                /*
                 FileSystem_fctl_MakeDirectory(fullFilePath);
                 chmod(fullFilePath, 0777);
+
+                printf("%s\n", fullFilePath);
+                */
+            }
+            else if(sb.name[0] == '_')
+            {
+                // Not Extract.
             }
             else
             {
@@ -227,6 +234,9 @@ SN_STATUS FileSystem_fctl_ExtractFile(const char* srcPath, const char* desPath)
 
                 close(fd);
                 zip_fclose(zf);
+
+
+                printf("%s\n", fullFilePath);
             }
         }
     }

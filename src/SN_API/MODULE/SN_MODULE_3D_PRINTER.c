@@ -9,9 +9,7 @@
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
  * @todo Finish Notify Screen = with MODULE::DISPLAY
- * @todo Z move soft limit
- * @todo Need More Printing test
- * @todo real-time get current z position info with nextion display
+ *
  */
 
 #include "SN_API.h"
@@ -250,6 +248,8 @@ SN_STATUS SN_MODULE_3D_PRINTER_MotorInit(void)
 SN_STATUS SN_MODULE_3D_PRINTER_MotorUninit(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+
+    //Not Used
 
     return retStatus;
 }

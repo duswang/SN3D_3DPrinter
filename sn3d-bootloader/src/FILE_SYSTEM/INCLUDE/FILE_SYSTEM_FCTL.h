@@ -7,9 +7,9 @@
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
- * @defgroup FILE_SYSTEM_FCTL File Control
- * @ingroup MODULE_FILE_SYSTEM
- * @brief File System File Control Functions.
+ * @defgroup BOOTLOADER_FILE_SYSTEM_FCTL File Control
+ * @ingroup BOOTLOADER_FILE_SYSTEM
+ * @brief ref 'SN API Document' or 'SN_API/Module/File_System'.
  * @{
  */
 
@@ -22,35 +22,15 @@
  * @{
  */
 
-/** @brief
- *
- *  @return SN_STATUS
- *  @note
- */
 extern SN_STATUS FileSystem_fctl_CopyFile(const char* srcPath, const char* desPath);
 
 
-/** @brief
- *
- *  @return SN_STATUS
- *  @note
- */
-extern SN_STATUS FileSystem_fctl_RemoveFiles(const char* folderPath);
+extern SN_STATUS FileSystem_fctl_RemoveFiles(const char* dir);
 
 
-/** @brief
- *
- *  @return SN_STATUS
- *  @note
- */
 extern SN_STATUS FileSystem_fctl_ExtractFile(const char* srcPath, const char* desPath);
 
 
-/** @brief
- *
- *  @return SN_STATUS
- *  @note
- */
 extern SN_STATUS FileSystem_fctl_MakeDirectory(const char* dir);
 
 
@@ -62,26 +42,10 @@ extern SN_STATUS FileSystem_fctl_MakeDirectory(const char* dir);
  * @{
  */
 
-/** @brief
- *
- *  @return SN_STATUS
- *  @note
- */
 extern char* FileSystem_fctl_Extarct_FileName(const char* filename);
 
-
-/** @brief
- *
- *  @return SN_STATUS
- *  @note
- */
 extern const char* FileSystem_fctl_ExtractFileExtention(const char* filename);
 
-/** @brief
- *
- *  @return SN_STATUS
- *  @note
- */
 uint32_t FileSystem_CountFileWithStr(const char* srcPath, const char* condStr);
 
 
