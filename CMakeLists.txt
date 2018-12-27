@@ -214,6 +214,9 @@ add_custom_target(gdb gdb ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/exe)
 add_custom_target(run ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/exe)
 
 add_custom_target(start sudo systemctl restart SN3D.service)
+
+add_custom_target(status sudo systemctl status SN3D.service)
+
 add_custom_target(stop sudo systemctl stop SN3D.service)
 
 add_custom_target(doxygen doxygen ${PRJ_ROOT_PATH}/sn3d_doxygen)

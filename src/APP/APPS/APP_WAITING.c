@@ -57,6 +57,8 @@ SN_STATUS APP_STATE_EnterStateWaiting(void)
     APP_SetAppState(APP_STATE_WAITING);
     SN_MODULE_DISPLAY_EnterState(APP_STATE_WAITING);
 
+    SN_MODULE_FILE_SYSTEM_FilePageUpdate();
+
     return retStatus;
 }
 
@@ -89,7 +91,7 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                 break;
             /* IN PAGE BUTTONS */
             case NX_ID_WAITING_BUTTON_PRINT:
-                SN_MODULE_FILE_SYSTEM_FilePageUpdate();
+                APP_STATE_EnterStateFileSelect();
                 break;
             case NX_ID_WAITING_BUTTON_CONTROL:
                 APP_STATE_EnterStateControl();
@@ -121,8 +123,6 @@ static SN_STATUS sFileSystemHdlr(event_msg_t evtMessage)
     case APP_EVT_MSG_FILE_SYSTEM_READ_DONE:
         break;
     case APP_EVT_MSG_FILE_SYSTEM_UPDATE:
-        /* USB MOUNT or USER TOUCH PRINT BUTTON */
-        APP_STATE_EnterStateFileSelect();
         break;
     default :
         break;

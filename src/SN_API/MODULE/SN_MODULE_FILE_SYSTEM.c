@@ -341,13 +341,26 @@ static void* sFileSystemThread()
         switch(evt.evt_id)
         {
             case MSG_FILE_SYSTEM_USB_MOUNT:
-            case MSG_FILE_SYSTEM_USB_UNMOUNT:
-                SN_SYS_Log("File System => Module => USB Event.");
+                SN_SYS_Log("File System => Module => USB Mount Event.");
 
                 SN_SYS_Delay(1500);
 
                 retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_READ, 0);
                 SN_SYS_ERROR_CHECK(retStatus, "File System Message Send Failed.");
+
+                retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_FILE_SYSTEM, APP_EVT_MSG_FILE_SYSTEM_USB_MOUNT);
+                SN_SYS_ERROR_CHECK(retStatus, "App Message Send Failed.");
+
+                break;
+            case MSG_FILE_SYSTEM_USB_UNMOUNT:
+                SN_SYS_Log("File System => Module => USB Unmount Event.");
+
+                retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_READ, 0);
+                SN_SYS_ERROR_CHECK(retStatus, "File System Message Send Failed.");
+
+                retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_FILE_SYSTEM, APP_EVT_MSG_FILE_SYSTEM_USB_UNMOUNT);
+                SN_SYS_ERROR_CHECK(retStatus, "App Message Send Failed.");
+
                 break;
 
             case MSG_FILE_SYSTEM_READ:
