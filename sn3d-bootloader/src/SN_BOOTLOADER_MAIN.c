@@ -72,6 +72,7 @@ const char* sBootloader_FW_FileSearching(void)
 
             if((strstr(nameBuffer, SN3D_FW_STR) != NULL)&& \
               (strstr(nameBuffer, HIDDEN_FILE_STR) == NULL) && \
+              (strstr(nameBuffer, SN3D_FW_EXTENTION))  && \
               (nameBuffer[0] != '.'))
             {
                 if(isFirmwareFileExit != true)
@@ -89,7 +90,7 @@ const char* sBootloader_FW_FileSearching(void)
                 }
             }
 
-            if(strstr(nameBuffer, SN3D_OPTION_STR) && !strstr(nameBuffer, HIDDEN_FILE_STR))
+            if(strstr(nameBuffer, SN3D_OPTION_STR) && !strstr(nameBuffer, HIDDEN_FILE_STR) && strstr(nameBuffer, SN3D_OPTION_EXTENTION))
             {
 
                 printf("Option   File Name : [ %s ]\n", nameBuffer);
@@ -101,8 +102,6 @@ const char* sBootloader_FW_FileSearching(void)
                 FileSystem_fctl_RemoveFiles(SN3D_OPTION_FOLDER_PATH);
 
                 FileSystem_fctl_ExtractFile(path, SN3D_OPTION_FOLDER_PATH);
-
-                isFirmwareFileExit = true;
             }
 
 

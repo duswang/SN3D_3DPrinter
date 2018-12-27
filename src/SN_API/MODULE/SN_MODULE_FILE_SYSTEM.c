@@ -208,6 +208,16 @@ const machineInfo_t* SN_MODULE_FILE_SYSTEM_MachineInfoGet(void)
     return moduleFileSystem.machineInfo;
 }
 
+const fsPage_t* SN_MODULE_FILE_SYSTEM_GetOptionPage(int pageIndex)
+{
+    if(moduleFileSystem.fileSystem.filePageHeader == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System not initialized.");
+    }
+
+    return FileSystem_GetPage(moduleFileSystem.fileSystem.filePageHeader, pageIndex);
+}
+
 bool SN_MODULE_FILE_SYSTEM_isOptionExist(void)
 {
     if(moduleFileSystem.fileSystem.filePageHeader == NULL)
@@ -227,7 +237,6 @@ int SN_MODULE_FILE_SYSTEM_GetOptionCnt(void)
 
     return moduleFileSystem.fileSystem.optionPageHeader->itemCnt;
 }
-
 
 SN_STATUS SN_MODULE_FILE_SYSTEM_OptionLoad(uint32_t optionIndex)
 {
@@ -761,8 +770,15 @@ static SN_STATUS sOptionLoad(uint32_t optionIndex)
 
     moduleFileSystem.printOption = optionFile.contents;
 
-    /** @todo will fix it */
-    sprintf(moduleFileSystem.printOption->name, "Option %d", optionIndex + 1);
+    printf("Option Name : %s\n", moduleFileSystem.printOption->name);
+    printf("Bottom Layer Exposure Time : %ld\n", moduleFileSystem.printOption->bottomLayerExposureTime);
+    printf("Bottom Layer Number : %ld\n", moduleFileSystem.printOption->bottomLayerNumber);
+    printf("Bottom Layer FeedRate : %f\n", moduleFileSystem.printOption->bottomLiftFeedRate);
+    printf("Layer Exposure Time : %ld\n", moduleFileSystem.printOption->layerExposureTime);
+    printf("Layer Thickness: %f \n", moduleFileSystem.printOption->layerThickness);
+    printf("Lift Distance : %ld \n", moduleFileSystem.printOption->liftDistance);
+    printf("Lift TIme : %ld \n", moduleFileSystem.printOption->liftTime);
+    printf("Lift Feed Rate : %f \n", moduleFileSystem.printOption->liftFeedRate);
 
     return retStatus;
 }

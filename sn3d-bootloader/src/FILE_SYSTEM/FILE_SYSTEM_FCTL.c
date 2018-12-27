@@ -167,7 +167,7 @@ SN_STATUS FileSystem_fctl_ExtractFile(const char* srcPath, const char* desPath)
     struct zip_file *zf;
     struct zip_stat sb;
 
-
+    printf("%s\n", srcPath);
     printf("%s\n", desPath);
 
     char buf[1000];
@@ -212,7 +212,7 @@ SN_STATUS FileSystem_fctl_ExtractFile(const char* srcPath, const char* desPath)
                 if (!zf) {
                     SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "File Extract Failed.");
                 }
-
+                printf("%s\n", fullFilePath);
                 fd = open(fullFilePath, O_RDWR | O_TRUNC | O_CREAT, 0777);
 
                 if (fd < 0) {

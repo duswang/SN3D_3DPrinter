@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <option>
-  <name>option_1</name>
+  <name>Slow</name>
   
   <layerThickness>0.05000</layerThickness>
 
   <bottomLayerExposureTime>35000</bottomLayerExposureTime>
-  <bottomLayerNumber>7</bottomLayerNumber>
+  <bottomLayerNumber>10</bottomLayerNumber>
   <bottomLiftFeedRate>150</bottomLiftFeedRate>
 
   <layerExposureTime>3000</layerExposureTime>
