@@ -71,6 +71,9 @@ static SN_STATUS s3DPrinterHdlr(event_msg_t evtMessage)
         break;
     case APP_EVT_MSG_3D_PRINTER_PAUSE:
         break;
+    case APP_EVT_MSG_3D_PRINTER_RESUME:
+        APP_STATE_EnterStatePrinting();
+        break;
     case APP_EVT_MSG_3D_PRINTER_STOP:
     case APP_EVT_MSG_3D_PRINTER_FINISH:
         APP_STATE_EnterStateWaiting();
@@ -108,7 +111,6 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                 /* IN PAGE BUTTONS */
                 case NX_ID_PAUSE_BUTTON_RESUME:
                     SN_MODULE_3D_PRINTER_Resume();
-                    APP_STATE_EnterStatePrinting();
                     break;
                 case NX_ID_PAUSE_BUTTON_STOP:
                     SN_MODULE_DISPLAY_EnterState(NX_PAGE_LOADING);

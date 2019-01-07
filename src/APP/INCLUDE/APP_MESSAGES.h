@@ -48,9 +48,10 @@ typedef enum {
     APP_EVT_MSG_3D_PRINTER_HOMING_DONE           = 0x0001,  /**< 0x0001*/
     APP_EVT_MSG_3D_PRINTER_Z_MOVE_DONE           = 0x0002,  /**< 0x0002*/
     APP_EVT_MSG_3D_PRINTER_PAUSE                 = 0x0003,  /**< 0x0003*/
-    APP_EVT_MSG_3D_PRINTER_STOP                  = 0x0004,  /**< 0x0004*/
-    APP_EVT_MSG_3D_PRINTER_FINISH                = 0x0005,  /**< 0x0005*/
-    APP_EVT_MSG_3D_PRINTER_RAMPS_BOARD_INIT_DONE = 0x0006,  /**< 0x0006*/
+    APP_EVT_MSG_3D_PRINTER_RESUME                = 0x0004,  /**< 0x0004*/
+    APP_EVT_MSG_3D_PRINTER_STOP                  = 0x0005,  /**< 0x0005*/
+    APP_EVT_MSG_3D_PRINTER_FINISH                = 0x0006,  /**< 0x0006*/
+    APP_EVT_MSG_3D_PRINTER_RAMPS_BOARD_INIT_DONE = 0x0007,  /**< 0x0007*/
 } evtAppMsg_3DPrinter_t;
 
 /*************************************************************@}*/

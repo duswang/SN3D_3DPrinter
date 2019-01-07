@@ -869,6 +869,11 @@ static SN_STATUS s3DPrinter_PrintResume(void)
         retStatus = SN_MODULE_DISPLAY_PrintingTimerResume();
         SN_SYS_ERROR_CHECK(retStatus, "Display Printing Time Info Timer Resume Failed.");
 
+
+        /* Send App Message */
+        retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, APP_EVT_MSG_3D_PRINTER_RESUME);
+        SN_SYS_ERROR_CHECK(retStatus,"App Message Send Failed.");
+
         retStatus = s3DPrinterMessagePut(MSG_3D_PRINTER_PRINTING_CYCLE, 0);
         SN_SYS_ERROR_CHECK(retStatus, "3D Printer Messgae Send Failed.");
     }
