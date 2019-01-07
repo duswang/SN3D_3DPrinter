@@ -320,6 +320,7 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_TargetDestroy(void)
 
     retStatus = sTargetDestroy();
 
+    SN_SYS_Log("HALO ITS ME~");
     return retStatus;
 }
 

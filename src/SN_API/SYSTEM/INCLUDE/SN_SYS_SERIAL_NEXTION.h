@@ -181,6 +181,7 @@ typedef enum
     NX_ID_BUTTON_PRINT          = 0x2F,//!< NX_ID_BUTTON_PRINT
     NX_ID_BUTTON_YES            = 0x3F,//!< NX_ID_BUTTON_YES
     NX_ID_BUTTON_NO             = 0x4F,//!< NX_ID_BUTTON_NO
+    NX_ID_BUTTON_CONTROL        = 0x5F,//!< NX_ID_BUTTON_CONTROL
     NX_ID_NONE                         //!< NX_ID_NONE
 } nx_id_t;
 

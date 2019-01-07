@@ -81,4 +81,6 @@ framebuffer_height=1600
 framebuffer_depth=32
 framebuffer_ignore_alpha=1
 
-display_rotate=0
+display_rotate=0x10000
+
+avoid_warnings=2

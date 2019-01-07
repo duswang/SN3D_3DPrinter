@@ -100,6 +100,9 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                 case NX_ID_BUTTON_PRINT:
                     /* BLOCK */
                     break;
+                case NX_ID_BUTTON_CONTROL:
+                    /* BLOCK */
+                    break;
                 /* IN PAGE BUTTONS */
                 case NX_ID_PRINTING_BUTTON_PAUSE:
                     SN_MODULE_3D_PRINTER_Pause();

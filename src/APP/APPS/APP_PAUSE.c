@@ -102,14 +102,17 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                 case NX_ID_BUTTON_PRINT:
                     /* BLOCK */
                     break;
+                case NX_ID_BUTTON_CONTROL:
+                    APP_STATE_EnterStateControl();
+                    break;
                 /* IN PAGE BUTTONS */
                 case NX_ID_PAUSE_BUTTON_RESUME:
                     SN_MODULE_3D_PRINTER_Resume();
                     APP_STATE_EnterStatePrinting();
                     break;
                 case NX_ID_PAUSE_BUTTON_STOP:
-                    SN_MODULE_3D_PRINTER_Stop();
                     SN_MODULE_DISPLAY_EnterState(NX_PAGE_LOADING);
+                    SN_MODULE_3D_PRINTER_Stop();
                     break;
                 default:
                     break;

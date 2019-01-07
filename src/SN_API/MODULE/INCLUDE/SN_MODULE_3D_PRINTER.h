@@ -135,6 +135,23 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Z_Move(float mm);
  */
 extern bool SN_MODULE_3D_PRINTER_IsMotorBusy(void);
 
+/** @brief Check Motor State
+ *
+ *  @return IsMotorBusy?s
+ *
+ *  @note
+ */
+extern bool SN_MODULE_3D_PRINTER_IsPrinting(void);
+
+/** @brief Check Motor State
+ *
+ *  @return IsMotorBusy?s
+ *
+ *  @note
+ */
+extern bool SN_MODULE_3D_PRINTER_IsPause(void);
+
+
 /*************************************************************@}*/
 
 #endif /* SN_MODULE_3D_PRINTER */

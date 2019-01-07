@@ -1,18 +1,14 @@
+# For more options and information see
+# http://rpf.io/configtxt
+# Some settings may impact device functionality. See link above for details
+
+# uncomment if you get no picture on HDMI for a default "safe" mode
+#hdmi_safe=1
+
+# uncomment this if your display has a black border of unused pixels visible
+# and your display can output without overscan
 disable_overscan=1
 
-hdmi_group=2
-hdmi_mode=87
-hdmi_cvt 3840 2160 24
-max_framebuffer_width=3840
-max_framebuffer_height=2160
-hdmi_pixel_freq_limit=400000000
-dtoverlay=pi3-disable-bt
-
-uffer_width=1440
-framebuffer_height=2560
-config_hdmi_boost=4
-display_rotate=0x100000rscan=1
-dtoverlay=pi3-disable-bt
 # uncomment the following to adjust overscan. Use positive numbers if console
 # goes off screen, and negative if there is too much border
 #overscan_left=16
@@ -29,8 +25,8 @@ dtoverlay=pi3-disable-bt
 #hdmi_force_hotplug=1
 
 # uncomment to force a specific HDMI mode (this will force VGA)
-#hdmi_group=1
-#hdmi_mode=1
+#hdmi_group=2
+#hdmi_mode=82
 
 # uncomment to force a HDMI mode rather than DVI. This can make audio work in
 # DMT (computer monitor) modes
@@ -58,10 +54,32 @@ dtoverlay=pi3-disable-bt
 
 # Enable audio (loads snd_bcm2835)
 dtparam=audio=on
-disable_camera_led=1
-hdmi_pixel_encoding=2
-#start_x=0
-gpu_mem=128
-#disable_overscan= 1
-dtparam=i2c1=on
 enable_uart=1
+#dtoverlay=vc4-kms-v3d
+#dtoverlay=vc4-fkms-v3d
+
+#LCD 4K 2160P 
+
+hdmi_force_hotplug=1
+hdmi_ignore_edid=0xa5000080
+
+disable_overscan=1
+gpu_mem=256
+
+hdmi_cvt 3840 2160 24
+hdmi_group=2
+hdmi_mode=87
+hdmi_pixel_freq_limit=400000000
+
+max_framebuffer_width=3840
+max_framebuffer_height=2160
+
+framebuffer_width=3840
+framebuffer_height=2160
+
+framebuffer_depth=32
+framebuffer_ignore_alpha=1
+
+display_rotate=0x20000 
+
+avoid_warnings=2

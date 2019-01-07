@@ -100,11 +100,13 @@ typedef enum device_axis {
 }deviceAxis_t;
 
 typedef struct moduel_3d_printer {
+    deviceState_t   prevState;
     deviceState_t       state;              /**< device state */
 
     uint32_t       sliceIndex;              /**< count slice when printing */
 
     float       current_position[DEVICE_AXIS_CNT];     /**< current axis position */
+    float          prev_position[DEVICE_AXIS_CNT];     /**< current axis position */
     char           gcodeLiftUp[GCODE_BUFFER_SIZE];    /**< gcode lift   up buffer */
     char           gcodeLiftDown[GCODE_BUFFER_SIZE];  /**< gcode lift down buffer */
 } module3DPrinter_t;
@@ -177,6 +179,8 @@ static SN_STATUS s3DPrinter_PrintUninit(void);
 /* *** UTIL *** */
 static SN_STATUS sGcodeZMove(float liftDistance, float liftFeedRate);
 static SN_STATUS sGetCoordinates(float x, float y, float z);
+static SN_STATUS sResetPrevCoordinates(void);
+static SN_STATUS sSetPrevCoordinates(void);
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
@@ -270,8 +274,6 @@ SN_STATUS SN_MODULE_3D_PRINTER_Z_Move(float mm)
 
     if((module3DPrinter.state != DEVICE_BUSY) && (module3DPrinter.state != DEVICE_HOMING))
     {
-        s3DPrinterEnterState(DEVICE_BUSY);
-
         /* Z UP */
         retStatus = sGcodeZMove((float)mm, (float)DEFAULT_FEEDRATE);
     }
@@ -287,9 +289,19 @@ SN_STATUS SN_MODULE_3D_PRINTER_Z_Move(float mm)
     return retStatus;
 }
 
+bool SN_MODULE_3D_PRINTER_IsPrinting(void)
+{
+    return (module3DPrinter.state == DEVICE_PRINTING);
+}
+
+bool SN_MODULE_3D_PRINTER_IsPause(void)
+{
+    return (module3DPrinter.state == DEVICE_PAUSE);
+}
+
 bool SN_MODULE_3D_PRINTER_IsMotorBusy(void)
 {
-    return (module3DPrinter.state != DEVICE_STANDBY);
+    return (module3DPrinter.state == DEVICE_BUSY);
 }
 
 SN_STATUS SN_MODULE_3D_PRINTER_Start(uint32_t pageIndex, uint32_t itemIndex, uint32_t optionIndex)
@@ -512,7 +524,7 @@ static void sTMR_Z_Busy_Callback(void)
     retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, APP_EVT_MSG_3D_PRINTER_Z_MOVE_DONE);
     SN_SYS_ERROR_CHECK(retStatus, "APP Send Message Failed.");
 
-    s3DPrinterEnterState(DEVICE_STANDBY);
+    s3DPrinterEnterState(module3DPrinter.prevState);
 }
 
 
@@ -818,8 +830,11 @@ static SN_STATUS s3DPrinter_PrintPause(void)
     if(module3DPrinter.state == DEVICE_PRINTING || \
        module3DPrinter.state == DEVICE_INIT)
     {
-        /*s Pause Sequence */
+        /* Pause Sequence */
         s3DPrinterEnterState(DEVICE_PAUSE);
+
+        /* Set Prev Motor Position */
+        sSetPrevCoordinates();
     }
     else
     {
@@ -832,13 +847,24 @@ static SN_STATUS s3DPrinter_PrintPause(void)
 static SN_STATUS s3DPrinter_PrintResume(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+    float mm = module3DPrinter.prev_position[DEVICE_AXIS_Z] - module3DPrinter.current_position[DEVICE_AXIS_Z];
 
     if(module3DPrinter.state == DEVICE_PAUSE)
     {
         /* Resume Sequence */
         s3DPrinterEnterState(DEVICE_RESUME);
 
+        /* Nextion Display to Loading */
+        SN_MODULE_DISPLAY_EnterState(NX_PAGE_LOADING);
+
+        sGcodeZMove((float)(mm), (float)DEFAULT_FEEDRATE);
+
+        while(module3DPrinter.state == DEVICE_BUSY); /* NEED TO TIME OUT */
+
         SN_SYS_Log("Module => 3D Printer  => PRINT RESUME");
+
+        /* Reset Prev Motor Position */
+        sResetPrevCoordinates();
 
         retStatus = SN_MODULE_DISPLAY_PrintingTimerResume();
         SN_SYS_ERROR_CHECK(retStatus, "Display Printing Time Info Timer Resume Failed.");
@@ -865,6 +891,9 @@ static SN_STATUS s3DPrinter_PrintStop(void)
     {
         /* Stop Sequence */
         s3DPrinterEnterState(DEVICE_STOP);
+
+        /* Reset Prev Motor Position */
+        sResetPrevCoordinates();
 
         /* Print Uninit */
         s3DPrinter_PrintUninit();
@@ -896,11 +925,11 @@ static SN_STATUS s3DPrinter_PrintFinish(void)
         {
             SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "machineInfo not initialized.");
         }
-        /* Finish Sequence */
-        s3DPrinterEnterState(DEVICE_BUSY);
 
         /* Print Uninit */
         s3DPrinter_PrintUninit();
+
+        s3DPrinterEnterState(DEVICE_FINISH);
 
         /* Nextion Display to Loading */
         SN_MODULE_DISPLAY_EnterState(NX_PAGE_LOADING);
@@ -908,8 +937,6 @@ static SN_STATUS s3DPrinter_PrintFinish(void)
         sGcodeZMove((float)(machineInfo->machineHeight), (float)DEFAULT_FEEDRATE);
 
         while(module3DPrinter.state == DEVICE_BUSY); /* NEED TO TIME OUT */
-
-        s3DPrinterEnterState(DEVICE_FINISH);
 
         /* Send App Message */
         retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, APP_EVT_MSG_3D_PRINTER_FINISH);
@@ -1035,11 +1062,34 @@ static SN_STATUS sGetCoordinates(float x, float y, float z)
     return retStatus;
 }
 
+static SN_STATUS sResetPrevCoordinates(void)
+{
+    module3DPrinter.prev_position[DEVICE_AXIS_X] = 0;
+    module3DPrinter.prev_position[DEVICE_AXIS_Y] = 0;
+    module3DPrinter.prev_position[DEVICE_AXIS_Z] = 0;
+
+    return SN_STATUS_OK;
+
+}
+static SN_STATUS sSetPrevCoordinates(void)
+{
+
+    module3DPrinter.prev_position[DEVICE_AXIS_X] = module3DPrinter.current_position[DEVICE_AXIS_X];
+    module3DPrinter.prev_position[DEVICE_AXIS_Y] = module3DPrinter.current_position[DEVICE_AXIS_Y];
+    module3DPrinter.prev_position[DEVICE_AXIS_Z] = module3DPrinter.current_position[DEVICE_AXIS_Z];
+
+    return SN_STATUS_OK;
+}
+
 static SN_STATUS sGcodeZMove(float liftDistance, float liftFeedRate)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     char gcodeBuffer[GCODE_BUFFER_SIZE];
     const machineInfo_t* machineInfo = NULL;
+
+    module3DPrinter.prevState = module3DPrinter.state;
+
+    s3DPrinterEnterState(DEVICE_BUSY);
 
     /* Get Mahcine Info */
     machineInfo = SN_MODULE_FILE_SYSTEM_MachineInfoGet();

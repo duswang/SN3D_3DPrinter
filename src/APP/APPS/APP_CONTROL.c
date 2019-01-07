@@ -59,8 +59,6 @@ SN_STATUS APP_STATE_EnterStateControl(void)
     APP_SetAppState(APP_STATE_CONTROL);
     SN_MODULE_DISPLAY_EnterState(APP_STATE_CONTROL);
 
-    retStatus = SN_MODULE_3D_PRINTER_MotorInit();
-
     return retStatus;
 }
 
@@ -104,10 +102,28 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
             {
                 /* MENU */
                 case NX_ID_BUTTON_HOME:
-                    retStatus = APP_STATE_EnterStateWaiting();
+                    if(!SN_MODULE_3D_PRINTER_IsPrinting() && !SN_MODULE_3D_PRINTER_IsPause() && !SN_MODULE_3D_PRINTER_IsMotorBusy())
+                    {
+                        retStatus = APP_STATE_EnterStateWaiting();
+                    }
                     break;
                 case NX_ID_BUTTON_PRINT:
-                    /* BLOCK */
+                    if(!SN_MODULE_3D_PRINTER_IsMotorBusy())
+                    {
+                        if(SN_MODULE_3D_PRINTER_IsPrinting())
+                        {
+                            /* BAD ACESS */
+                            APP_STATE_EnterStatePrinting();
+                        }
+                        else if(SN_MODULE_3D_PRINTER_IsPause())
+                        {
+                            APP_STATE_EnterStatePause();
+                        }
+                        else
+                        {
+                            APP_STATE_EnterStateFileSelect();
+                        }
+                    }
                     break;
                 /* IN PAGE BUTTONS */
                 case NX_ID_CONTROL_BUTTON_Z_UP:
@@ -117,8 +133,11 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                         retStatus = SN_MODULE_3D_PRINTER_Z_Move(sGetZmmFromValue(msgNXId.value) * (-1));
                     break;
                 case NX_ID_CONTROL_BUTTON_Z_HOMMING:
-                    retStatus = SN_MODULE_DISPLAY_EnterState(NX_PAGE_LOADING);
-                    retStatus = SN_MODULE_3D_PRINTER_Z_Homing();
+                    if(!SN_MODULE_3D_PRINTER_IsPrinting() && !SN_MODULE_3D_PRINTER_IsPause())
+                    {
+                        retStatus = SN_MODULE_DISPLAY_EnterState(NX_PAGE_LOADING);
+                        retStatus = SN_MODULE_3D_PRINTER_Z_Homing();
+                    }
                     break;
                 default:
                     break;
