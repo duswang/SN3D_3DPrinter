@@ -59,6 +59,8 @@ SN_STATUS APP_STATE_EnterStateControl(void)
     APP_SetAppState(APP_STATE_CONTROL);
     SN_MODULE_DISPLAY_EnterState(APP_STATE_CONTROL);
 
+    SN_MODULE_3D_PRINTER_MotorInit();
+
     return retStatus;
 }
 
