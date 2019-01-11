@@ -3,7 +3,7 @@
     <Project>SN3D Project</Project>
     <ReleaseNumber>0</ReleaseNumber>
     <MajorNumber>0</MajorNumber>
-    <MinorNumber>3</MinorNumber>
-    <Timestamp>2018.12.10</Timestamp>
+    <MinorNumber>6</MinorNumber>
+    <Timestamp>2019.01.10</Timestamp>
     <BinraryName>exe</BinraryName>
 </version>

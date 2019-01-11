@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <machine>
-    <name>PORARIS 2400</name>
-    <RES_Y>2160</RES_Y>
-    <RES_X>3840</RES_X>
-    <Display>23.8</Display>
+    <name>PORARIS 500</name>
+    <RES_Y>2560</RES_Y>
+    <RES_X>1440</RES_X>
+    <Display>5.5</Display>
     <touchScreenSize>3.5</touchScreenSize>
-    <Z>500</Z>
+    <Z>200</Z>
 </machine>
