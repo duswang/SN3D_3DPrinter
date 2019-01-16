@@ -96,6 +96,9 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
             case NX_ID_WAITING_BUTTON_CONTROL:
                 APP_STATE_EnterStateControl();
                 break;
+            case NX_ID_WAITING_BUTTON_INFO:
+                APP_STATE_EnterStateInfo();
+                break;
             default:
                 break;
         }

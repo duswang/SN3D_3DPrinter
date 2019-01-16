@@ -42,6 +42,9 @@ SN_STATUS APP_Main(general_evt_t evt)
         case APP_STATE_INIT:
             retStatus = APP_INIT_EvtHdlr(evt);
             break;
+        case APP_STATE_INFO:
+            retStatus = APP_INFO_EvtHdlr(evt);
+            break;
         default:
             SN_SYS_ERROR_CHECK(SN_STATUS_UNKNOWN_MESSAGE, "Unknown State.");
             break;

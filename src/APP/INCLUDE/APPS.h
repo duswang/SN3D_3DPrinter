@@ -24,7 +24,7 @@
 #include "APP_PAUSE.h"
 #include "APP_CONTROL.h"
 #include "APP_INIT.h"
-
+#include "APP_INFO.h"
 
 
 #endif /* APP_INCLUDE_APPS_H_ */

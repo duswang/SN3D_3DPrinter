@@ -46,6 +46,7 @@
 #define NX_PAGE_CONTROL_COMMAND     "page Control"
 #define NX_PAGE_FILE_SYSTEM_COMMAND "page FileSelect"
 #define NX_PAGE_PRINTING_COMMAND    "page Print"
+#define NX_PAGE_INFO_COMMAND        "page Info"
 #define NX_PAGE_LOADING_COMMAND     "page Loading"
 #define NX_PAGE_NOTIFY_COMMAND      "page Notify"
 
@@ -147,6 +148,7 @@ typedef enum
     NX_PAGE_PAUSE               = 0x05,
     NX_PAGE_SETUP               = 0x06,
     NX_PAGE_INIT                = 0x07,
+    NX_PAGE_INFO                = 0x08,
     NX_PAGE_LOADING             = 0xF1, //ONLY NEXTION DISPLAY. FOR LOADING or WAITING MOTOR.
     NX_PAGE_NOTIFY              = 0xF2,
     NX_PAGE_REQUEST             = 0xF3,
@@ -196,6 +198,7 @@ typedef enum
 {
     NX_ID_WAITING_BUTTON_PRINT   = 0x01,
     NX_ID_WAITING_BUTTON_CONTROL,
+    NX_ID_WAITING_BUTTON_INFO,
 } nx_waiting_id_t;
 
 typedef enum

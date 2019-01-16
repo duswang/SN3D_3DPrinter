@@ -20,6 +20,7 @@ typedef enum
     APP_STATE_PAUSE         = 0x05,
     APP_STATE_SETUP         = 0x06,
     APP_STATE_INIT          = 0x07,
+    APP_STATE_INFO          = 0x08,
     N_APP_STATE
 } app_state_t;
 
