@@ -187,9 +187,10 @@ SN_STATUS SN_MODULE_DISPLAY_EnterState(nx_page_t state)
         retStatus = sSendCommand(NX_PAGE_PRINTING_COMMAND, sizeof(NX_PAGE_PRINTING_COMMAND));
         break;
     case NX_PAGE_SETUP:
-    case NX_PAGE_INIT:
-        retStatus = sSendCommand(NX_PAGE_BOOT_COMMAND, sizeof(NX_COMMAND_RESET));
+        retStatus = sSendCommand(NX_PAGE_BOOT_COMMAND, sizeof(NX_PAGE_BOOT_COMMAND));
         SN_SYS_Delay(NEXTION_INIT_PAGE_DELAY);
+        break;
+    case NX_PAGE_INIT:
         sDisplay_NextionInit();
         break;
     case NX_PAGE_LOADING:

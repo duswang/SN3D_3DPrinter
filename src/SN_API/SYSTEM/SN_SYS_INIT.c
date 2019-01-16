@@ -60,7 +60,7 @@ int main(void)
     SN_MODULE_DISPLAY_BootProgressUpdate(70, "Module Loading Done...");
     SN_SYS_Delay(1000);
 
-    SN_MODULE_DISPLAY_BootProgressUpdate(100, "Start SN3D Service...");
+    SN_MODULE_DISPLAY_BootProgressUpdate(100, "Start System Service...");
     SN_SYS_Delay(1000);
 
     /* APP INIT */

@@ -149,8 +149,8 @@ static void* sUSBDriverThread()
 {
     while (true)
     {
-      libusb_handle_events_completed(NULL, NULL);
-      SN_SYS_Delay(1);
+        libusb_handle_events_completed(NULL, NULL);
+        SN_SYS_Delay(100);
     }
     return NULL;
 }

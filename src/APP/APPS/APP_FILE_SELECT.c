@@ -80,6 +80,10 @@ SN_STATUS APP_STATE_EnterStateFileSelect(void)
 
     sResetIndexs();
 
+    SN_MODULE_FILE_SYSTEM_FilePageUpdate();
+
+    SN_SYS_Delay(500);
+
     retStatus = SN_MODULE_DISPLAY_FileSelectPageUpdate(pageIndex);
     retStatus = SN_MODULE_DISPLAY_FileSelectOptionUpdate(optionIndex);
 
@@ -203,10 +207,10 @@ static SN_STATUS sFileSystemHdlr(event_msg_t evtMessage)
     switch(evtMessage)
     {
     case APP_EVT_MSG_FILE_SYSTEM_USB_MOUNT:
-        break;
-    case APP_EVT_MSG_FILE_SYSTEM_READ_DONE:
         /* REFRESH FILE SELECT PAGE */
         APP_STATE_EnterStateFileSelect();
+        break;
+    case APP_EVT_MSG_FILE_SYSTEM_READ_DONE:
         break;
     case APP_EVT_MSG_FILE_SYSTEM_USB_UNMOUNT:
         APP_STATE_EnterStateWaiting();

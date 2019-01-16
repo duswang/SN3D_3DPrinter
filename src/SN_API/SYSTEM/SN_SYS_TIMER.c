@@ -201,9 +201,8 @@ static void* sTimerThread()
 
         pthread_mutex_unlock(&ptmTimer);
 
-        SN_SYS_Delay(1);
+        SN_SYS_Delay(10);
     }
-
     return NULL;
 }
 

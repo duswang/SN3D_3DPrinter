@@ -33,7 +33,7 @@
  * @name Serial Config
  *
  *////@{
-#define MAX_NUM_OF_SERIAL 4 /**< Max Serial Terminal */
+#define MAX_NUM_OF_SERIAL 2 /**< Max Serial Terminal */
 
 #define SN_SYS_SERIAL_COMM_BUFFER_SIZE 255
 #define SN_SYS_SERIAL_COMM_INVAILD_UART_ID (-1)

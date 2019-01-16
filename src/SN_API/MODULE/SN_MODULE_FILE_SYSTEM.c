@@ -353,8 +353,6 @@ static void* sFileSystemThread()
             case MSG_FILE_SYSTEM_USB_MOUNT:
                 SN_SYS_Log("File System => Module => USB Mount Event.");
 
-                SN_SYS_Delay(1500);
-
                 retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_READ, 0);
                 SN_SYS_ERROR_CHECK(retStatus, "File System Message Send Failed.");
 

@@ -17,8 +17,6 @@
 /* *** SYSTEM THREAD *** */
 pthread_mutex_t ptmSerial[MAX_NUM_OF_SERIAL] = { \
                                   PTHREAD_MUTEX_INITIALIZER, \
-                                  PTHREAD_MUTEX_INITIALIZER, \
-                                  PTHREAD_MUTEX_INITIALIZER, \
                                   PTHREAD_MUTEX_INITIALIZER };
 pthread_mutex_t ptmSerialArray  = PTHREAD_MUTEX_INITIALIZER;
 pthread_t       ptSerial[MAX_NUM_OF_SERIAL];
@@ -44,14 +42,10 @@ static void       sSerialSetBlocking(uint32_t uartID, bool should_block);
 /* *** Thread Funtion Def *** */
 sysSerialThreadFuncdef(0)
 sysSerialThreadFuncdef(1)
-sysSerialThreadFuncdef(2)
-sysSerialThreadFuncdef(3)
 //sysSerialThreadFuncdef(num) - CHECK => ( num < MAX_NUM_OF_SERIAL )
 void* (*pfSerialThreadFunc[MAX_NUM_OF_SERIAL])()     = { \
                                   sysSerialThreadFunc(0), \
                                   sysSerialThreadFunc(1), \
-                                  sysSerialThreadFunc(2), \
-                                  sysSerialThreadFunc(3)  \
                                   //sysSerialThreadFunc(num) - CHECK => ( num < MAX_NUM_OF_SERIAL )
                           };
 
@@ -93,7 +87,7 @@ sysSerialId SN_SYS_SerialCreate(const sysSerialDef_t* serialDef, void* (*pfCallB
     SN_STATUS retStatus = SN_STATUS_OK;
     sysSerialId serialId = malloc(sizeof(struct sys_serial_id));
 
-    if(guiNumSerial == (MAX_NUM_OF_SERIAL - 1))
+    if(guiNumSerial == MAX_NUM_OF_SERIAL)
     {
         free(serialId);
         serialId = NULL;
@@ -451,14 +445,14 @@ static SN_STATUS sSerial_RX_Hdlr_r(sysSerialId serialId)
                 rxDone= sSerial_RX_Parsing_NotCustom(serialId);
                 break;
             }
+
+            SN_SYS_Delay(100);
         }
     }
     else
     {
         printf("error read UART\n"); fflush(stdout);
     }
-
-    SN_SYS_Delay(25);
 
     return SN_STATUS_OK;
 }
