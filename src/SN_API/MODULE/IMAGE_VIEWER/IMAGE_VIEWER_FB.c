@@ -54,7 +54,7 @@ inline static unsigned short make16color(unsigned char r, unsigned char g, unsig
 static void* convertRGB2FB(int fh, unsigned char *rgbbuff, unsigned long count, int bpp, int *cpp);
 
 /* *** UTIL *** */
-static SN_STATUS sRotateImage(FB_Image_t* imagem,int mode);
+static SN_STATUS sRotateImage(FB_Image_t* image);
 
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
@@ -85,10 +85,18 @@ SN_STATUS ImageViewer_WindowUpdate(moduleImageViewer_t* moduleImageViewer, uint3
     SN_STATUS retStatus = SN_STATUS_OK;
     char* path = NULL;
     const printTarget_t* printTarget = NULL;
+    const machineInfo_t* machineInfo = NULL;
 
     /* GET PRINT TARGET INFO */
     printTarget = SN_MODULE_FILE_SYSTEM_TargetGet();
     if(printTarget == NULL)
+    {
+         return SN_STATUS_NOT_INITIALIZED;
+    }
+
+    /* Get Mahcine Info */
+    machineInfo = SN_MODULE_FILE_SYSTEM_MachineInfoGet();
+    if(machineInfo == NULL)
     {
          return SN_STATUS_NOT_INITIALIZED;
     }
@@ -309,7 +317,7 @@ static SN_STATUS sLoadImage(const char* filename, FB_Image_t* pImage)
     return retStatus;
 }
 
-static SN_STATUS sRotateImage(FB_Image_t* image, int mode)
+static SN_STATUS sRotateImage(FB_Image_t* image)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
@@ -345,20 +353,8 @@ static SN_STATUS sRotateImage(FB_Image_t* image, int mode)
     {
         for(j = 0; j < rotatedImage.w; j++)
         {
-
-            switch(mode)
-            {
-                case 0:
-                    rotatedPixel_offset = (i * rotatedImage.w) + j;
-                    ImagePixel_offset = (((image->h - 1) * image->w) - (j * image->w)) + i;
-                    break;
-                case 1:
-                    break;
-                case 2:
-                    break;
-                default :
-                    break;
-            }
+            rotatedPixel_offset = (i * rotatedImage.w) + j;
+            ImagePixel_offset = (((image->h - 1) * image->w) - (j * image->w)) + i;
 
             rotatedImage.rgb[rotatedPixel_offset] = image->rgb[ImagePixel_offset];
         }
@@ -448,7 +444,7 @@ static SN_STATUS sLoadThumbnail(FB_Image_t* image, FB_Image_t* thumbnail, int th
     */
     if(thumbnail->h > thumbnail->w)
     {
-        sRotateImage(thumbnail, 0);
+        sRotateImage(thumbnail);
     }
 
     /*

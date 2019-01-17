@@ -127,6 +127,14 @@ extern SN_STATUS SN_MODULE_3D_PRINTER_Z_Homing(void);
  */
 extern SN_STATUS SN_MODULE_3D_PRINTER_Z_Move(float mm);
 
+/** @brief Get Z Position.
+ *
+ *
+ *  @return mm - mm
+ *
+ */
+extern float SN_MODULE_3D_PRINTER_Z_Position(void);
+
 /** @brief Check Motor State
  *
  *  @return IsMotorBusy?s

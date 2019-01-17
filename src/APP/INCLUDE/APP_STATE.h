@@ -31,5 +31,6 @@ extern SN_STATUS APP_STATE_EnterStateFileSelect(void);
 extern SN_STATUS APP_STATE_EnterStatePrinting(void);
 extern SN_STATUS APP_STATE_EnterStatePause(void);
 extern SN_STATUS APP_STATE_EnterStateInit(void);
+extern SN_STATUS APP_STATE_EnterStateInfo(void);
 
 #endif /* APP_APP_STATE_H_ */

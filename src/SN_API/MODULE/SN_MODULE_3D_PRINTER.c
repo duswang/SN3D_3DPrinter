@@ -289,6 +289,12 @@ SN_STATUS SN_MODULE_3D_PRINTER_Z_Move(float mm)
     return retStatus;
 }
 
+float SN_MODULE_3D_PRINTER_Z_Position(void)
+{
+    return module3DPrinter.current_position[DEVICE_AXIS_Z];
+}
+
+
 bool SN_MODULE_3D_PRINTER_IsPrinting(void)
 {
     return (module3DPrinter.state == DEVICE_PRINTING);
@@ -311,10 +317,6 @@ SN_STATUS SN_MODULE_3D_PRINTER_Start(uint32_t pageIndex, uint32_t itemIndex, uin
     SN_MODULE_FILE_SYSTEM_TargetLoad(pageIndex, itemIndex);
 
     SN_MODULE_FILE_SYSTEM_OptionLoad(optionIndex);
-
-    /* Start Hardware Sequence */
-    retStatus = s3DPrinterMessagePut(MSG_3D_PRINTER_HOMMING, 0);
-    SN_SYS_ERROR_CHECK(retStatus, "3D Printer Send Message Failed.");
 
     retStatus = s3DPrinterMessagePut(MSG_3D_PRINTER_PRINTING_INIT, 0);
     SN_SYS_ERROR_CHECK(retStatus, "3D Printer Send Message Failed.");
@@ -351,6 +353,7 @@ SN_STATUS SN_MODULE_3D_PRINTER_Stop(void)
 
     return retStatus;
 }
+
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
@@ -428,6 +431,7 @@ static void* sSerialRx_Callback(char* rxBuffer)
         case DEVICE_HOMING:
             SN_SYS_Log("Module => 3D Printer  => HOMING DONE.");
             retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, APP_EVT_MSG_3D_PRINTER_HOMING_DONE);
+            SN_SYS_ERROR_CHECK(retStatus, "App Message Send Failed.");
 
             s3DPrinterEnterState(DEVICE_STANDBY);
             break;
@@ -643,6 +647,9 @@ static SN_STATUS s3DPrinter_PrintInit(void)
 
         retStatus = SN_SYS_TimerCreate(&timerPrint, FIRST_SLICE_DELAY_TIME, sTMR_NextCycle_Callback);
         SN_SYS_ERROR_CHECK(retStatus, "Timer Cretae Failed.");
+
+        retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_3D_PRINTER, APP_EVT_MSG_3D_PRINTER_START);
+        SN_SYS_ERROR_CHECK(retStatus, "App Message Send Failed.");
     }
     else
     {
@@ -1109,7 +1116,14 @@ static SN_STATUS sGcodeZMove(float liftDistance, float liftFeedRate)
     }
     else if(0 > module3DPrinter.current_position[DEVICE_AXIS_Z] + liftDistance)
     {
-        liftDistance = -module3DPrinter.current_position[DEVICE_AXIS_Z];
+        if((module3DPrinter.prevState == DEVICE_PRINTING) || (module3DPrinter.prevState == DEVICE_PAUSE) || (module3DPrinter.prevState == DEVICE_RESUME))
+        {
+            liftDistance = -module3DPrinter.current_position[DEVICE_AXIS_Z];
+        }
+        else
+        {
+            /* Z Down Unlimit */
+        }
     }
 
     sprintf(gcodeBuffer,"G1 Z%.3f F%.3f", liftDistance, liftFeedRate);
