@@ -91,6 +91,7 @@ typedef enum event_display_message {
 
 /* *** MODULE TIMER *** */
 static sysTimerId_t timerTimeIndicate;
+static sysTimerId_t timerTotalTime;
 
 /* *** MODULE HANDLER  *** */
 static moduleDisplay_t moduleDisplay;
@@ -754,7 +755,7 @@ static SN_STATUS sDisplay_TotalTimeUpdate(void)
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
 
-    retStatus = SN_SYS_TimerCreate(&timerTimeIndicate, TIMER_INDICATE_INTERVAL, sTMR_TotalTime_UpdateCallback);
+    retStatus = SN_SYS_TimerCreate(&timerTotalTime, TIMER_INDICATE_INTERVAL, sTMR_TotalTime_UpdateCallback);
     SN_SYS_ERROR_CHECK(retStatus, "Timer Cretae Failed.");
 
     return retStatus;
