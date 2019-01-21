@@ -57,6 +57,14 @@ typedef struct frameBuffer_Window
     long  screenSize;
 } FB_Window_t;
 
+typedef struct frameBuffer_Thumbnail_Info
+{
+    int thumbnail_offset_x;
+    int thumbnail_offset_y;
+    int thumbnail_width;
+    int thumbnail_height;
+
+}FB_ThumbnailInfo_t;
 /*************************************************************@}*/
 
 
@@ -70,6 +78,9 @@ typedef struct image_viewer
     FB_Window_t window;
     FB_Image_t  image;
     FB_Image_t  thumbnail;
+
+    FB_ThumbnailInfo_t thumbnailInfo;
+
 } moduleImageViewer_t;
 
 /*************************************************************@}*/

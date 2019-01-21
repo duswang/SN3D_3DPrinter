@@ -49,6 +49,15 @@ extern printOption_t* FileSystem_optionXMLLoad(const char *srcPath);
  */
 extern machineInfo_t* FileSystem_machineInfoXMLLoad(const char *srcPath);
 
+/** @brief Version info XML file Reader.
+ *
+ *  @param srcPath - Source path
+ *  @return Return pointer of machineInfo structure.
+ *
+ *  @note
+ */
+extern versionInfo_t* FileSystem_versionInfoXMLLoad(const char *srcPath);
+
 /*************************************************************@}*/
 
 #endif /* SN_MODULE_FILE_SYSTEM_XML_H_ */

@@ -466,7 +466,7 @@ SN_STATUS SN_MODULE_DISPLAY_FileSelectPageUpdate(uint32_t pageIndex)
             {
                 if(itemIndex <= currentPage->itemCnt)
                 {
-                    sprintf(buffer,"Index_%d.txt=\"%s\"", itemIndex, currentPage->item[itemIndex].name);
+                    sprintf(buffer,"Index_%d.txt=\"  %s\"", itemIndex, currentPage->item[itemIndex].name);
                 }
                 else
                 {
@@ -772,6 +772,11 @@ static SN_STATUS sDisplay_NextionInit(void)
     const machineInfo_t* machineInfo = NULL;
     char buffer[DEFAULT_BUFFER_SIZE];
 
+    int thumbnail_offset_x = 0;
+    int thumbnail_offset_y = 0;
+    int thumbnail_width    = 0;
+    int thumbnail_height   = 0;
+
     SN_SYS_Delay(3);
 
     /* Get Mahcine Info */
@@ -781,27 +786,66 @@ static SN_STATUS sDisplay_NextionInit(void)
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "machineInfo not initialized.");
     }
 
+    //switch(machineInfo->machineHeight)
+    switch(400)
+    {
+        case 200:
+            thumbnail_offset_x = NEXTION_THUMBNAIL_3_2_OFFSET_X;
+            thumbnail_offset_y = NEXTION_THUMBNAIL_3_2_OFFSET_Y;
+            thumbnail_width    = NEXTION_THUMBNAIL_3_2_WIDTH;
+            thumbnail_height   = NEXTION_THUMBNAIL_3_2_HEIGHT;
+            break;
+
+        case 250:
+            thumbnail_offset_x = NEXTION_THUMBNAIL_4_3_OFFSET_X;
+            thumbnail_offset_y = NEXTION_THUMBNAIL_4_3_OFFSET_Y;
+            thumbnail_width    = NEXTION_THUMBNAIL_4_3_WIDTH;
+            thumbnail_height   = NEXTION_THUMBNAIL_4_3_HEIGHT;
+            break;
+
+        case 400:
+            thumbnail_offset_x = NEXTION_THUMBNAIL_5_0_OFFSET_X;
+            thumbnail_offset_y = NEXTION_THUMBNAIL_5_0_OFFSET_Y;
+            thumbnail_width    = NEXTION_THUMBNAIL_5_0_WIDTH;
+            thumbnail_height   = NEXTION_THUMBNAIL_5_0_HEIGHT;
+            break;
+
+        case 500:
+            thumbnail_offset_x = NEXTION_THUMBNAIL_7_0_OFFSET_X;
+            thumbnail_offset_y = NEXTION_THUMBNAIL_7_0_OFFSET_Y;
+            thumbnail_width    = NEXTION_THUMBNAIL_7_0_WIDTH;
+            thumbnail_height   = NEXTION_THUMBNAIL_7_0_HEIGHT;
+            break;
+
+        default:
+            thumbnail_offset_x = NEXTION_THUMBNAIL_3_2_OFFSET_X;
+            thumbnail_offset_y = NEXTION_THUMBNAIL_3_2_OFFSET_Y;
+            thumbnail_width    = NEXTION_THUMBNAIL_3_2_WIDTH;
+            thumbnail_height   = NEXTION_THUMBNAIL_3_2_HEIGHT;
+            break;
+    }
+
     sprintf(buffer,"Boot.DeviceName.txt=\"%s\"", machineInfo->name);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
     SN_SYS_Delay(3);
 
-    sprintf(buffer,"Boot.thumbnail_W.val=%d", DEFAULT_NEXTION_THUMBNAIL_WIDTH);
+    sprintf(buffer,"Boot.thumbnail_W.val=%d", thumbnail_width);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
     SN_SYS_Delay(3);
 
-    sprintf(buffer,"Boot.thumbnail_H.val=%d", DEFAULT_NEXTION_THUMBNAIL_HEIGHT);
+    sprintf(buffer,"Boot.thumbnail_H.val=%d", thumbnail_height);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
     SN_SYS_Delay(3);
 
-    sprintf(buffer,"Boot.thumbnail_X.val=%d", DEFAULT_NEXTION_THUMBNAIL_OFFSET_X);
+    sprintf(buffer,"Boot.thumbnail_X.val=%d", thumbnail_offset_x);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
     SN_SYS_Delay(3);
 
-    sprintf(buffer,"Boot.thumbnail_Y.val=%d", DEFAULT_NEXTION_THUMBNAIL_OFFSET_Y);
+    sprintf(buffer,"Boot.thumbnail_Y.val=%d", thumbnail_offset_y);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
     SN_SYS_Delay(3);

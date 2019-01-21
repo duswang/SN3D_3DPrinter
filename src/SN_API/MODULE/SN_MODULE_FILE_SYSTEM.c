@@ -30,6 +30,7 @@ typedef struct moduel_file_system {
     printTarget_t*   printTarget;
     printOption_t*   printOption;
     machineInfo_t*   machineInfo;
+    versionInfo_t*   versionInfo;
 } moduleFileSystem_t;
 
 /* ******* SYSTEM DEFINE ******* */
@@ -80,6 +81,10 @@ static SN_STATUS sOptionLoad(uint32_t optionIndex);
 /* *** MAHCINE *** */
 static SN_STATUS sMachineInfoLoad(uint32_t machineInfoIndex);
 
+/* *** MAHCINE *** */
+static SN_STATUS sVersionInfoLoad(void);
+
+
 /* *** TARGET *** */
 static SN_STATUS sTargetLoad(uint32_t pageIndex, uint32_t itemIndex);
 static SN_STATUS sTargetDestroy(void);
@@ -123,18 +128,25 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void)
     }
 
     /* Default Machine Info Setup */
+    SN_MODULE_DISPLAY_BootProgressUpdate(45, "Version Info Check...");
+    SN_SYS_Delay(250);
+
     SN_MODULE_DISPLAY_BootProgressUpdate(45, "Mahcine Info Read...");
-    SN_SYS_Delay(500);
+    SN_SYS_Delay(250);
 
     /* Load Option & Machine Files */
     SN_MODULE_DISPLAY_BootProgressUpdate(50, "Option File Read...");
     SN_SYS_Delay(250);
 
-    sOptionPageLoad(&moduleFileSystem.fileSystem);
+    sVersionInfoLoad();
+
     sMachineInfoPageLoad(&moduleFileSystem.fileSystem);
+    sOptionPageLoad(&moduleFileSystem.fileSystem);
 
     sMachineInfoLoad(MACHINE_DEFAULT_INDEX);
     sOptionLoad(OPTION_DEFAULT_INDEX);
+
+
     sFileSystemPrint(&moduleFileSystem.fileSystem);
 
 
@@ -196,6 +208,16 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_FilePageUpdate(void)
     SN_SYS_ERROR_CHECK(retStatus, "File System Send Message Failed.");
 
     return retStatus;
+}
+
+const versionInfo_t* SN_MODULE_FILE_SYSTEM_VersionInfoGet(void)
+{
+    if(moduleFileSystem.versionInfo == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "VersionInfo not loaded.");
+    }
+
+    return moduleFileSystem.versionInfo;
 }
 
 const machineInfo_t* SN_MODULE_FILE_SYSTEM_MachineInfoGet(void)
@@ -794,6 +816,23 @@ static SN_STATUS sMachineInfoLoad(uint32_t machineInfoIndex)
     const fsItem_t machineInfoFile = FileSystem_GetItem(moduleFileSystem.fileSystem.machineInfoPageHeader, machineInfoIndex / MAX_ITEM_SIZE, machineInfoIndex % MAX_ITEM_SIZE);
 
     moduleFileSystem.machineInfo = machineInfoFile.contents;
+
+    return retStatus;
+}
+
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  VERSION
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+static SN_STATUS sVersionInfoLoad(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    char path[MAX_PATH_LENGTH];
+
+    sprintf(path, "%s/%s.%s", VERSION_FILE_PATH, SN3D_VERSION_STR, SN3D_VERSION_EXTENTION);
+
+    moduleFileSystem.versionInfo = FileSystem_versionInfoXMLLoad(path);
 
     return retStatus;
 }

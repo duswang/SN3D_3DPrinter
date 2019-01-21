@@ -38,6 +38,7 @@ typedef struct version_information {
     long                         minorNumber;  /**< num */
     char      timestamp[MAX_FILENAME_LENGTH];  /**< str */
     char     binaryName[MAX_FILENAME_LENGTH];  /**< str */
+    long                                hash;
 } versionInfo_t;
 /*************************************************************@}*/
 

@@ -53,6 +53,14 @@
 #ifdef linux
 #define MACHINE_FILE_PATH              "/SN3D/sn3d-project/res/machineConfig"
 #endif
+
+#ifdef __APPLE__
+#define VERSION_FILE_PATH              "../sn3d-bootloader/res/firmware"
+#endif
+#ifdef linux
+#define VERSION_FILE_PATH              "/SN3D/sn3d-project/sn3d-bootloader/res/firmware"
+#endif
+
 ///@}
 
 /*************************************************************@}*/
@@ -77,6 +85,9 @@
 
 #define SN3D_OPTION_STR             "sn3d_option"
 #define SN3D_OPTION_EXTENTION       "zip"
+
+#define SN3D_VERSION_STR        "version"
+#define SN3D_VERSION_EXTENTION "xml"
 
 #define NETFABB_CONDITION_STR   "index.xml"
 #define MANGO_CONDITION_STR     ""
@@ -175,6 +186,20 @@ typedef struct machine_information {
 /*************************************************************@}*/
 
 /*************************************************************
+ * @struct Version Info Structure
+ *////@{
+typedef struct version_information {
+    char           name[MAX_FILENAME_LENGTH];  /**< str */
+    long                       releaseNumber;  /**< num */
+    long                         majorNumber;  /**< num */
+    long                         minorNumber;  /**< num */
+    char      timestamp[MAX_FILENAME_LENGTH];  /**< str */
+    char     binaryName[MAX_FILENAME_LENGTH];  /**< str */
+    long                                hash;
+} versionInfo_t;
+/*************************************************************@}*/
+
+/*************************************************************
  * @name File System Module
  * @brief
  * @{
@@ -254,6 +279,24 @@ extern const machineInfo_t* SN_MODULE_FILE_SYSTEM_MachineInfoGet(void);
 
 
 /*************************************************************@}*/
+
+/*************************************************************
+ * @name File System Module :: Version Info
+ * @brief
+ * @{
+ */
+
+/** @brief Get Version Info
+ *
+ *  @return versionInfo_t pointer
+ *
+ *  @note
+ */
+extern const versionInfo_t* SN_MODULE_FILE_SYSTEM_VersionInfoGet(void);
+
+
+/*************************************************************@}*/
+
 
 /*************************************************************
  * @name File System Module :: Print Option

@@ -42,10 +42,11 @@ static SN_STATUS sDistroyWindow(FB_Window_t* window);
 
 /* *** THUMBNAIL *** */
 static SN_STATUS sLoadThumbnail(FB_Image_t* image, FB_Image_t* thumbnail, int thumbnailWidth);
-static SN_STATUS sUpdateNextionThumbnail(const FB_Image_t thumbnail);
-static SN_STATUS sCleanNextionThumbnail(void);
+static SN_STATUS sLoadThumbnailInfo(FB_ThumbnailInfo_t* thumbnailInfo);
+static SN_STATUS sUpdateNextionThumbnail(const FB_Image_t thumbnail, const FB_ThumbnailInfo_t thumbnaileInfo);
+static SN_STATUS sCleanNextionThumbnail(const FB_ThumbnailInfo_t thumbnailInfo);
 
-static uint32_t  sCalculateWidthNextionThumbnail(const FB_Image_t image);
+static uint32_t sCalculateWidthNextionThumbnail(const FB_Image_t image, const FB_ThumbnailInfo_t thumbnailInfo);
 
 /* *** RGB CONTROL *** */
 inline static unsigned char  make8color(unsigned char r, unsigned char g, unsigned char b);
@@ -77,6 +78,8 @@ SN_STATUS ImageViewer_Init(moduleImageViewer_t* moduleImageViewer)
     /* Init Window */
     retStatus = sCleanWindow(moduleImageViewer->window);
 
+    /* Init Thumbnail Info */
+    retStatus = sLoadThumbnailInfo(&moduleImageViewer->thumbnailInfo);
     return retStatus;
 }
 
@@ -111,10 +114,10 @@ SN_STATUS ImageViewer_WindowUpdate(moduleImageViewer_t* moduleImageViewer, uint3
     SN_SYS_ERROR_CHECK(retStatus, "Window Update Failed.");
 
     /* Load and Update Thumbnail Nextion Display */
-    retStatus = sLoadThumbnail(&moduleImageViewer->image, &moduleImageViewer->thumbnail, sCalculateWidthNextionThumbnail(moduleImageViewer->image));
+    retStatus = sLoadThumbnail(&moduleImageViewer->image, &moduleImageViewer->thumbnail, sCalculateWidthNextionThumbnail(moduleImageViewer->image, moduleImageViewer->thumbnailInfo));
     SN_SYS_ERROR_CHECK(retStatus, "Load thumbnail Failed.");
 
-    retStatus = sUpdateNextionThumbnail(moduleImageViewer->thumbnail);
+    retStatus = sUpdateNextionThumbnail(moduleImageViewer->thumbnail, moduleImageViewer->thumbnailInfo);
     SN_SYS_ERROR_CHECK(retStatus, "Thumbnail Update Failed.");
 
     /* Distroy Image */
@@ -151,8 +154,16 @@ SN_STATUS ImageViewer_WindowDestroy(moduleImageViewer_t* moduleImageViewer)
 SN_STATUS ImageViewer_ThumbnailClean(moduleImageViewer_t* moduleImageViewer)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+    const machineInfo_t* machineInfo = NULL;
 
-    retStatus= sCleanNextionThumbnail();
+    /* Get Mahcine Info */
+    machineInfo = SN_MODULE_FILE_SYSTEM_MachineInfoGet();
+    if(machineInfo == NULL)
+    {
+         return SN_STATUS_NOT_INITIALIZED;
+    }
+
+    retStatus= sCleanNextionThumbnail(moduleImageViewer->thumbnailInfo);
     SN_SYS_ERROR_CHECK(retStatus, "Thumbnail Clean Failed.");
 
     return retStatus;
@@ -691,7 +702,60 @@ static SN_STATUS sDistroyWindow(FB_Window_t* window)
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 
-static SN_STATUS sUpdateNextionThumbnail(const FB_Image_t thumbnail)
+static SN_STATUS sLoadThumbnailInfo(FB_ThumbnailInfo_t* thumbnailInfo)
+{
+    const machineInfo_t* machineInfo = NULL;
+
+    /* Get Mahcine Info */
+    machineInfo = SN_MODULE_FILE_SYSTEM_MachineInfoGet();
+    if(machineInfo == NULL)
+    {
+         return SN_STATUS_NOT_INITIALIZED;
+    }
+
+    //switch(machineInfo->machineHeight)
+    switch(400)
+    {
+        case 200:
+            thumbnailInfo->thumbnail_offset_x = NEXTION_THUMBNAIL_3_2_OFFSET_X;
+            thumbnailInfo->thumbnail_offset_y = NEXTION_THUMBNAIL_3_2_OFFSET_Y;
+            thumbnailInfo->thumbnail_width    = NEXTION_THUMBNAIL_3_2_WIDTH;
+            thumbnailInfo->thumbnail_height   = NEXTION_THUMBNAIL_3_2_HEIGHT;
+            break;
+
+        case 250:
+            thumbnailInfo->thumbnail_offset_x = NEXTION_THUMBNAIL_4_3_OFFSET_X;
+            thumbnailInfo->thumbnail_offset_y = NEXTION_THUMBNAIL_4_3_OFFSET_Y;
+            thumbnailInfo->thumbnail_width    = NEXTION_THUMBNAIL_4_3_WIDTH;
+            thumbnailInfo->thumbnail_height   = NEXTION_THUMBNAIL_4_3_HEIGHT;
+            break;
+
+        case 400:
+            thumbnailInfo->thumbnail_offset_x = NEXTION_THUMBNAIL_5_0_OFFSET_X;
+            thumbnailInfo->thumbnail_offset_y = NEXTION_THUMBNAIL_5_0_OFFSET_Y;
+            thumbnailInfo->thumbnail_width    = NEXTION_THUMBNAIL_5_0_WIDTH;
+            thumbnailInfo->thumbnail_height   = NEXTION_THUMBNAIL_5_0_HEIGHT;
+            break;
+
+        case 500:
+            thumbnailInfo->thumbnail_offset_x = NEXTION_THUMBNAIL_7_0_OFFSET_X;
+            thumbnailInfo->thumbnail_offset_y = NEXTION_THUMBNAIL_7_0_OFFSET_Y;
+            thumbnailInfo->thumbnail_width    = NEXTION_THUMBNAIL_7_0_WIDTH;
+            thumbnailInfo->thumbnail_height   = NEXTION_THUMBNAIL_7_0_HEIGHT;
+            break;
+
+        default:
+            thumbnailInfo->thumbnail_offset_x = NEXTION_THUMBNAIL_3_2_OFFSET_X;
+            thumbnailInfo->thumbnail_offset_y = NEXTION_THUMBNAIL_3_2_OFFSET_Y;
+            thumbnailInfo->thumbnail_width    = NEXTION_THUMBNAIL_3_2_WIDTH;
+            thumbnailInfo->thumbnail_height   = NEXTION_THUMBNAIL_3_2_HEIGHT;
+            break;
+    }
+
+    return SN_STATUS_OK;
+}
+
+static SN_STATUS sUpdateNextionThumbnail(const FB_Image_t thumbnail, const FB_ThumbnailInfo_t thumbnaileInfo)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
@@ -699,12 +763,7 @@ static SN_STATUS sUpdateNextionThumbnail(const FB_Image_t thumbnail)
     int lineStart = 0, lineEnd = 0;
     int lineOffset = 0;
 
-    if(thumbnail.h > DEFAULT_NEXTION_THUMBNAIL_HEIGHT)
-    {
-        return SN_STATUS_INVALID_PARAM;
-    }
-
-    lineOffset = (DEFAULT_NEXTION_THUMBNAIL_HEIGHT - thumbnail.h) / 2;
+    //lineOffset = (DEFAULT_NEXTION_THUMBNAIL_HEIGHT - thumbnail.h) / 2;
 
     if(thumbnail.rgb == NULL)
     {
@@ -730,10 +789,10 @@ static SN_STATUS sUpdateNextionThumbnail(const FB_Image_t thumbnail)
                 }
                 lineEnd = j;
 
-                SN_MODULE_DISPLAY_NextionDrawLine(DEFAULT_NEXTION_THUMBNAIL_OFFSET_X + lineStart, \
-                                                  DEFAULT_NEXTION_THUMBNAIL_OFFSET_Y + lineOffset + i, \
-                                                  DEFAULT_NEXTION_THUMBNAIL_OFFSET_X + lineEnd, \
-                                                  DEFAULT_NEXTION_THUMBNAIL_OFFSET_Y + lineOffset + i, \
+                SN_MODULE_DISPLAY_NextionDrawLine(thumbnaileInfo.thumbnail_offset_x + lineStart, \
+                                                  thumbnaileInfo.thumbnail_offset_y + lineOffset + i, \
+                                                  thumbnaileInfo.thumbnail_offset_x + lineEnd, \
+                                                  thumbnaileInfo.thumbnail_offset_y + lineOffset + i, \
                                                   DEFAULT_NEXTION_THUMBNAIL_ON_PIXEL_COLOR);
                 SN_SYS_Delay(3);
             }
@@ -746,20 +805,20 @@ static SN_STATUS sUpdateNextionThumbnail(const FB_Image_t thumbnail)
 
     return retStatus;
 }
-static SN_STATUS sCleanNextionThumbnail(void)
+static SN_STATUS sCleanNextionThumbnail(const FB_ThumbnailInfo_t thumbnailInfo)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    retStatus = SN_MODULE_DISPLAY_NextionDrawFill(DEFAULT_NEXTION_THUMBNAIL_OFFSET_X , \
-                                                  DEFAULT_NEXTION_THUMBNAIL_OFFSET_Y, \
-                                                  DEFAULT_NEXTION_THUMBNAIL_WIDTH, \
-                                                  DEFAULT_NEXTION_THUMBNAIL_HEIGHT, \
+    retStatus = SN_MODULE_DISPLAY_NextionDrawFill(thumbnailInfo.thumbnail_offset_x , \
+                                                  thumbnailInfo.thumbnail_offset_y, \
+                                                  thumbnailInfo.thumbnail_width, \
+                                                  thumbnailInfo.thumbnail_height, \
                                                   DEFAULT_NEXTION_THUMBNAIL_OFF_PIXEL_COLOR);
 
     return retStatus;
 }
 
-static uint32_t sCalculateWidthNextionThumbnail(const FB_Image_t image)
+static uint32_t sCalculateWidthNextionThumbnail(const FB_Image_t image, const FB_ThumbnailInfo_t thumbnailInfo)
 {
     int width = 0;
 
@@ -770,11 +829,11 @@ static uint32_t sCalculateWidthNextionThumbnail(const FB_Image_t image)
 
     if(image.w < image.h) /* Vertical Image */
     {
-        width = DEFAULT_NEXTION_THUMBNAIL_WIDTH * image.w / image.h;
+        width = thumbnailInfo.thumbnail_width * image.w / image.h;
     }
     else /* horizontal */
     {
-        width = DEFAULT_NEXTION_THUMBNAIL_WIDTH;
+        width = thumbnailInfo.thumbnail_width;
     }
 
     return width;
