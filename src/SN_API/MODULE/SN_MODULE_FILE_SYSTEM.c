@@ -298,6 +298,8 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_TargetLoad(uint32_t pageIndex, uint32_t itemInde
 char* SN_MODULE_FILE_SYSTEM_TargetSlicePathGet(uint32_t sliceIndex)
 {
     char* path = (char *)malloc(sizeof(char) * MAX_PATH_LENGTH);
+    unsigned int numberSpace = 1;
+    unsigned int sliceNumber = 0;
     int sliceIndex_Offset = 0;
 
     if(moduleFileSystem.printTarget == NULL)
@@ -305,23 +307,30 @@ char* SN_MODULE_FILE_SYSTEM_TargetSlicePathGet(uint32_t sliceIndex)
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "target is not loaded.");
     }
 
+    for (sliceNumber = moduleFileSystem.printTarget->slice; sliceNumber > 0; sliceNumber /= 10, numberSpace++)
+
+
     switch(moduleFileSystem.printTarget->targetType)
     {
         case NETFABB:
             sliceIndex_Offset = 0;
-            sprintf(path,"%s/layer_%02d.png", moduleFileSystem.printTarget->targetPath, \
-                                              sliceIndex_Offset + sliceIndex);
+
+            sprintf(path,"%s/layer_%0*d.png", moduleFileSystem.printTarget->targetPath, \
+                                            (int)numberSpace, sliceIndex_Offset + sliceIndex);
             break;
         case MANGO:
         case SN3D:
             sliceIndex_Offset = 1;
-            sprintf(path,"%s/%d.png", moduleFileSystem.printTarget->targetPath, \
-                                              sliceIndex_Offset + sliceIndex);
+            sprintf(path,"%s/%0*d.png", moduleFileSystem.printTarget->targetPath, \
+                                      (int)0,
+                                      sliceIndex_Offset + sliceIndex);
             break;
         case CWS:
             sliceIndex_Offset = 0;
-            sprintf(path,"%s/%s%04d.png", moduleFileSystem.printTarget->targetPath, \
+
+            sprintf(path,"%s/%s%0*d.png", moduleFileSystem.printTarget->targetPath, \
                                           moduleFileSystem.printTarget->projectName, \
+                                          (int)4,
                                           sliceIndex_Offset + sliceIndex);
             break;
         case B9:

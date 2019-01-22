@@ -713,8 +713,7 @@ static SN_STATUS sLoadThumbnailInfo(FB_ThumbnailInfo_t* thumbnailInfo)
          return SN_STATUS_NOT_INITIALIZED;
     }
 
-    //switch(machineInfo->machineHeight)
-    switch(400)
+    switch(machineInfo->machineHeight)
     {
         case 200:
             thumbnailInfo->thumbnail_offset_x = NEXTION_THUMBNAIL_3_2_OFFSET_X;

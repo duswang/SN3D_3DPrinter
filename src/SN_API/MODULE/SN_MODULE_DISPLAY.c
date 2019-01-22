@@ -770,6 +770,7 @@ static SN_STATUS sDisplay_NextionInit(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     const machineInfo_t* machineInfo = NULL;
+    const versionInfo_t* versionInfo = NULL;
     char buffer[DEFAULT_BUFFER_SIZE];
 
     int thumbnail_offset_x = 0;
@@ -786,8 +787,13 @@ static SN_STATUS sDisplay_NextionInit(void)
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "machineInfo not initialized.");
     }
 
-    //switch(machineInfo->machineHeight)
-    switch(400)
+    versionInfo = SN_MODULE_FILE_SYSTEM_VersionInfoGet();
+    if(versionInfo == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "machineInfo not initialized.");
+    }
+
+    switch(machineInfo->machineHeight)
     {
         case 200:
             thumbnail_offset_x = NEXTION_THUMBNAIL_3_2_OFFSET_X;
@@ -848,6 +854,19 @@ static SN_STATUS sDisplay_NextionInit(void)
     sprintf(buffer,"Boot.thumbnail_Y.val=%d", thumbnail_offset_y);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
+
+    sprintf(buffer,"Info.Hash.txt=\"%ld\"", versionInfo->hash);
+    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
+
+    sprintf(buffer,"Info.Inch.txt=\"%.1f Inch\"", machineInfo->inch);
+    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
+
+    sprintf(buffer,"Info.Version.txt=\"%ld.%ld.%ldv\"", versionInfo->releaseNumber, versionInfo->majorNumber, versionInfo->minorNumber);
+    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
+
     SN_SYS_Delay(3);
 
     SN_MODULE_DISPLAY_TotalTimeInit();
@@ -898,7 +917,7 @@ static char* UTF8toEUC_KR(char* utf8String)
     size_t result = iconv(ic, &in_ptr, &in_size, &out_ptr, &out_buf_left);
     if(result == -1)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Convert to EUC-KR from UTF-8 failed");
+        //SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Convert to EUC-KR from UTF-8 failed");
     }
 
     iconv_close(ic);
