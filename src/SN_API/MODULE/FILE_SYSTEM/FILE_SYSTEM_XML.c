@@ -292,7 +292,13 @@ static SN_STATUS sParseXML_machineInfoFile(machineInfo_t* machineInfo, xmlDocPtr
         if((!xmlStrcmp(cur->name, (const xmlChar *)"Display")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%f", &machineInfo->inch);
+            sscanf((const char *)key, "%s", machineInfo->displayScreenSize);
+            xmlFree(key);
+        }
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"touchScreenSize")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            sscanf((const char *)key, "%s", machineInfo->touchScreenSize);
             xmlFree(key);
         }
         cur = cur->next;

@@ -43,7 +43,7 @@ typedef struct frameBuffer_Window
 /* ******* STATIC FUNCTIONS ******* */
 static bool sMachineInfoCompare(void);
 
-static void sUpdateBootConfig(float inch);
+static void sUpdateBootConfig(const char* displayScreenSize);
 static FB_Window_t* sScreenSizeCheck(void);
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
@@ -128,18 +128,18 @@ static bool sMachineInfoCompare(void)
     printf("\n\n * Current Machine Info * \n");
     printf(" Name       : [ %s ] \n", currentMachineInfo->name);
     printf(" Resolution : [ %ld x %ld px ] \n", currentMachineInfo->screenWidth, currentMachineInfo->screenHeight);
-    printf(" Display    : [ %.1f inch ] \n", currentMachineInfo->inch);
+    printf(" Display    : [ %s inch ] \n", currentMachineInfo->displayScreenSize);
     printf(" Z Limit    : [ %ld mm ] \n\n", currentMachineInfo->machineHeight);
 
     if((currentDisplay->w != currentMachineInfo->screenWidth) || (currentDisplay->h != currentMachineInfo->screenHeight))
     {
         isNeedUpdate = true;
-        sUpdateBootConfig(currentMachineInfo->inch);
+        sUpdateBootConfig(currentMachineInfo->displayScreenSize);
         FileSystem_fctl_CopyFile(TEMP_FIRMWARE_MACHINE_INFO_PATH, FIRMWARE_MACHINE_INFO_PATH);
     }
     else
     {
-        SN_SYS_Log(" => Don't need to update machine./b b information. <= \n\n\n");
+        SN_SYS_Log(" => Don't need to update machine. information. <= \n\n\n");
     }
 
     free(currentDisplay);
@@ -147,33 +147,33 @@ static bool sMachineInfoCompare(void)
     return isNeedUpdate;
 }
 
-static void sUpdateBootConfig(float inch)
+static void sUpdateBootConfig(const char* displayScreenSize)
 {
     SN_SYS_Log(" *\n Updating Machine... *");
 
-    if(inch == (float)5.5)
+    if(!strcmp(displayScreenSize, "5.5"))
     {
         SN_SYS_Log("\n 5.5 Inch Updating...\n\n");
         FileSystem_fctl_CopyFile(MACHINE_5_5_INCH_PATH, MACHINE_BOOTCONFIG_PATH);
     }
-    else if(inch == (float)8.9)
+    else if(!strcmp(displayScreenSize, "8.9"))
     {
         SN_SYS_Log("\n 8.9 Inch Updating...\n\n");
         FileSystem_fctl_CopyFile(MACHINE_8_9_INCH_PATH, MACHINE_BOOTCONFIG_PATH);
     }
-    else if(inch == (float)15.6)
+    else if(!strcmp(displayScreenSize, "15.6"))
     {
         SN_SYS_Log("\n 15.6 Inch Updating...\n\n");
         FileSystem_fctl_CopyFile(MACHINE_15_6_INCH_PATH, MACHINE_BOOTCONFIG_PATH);
     }
-    else if(inch == (float)23.8)
+    else if(!strcmp(displayScreenSize, "23.8"))
     {
         SN_SYS_Log("\n 23.8 Inch Updating...\n\n");
         FileSystem_fctl_CopyFile(MACHINE_23_8_INCH_PATH, MACHINE_BOOTCONFIG_PATH);
     }
     else
     {
-        SN_SYS_Log("\n Default :: 5.5 Inch.\n\n");
-        FileSystem_fctl_CopyFile(MACHINE_DEFAULT_INCH_PATH, MACHINE_BOOTCONFIG_PATH);
+        SN_SYS_Log("\n Anything matching display apply default screen => 5.5 Inch Updating...\n\n");
+        FileSystem_fctl_CopyFile(MACHINE_5_5_INCH_PATH, MACHINE_BOOTCONFIG_PATH);
     }
 }

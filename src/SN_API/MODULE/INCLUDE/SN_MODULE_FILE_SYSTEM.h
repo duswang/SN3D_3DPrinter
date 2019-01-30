@@ -181,7 +181,8 @@ typedef struct machine_information {
     long                  screenWidth;  /**< px */
     long                 screenHeight;  /**< px */
     long                machineHeight;  /**< mm */
-    float                        inch;  /** inch **/
+    char    displayScreenSize[MAX_FILENAME_LENGTH];  /** inch **/
+    char    touchScreenSize[MAX_FILENAME_LENGTH];/** inch **/
 } machineInfo_t;
 /*************************************************************@}*/
 

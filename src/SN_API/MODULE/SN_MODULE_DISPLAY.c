@@ -793,7 +793,7 @@ static SN_STATUS sDisplay_NextionInit(void)
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "machineInfo not initialized.");
     }
 
-    switch(machineInfo->machineHeight)
+    switch(machineInfo->screenWidth)
     {
         case 200:
             thumbnail_offset_x = NEXTION_THUMBNAIL_3_2_OFFSET_X;
@@ -859,7 +859,7 @@ static SN_STATUS sDisplay_NextionInit(void)
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
 
-    sprintf(buffer,"Info.Inch.txt=\"%.1f Inch\"", machineInfo->inch);
+    sprintf(buffer,"Info.Inch.txt=\"%s Inch\"", machineInfo->displayScreenSize);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
 
