@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <version>
     <Project>SN3D Project</Project>
-    <ReleaseNumber>0</ReleaseNumber>
+    <ReleaseNumber>1</ReleaseNumber>
     <MajorNumber>0</MajorNumber>
-    <MinorNumber>6</MinorNumber>
-    <Timestamp>2019.01.10</Timestamp>
+    <MinorNumber>7</MinorNumber>
+    <Timestamp>2019.01.22</Timestamp>
     <BinraryName>exe</BinraryName>
 </version>

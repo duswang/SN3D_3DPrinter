@@ -16,8 +16,6 @@ static uint32_t pageIndex;
 static uint32_t itemIndex;
 static uint32_t optionIndex;
 
-static bool     homingFlag;
-
 /* ******* STATIC FUNCTIONS ******* */
 /* *** HANDLER *** */
 static SN_STATUS s3DPrinterHdlr(event_msg_t evtMessage);
@@ -38,10 +36,6 @@ static bool sDownOptionIndex(void);
 
 /* *** UTIL *** */
 static bool sItemOverIndexCheck(uint32_t itemIndex);
-static void homigFlagInit(void);
-static void homigFlagSet(bool boolean);
-static bool sIsHoming(void);
-
 
 /* *** ETC *** */
 static void sResetIndexs(void);
@@ -84,7 +78,6 @@ SN_STATUS APP_STATE_EnterStateFileSelect(void)
     SN_MODULE_DISPLAY_EnterState(APP_STATE_FILE_SELECT);
 
     sResetIndexs();
-    homigFlagInit();
 
     SN_MODULE_FILE_SYSTEM_FilePageUpdate();
 
@@ -98,30 +91,12 @@ SN_STATUS APP_STATE_EnterStateFileSelect(void)
 static SN_STATUS s3DPrinterHdlr(event_msg_t evtMessage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-    const machineInfo_t* machineInfo = NULL;
 
     switch(evtMessage)
     {
     case APP_EVT_MSG_3D_PRINTER_HOMING_DONE:
-        machineInfo = SN_MODULE_FILE_SYSTEM_MachineInfoGet();
+        retStatus = SN_MODULE_3D_PRINTER_Start(sGetPageIndex(), itemIndex, sGetOptionIndex());
 
-        homigFlagSet(true);
-
-        if(machineInfo->machineHeight > 250)
-        {
-            SN_MODULE_DISPLAY_EnterState(APP_STATE_FILE_SELECT);
-
-            sResetIndexs();
-
-            SN_MODULE_FILE_SYSTEM_FilePageUpdate();
-
-            retStatus = SN_MODULE_DISPLAY_FileSelectPageUpdate(pageIndex);
-            retStatus = SN_MODULE_DISPLAY_FileSelectOptionUpdate(optionIndex);
-        }
-        else
-        {
-            retStatus = SN_MODULE_3D_PRINTER_Start(sGetPageIndex(), itemIndex, sGetOptionIndex());
-        }
         break;
     case APP_EVT_MSG_3D_PRINTER_START:
         sResetIndexs();
@@ -147,8 +122,6 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
 
     /** Message parsing **/
     msgNXId.NXmessage[0] = evtMessage;
-
-    const machineInfo_t* machineInfo = NULL;
 
     switch(msgNXId.type)
     {
@@ -204,22 +177,13 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                     itemIndex = msgNXId.value - 1;
                     break;
                 case NX_ID_FILE_SELECT_BUTTON_PRINT_START:
-                    machineInfo = SN_MODULE_FILE_SYSTEM_MachineInfoGet();
-
                     if(SN_MODULE_FILE_SYSTEM_isPrintFileExist() && sItemOverIndexCheck(msgNXId.value - 1))
                     {
                         itemIndex = msgNXId.value - 1;
 
                         retStatus = SN_MODULE_DISPLAY_EnterState(NX_PAGE_LOADING);
 
-                        if(sIsHoming() && machineInfo->machineHeight > 250)
-                        {
-                            retStatus = SN_MODULE_3D_PRINTER_Start(sGetPageIndex(), itemIndex, sGetOptionIndex());
-                        }
-                        else
-                        {
-                            retStatus = SN_MODULE_3D_PRINTER_Z_Homing();
-                        }
+                        retStatus = SN_MODULE_3D_PRINTER_Z_Homing();
                     }
                     else
                     {
@@ -350,19 +314,6 @@ static bool sDownOptionIndex(void)
 static bool sItemOverIndexCheck(uint32_t itemIndex)
 {
     return (SN_MODULE_FILE_SYSTEM_GetFilePage(pageIndex)->itemCnt > itemIndex);
-}
-
-static void homigFlagInit(void)
-{
-    homingFlag = false;
-}
-static void homigFlagSet(bool boolean)
-{
-    homingFlag = boolean;
-}
-static bool sIsHoming(void)
-{
-    return homingFlag;
 }
 
 static void sResetIndexs(void)
