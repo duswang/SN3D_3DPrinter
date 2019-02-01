@@ -793,42 +793,40 @@ static SN_STATUS sDisplay_NextionInit(void)
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "machineInfo not initialized.");
     }
 
-    switch(machineInfo->screenWidth)
+    if(!strcmp(machineInfo->touchScreenSize, NEXTION_DISPLAY_TYPE_3_2_INCH))
     {
-        case 200:
-            thumbnail_offset_x = NEXTION_THUMBNAIL_3_2_OFFSET_X;
-            thumbnail_offset_y = NEXTION_THUMBNAIL_3_2_OFFSET_Y;
-            thumbnail_width    = NEXTION_THUMBNAIL_3_2_WIDTH;
-            thumbnail_height   = NEXTION_THUMBNAIL_3_2_HEIGHT;
-            break;
-
-        case 250:
-            thumbnail_offset_x = NEXTION_THUMBNAIL_4_3_OFFSET_X;
-            thumbnail_offset_y = NEXTION_THUMBNAIL_4_3_OFFSET_Y;
-            thumbnail_width    = NEXTION_THUMBNAIL_4_3_WIDTH;
-            thumbnail_height   = NEXTION_THUMBNAIL_4_3_HEIGHT;
-            break;
-
-        case 400:
-            thumbnail_offset_x = NEXTION_THUMBNAIL_5_0_OFFSET_X;
-            thumbnail_offset_y = NEXTION_THUMBNAIL_5_0_OFFSET_Y;
-            thumbnail_width    = NEXTION_THUMBNAIL_5_0_WIDTH;
-            thumbnail_height   = NEXTION_THUMBNAIL_5_0_HEIGHT;
-            break;
-
-        case 500:
-            thumbnail_offset_x = NEXTION_THUMBNAIL_7_0_OFFSET_X;
-            thumbnail_offset_y = NEXTION_THUMBNAIL_7_0_OFFSET_Y;
-            thumbnail_width    = NEXTION_THUMBNAIL_7_0_WIDTH;
-            thumbnail_height   = NEXTION_THUMBNAIL_7_0_HEIGHT;
-            break;
-
-        default:
-            thumbnail_offset_x = NEXTION_THUMBNAIL_3_2_OFFSET_X;
-            thumbnail_offset_y = NEXTION_THUMBNAIL_3_2_OFFSET_Y;
-            thumbnail_width    = NEXTION_THUMBNAIL_3_2_WIDTH;
-            thumbnail_height   = NEXTION_THUMBNAIL_3_2_HEIGHT;
-            break;
+        thumbnail_offset_x = NEXTION_THUMBNAIL_3_2_OFFSET_X;
+        thumbnail_offset_y = NEXTION_THUMBNAIL_3_2_OFFSET_Y;
+        thumbnail_width    = NEXTION_THUMBNAIL_3_2_WIDTH;
+        thumbnail_height   = NEXTION_THUMBNAIL_3_2_HEIGHT;
+    }
+    else if(!strcmp(machineInfo->touchScreenSize, NEXTION_DISPLAY_TYPE_4_3_INCH))
+    {
+        thumbnail_offset_x = NEXTION_THUMBNAIL_4_3_OFFSET_X;
+        thumbnail_offset_y = NEXTION_THUMBNAIL_4_3_OFFSET_Y;
+        thumbnail_width    = NEXTION_THUMBNAIL_4_3_WIDTH;
+        thumbnail_height   = NEXTION_THUMBNAIL_4_3_HEIGHT;
+    }
+    else if(!strcmp(machineInfo->touchScreenSize, NEXTION_DISPLAY_TYPE_5_0_INCH))
+    {
+        thumbnail_offset_x = NEXTION_THUMBNAIL_5_0_OFFSET_X;
+        thumbnail_offset_y = NEXTION_THUMBNAIL_5_0_OFFSET_Y;
+        thumbnail_width    = NEXTION_THUMBNAIL_5_0_WIDTH;
+        thumbnail_height   = NEXTION_THUMBNAIL_5_0_HEIGHT;
+    }
+    else if(!strcmp(machineInfo->touchScreenSize, NEXTION_DISPLAY_TYPE_7_0_INCH))
+    {
+        thumbnail_offset_x = NEXTION_THUMBNAIL_7_0_OFFSET_X;
+        thumbnail_offset_y = NEXTION_THUMBNAIL_7_0_OFFSET_Y;
+        thumbnail_width    = NEXTION_THUMBNAIL_7_0_WIDTH;
+        thumbnail_height   = NEXTION_THUMBNAIL_7_0_HEIGHT;
+    }
+    else
+    {
+        thumbnail_offset_x = NEXTION_THUMBNAIL_3_2_OFFSET_X;
+        thumbnail_offset_y = NEXTION_THUMBNAIL_3_2_OFFSET_Y;
+        thumbnail_width    = NEXTION_THUMBNAIL_3_2_WIDTH;
+        thumbnail_height   = NEXTION_THUMBNAIL_3_2_HEIGHT;
     }
 
     sprintf(buffer,"Boot.DeviceName.txt=\"%s\"", machineInfo->name);

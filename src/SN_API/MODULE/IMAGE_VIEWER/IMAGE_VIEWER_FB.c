@@ -713,42 +713,40 @@ static SN_STATUS sLoadThumbnailInfo(FB_ThumbnailInfo_t* thumbnailInfo)
          return SN_STATUS_NOT_INITIALIZED;
     }
 
-    switch(machineInfo->machineHeight)
+    if(!strcmp(machineInfo->touchScreenSize, NEXTION_DISPLAY_TYPE_3_2_INCH))
     {
-        case 200:
-            thumbnailInfo->thumbnail_offset_x = NEXTION_THUMBNAIL_3_2_OFFSET_X;
-            thumbnailInfo->thumbnail_offset_y = NEXTION_THUMBNAIL_3_2_OFFSET_Y;
-            thumbnailInfo->thumbnail_width    = NEXTION_THUMBNAIL_3_2_WIDTH;
-            thumbnailInfo->thumbnail_height   = NEXTION_THUMBNAIL_3_2_HEIGHT;
-            break;
-
-        case 250:
-            thumbnailInfo->thumbnail_offset_x = NEXTION_THUMBNAIL_4_3_OFFSET_X;
-            thumbnailInfo->thumbnail_offset_y = NEXTION_THUMBNAIL_4_3_OFFSET_Y;
-            thumbnailInfo->thumbnail_width    = NEXTION_THUMBNAIL_4_3_WIDTH;
-            thumbnailInfo->thumbnail_height   = NEXTION_THUMBNAIL_4_3_HEIGHT;
-            break;
-
-        case 400:
-            thumbnailInfo->thumbnail_offset_x = NEXTION_THUMBNAIL_5_0_OFFSET_X;
-            thumbnailInfo->thumbnail_offset_y = NEXTION_THUMBNAIL_5_0_OFFSET_Y;
-            thumbnailInfo->thumbnail_width    = NEXTION_THUMBNAIL_5_0_WIDTH;
-            thumbnailInfo->thumbnail_height   = NEXTION_THUMBNAIL_5_0_HEIGHT;
-            break;
-
-        case 500:
-            thumbnailInfo->thumbnail_offset_x = NEXTION_THUMBNAIL_7_0_OFFSET_X;
-            thumbnailInfo->thumbnail_offset_y = NEXTION_THUMBNAIL_7_0_OFFSET_Y;
-            thumbnailInfo->thumbnail_width    = NEXTION_THUMBNAIL_7_0_WIDTH;
-            thumbnailInfo->thumbnail_height   = NEXTION_THUMBNAIL_7_0_HEIGHT;
-            break;
-
-        default:
-            thumbnailInfo->thumbnail_offset_x = NEXTION_THUMBNAIL_3_2_OFFSET_X;
-            thumbnailInfo->thumbnail_offset_y = NEXTION_THUMBNAIL_3_2_OFFSET_Y;
-            thumbnailInfo->thumbnail_width    = NEXTION_THUMBNAIL_3_2_WIDTH;
-            thumbnailInfo->thumbnail_height   = NEXTION_THUMBNAIL_3_2_HEIGHT;
-            break;
+        thumbnailInfo->thumbnail_offset_x = NEXTION_THUMBNAIL_3_2_OFFSET_X;
+        thumbnailInfo->thumbnail_offset_y = NEXTION_THUMBNAIL_3_2_OFFSET_Y;
+        thumbnailInfo->thumbnail_width    = NEXTION_THUMBNAIL_3_2_WIDTH;
+        thumbnailInfo->thumbnail_height   = NEXTION_THUMBNAIL_3_2_HEIGHT;
+    }
+    else if(!strcmp(machineInfo->touchScreenSize, NEXTION_DISPLAY_TYPE_4_3_INCH))
+    {
+        thumbnailInfo->thumbnail_offset_x = NEXTION_THUMBNAIL_4_3_OFFSET_X;
+        thumbnailInfo->thumbnail_offset_y = NEXTION_THUMBNAIL_4_3_OFFSET_Y;
+        thumbnailInfo->thumbnail_width    = NEXTION_THUMBNAIL_4_3_WIDTH;
+        thumbnailInfo->thumbnail_height   = NEXTION_THUMBNAIL_4_3_HEIGHT;
+    }
+    else if(!strcmp(machineInfo->touchScreenSize, NEXTION_DISPLAY_TYPE_5_0_INCH))
+    {
+        thumbnailInfo->thumbnail_offset_x = NEXTION_THUMBNAIL_5_0_OFFSET_X;
+        thumbnailInfo->thumbnail_offset_y = NEXTION_THUMBNAIL_5_0_OFFSET_Y;
+        thumbnailInfo->thumbnail_width    = NEXTION_THUMBNAIL_5_0_WIDTH;
+        thumbnailInfo->thumbnail_height   = NEXTION_THUMBNAIL_5_0_HEIGHT;
+    }
+    else if(!strcmp(machineInfo->touchScreenSize, NEXTION_DISPLAY_TYPE_7_0_INCH))
+    {
+        thumbnailInfo->thumbnail_offset_x = NEXTION_THUMBNAIL_7_0_OFFSET_X;
+        thumbnailInfo->thumbnail_offset_y = NEXTION_THUMBNAIL_7_0_OFFSET_Y;
+        thumbnailInfo->thumbnail_width    = NEXTION_THUMBNAIL_7_0_WIDTH;
+        thumbnailInfo->thumbnail_height   = NEXTION_THUMBNAIL_7_0_HEIGHT;
+    }
+    else
+    {
+        thumbnailInfo->thumbnail_offset_x = NEXTION_THUMBNAIL_3_2_OFFSET_X;
+        thumbnailInfo->thumbnail_offset_y = NEXTION_THUMBNAIL_3_2_OFFSET_Y;
+        thumbnailInfo->thumbnail_width    = NEXTION_THUMBNAIL_3_2_WIDTH;
+        thumbnailInfo->thumbnail_height   = NEXTION_THUMBNAIL_3_2_HEIGHT;
     }
 
     return SN_STATUS_OK;
