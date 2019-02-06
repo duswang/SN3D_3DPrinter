@@ -242,12 +242,12 @@ const fsPage_t* SN_MODULE_FILE_SYSTEM_GetOptionPage(int pageIndex)
 
 bool SN_MODULE_FILE_SYSTEM_isOptionExist(void)
 {
-    if(moduleFileSystem.fileSystem.filePageHeader == NULL)
+    if(moduleFileSystem.fileSystem.optionPageHeader == NULL)
     {
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System not initialized.");
     }
 
-    return moduleFileSystem.fileSystem.filePageHeader->itemCnt;
+    return moduleFileSystem.fileSystem.optionPageHeader->itemCnt;
 }
 
 int SN_MODULE_FILE_SYSTEM_GetOptionCnt(void)
@@ -808,6 +808,7 @@ static SN_STATUS sOptionLoad(uint32_t optionIndex)
     printf("Lift Distance : %ld \n", moduleFileSystem.printOption->liftDistance);
     printf("Lift TIme : %ld \n", moduleFileSystem.printOption->liftTime);
     printf("Lift Feed Rate : %f \n", moduleFileSystem.printOption->liftFeedRate);
+    printf("Bright : %ld \n", moduleFileSystem.printOption->bright);
 
     return retStatus;
 }

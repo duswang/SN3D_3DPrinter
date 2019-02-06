@@ -159,6 +159,7 @@ typedef struct print_option_prameter {
     long     liftTime;                  /**< ms */
     long     liftDistance;              /**< mm */
 
+    long     bright;                    /**< 0 ~ 255 **/
 } printOption_t;
 
 typedef struct print_target {

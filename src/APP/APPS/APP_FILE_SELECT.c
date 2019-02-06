@@ -28,11 +28,11 @@ static SN_STATUS sImageViewerHdlr(event_msg_t evtMessage);
 static bool sUpPageIndex(void);
 static bool sDownPageIndex(void);
 static uint32_t sGetPageIndex(void);
-static uint32_t sGetOptionIndex(void);
 
 /* OPTION */
 static bool sUpOptionIndex(void);
 static bool sDownOptionIndex(void);
+static uint32_t sGetOptionIndex(void);
 
 /* *** UTIL *** */
 static bool sItemOverIndexCheck(uint32_t itemIndex);
@@ -81,8 +81,10 @@ SN_STATUS APP_STATE_EnterStateFileSelect(void)
 
     SN_MODULE_FILE_SYSTEM_FilePageUpdate();
 
-    retStatus = SN_MODULE_DISPLAY_FileSelectPageUpdate(pageIndex);
     retStatus = SN_MODULE_DISPLAY_FileSelectOptionUpdate(optionIndex);
+
+    retStatus = SN_MODULE_DISPLAY_FileSelectPageUpdate(pageIndex);
+
 
     return retStatus;
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <machine>
-    <name>POLARIS 2400</name>
-    <RES_Y>2160</RES_Y>
-    <RES_X>3840</RES_X>
-    <Display>23.8</Display>
-    <touchScreenSize>7.0</touchScreenSize>
-    <Z>500</Z>
+    <machine_name>POLARIS 1500</machine_name>
+    <resolution_h>2160</resolution_h>
+    <resolution_w>3840</resolution_w>
+    <displayScreenSize>15.6</displayScreenSize>
+    <touchScreenSize>5.0</touchScreenSize>
+    <machine_z_limit>400</machine_z_limit>
 </machine>

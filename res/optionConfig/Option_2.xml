@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <option>
-  <name>Normal</name>
-  
+  <option_name>Normal</option_name>
   <layerThickness>0.05000</layerThickness>
-
   <bottomLayerExposureTime>17000</bottomLayerExposureTime>
   <bottomLayerNumber>7</bottomLayerNumber>
-  <bottomLiftFeedRate>150</bottomLiftFeedRate>
-
+  <bottomLiftFeedRate>150.0</bottomLiftFeedRate>
   <layerExposureTime>3000</layerExposureTime>
   <liftDistance>7</liftDistance>
   <liftFeedRate>150.00</liftFeedRate>
+  <bright>150</bright>
 </option>

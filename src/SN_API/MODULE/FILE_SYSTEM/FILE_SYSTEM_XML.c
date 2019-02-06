@@ -265,31 +265,25 @@ static SN_STATUS sParseXML_machineInfoFile(machineInfo_t* machineInfo, xmlDocPtr
 
     while(cur != NULL)
     {
-        if((!xmlStrcmp(cur->name, (const xmlChar *)"name")))
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"machine_name")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             strcpy(machineInfo->name, (const char *)key);
             xmlFree(key);
         }
-        if((!xmlStrcmp(cur->name, (const xmlChar *)"RES_Y")))
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"resolution_h")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             sscanf((const char *)key, "%ld", &machineInfo->screenHeight);
             xmlFree(key);
         }
-        if((!xmlStrcmp(cur->name, (const xmlChar *)"RES_X")))
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"resolution_w")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             sscanf((const char *)key, "%ld", &machineInfo->screenWidth);
             xmlFree(key);
         }
-        if((!xmlStrcmp(cur->name, (const xmlChar *)"Z")))
-        {
-            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &machineInfo->machineHeight);
-            xmlFree(key);
-        }
-        if((!xmlStrcmp(cur->name, (const xmlChar *)"Display")))
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"displayScreenSize")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             sscanf((const char *)key, "%s", machineInfo->displayScreenSize);
@@ -299,6 +293,12 @@ static SN_STATUS sParseXML_machineInfoFile(machineInfo_t* machineInfo, xmlDocPtr
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             sscanf((const char *)key, "%s", machineInfo->touchScreenSize);
+            xmlFree(key);
+        }
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"machine_z_limit")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            sscanf((const char *)key, "%ld", &machineInfo->machineHeight);
             xmlFree(key);
         }
         cur = cur->next;
@@ -317,7 +317,7 @@ static SN_STATUS sParseXML_optionFile(printOption_t* printOption, xmlDocPtr doc,
 
     while(cur != NULL)
     {
-        if((!xmlStrcmp(cur->name, (const xmlChar *)"name")))
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"option_name")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             strcpy(printOption->name, (const char *)key);
@@ -365,6 +365,12 @@ static SN_STATUS sParseXML_optionFile(printOption_t* printOption, xmlDocPtr doc,
             sscanf((const char *)key, "%f", &printOption->liftFeedRate);
             xmlFree(key);
         }
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"bright")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            sscanf((const char *)key, "%ld", &printOption->bright);
+            xmlFree(key);
+        }
         cur = cur->next;
     }
 
@@ -386,37 +392,37 @@ static SN_STATUS sParseXML_VersionFile(versionInfo_t* versionInfo, xmlDocPtr doc
 
     while(cur != NULL)
     {
-        if((!xmlStrcmp(cur->name, (const xmlChar *)"Project")))
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"project")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             strcpy(versionInfo->name, (const char *)key);
             xmlFree(key);
         }
-        if((!xmlStrcmp(cur->name, (const xmlChar *)"ReleaseNumber")))
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"releaseNumber")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             sscanf((const char *)key, "%ld", &versionInfo->releaseNumber);
             xmlFree(key);
         }
-        if((!xmlStrcmp(cur->name, (const xmlChar *)"MajorNumber")))
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"majorNumber")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             sscanf((const char *)key, "%ld", &versionInfo->majorNumber);
             xmlFree(key);
         }
-        if((!xmlStrcmp(cur->name, (const xmlChar *)"MinorNumber")))
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"minorNumber")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             sscanf((const char *)key, "%ld", &versionInfo->minorNumber);
             xmlFree(key);
         }
-        if((!xmlStrcmp(cur->name, (const xmlChar *)"Timestamp")))
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"timestamp")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             strcpy(versionInfo->timestamp, (const char *)key);
             xmlFree(key);
         }
-        if((!xmlStrcmp(cur->name, (const xmlChar *)"BinraryName")))
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"binraryName")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             strcpy(versionInfo->binaryName, (const char *)key);

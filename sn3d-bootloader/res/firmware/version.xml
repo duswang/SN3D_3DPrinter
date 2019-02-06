@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <version>
-    <Project>SN3D Project</Project>
-    <ReleaseNumber>1</ReleaseNumber>
-    <MajorNumber>0</MajorNumber>
-    <MinorNumber>7</MinorNumber>
-    <Timestamp>2019.01.22</Timestamp>
-    <BinraryName>exe</BinraryName>
+    <project>SN3D Project</project>
+    <releaseNumber>1</releaseNumber>
+    <majorNumber>0</majorNumber>
+    <minorNumber>8</minorNumber>
+    <timestamp>2019.01.22</timestamp>
+    <binraryName>exe</binraryName>
 </version>
