@@ -31,6 +31,8 @@ typedef struct moduel_file_system {
     printOption_t*   printOption;
     machineInfo_t*   machineInfo;
     versionInfo_t*   versionInfo;
+    deviceInfo_t*    deviceInfo;
+
 } moduleFileSystem_t;
 
 /* ******* SYSTEM DEFINE ******* */
@@ -81,9 +83,11 @@ static SN_STATUS sOptionLoad(uint32_t optionIndex);
 /* *** MAHCINE *** */
 static SN_STATUS sMachineInfoLoad(uint32_t machineInfoIndex);
 
-/* *** MAHCINE *** */
+/* *** VERSION *** */
 static SN_STATUS sVersionInfoLoad(void);
 
+/* *** DEVICE *** */
+static SN_STATUS sDeviceInfoLoad(void);
 
 /* *** TARGET *** */
 static SN_STATUS sTargetLoad(uint32_t pageIndex, uint32_t itemIndex);
@@ -131,21 +135,28 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void)
     SN_MODULE_DISPLAY_BootProgressUpdate(45, "Version Info Check...");
     SN_SYS_Delay(250);
 
-    SN_MODULE_DISPLAY_BootProgressUpdate(45, "Mahcine Info Read...");
-    SN_SYS_Delay(250);
-
-    /* Load Option & Machine Files */
-    SN_MODULE_DISPLAY_BootProgressUpdate(50, "Option File Read...");
-    SN_SYS_Delay(250);
-
     sVersionInfoLoad();
 
-    sMachineInfoPageLoad(&moduleFileSystem.fileSystem);
-    sOptionPageLoad(&moduleFileSystem.fileSystem);
+    /* Load Option */
+    SN_MODULE_DISPLAY_BootProgressUpdate(50, "Mahcine Info Read...");
+    SN_SYS_Delay(250);
 
+    sMachineInfoPageLoad(&moduleFileSystem.fileSystem);
     sMachineInfoLoad(MACHINE_DEFAULT_INDEX);
+
+    /* Machine File*/
+    SN_MODULE_DISPLAY_BootProgressUpdate(55, "Option File Read...");
+    SN_SYS_Delay(250);
+    sOptionPageLoad(&moduleFileSystem.fileSystem);
     sOptionLoad(OPTION_DEFAULT_INDEX);
 
+    /* Device File */
+    SN_MODULE_DISPLAY_BootProgressUpdate(60, "Device File Read...");
+    SN_SYS_Delay(250);
+
+    sDeviceInfoLoad();
+
+    SN_MODULE_FILE_SYSTEM_DeviceInfoUpdate(*moduleFileSystem.deviceInfo);
 
     sFileSystemPrint(&moduleFileSystem.fileSystem);
 
@@ -218,6 +229,30 @@ const versionInfo_t* SN_MODULE_FILE_SYSTEM_VersionInfoGet(void)
     }
 
     return moduleFileSystem.versionInfo;
+}
+
+const deviceInfo_t* SN_MODULE_FILE_SYSTEM_DeviceInfoGet(void)
+{
+    sDeviceInfoLoad();
+
+    if(moduleFileSystem.deviceInfo == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "deviceInfo not loaded.");
+    }
+
+    return moduleFileSystem.deviceInfo;
+}
+
+SN_STATUS SN_MODULE_FILE_SYSTEM_DeviceInfoUpdate(const deviceInfo_t deviceInfo)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    char path[MAX_PATH_LENGTH];
+
+    sprintf(path,"%s/%s.%s", DEVICE_FILE_PATH, DEVICE_FILE_NAME, DEVICE_FILE_EXT);
+
+    FileSystem_deviceInfoXMLUpdate(path, deviceInfo);
+
+    return retStatus;
 }
 
 const machineInfo_t* SN_MODULE_FILE_SYSTEM_MachineInfoGet(void)
@@ -799,7 +834,7 @@ static SN_STATUS sOptionLoad(uint32_t optionIndex)
 
     moduleFileSystem.printOption = optionFile.contents;
 
-    printf("Option Name : %s\n", moduleFileSystem.printOption->name);
+    printf("\n\nOption Name : %s\n", moduleFileSystem.printOption->name);
     printf("Bottom Layer Exposure Time : %ld\n", moduleFileSystem.printOption->bottomLayerExposureTime);
     printf("Bottom Layer Number : %ld\n", moduleFileSystem.printOption->bottomLayerNumber);
     printf("Bottom Layer FeedRate : %f\n", moduleFileSystem.printOption->bottomLiftFeedRate);
@@ -808,11 +843,10 @@ static SN_STATUS sOptionLoad(uint32_t optionIndex)
     printf("Lift Distance : %ld \n", moduleFileSystem.printOption->liftDistance);
     printf("Lift TIme : %ld \n", moduleFileSystem.printOption->liftTime);
     printf("Lift Feed Rate : %f \n", moduleFileSystem.printOption->liftFeedRate);
-    printf("Bright : %ld \n", moduleFileSystem.printOption->bright);
+    printf("Bright : %ld \n\n", moduleFileSystem.printOption->bright);
 
     return retStatus;
 }
-
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
@@ -843,6 +877,22 @@ static SN_STATUS sVersionInfoLoad(void)
     sprintf(path, "%s/%s.%s", VERSION_FILE_PATH, SN3D_VERSION_STR, SN3D_VERSION_EXTENTION);
 
     moduleFileSystem.versionInfo = FileSystem_versionInfoXMLLoad(path);
+
+    return retStatus;
+}
+
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  DEVICE
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+static SN_STATUS sDeviceInfoLoad(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    char path[MAX_PATH_LENGTH];
+
+    sprintf(path,"%s/%s.%s", DEVICE_FILE_PATH, DEVICE_FILE_NAME, DEVICE_FILE_EXT);
+    moduleFileSystem.deviceInfo = FileSystem_deviceInfoXMLLoad(path);
 
     return retStatus;
 }

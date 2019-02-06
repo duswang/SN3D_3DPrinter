@@ -40,6 +40,24 @@ extern printTarget_t* FileSystem_targetXMLLoad(const char *srcPath);
  */
 extern printOption_t* FileSystem_optionXMLLoad(const char *srcPath);
 
+/** @brief Device info XML file Reader.
+ *
+ *  @param srcPath - Source path
+ *  @return Return pointer of deviceInfo structure.
+ *
+ *  @note
+ */
+extern deviceInfo_t* FileSystem_deviceInfoXMLLoad(const char *srcPath);
+
+/** @brief Device info Update XML file Reader.
+ *
+ *  @param srcPath - Source path
+ *  @return Return pointer of deviceInfo structure.
+ *
+ *  @note
+ */
+extern SN_STATUS FileSystem_deviceInfoXMLUpdate(const char *srcPath, const deviceInfo_t deviceInfo);
+
 /** @brief Machine info XML file Reader.
  *
  *  @param srcPath - Source path

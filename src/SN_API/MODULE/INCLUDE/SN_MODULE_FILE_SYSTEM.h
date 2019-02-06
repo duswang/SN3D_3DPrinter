@@ -74,6 +74,10 @@
 
 #define MACHINE_FILE_EXT        "xml"
 
+#define DEVICE_FILE_PATH        "/SN3D/sn3d-project/res/deviceConfig"
+#define DEVICE_FILE_NAME        "deviceInfo"
+#define DEVICE_FILE_EXT         "xml"
+
 #define OPTION_FILE_EXT         "xml"
 
 #define TARGET_CWS_FILE_EXT     "cws"
@@ -173,6 +177,23 @@ typedef struct print_target {
 } printTarget_t;
 
 /*************************************************************@}*/
+
+/*************************************************************
+ * @name Device Info Structure
+ *////@{
+#define DEVICE_LANGUAGE_ENR     "Eng"
+#define DEVICE_LANGUAGE_KOR     "Kor"
+#define DEVICE_LANGUAGE_DEFAULT DEVICE_LANGUAGE_KOR
+
+typedef struct device_information {
+    char                     language[MAX_FILENAME_LENGTH];  /**< px */
+    long                 totalTime;  /**< px */
+    float              motorZPosition;  /**< mm */
+} deviceInfo_t;
+
+
+/*************************************************************@}*/
+
 
 /*************************************************************
  * @name Machine Info Structure
@@ -279,6 +300,29 @@ extern bool SN_MODULE_FILE_SYSTEM_isPrintFileExist(void);
  */
 extern const machineInfo_t* SN_MODULE_FILE_SYSTEM_MachineInfoGet(void);
 
+/*************************************************************@}*/
+
+/*************************************************************
+ * @name File System Module :: Device Info
+ * @brief
+ * @{
+ */
+/** @brief Device Info Load
+ *
+ *
+ *  @return deviceInfo_t pointer
+ *  @note
+ */
+extern const deviceInfo_t* SN_MODULE_FILE_SYSTEM_DeviceInfoGet(void);
+
+/** @brief Device Info Update
+ *
+ *  @param deviceInfo_t
+ *
+ *  @return SN_STATUS
+ *  @note
+ */
+extern SN_STATUS SN_MODULE_FILE_SYSTEM_DeviceInfoUpdate(const deviceInfo_t deviceInfo);
 
 /*************************************************************@}*/
 

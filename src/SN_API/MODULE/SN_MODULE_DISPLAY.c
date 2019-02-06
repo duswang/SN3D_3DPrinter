@@ -49,6 +49,7 @@ typedef struct time_info {
     uint32_t sec;
     uint32_t min;
     uint32_t hour;
+    uint32_t day;
 } timeInfo_t;
 
 /* *** MODULE *** */
@@ -59,7 +60,6 @@ typedef struct moduel_display {
     timeInfo_t estimatedBuildTime;
     timeInfo_t nowTime;
     uint32_t   secNowTime;
-
 
     timeInfo_t totalTime;
     uint32_t   secTotalTime;
@@ -299,6 +299,8 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerInit(uint32_t sec)
     char buffer[NEXTION_COMMAND_BUFFER_SIZE];
 
     moduleDisplay.estimatedBuildTime = sSecToTimeInfo(sec);
+
+    moduleDisplay.nowTime.day        = 0;
     moduleDisplay.nowTime.hour       = 0;
     moduleDisplay.nowTime.min        = 0;
     moduleDisplay.nowTime.sec        = 0;
@@ -387,10 +389,14 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerStop(void)
 SN_STATUS SN_MODULE_DISPLAY_TotalTimeInit(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+    deviceInfo_t deviceInfo = *SN_MODULE_FILE_SYSTEM_DeviceInfoGet();
 
+    moduleDisplay.totalTime.day        = 0;
     moduleDisplay.totalTime.hour       = 0;
     moduleDisplay.totalTime.min        = 0;
     moduleDisplay.totalTime.sec        = 0;
+
+    moduleDisplay.secTotalTime         = deviceInfo.totalTime;
 
     retStatus = sDisplayMessagePut(MSG_DISPLAY_TOTAL_TIME_UPDATE, 0);
     SN_SYS_ERROR_CHECK(retStatus, "Display Send Message Failed.");
@@ -743,14 +749,20 @@ static SN_STATUS sDisplay_TotalTimeUpdate(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     char buffer[DEFAULT_BUFFER_SIZE];
+    deviceInfo_t deviceInfo = *SN_MODULE_FILE_SYSTEM_DeviceInfoGet();
 
+    if((moduleDisplay.secTotalTime - deviceInfo.totalTime) >= 60)
+    {
+        deviceInfo.totalTime = moduleDisplay.secTotalTime;
+        SN_MODULE_FILE_SYSTEM_DeviceInfoUpdate(deviceInfo);
+    }
 
     moduleDisplay.totalTime = sSecToTimeInfo(moduleDisplay.secTotalTime);
 
-    sprintf(buffer,"Info.Total Time.txt=\"%02d:%02d:%02d\"", \
+    sprintf(buffer,"Info.Total Time.txt=\"%01d Day %01d Hour %01d Min\"", \
+            moduleDisplay.totalTime.day, \
             moduleDisplay.totalTime.hour, \
-            moduleDisplay.totalTime.min, \
-            moduleDisplay.totalTime.sec);
+            moduleDisplay.totalTime.min);
 
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
@@ -883,6 +895,8 @@ static timeInfo_t sSecToTimeInfo(uint32_t sec)
 
     temp.min  = sec / 60;
     temp.hour = temp.min / 60;
+    temp.day  = temp.hour / 24;
+    temp.hour = temp.hour % 24;
     temp.sec  = sec % 60;
     temp.min  = temp.min % 60;
 

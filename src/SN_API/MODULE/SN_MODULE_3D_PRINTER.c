@@ -109,6 +109,7 @@ typedef struct moduel_3d_printer {
     float          prev_position[DEVICE_AXIS_CNT];     /**< current axis position */
     char           gcodeLiftUp[GCODE_BUFFER_SIZE];    /**< gcode lift   up buffer */
     char           gcodeLiftDown[GCODE_BUFFER_SIZE];  /**< gcode lift down buffer */
+    char           gcodeUVLampOn[GCODE_BUFFER_SIZE];  /**< gcode UV Lamp On buffer */
 } module3DPrinter_t;
 
 /* ******* SYSTEM DEFINE ******* */
@@ -612,6 +613,10 @@ static SN_STATUS s3DPrinter_PrintInit(void)
 
         sprintf(module3DPrinter.gcodeLiftDown,"G1 Z-%.3f F%.3f", (printOption->liftDistance - printOption->layerThickness), printOption->liftFeedRate);
 
+        /* Get UV Lamp GCode */
+        sprintf(module3DPrinter.gcodeUVLampOn, "M106 S%ld", printOption->bright);
+
+
         estimatedBuildTime = ESTIMATED_BUILD_TIME_SEC_CAL( \
                 printOption->liftTime, \
                 printOption->layerExposureTime, \
@@ -699,7 +704,7 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
 
         /* UV Turn On */
         SN_SYS_Log("    UV LAMP ON.\n");
-        retStatus = SN_SYS_SerialTx(serialId3DPrinter, GCODE_LCD_ON, sizeof(GCODE_LCD_ON));
+        retStatus = SN_SYS_SerialTx(serialId3DPrinter, module3DPrinter.gcodeUVLampOn, sizeof(module3DPrinter.gcodeUVLampOn));
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
 
         /* Exposure Timer Call */

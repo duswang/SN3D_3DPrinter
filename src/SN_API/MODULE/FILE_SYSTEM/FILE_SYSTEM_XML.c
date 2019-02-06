@@ -18,6 +18,7 @@
 #include <libxml/xmlreader.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
+#include <libxml/tree.h>
 #endif
 
 #include "SN_API.h"
@@ -60,6 +61,11 @@ static SN_STATUS sParseXML_targetFile(printTarget_t* printTarget, xmlDocPtr doc,
 
 /* MAHCINEINFO XML */
 static SN_STATUS sParseXML_machineInfoFile(machineInfo_t* machineInfo, xmlDocPtr doc, xmlNodePtr cur);
+
+/* DEVICE XML */
+static SN_STATUS sParseXML_deviceInfoFile(deviceInfo_t* deviceInfo, xmlDocPtr doc, xmlNodePtr cur);
+
+static SN_STATUS sSetXML_deviceInfoFile(const deviceInfo_t deviceInfo, xmlDocPtr doc, xmlNodePtr cur);
 
 /* OPTION XML */
 static SN_STATUS sParseXML_optionFile(printOption_t* printOption, xmlDocPtr doc, xmlNodePtr cur);
@@ -161,6 +167,105 @@ printOption_t* FileSystem_optionXMLLoad(const char *srcPath)
     return printOption;
 }
 
+SN_STATUS FileSystem_deviceInfoXMLUpdate(const char *srcPath, const deviceInfo_t deviceInfo)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    const char         *docname;
+    xmlDocPtr           doc;
+    xmlNodePtr          cur;
+
+    FILE* xmlFile = NULL;
+
+
+    docname = srcPath;
+    doc = xmlParseFile(docname);
+    if(doc == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+    }
+
+    cur = xmlDocGetRootElement(doc);
+    if(cur == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+    }
+
+    if (xmlStrcmp(cur->name, (const xmlChar *)"device"))
+    {
+        cur = cur->xmlChildrenNode;
+        xmlFreeDoc(doc);
+
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "XMl File is Invlaid.");
+
+        return SN_STATUS_NOT_OK;
+    }
+
+    retStatus = sSetXML_deviceInfoFile(deviceInfo, doc, cur);
+    SN_SYS_ERROR_CHECK(retStatus, "device Info XML File Load Failed.");
+
+    xmlFile = fopen(srcPath, "wb");
+    if(xmlFile == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "src path invalid.");
+    }
+
+    xmlDocDump(xmlFile, doc);
+
+    fclose(xmlFile);
+
+    xmlFreeDoc(doc);
+
+    return retStatus;
+}
+
+deviceInfo_t* FileSystem_deviceInfoXMLLoad(const char *srcPath)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    deviceInfo_t* deviceInfo = NULL;
+
+    const char         *docname;
+    xmlDocPtr           doc;
+    xmlNodePtr          cur;
+
+    docname = srcPath;
+    doc = xmlParseFile(docname);
+    if(doc == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+    }
+
+    cur = xmlDocGetRootElement(doc);
+    if(cur == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+    }
+
+    if (xmlStrcmp(cur->name, (const xmlChar *)"device"))
+    {
+        cur = cur->xmlChildrenNode;
+        xmlFreeDoc(doc);
+
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "XMl File is Invlaid.");
+
+        return NULL;
+    }
+
+    deviceInfo = (deviceInfo_t *)malloc(sizeof(deviceInfo_t));
+    if(deviceInfo == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "printOption memory allocate failed.");
+    }
+
+    retStatus = sParseXML_deviceInfoFile(deviceInfo, doc, cur);
+    SN_SYS_ERROR_CHECK(retStatus, "device Info XML File Load Failed.");
+
+    xmlFreeDoc(doc);
+
+    return deviceInfo;
+}
+
 machineInfo_t* FileSystem_machineInfoXMLLoad(const char *srcPath)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
@@ -184,7 +289,7 @@ machineInfo_t* FileSystem_machineInfoXMLLoad(const char *srcPath)
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
     }
 
-    if (xmlStrcmp(cur->name, (const xmlChar *)"machine"))
+    if(xmlStrcmp(cur->name, (const xmlChar *)"machine"))
     {
         cur = cur->xmlChildrenNode;
         xmlFreeDoc(doc);
@@ -253,6 +358,69 @@ versionInfo_t* FileSystem_versionInfoXMLLoad(const char *srcPath)
     xmlFreeDoc(doc);
 
     return versionInfo;
+}
+
+static SN_STATUS sParseXML_deviceInfoFile(deviceInfo_t* deviceInfo, xmlDocPtr doc, xmlNodePtr cur)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    xmlChar *key;
+
+    cur = cur->xmlChildrenNode;
+
+    while(cur != NULL)
+    {
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"language")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            strcpy(deviceInfo->language, (const char *)key);
+            xmlFree(key);
+        }
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"totalTime")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            sscanf((const char *)key, "%ld", &deviceInfo->totalTime);
+            xmlFree(key);
+        }
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"motor_z_position")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            sscanf((const char *)key, "%f", &deviceInfo->motorZPosition);
+            xmlFree(key);
+        }
+        cur = cur->next;
+    }
+
+    return retStatus;
+}
+
+static SN_STATUS sSetXML_deviceInfoFile(const deviceInfo_t deviceInfo, xmlDocPtr doc, xmlNodePtr cur)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    char buffer[MAX_PATH_LENGTH];
+
+    cur = cur->xmlChildrenNode;
+
+    while(cur != NULL)
+    {
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"language")))
+        {
+            xmlNodeSetContent(cur, (const xmlChar*)deviceInfo.language);
+        }
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"totalTime")))
+        {
+            sprintf(buffer, "%ld", deviceInfo.totalTime);
+            xmlNodeSetContent(cur, (const xmlChar*)buffer);
+        }
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"motor_z_position")))
+        {
+            sprintf(buffer, "%.2f", deviceInfo.motorZPosition);
+            xmlNodeSetContent(cur, (const xmlChar*)buffer);
+        }
+        cur = cur->next;
+    }
+
+    return retStatus;
 }
 
 static SN_STATUS sParseXML_machineInfoFile(machineInfo_t* machineInfo, xmlDocPtr doc, xmlNodePtr cur)
