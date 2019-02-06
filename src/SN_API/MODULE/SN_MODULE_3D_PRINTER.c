@@ -179,6 +179,7 @@ static SN_STATUS s3DPrinter_PrintUninit(void);
 
 /* *** UTIL *** */
 static SN_STATUS sGcodeZMove(float liftDistance, float liftFeedRate);
+static SN_STATUS sLoadCoordinates(void);
 static SN_STATUS sGetCoordinates(float x, float y, float z);
 static SN_STATUS sResetPrevCoordinates(void);
 static SN_STATUS sSetPrevCoordinates(void);
@@ -194,7 +195,7 @@ SN_STATUS SN_MODULE_3D_PRINTER_Init(void)
 
     SN_SYS_Log("MODULE INIT => 3D PRINTER");
 
-    SN_MODULE_DISPLAY_BootProgressUpdate(60, "Printer Module Loading...");
+    SN_MODULE_DISPLAY_BootProgressUpdate(60, "Ptr. Module Loading...");
     SN_SYS_Delay(500);
 
     /* MESSAGE INIT */
@@ -219,6 +220,12 @@ SN_STATUS SN_MODULE_3D_PRINTER_Init(void)
     {
         SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "3D Printer Thread Init Failed.");
     }
+
+    SN_MODULE_DISPLAY_BootProgressUpdate(60, "Serial Checking...");
+    SN_SYS_Delay(3000);
+
+    /* Motor Position Load & Init */
+    sLoadCoordinates();
 
     /* MODULE INIT */
     s3DPrinterEnterState(DEVICE_STANDBY);
@@ -1060,14 +1067,33 @@ static SN_STATUS s3DPrinter_MotorUninit(void)
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 
+static SN_STATUS sLoadCoordinates(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    char gcodeBuffer[GCODE_BUFFER_SIZE];
+    deviceInfo_t deviceInfo = *SN_MODULE_FILE_SYSTEM_DeviceInfoGet();
+
+    module3DPrinter.current_position[DEVICE_AXIS_Z] = deviceInfo.motorZPosition;
+
+    sprintf(gcodeBuffer, "G92 X0 Y0 Z%f", deviceInfo.motorZPosition);
+    retStatus = sSendGCode(gcodeBuffer, sizeof(gcodeBuffer));
+    SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
+
+    printf("\n%s\n\n", gcodeBuffer);
+
+    SN_MODULE_DISPLAY_ControlZPosition(module3DPrinter.current_position[DEVICE_AXIS_Z]);
+
+    return retStatus;
+}
+
 static SN_STATUS sGetCoordinates(float x, float y, float z)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+    deviceInfo_t deviceInfo = *SN_MODULE_FILE_SYSTEM_DeviceInfoGet();
 
     module3DPrinter.current_position[DEVICE_AXIS_X] = x;
     module3DPrinter.current_position[DEVICE_AXIS_Y] = y;
     module3DPrinter.current_position[DEVICE_AXIS_Z] = z;
-
 
     /* PRINT POSITION */
     printf("\n    X POSITION : %.2f mm",   module3DPrinter.current_position[DEVICE_AXIS_X]);
@@ -1076,14 +1102,22 @@ static SN_STATUS sGetCoordinates(float x, float y, float z)
 
     SN_MODULE_DISPLAY_ControlZPosition(module3DPrinter.current_position[DEVICE_AXIS_Z]);
 
+    deviceInfo.motorZPosition = module3DPrinter.current_position[DEVICE_AXIS_Z];
+    SN_MODULE_FILE_SYSTEM_DeviceInfoUpdate(deviceInfo);
+
     return retStatus;
 }
 
 static SN_STATUS sResetPrevCoordinates(void)
 {
+    deviceInfo_t deviceInfo = *SN_MODULE_FILE_SYSTEM_DeviceInfoGet();
+
     module3DPrinter.prev_position[DEVICE_AXIS_X] = 0;
     module3DPrinter.prev_position[DEVICE_AXIS_Y] = 0;
     module3DPrinter.prev_position[DEVICE_AXIS_Z] = 0;
+
+    deviceInfo.motorZPosition = module3DPrinter.current_position[DEVICE_AXIS_Z];
+    SN_MODULE_FILE_SYSTEM_DeviceInfoUpdate(deviceInfo);
 
     return SN_STATUS_OK;
 
