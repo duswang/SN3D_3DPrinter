@@ -12,6 +12,7 @@
 #include <libxml2/libxml/xmlreader.h>
 #include <libxml2/libxml/xmlmemory.h>
 #include <libxml2/libxml/parser.h>
+#include <libxml2/libxml/tree.h>
 #endif
 
 #ifdef linux
@@ -29,7 +30,7 @@
 
 /* ******* STATIC DEFINE ******* */
 /** @name Z config *////@{
-#define Z_DELAY_OFFSET (1600)
+#define Z_DELAY_OFFSET (2000) // 2 Second.
 
 /** @def SPEED_MM_MIN_TO_MM_MSEC(speed_mm_min)
  *  @brief mm/m to mm/s

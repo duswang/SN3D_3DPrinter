@@ -12,12 +12,14 @@
 #include <libxml2/libxml/xmlreader.h>
 #include <libxml2/libxml/xmlmemory.h>
 #include <libxml2/libxml/parser.h>
+#include <libxml2/libxml/tree.h>
 #endif
 
 #ifdef linux
 #include <libxml/xmlreader.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
+#include <libxml/tree.h>
 #endif
 
 #include "SN_BOOTLOADER.h"

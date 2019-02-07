@@ -7,6 +7,8 @@
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
+ * @bug sometime timerIndicate timer is pause but it can be resume. Need debugging.
+ *
  * @todo Serial Communication Check and retry & timeout functions
  */
 
