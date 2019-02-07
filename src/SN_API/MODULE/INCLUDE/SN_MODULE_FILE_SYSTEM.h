@@ -181,7 +181,7 @@ typedef struct print_target {
 /*************************************************************
  * @name Device Info Structure
  *////@{
-#define DEVICE_LANGUAGE_ENR     "Eng"
+#define DEVICE_LANGUAGE_ENG     "Eng"
 #define DEVICE_LANGUAGE_KOR     "Kor"
 #define DEVICE_LANGUAGE_DEFAULT DEVICE_LANGUAGE_KOR
 

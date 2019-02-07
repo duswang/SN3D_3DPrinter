@@ -74,6 +74,23 @@ extern SN_STATUS SN_MODULE_DISPLAY_BootProgressUpdate(uint32_t progressValue, co
 
 /*************************************************************@}*/
 
+/*************************************************************
+ * @name Display Module :: Waiting Page
+ *  @brief
+ *////@{
+
+/** @brief Waiting Language Button
+ *
+ *  @param language_code - language code english or korean
+ *  @return SN_STATUS
+ *
+ *
+ *  @note
+ */
+extern SN_STATUS SN_MODULE_DISPLAY_WaitingLanguageUpdate(uint32_t language_code);
+
+/*************************************************************@}*/
+
 
 /*************************************************************
  * @name Display Module :: Print Page Info

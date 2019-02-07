@@ -115,6 +115,8 @@ static SN_STATUS sSendCommand(char* command, size_t bufferSize);
 /* *** NEXTION *** */
 static SN_STATUS sDisplay_NextionInit(void);
 
+static SN_STATUS sDisplay_LanguageUpdate(uint32_t language_code);
+
 /* *** TIME INFO *** */
 static SN_STATUS sDisplay_TimerInfoUpdate(void);
 static SN_STATUS sDisplay_TotalTimeUpdate(void);
@@ -241,6 +243,15 @@ SN_STATUS SN_MODULE_DISPLAY_BootProgressUpdate(uint32_t progressValue, const cha
 
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+
+    return retStatus;
+}
+
+SN_STATUS SN_MODULE_DISPLAY_WaitingLanguageUpdate(uint32_t language_code)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    retStatus = sDisplay_LanguageUpdate(language_code);
 
     return retStatus;
 }
@@ -772,6 +783,35 @@ static SN_STATUS sDisplay_TotalTimeUpdate(void)
 
     return retStatus;
 }
+
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  Language Update
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+static SN_STATUS sDisplay_LanguageUpdate(uint32_t language_code)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    deviceInfo_t deviceInfo = *SN_MODULE_FILE_SYSTEM_DeviceInfoGet();
+
+    if(language_code == NEXTION_LANGUAGE_CODE_ENG)
+    {
+        strcpy(deviceInfo.language, DEVICE_LANGUAGE_ENG);
+    }
+    else if(language_code == NEXTION_LANGUAGE_CODE_KOR)
+    {
+        strcpy(deviceInfo.language, DEVICE_LANGUAGE_KOR);
+    }
+    else // Default
+    {
+        strcpy(deviceInfo.language, DEVICE_LANGUAGE_KOR);
+    }
+
+    SN_MODULE_FILE_SYSTEM_DeviceInfoUpdate(deviceInfo);
+
+    return retStatus;
+}
+
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
  *  Nextion Display Init
@@ -781,10 +821,12 @@ static SN_STATUS sDisplay_TotalTimeUpdate(void)
 static SN_STATUS sDisplay_NextionInit(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+    const deviceInfo_t deviceInfo = *SN_MODULE_FILE_SYSTEM_DeviceInfoGet();
     const machineInfo_t* machineInfo = NULL;
     const versionInfo_t* versionInfo = NULL;
     char buffer[DEFAULT_BUFFER_SIZE];
 
+    int languageCode       = 0;
     int thumbnail_offset_x = 0;
     int thumbnail_offset_y = 0;
     int thumbnail_width    = 0;
@@ -841,6 +883,19 @@ static SN_STATUS sDisplay_NextionInit(void)
         thumbnail_height   = NEXTION_THUMBNAIL_3_2_HEIGHT;
     }
 
+    if(!strcmp(deviceInfo.language, DEVICE_LANGUAGE_ENG))
+    {
+        languageCode = NEXTION_LANGUAGE_CODE_ENG; // English Code On Nextion
+    }
+    else if(!strcmp(deviceInfo.language, DEVICE_LANGUAGE_KOR))
+    {
+        languageCode = NEXTION_LANGUAGE_CODE_KOR; // Korean Code On Nextion
+    }
+    else
+    {
+        languageCode = NEXTION_LANGUAGE_CODE_KOR; // Korean Code On Nextion
+    }
+
     sprintf(buffer,"Boot.DeviceName.txt=\"%s\"", machineInfo->name);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
@@ -864,20 +919,29 @@ static SN_STATUS sDisplay_NextionInit(void)
     sprintf(buffer,"Boot.thumbnail_Y.val=%d", thumbnail_offset_y);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_Delay(3);
 
     sprintf(buffer,"Info.Hash.txt=\"%ld\"", versionInfo->hash);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_Delay(3);
 
     sprintf(buffer,"Info.Inch.txt=\"%s Inch\"", machineInfo->displayScreenSize);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_Delay(3);
 
     sprintf(buffer,"Info.Version.txt=\"%ld.%ld.%ldv\"", versionInfo->releaseNumber, versionInfo->majorNumber, versionInfo->minorNumber);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
-
     SN_SYS_Delay(3);
+
+    sprintf(buffer,"Waiting.Language.val=%d", languageCode);
+    retStatus = sSendCommand(buffer, strlen(buffer) + 1);
+    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_Delay(3);
+
+    SN_SYS_Delay(6);
 
     SN_MODULE_DISPLAY_TotalTimeInit();
 

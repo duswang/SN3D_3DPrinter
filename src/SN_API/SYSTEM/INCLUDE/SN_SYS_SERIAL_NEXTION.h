@@ -54,6 +54,9 @@
 #define DEFAULT_NEXTION_THUMBNAIL_ON_PIXEL_COLOR        NX_COLOR_TABLE_WHITE
 #define DEFAULT_NEXTION_THUMBNAIL_OFF_PIXEL_COLOR       NX_COLOR_TABLE_BLACK
 
+#define NEXTION_LANGUAGE_CODE_ENG          0
+#define NEXTION_LANGUAGE_CODE_KOR          1
+
 /*************************************************************@}*/
 
 /*************************************************************
@@ -219,6 +222,8 @@ typedef enum
     NX_ID_WAITING_BUTTON_PRINT   = 0x01,
     NX_ID_WAITING_BUTTON_CONTROL,
     NX_ID_WAITING_BUTTON_INFO,
+    NX_ID_WAITING_BUTTON_LANGUAGE_ENG,
+    NX_ID_WAITING_BUTTON_LANGUAGE_KOR,
 } nx_waiting_id_t;
 
 typedef enum
