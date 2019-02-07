@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<option>
+  <option_name>Fast</option_name>
+  <layerThickness>0.05000</layerThickness>
+  <bottomLayerExposureTime>10000</bottomLayerExposureTime>
+  <bottomLayerNumber>5</bottomLayerNumber>
+  <bottomLiftFeedRate>150.0</bottomLiftFeedRate>
+  <layerExposureTime>2500</layerExposureTime>
+  <liftDistance>7</liftDistance>
+  <liftFeedRate>150.00</liftFeedRate>
+  <bright>255</bright>
+</option>
