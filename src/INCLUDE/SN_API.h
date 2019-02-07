@@ -1,7 +1,8 @@
 /**
 @mainpage SN3D Main Page
   @section INFO Project Info
-  - Name  :  SN3D 3D Printer.
+  @version Beta 0.0.8
+  - Name  :  SN3D 3D Printer Module API.
  */
 /**
  * @file SN_API.h
@@ -13,7 +14,7 @@
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
  * @defgroup API API
- * @brief SN_API 0.0.1v
+ * @brief SN_API Beta 0.0.8v
  * @{
  */
 

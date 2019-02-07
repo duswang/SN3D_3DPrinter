@@ -7,8 +7,11 @@
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
+ * @todo Hashing the binary file and file checking solution with hash.
+ * @todo auto partition allocate on raspberry pi file system.
+ *
  * @defgroup SN_BOOTLOADER Bootloader
- * @brief Bootloader Version 0.1v
+ * @brief Bootloader Version Beta 0.0.5v
  * @{
  */
 #ifndef SN_BOOTLOADER_MAIN_H

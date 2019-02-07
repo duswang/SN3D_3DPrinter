@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <device>
     <language>Kor</language>
-    <totalTime>35700</totalTime>
-    <motor_z_position>0.50</motor_z_position>
+    <totalTime>45480</totalTime>
+    <motor_z_position>1.00</motor_z_position>
 </device>

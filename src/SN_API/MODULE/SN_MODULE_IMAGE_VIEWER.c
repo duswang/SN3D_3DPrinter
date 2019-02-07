@@ -9,7 +9,9 @@
  *
  * @bug  SDL :: 2048 x 2048 Over Resolution it can't make Window(surface)
  *
- * @todo Nextion Thumbnail need more test.
+ * @todo 8 bit png image file support.
+ *
+ * @note Image Resize not supported. MUST BE image resolution is same with display resolution.
  */
 
 #include "SN_API.h"

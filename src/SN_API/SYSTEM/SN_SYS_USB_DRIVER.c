@@ -7,6 +7,7 @@
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
+ * @bug some USB is not working. need more test and debugging.
  */
 
 #ifdef __APPLE__
