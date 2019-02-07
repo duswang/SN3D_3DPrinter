@@ -101,9 +101,11 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                 break;
             case NX_ID_WAITING_BUTTON_LANGUAGE_ENG:
                 SN_MODULE_DISPLAY_WaitingLanguageUpdate(NEXTION_LANGUAGE_CODE_ENG);
+                APP_STATE_EnterStateWaiting();
                 break;
             case NX_ID_WAITING_BUTTON_LANGUAGE_KOR:
                 SN_MODULE_DISPLAY_WaitingLanguageUpdate(NEXTION_LANGUAGE_CODE_KOR);
+                APP_STATE_EnterStateWaiting();
                 break;
             default:
                 break;

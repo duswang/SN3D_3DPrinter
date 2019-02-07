@@ -936,7 +936,7 @@ static SN_STATUS sDisplay_NextionInit(void)
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
     SN_SYS_Delay(3);
 
-    sprintf(buffer,"Waiting.Language.val=%d", languageCode);
+    sprintf(buffer,"Waiting.Lang.val=%d", languageCode);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
     SN_SYS_Delay(3);
