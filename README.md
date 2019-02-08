@@ -85,9 +85,6 @@ $ journalctl -u SN3D.service
 ```
 $ cmake CmakeList.txt
 ```
-#### Software
-- [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/)
-
 # Sprinter
 ---
 > The leading developers of Sprinter are currently Kliment and caru, though many others contribute with their patches. This is a firmware for RAMPS and other reprap single-processor electronics setups. It supports printing from SD card, active heatbed control, and ATmega internal pullups. This work is licensed under the GNU GPL v3 or (at the user's discretion) any later version. It is based on Tonokips's firmware, which was licensed under GPL v2 or later.
@@ -128,3 +125,7 @@ See [Sprinter](https://github.com/kliment/Sprinter) on Github.
 - [Sprinter](https://github.com/kliment/Sprinter)
 - Raspberry Pi 3 B+
 - [Ramps Board](https://reprap.org/wiki/RAMPS_1.4) 
+
+#### Software
+- [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/)
+
