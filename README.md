@@ -1,25 +1,31 @@
 
-# SN3D Project 
+# SN3D 3D Printer
 
 
 [![build](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://bitbucket.org/xengiennering/sn3d-project)  [![platform](https://img.shields.io/badge/platform-linux-lightgrey.svg)]()
+
+# Package
+---
+[![cmake](https://img.shields.io/badge/cmake-2.6-green.svg)](https://cmake.org/) [![gcc](https://img.shields.io/badge/gcc-6.3.0-green.svg)](https://gcc.gnu.org/)
+
 
 # Library
 ---
 
 ### Used
-[![cmake](https://img.shields.io/badge/cmake-2.6-green.svg)](https://cmake.org/) [![libconv](https://img.shields.io/badge/libiconv-1.15-green.svg)](https://github.com/roboticslibrary/libiconv) [![libusb](https://img.shields.io/badge/libusb-1.0.22-green.svg)](https://libusb.info/) [![libzip](https://img.shields.io/badge/libzip-1.5.1-green.svg)](https://libzip.org/) [![libpng](https://img.shields.io/badge/libpng-1.6.28-green.svg)](http://www.libpng.org/pub/png/libpng.html) [![libxml2](https://img.shields.io/badge/libxml2-2.9.7-green.svg)](http://www.xmlsoft.org/index.html)
+ [![libconv](https://img.shields.io/badge/libiconv-1.15-green.svg)](https://github.com/roboticslibrary/libiconv) [![libusb](https://img.shields.io/badge/libusb-1.0.22-green.svg)](https://libusb.info/) [![libzip](https://img.shields.io/badge/libzip-1.5.1-green.svg)](https://libzip.org/) [![libpng](https://img.shields.io/badge/libpng-1.6.28-green.svg)](http://www.libpng.org/pub/png/libpng.html) [![libxml2](https://img.shields.io/badge/libxml2-2.9.7-green.svg)](http://www.xmlsoft.org/index.html)
 
 ### Not Used
 [![SDL2](https://img.shields.io/badge/SDL2-2.0.8-green.svg)](https://www.libsdl.org/download-2.0.php)
 
-## Features
+# Features
 ---
 
 >This README.md uses the [Markdown](http://daringfireball.net/projects/markdown/) syntax. The [MarkDownDemo tutorial](https://bitbucket.org/tutorials/markdowndemo) shows how various elements are rendered. The [Bitbucketdocumentation](https://confluence.atlassian.com/bitbucket/readme-content-221449772.html) has more information about using a README.md.
 
 
-## Install & Compile
+# Install & Compile
+---
 Step 1. Clone git repository.
 ```
 $ git clone https://bitbucket.org/xengiennering/sn3d-project.git
@@ -50,7 +56,7 @@ $ journalctl -u SN3D.service
 ---
 #### Install 
 `$ make sn3d_install` - SN3D Repository install to root directory => `/SN3D/sn3d-project`.
-`$ make sn3d_service_install`
+`$ make sn3d_service_install` - SN3D.service & SN3D_Bootloader.service install to systemd.
 
 #### Service
 `$ make start ` - SN3D.service restart.
@@ -74,14 +80,14 @@ $ journalctl -u SN3D.service
 ```
 $ cmake CmakeList.txt
 ```
-# Reference
-#### Hardware
-- [Sprinter](https://github.com/kliment/Sprinter)
-- Raspberry Pi 3 B+
-- [Ramps Board](https://reprap.org/wiki/RAMPS_1.4) 
-
 #### Software
 - [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/)
+
+# Sprinter
+---
+> The leading developers of Sprinter are currently Kliment and caru, though many others contribute with their patches. This is a firmware for RAMPS and other reprap single-processor electronics setups. It supports printing from SD card, active heatbed control, and ATmega internal pullups. This work is licensed under the GNU GPL v3 or (at the user's discretion) any later version. It is based on Tonokips's firmware, which was licensed under GPL v2 or later.
+
+See [Sprinter](https://github.com/kliment/Sprinter) on Github.
 
 # G Code
 ---
@@ -92,17 +98,9 @@ $ cmake CmakeList.txt
 
 `M92`       - Set current position.
 
-`M114`      - Get current position.
-
-`M400`      - Clean command buffer.
-
 `G1`        - Move to by prameter.
 
 `G28 Z0`    - Homing.
-
-`G90`       - Position move set absolute
-
-`G91`       - Position move set relative
 
 > or More detail & other G Code click  =>  [Reprap G Code Sheet](https://reprap.org/wiki/G-code) 
 
@@ -110,6 +108,18 @@ $ cmake CmakeList.txt
 ## Nextion Display
 ---
 #### Models
+- NX4024T032_011R
+- NX4827T043_011R
+- NX8048T050_011R
+- NX8048T070_011R
+> or More detail click => [Nextion HMI Solution](https://www.itead.cc/wiki/Nextion_HMI_Solution) 
+#### Serial Comm
+> Nextion Display serial baud rate is 115200
 
-#### Nextion Editor - [Link](https://nextion.itead.cc/resources/download/nextion-editor/)
+#### [Nextion Editor](https://nextion.itead.cc/resources/download/nextion-editor/)
 
+# Reference
+#### Hardware
+- [Sprinter](https://github.com/kliment/Sprinter)
+- Raspberry Pi 3 B+
+- [Ramps Board](https://reprap.org/wiki/RAMPS_1.4) 
