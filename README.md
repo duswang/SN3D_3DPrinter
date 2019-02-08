@@ -56,19 +56,24 @@ $ journalctl -u SN3D.service
 ---
 #### Install 
 `$ make sn3d_install` - SN3D Repository install to root directory => `/SN3D/sn3d-project`.
+
 `$ make sn3d_service_install` - SN3D.service & SN3D_Bootloader.service install to systemd.
 
 #### Service
 `$ make start ` - SN3D.service restart.
+
 `$ make stop ` - SN3D.service stop 
 
 #### Build
 `$ make all` - Build project.
+
 `$ make clean` - Clean project. ( not remove cmakeFiles just build file. )
+
 `$ make all_clean` - build file and all cmake file is remove. 
 
 #### Run & Debug
 `$ make gdb` - SN3D start with GDB. First do `$ make stop`.
+
 `$ make run` - SN3D start without GDB. First do `$ make stop`.
 
 #### Document
