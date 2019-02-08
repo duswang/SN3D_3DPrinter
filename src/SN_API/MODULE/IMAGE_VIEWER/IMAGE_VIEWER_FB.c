@@ -237,7 +237,6 @@ static SN_STATUS sLoadImage(const char* filename, FB_Image_t* pImage)
 
     png_init_io(png_ptr, fp);
     png_set_sig_bytes(png_ptr, 8);
-
     png_read_info(png_ptr, info_ptr);
 
     /* READ PNG IMAGE INFO  */
@@ -246,27 +245,24 @@ static SN_STATUS sLoadImage(const char* filename, FB_Image_t* pImage)
     pImage->colorType = png_get_color_type(png_ptr, info_ptr);
     pImage->bpp = png_get_bit_depth(png_ptr, info_ptr);
 
-    number_of_passes = png_set_interlace_handling(png_ptr);
-    png_read_update_info(png_ptr, info_ptr);
-
-    /* READ PNG IMAGE */
-    if (setjmp(png_jmpbuf(png_ptr)))
-    {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "Error during");
-    }
-
-    if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
-    {
-        transparent = 1;
-        png_set_tRNS_to_alpha(png_ptr);
-    }
-
     /* CREATE PNG RGB BUFFER */
     pImage->rgb = (unsigned char*)malloc((pImage->w) * (pImage->h) * 3); //RGB 888
     if (pImage->rgb == NULL)
     {
         SN_SYS_ERROR_CHECK(SN_STATUS_OUT_OF_MEM, " failed to allocate image rgb buffer");
     }
+
+    if (pImage->colorType == PNG_COLOR_TYPE_PALETTE) png_set_expand(png_ptr);
+    if (pImage->bpp < 8) png_set_packing(png_ptr);
+    if (pImage->colorType == PNG_COLOR_TYPE_GRAY || pImage->colorType== PNG_COLOR_TYPE_GRAY_ALPHA) png_set_gray_to_rgb(png_ptr);
+    if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) {
+        transparent = 1;
+        png_set_tRNS_to_alpha(png_ptr);
+    }
+
+    if(pImage->bpp == 16) png_set_strip_16(png_ptr);
+    number_of_passes = png_set_interlace_handling(png_ptr);
+    png_read_update_info(png_ptr, info_ptr);
 
     /* CREATE PNG ALPHA BUFFER */
     if((pImage->colorType ==  PNG_COLOR_TYPE_RGB_ALPHA) || \
