@@ -1,30 +1,20 @@
 
-# SN3D 3D Printer
-
+# **SN3D Project**
 
 [![build](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://bitbucket.org/xengiennering/sn3d-project)  [![platform](https://img.shields.io/badge/platform-linux-lightgrey.svg)]()
-
-# Package
----
+#### **Package**
 [![cmake](https://img.shields.io/badge/cmake-2.6-green.svg)](https://cmake.org/) [![gcc](https://img.shields.io/badge/gcc-6.3.0-green.svg)](https://gcc.gnu.org/)
 
+#### **Library**
+ [![libconv](https://img.shields.io/badge/libiconv-1.15-green.svg)](https://github.com/roboticslibrary/libiconv) [![libusb](https://img.shields.io/badge/libusb-1.0.22-green.svg)](https://libusb.info/) [![libzip](https://img.shields.io/badge/libzip-1.5.1-green.svg)](https://libzip.org/) [![libpng](https://img.shields.io/badge/libpng-1.6.28-green.svg)](http://www.libpng.org/pub/png/libpng.html) [![libxml2](https://img.shields.io/badge/libxml2-2.9.7-green.svg)](http://www.xmlsoft.org/index.html) [![SDL2](https://img.shields.io/badge/SDL2-2.0.8-red.svg)](https://www.libsdl.org/download-2.0.php)
 
-# Library
+# **Features**
 ---
 
-### Used
- [![libconv](https://img.shields.io/badge/libiconv-1.15-green.svg)](https://github.com/roboticslibrary/libiconv) [![libusb](https://img.shields.io/badge/libusb-1.0.22-green.svg)](https://libusb.info/) [![libzip](https://img.shields.io/badge/libzip-1.5.1-green.svg)](https://libzip.org/) [![libpng](https://img.shields.io/badge/libpng-1.6.28-green.svg)](http://www.libpng.org/pub/png/libpng.html) [![libxml2](https://img.shields.io/badge/libxml2-2.9.7-green.svg)](http://www.xmlsoft.org/index.html)
-
-### Not Used
-[![SDL2](https://img.shields.io/badge/SDL2-2.0.8-green.svg)](https://www.libsdl.org/download-2.0.php)
-
-# Features
----
-
->This README.md uses the [Markdown](http://daringfireball.net/projects/markdown/) syntax. The [MarkDownDemo tutorial](https://bitbucket.org/tutorials/markdowndemo) shows how various elements are rendered. The [Bitbucketdocumentation](https://confluence.atlassian.com/bitbucket/readme-content-221449772.html) has more information about using a README.md.
+> This README.md uses the [Markdown](http://daringfireball.net/projects/markdown/) syntax. The [MarkDownDemo tutorial](https://bitbucket.org/tutorials/markdowndemo) shows how various elements are rendered. The [Bitbucketdocumentation](https://confluence.atlassian.com/bitbucket/readme-content-221449772.html) has more information about using a README.md.
 
 
-# Install & Compile
+# **Install & Compile**
 ---
 Step 1. Clone git repository.
 ```
@@ -52,14 +42,14 @@ $ journalctl -u SN3D_Bootloader.service
 $ journalctl -u SN3D.service
 ```
 
-# Make Commands
+# **Make Commands**
 ---
 #### Install 
 `$ make sn3d_install` - SN3D Repository install to root directory => `/SN3D/sn3d-project`.
 
 `$ make sn3d_service_install` - SN3D.service & SN3D_Bootloader.service install to systemd.
 
-#### Service
+#### Systemd Service
 `$ make start ` - SN3D.service restart.
 
 `$ make stop ` - SN3D.service stop 
@@ -76,24 +66,22 @@ $ journalctl -u SN3D.service
 
 `$ make run` - SN3D start without GDB. First do `$ make stop`.
 
-#### Document
+#### API Document
 `$ make doxygen` - make SN3D API Html file path(`/SN3D/sn3d-project/doc/html`)
 
-# CMake   - [![cmake](https://img.shields.io/badge/cmake-2.6-green.svg)](https://cmake.org/)
+# **CMake -** [![cmake](https://img.shields.io/badge/cmake-2.6-green.svg)](https://cmake.org/)
 ---
 #### CMake build.
 ```
 $ cmake CmakeList.txt
 ```
-# Sprinter
+# **Sprinter**
 ---
 > The leading developers of Sprinter are currently Kliment and caru, though many others contribute with their patches. This is a firmware for RAMPS and other reprap single-processor electronics setups. It supports printing from SD card, active heatbed control, and ATmega internal pullups. This work is licensed under the GNU GPL v3 or (at the user's discretion) any later version. It is based on Tonokips's firmware, which was licensed under GPL v2 or later.
 
 See [Sprinter](https://github.com/kliment/Sprinter) on Github.
 
-# G Code
----
-#### Basic Code
+### G Code
 `M106 S255` - Turn on UV lamp.
 
 `M107`      - Turn off Uv lamp.
@@ -107,25 +95,46 @@ See [Sprinter](https://github.com/kliment/Sprinter) on Github.
 > or More detail & other G Code click  =>  [Reprap G Code Sheet](https://reprap.org/wiki/G-code) 
 
 
-## Nextion Display
+# **Nextion Display**
 ---
-#### Models
-- NX4024T032_011R
-- NX4827T043_011R
-- NX8048T050_011R
-- NX8048T070_011R
+
+* #### Used Models
+    - NX4024T032_011R
+    - NX4827T043_011R
+    - NX8048T050_011R
+    - NX8048T070_011R
+
 > or More detail click => [Nextion HMI Solution](https://www.itead.cc/wiki/Nextion_HMI_Solution) 
-#### Serial Comm
-> Nextion Display serial baud rate is 115200
 
-#### [Nextion Editor](https://nextion.itead.cc/resources/download/nextion-editor/)
+* ### [Nextion Editor](https://nextion.itead.cc/resources/download/nextion-editor/)
+    * #### [Nextion Serial Commands](https://nextion.itead.cc/resources/documents/instruction-set/)
+    * #### [Tools](https://nextion.itead.cc/resources/download/tooles-pages/)
 
-# Reference
-#### Hardware
-- [Sprinter](https://github.com/kliment/Sprinter)
-- Raspberry Pi 3 B+
-- [Ramps Board](https://reprap.org/wiki/RAMPS_1.4) 
+* ### HMI Option 
+    - #### [EUC-KR](https://en.wikipedia.org/wiki/Extended_Unix_Code#EUC-KR) - **Need covert to EUC-KR from UTF-8 format.**
 
-#### Software
-- [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/)
+# **Reference**
+---
+* ### Software
+>
+
+* ### Hardware
+    - [Sprinter](https://github.com/kliment/Sprinter)
+    - Raspberry Pi 3 B+
+    - [Ramps Board](https://reprap.org/wiki/RAMPS_1.4) 
+>
+
+* ###  Linux OS
+    - [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/)
+
+#### TODO List
+- [X] Memory Test.
+- [ ] PNG image checker & notify to user.
+- [ ] Info screen design.
+- [X] 8.9 Inch Display Test
+
+#### BUG List
+- [ ] USB mount event.
+- [ ] Time indicate timer stoped when printing ( but it restart when resume ).
+
 
