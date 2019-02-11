@@ -20,7 +20,7 @@ project(sn3d_project)
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 1)
 
-set(PRJ_BINARY_NAME sn3d-bin)
+set(PRJ_BINARY_NAME sn3d)
 
 # Paths #
 set(PRJ_INSTALLED_PATH "/SN3D_TEST/sn3d-project")
@@ -45,8 +45,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PRJ_BINARY_PATH}/lib)
 set(CMAKE_PATH "${PRJ_ROOT_PATH}/cmake")
 # cmake module #
 set(CMAKE_MODULE_PATH "${CMAKE_PATH}/module")
-set(CMAKE_INSTALL_PATH "${CMAKE_PATH}/install")
-
 
 ################### Library & Source & Include Setting ###################
 

@@ -7,7 +7,7 @@ After=multi-user.target
 Type=oneshot
 
 WorkingDirectory=/SN3D/sn3d-project/sn3d-bootloader
-ExecStart=/SN3D/sn3d-project/sn3d-bootloader/bin/build/exe
+ExecStart=/SN3D/sn3d-project/sn3d-bootloader/bin/build/sn3d_bootloader
 
 User=root
 

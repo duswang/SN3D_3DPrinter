@@ -11,7 +11,7 @@ After=SN3D_Bootloader.service
 User=pi
 Type=idle
 WorkingDirectory=/SN3D/sn3d-project
-ExecStart=/SN3D/sn3d-project/bin/build/exe
+ExecStart=/SN3D/sn3d-project/bin/build/sn3d
 Restart=on-failure
 
 [Install]

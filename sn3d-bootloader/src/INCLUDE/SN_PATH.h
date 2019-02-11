@@ -27,11 +27,10 @@
 #define FIRMWARE_MACHINE_INFO_PATH       "/SN3D/sn3d-project/sn3d-bootloader/res/firmware/machineInfo.xml"
 #define TEMP_FIRMWARE_MACHINE_INFO_PATH  "/SN3D/sn3d-project/sn3d-bootloader/res/tempFirmware/machineInfo.xml"
 
-#define FIRMWARE_BINARY_PATH             "/SN3D/sn3d-project/sn3d-bootloader/res/firmware/exe"
-#define TEMP_FIRMWARE_BINARY_PATH        "/SN3D/sn3d-project/sn3d-bootloader/res/tempFirmware/exe"
+#define FIRMWARE_BINARY_PATH             "/SN3D/sn3d-project/sn3d-bootloader/res/firmware/sn3d"
 
 #define SN3D_BINARY_FOLDER_PATH          "/SN3D/sn3d-project/bin/build"
-#define SN3D_BINARY_PATH                 "/SN3D/sn3d-project/bin/build/exe"
+#define SN3D_BINARY_PATH                 "/SN3D/sn3d-project/bin/build/sn3d"
 
 #define SN3D_OPTION_FOLDER_PATH          "/SN3D/sn3d-project/res/optionConfig"
 

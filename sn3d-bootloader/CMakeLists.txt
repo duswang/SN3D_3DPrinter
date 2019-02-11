@@ -8,7 +8,7 @@
 #
 ######################## Base Info Setting ########################
 # Header #
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.5)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
@@ -19,6 +19,9 @@ project(sn3d_project)
 
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 1)
+
+set(PRJ_BINARY_NAME sn3d_bootloader)
+
 
 # Paths #
 set(PRJ_ROOT_PATH ..)
@@ -35,12 +38,17 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BOOTLOADER_ROOT_PATH}/bin/build)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${BOOTLOADER_ROOT_PATH}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${BOOTLOADER_ROOT_PATH}/lib)
 
-# Cmkae Module #
-set(CMAKE_MODULE_PATH "${PRJ_ROOT_PATH}/cmake/CMAKE_MODULE")
+# cmake #
+set(CMAKE_PATH "${PRJ_ROOT_PATH}/cmake")
+# cmake module #
+set(CMAKE_MODULE_PATH "${CMAKE_PATH}/module")
 
 ################### Library & Source & Include Setting ###################
 
 # Library Package #
+find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
+find_package(png REQUIRED)
 find_package(libzip REQUIRED)
 find_package(libxml2 REQUIRED)
 find_package(libiconv REQUIRED)
@@ -136,8 +144,8 @@ set(
 )
 
 # Command #
-add_custom_target(gdb gdb ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/exe)
-add_custom_target(run ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/exe)
+add_custom_target(gdb gdb ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PRJ_BINARY_NAME})
+add_custom_target(run ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PRJ_BINARY_NAME})
 
 add_custom_target(start sudo systemctl restart SN3D_Bootloader.service)
 add_custom_target(stop sudo systemctl stop SN3D_Bootloader.service)
@@ -147,16 +155,16 @@ add_custom_target(all_clean rm -rf ${BOOTLOADER_ROOT_PATH}/CMakeFiles ${BOOTLOAD
 
 ################### Target Setting ###################
 # Install exe file #
-add_executable(exe ${Source})
+add_executable(${PRJ_BINARY_NAME} ${Source})
 
 # Compile Option  #
-target_compile_options(exe PRIVATE ${CMAKE_CXX_FLAGS})
+target_compile_options(${PRJ_BINARY_NAME} PRIVATE ${CMAKE_CXX_FLAGS})
 
 # Compile Config #
-target_compile_definitions(exe PRIVATE ${Config} BOOST_ERROR_CODE_HEADER_ONLY)
+target_compile_definitions(${PRJ_BINARY_NAME} PRIVATE ${Config} BOOST_ERROR_CODE_HEADER_ONLY)
 
 # Link Library  #
-target_link_libraries(exe ${Library})
+target_link_libraries(${PRJ_BINARY_NAME} ${Library})
 
 ################### CMakeLists.txt Done ###################
 

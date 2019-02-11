@@ -60,6 +60,8 @@ void sFirmwareFileLoad(const char* newFirmwarPath)
 static bool sFirmwareFileCompare(void)
 {
     bool isNeedUpdate = false;
+    char path[MAX_PATH_LENGTH];
+
     versionInfo_t* currentVersion = NULL;
     versionInfo_t* newVersion = NULL;
 
@@ -99,8 +101,10 @@ static bool sFirmwareFileCompare(void)
         FileSystem_fctl_RemoveFiles(FIRMWARE_PATH);
         printf("\n\n * Updateing... * \n");
 
+        sprintf(path, "%s/%s", TEMP_FIRMWARE_PATH, newVersion->binaryName);
+
         FileSystem_fctl_CopyFile(TEMP_FIRMWARE_VERSION_PATH, FIRMWARE_VERSION_PATH);
-        FileSystem_fctl_CopyFile(TEMP_FIRMWARE_BINARY_PATH, FIRMWARE_BINARY_PATH);
+        FileSystem_fctl_CopyFile(path, FIRMWARE_BINARY_PATH);
 
         /* Replace Old Firmware Binary File */
         printf("\n\n * Update Binary to SN3D Service... * \n");
