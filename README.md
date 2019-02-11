@@ -3,10 +3,10 @@
 
 [![build](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://bitbucket.org/xengiennering/sn3d-project)  [![platform](https://img.shields.io/badge/platform-linux-lightgrey.svg)]()
 ### **Package**
-[![cmake](https://img.shields.io/badge/cmake-2.6-green.svg)](https://cmake.org/) [![gcc](https://img.shields.io/badge/gcc-6.3.0-green.svg)](https://gcc.gnu.org/)
+[![cmake](https://img.shields.io/badge/cmake-2.6-brightgreen.svg)](https://cmake.org/) [![gcc](https://img.shields.io/badge/gcc-6.3.0-brightgreen.svg)](https://gcc.gnu.org/) [![gdb](https://img.shields.io/badge/gdb-7.12.0-brightgreen.svg)](https://www.gnu.org/software/gdb/)
 
 ### **Library**
- [![libconv](https://img.shields.io/badge/libiconv-1.15-green.svg)](https://github.com/roboticslibrary/libiconv) [![libusb](https://img.shields.io/badge/libusb-1.0.22-green.svg)](https://libusb.info/) [![libzip](https://img.shields.io/badge/libzip-1.5.1-green.svg)](https://libzip.org/) [![libpng](https://img.shields.io/badge/libpng-1.6.28-green.svg)](http://www.libpng.org/pub/png/libpng.html) [![libxml2](https://img.shields.io/badge/libxml2-2.9.7-green.svg)](http://www.xmlsoft.org/index.html) [![SDL2](https://img.shields.io/badge/SDL2-2.0.8-red.svg)](https://www.libsdl.org/download-2.0.php)
+ [![libconv](https://img.shields.io/badge/libiconv-1.15-brightgreen.svg)](https://github.com/roboticslibrary/libiconv) [![libusb](https://img.shields.io/badge/libusb-1.0.22-brightgreen.svg)](https://libusb.info/) [![libzip](https://img.shields.io/badge/libzip-1.5.1-brightgreen.svg)](https://libzip.org/) [![libpng](https://img.shields.io/badge/libpng-1.6.28-brightgreen.svg)](http://www.libpng.org/pub/png/libpng.html) [![libxml2](https://img.shields.io/badge/libxml2-2.9.7-brightgreen.svg)](http://www.xmlsoft.org/index.html) [![SDL2](https://img.shields.io/badge/SDL2-2.0.8-red.svg)](https://www.libsdl.org/download-2.0.php)
 
 ### **Used Editor**
 
@@ -76,7 +76,7 @@ $ journalctl -u SN3D.service
 #### API Document
 `$ make doxygen` - make SN3D API Html file path(`/SN3D/sn3d-project/doc/html`)
 
-# **CMake -** [![cmake](https://img.shields.io/badge/cmake-2.6-green.svg)](https://cmake.org/)
+# **CMake -** [![cmake](https://img.shields.io/badge/cmake-2.6-brightgreen.svg)](https://cmake.org/)
 ---
 #### CMake build.
 ```
