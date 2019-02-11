@@ -8,6 +8,10 @@
 ### **Library**
  [![libconv](https://img.shields.io/badge/libiconv-1.15-green.svg)](https://github.com/roboticslibrary/libiconv) [![libusb](https://img.shields.io/badge/libusb-1.0.22-green.svg)](https://libusb.info/) [![libzip](https://img.shields.io/badge/libzip-1.5.1-green.svg)](https://libzip.org/) [![libpng](https://img.shields.io/badge/libpng-1.6.28-green.svg)](http://www.libpng.org/pub/png/libpng.html) [![libxml2](https://img.shields.io/badge/libxml2-2.9.7-green.svg)](http://www.xmlsoft.org/index.html) [![SDL2](https://img.shields.io/badge/SDL2-2.0.8-red.svg)](https://www.libsdl.org/download-2.0.php)
 
+### **Used Editor**
+
+[Mars Eclipse for mac](https://www.eclipse.org/mars/)
+
 # **Features**
 ---
 
