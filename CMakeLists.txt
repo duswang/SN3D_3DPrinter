@@ -8,7 +8,7 @@
 #
 ######################## Base Info Setting ########################
 # Header #
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.7)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
@@ -20,7 +20,11 @@ project(sn3d_project)
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 1)
 
+set(PRJ_BINARY_NAME sn3d-bin)
+
 # Paths #
+set(PRJ_INSTALLED_PATH "/SN3D_TEST/sn3d-project")
+
 set(PRJ_ROOT_PATH .)
 set(PRJ_SOURCE_PATH ${PRJ_ROOT_PATH}/src)
 set(PRJ_BINARY_PATH ${PRJ_ROOT_PATH}/bin)
@@ -37,8 +41,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PRJ_BINARY_PATH}/build)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PRJ_BINARY_PATH}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PRJ_BINARY_PATH}/lib)
 
-# Cmkae Module #
-set(CMAKE_MODULE_PATH "${PRJ_ROOT_PATH}/cmake/CMAKE_MODULE")
+# cmake #
+set(CMAKE_PATH "${PRJ_ROOT_PATH}/cmake")
+# cmake module #
+set(CMAKE_MODULE_PATH "${CMAKE_PATH}/module")
+set(CMAKE_INSTALL_PATH "${CMAKE_PATH}/install")
+
 
 ################### Library & Source & Include Setting ###################
 
@@ -211,8 +219,8 @@ set(
 )
 
 # Command #
-add_custom_target(gdb gdb ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/exe)
-add_custom_target(run ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/exe)
+add_custom_target(gdb gdb ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PRJ_BINARY_NAME})
+add_custom_target(run ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PRJ_BINARY_NAME})
 
 add_custom_target(start sudo systemctl restart SN3D.service)
 
@@ -224,18 +232,31 @@ add_custom_target(doxygen doxygen ${PRJ_ROOT_PATH}/sn3d_doxygen)
 
 add_custom_target(all_clean rm -rf ${PRJ_ROOT_PATH}/CMakeFiles ${PRJ_ROOT_PATH}/cmake_install.cmake ${PRJ_ROOT_PATH}/CMakeCache.txt)
 
+#add_custom_target(sn3d_install COMMAND ${CMAKE_COMMAND} -P ${CMAKE_INSTALL_PATH}/install_script.cmake)
+
+install( DIRECTORY ${PRJ_ROOT_PATH}
+	DESTINATION ${PRJ_INSTALLED_PATH}
+	COMPONENT sn3d_install
+	PATTERN .svn EXCLUDE)
+	
+add_custom_target(sn3d_install
+    COMMAND ${CMAKE_COMMAND}
+    -D COMPONENT=sn3d_install
+    -P cmake_install.cmake
+)
+
 ################### Target Setting ###################
 # Install exe file #
-add_executable(exe ${Source})
+add_executable(${PRJ_BINARY_NAME} ${Source})
 
 # Compile Option  #
-target_compile_options(exe PRIVATE ${CMAKE_CXX_FLAGS})
+target_compile_options(${PRJ_BINARY_NAME} PRIVATE ${CMAKE_CXX_FLAGS})
 
 # Compile Config #
-target_compile_definitions(exe PRIVATE ${Config} BOOST_ERROR_CODE_HEADER_ONLY)
+target_compile_definitions(${PRJ_BINARY_NAME} PRIVATE ${Config} BOOST_ERROR_CODE_HEADER_ONLY)
 
 # Link Library  #
-target_link_libraries(exe ${Library})
+target_link_libraries(${PRJ_BINARY_NAME} ${Library})
 
 ################### CMakeLists.txt Done ###################
 
