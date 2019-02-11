@@ -682,6 +682,7 @@ static SN_STATUS sFilePageLoad(fileSystem_t* fileSystem)
     struct dirent **nameList;
     int numberOfnameList = 0;
     int i = 0;
+    int scandirErrorChecker = 0;
 
     fsPageHeader_t* pageHeader = NULL;
     fsPage_t* currentPage = NULL;
@@ -707,6 +708,18 @@ static SN_STATUS sFilePageLoad(fileSystem_t* fileSystem)
     currentPage = pageHeader->firstPage;
 
     numberOfnameList = scandir(USB_PATH, &nameList, 0, alphasort);
+    if(numberOfnameList < 0)
+    {
+        while(scandirErrorChecker <= 5)
+        {
+            SN_SYS_Delay(300);
+            scandirErrorChecker++;
+            numberOfnameList = scandir(USB_PATH, &nameList, 0, alphasort);
+
+            if(numberOfnameList >= 0) break;
+        }
+    }
+
     if(numberOfnameList < 0)
     {
         perror("scandir");
