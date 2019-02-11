@@ -56,7 +56,7 @@ cmake_install.cmake
 Makefile
 
 bin/
-install_manifest.txt
+install_sn3d_install_manifest.txt
 
 #Doxygen Untrack Files
 doc/doxygen/

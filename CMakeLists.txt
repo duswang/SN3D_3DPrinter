@@ -23,7 +23,7 @@ set(VERSION_MINOR 1)
 set(PRJ_BINARY_NAME sn3d)
 
 # Paths #
-set(PRJ_INSTALLED_PATH "/SN3D_TEST/sn3d-project")
+set(PRJ_INSTALLED_PATH "/SN3D/sn3d-project")
 
 set(PRJ_ROOT_PATH .)
 set(PRJ_SOURCE_PATH ${PRJ_ROOT_PATH}/src)
@@ -217,30 +217,56 @@ set(
 )
 
 # Command #
-add_custom_target(gdb gdb ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PRJ_BINARY_NAME})
-add_custom_target(run ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PRJ_BINARY_NAME})
+add_custom_target(gdb
+    gdb ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PRJ_BINARY_NAME}
+)
+add_custom_target(run
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PRJ_BINARY_NAME}
+)
 
-add_custom_target(start sudo systemctl restart SN3D.service)
+add_custom_target(start 
+    sudo systemctl restart SN3D.service
+)
 
-add_custom_target(status sudo systemctl status SN3D.service)
+add_custom_target(stop
+    sudo systemctl stop SN3D.service
+)
 
-add_custom_target(stop sudo systemctl stop SN3D.service)
+add_custom_target(doxygen
+    doxygen ${PRJ_ROOT_PATH}/sn3d_doxygen
+)
 
-add_custom_target(doxygen doxygen ${PRJ_ROOT_PATH}/sn3d_doxygen)
+add_custom_target(all_clean 
+    rm -rf ${PRJ_ROOT_PATH}/CMakeFiles ${PRJ_ROOT_PATH}/cmake_install.cmake ${PRJ_ROOT_PATH}/CMakeCache.txt
+)
 
-add_custom_target(all_clean rm -rf ${PRJ_ROOT_PATH}/CMakeFiles ${PRJ_ROOT_PATH}/cmake_install.cmake ${PRJ_ROOT_PATH}/CMakeCache.txt)
+add_custom_target(sn3d_service_install 
+    sudo cp ${PRJ_ROOT_PATH}/res/service/SN3D.service /etc/systemd/system/SN3D.service &&
+    sudo cp ${PRJ_ROOT_PATH}/res/service/SN3D_Bootloader.service /etc/systemd/system/SN3D_Bootloader.service &&
+    sudo systemctl daemon-reload && 
+    sudo systemctl enable SN3D.service &&
+    sudo systemctl enable SN3D_Bootloader.service
+)
 
-#add_custom_target(sn3d_install COMMAND ${CMAKE_COMMAND} -P ${CMAKE_INSTALL_PATH}/install_script.cmake)
+add_custom_target(sn3d_service_uninstall 
+    sudo systemctl disable SN3D.service &&
+    sudo systemctl disable SN3D_Bootloader.service &&
+    sudo rm -rf /etc/systemd/system/SN3D.service &&
+    sudo rm -rf /etc/systemd/system/SN3D_Bootloader.service &&
+    sudo systemctl daemon-reload
+)
+
+add_custom_target(sn3d_install
+    sudo make install &&
+    sudo make sn3d_service_install
+)
+
+# install # 
 
 install( DIRECTORY ${PRJ_ROOT_PATH}
-	DESTINATION ${PRJ_INSTALLED_PATH}
-	COMPONENT sn3d_install
-	PATTERN .svn EXCLUDE)
-	
-add_custom_target(sn3d_install
-    COMMAND ${CMAKE_COMMAND}
-    -D COMPONENT=sn3d_install
-    -P cmake_install.cmake
+    DESTINATION ${PRJ_INSTALLED_PATH}
+    COMPONENT sn3d_install
+    PATTERN .svn EXCLUDE
 )
 
 ################### Target Setting ###################
