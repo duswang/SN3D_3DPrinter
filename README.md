@@ -10,7 +10,7 @@
 
 ### **Used Editor**
 
-[Mars Eclipse for mac](https://www.eclipse.org/mars/)
+- [Mars Eclipse for mac](https://www.eclipse.org/mars/)
 
 # **Features**
 ---
