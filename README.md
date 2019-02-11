@@ -16,27 +16,30 @@
 
 # **Install & Compile**
 ---
-Step 1. Clone git repository.
+#### **_Step 1._** Clone git repository.
 ```
 $ git clone https://bitbucket.org/xengiennering/sn3d-project.git
 ```
-Step 2. Make makeFilk by cmake and check file list.
+
+#### **_Step 2._** Make makeFilk by cmake and check file list.
 ```
 $ cmake CmakeList.txt
 $ ls -al
 ```
-Step 3. SN3D Project Install to root directory.
+
+#### **_Step 3._** SN3D Project Install to root directory.
 ```
 $ make sn3d_install
 $ cd /SN3D/sn3d-project
 ```
 
-Step 4. Install Systemd Service & other setting.
+#### **_Step 4._** Install Systemd Service & other setting.
 ```
 $ make sn3d_service_install
 $ sudo reboot
 ```
-Step 5. Check is service working.
+
+#### **_Step 5._** Check is service working.
 ```
 $ journalctl -u SN3D_Bootloader.service
 $ journalctl -u SN3D.service
