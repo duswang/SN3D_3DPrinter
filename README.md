@@ -25,9 +25,9 @@
 $ git clone https://bitbucket.org/xengiennering/sn3d-project.git
 ```
 
-#### **_Step 2._** Make makeFilk by cmake and check file list.
+#### **_Step 2._** Make makeFile by cmake and check file list.
 ```
-$ cmake CmakeList.txt
+$ cmake CMakeList.txt
 $ ls -al
 ```
 
@@ -142,4 +142,26 @@ See [Sprinter](https://github.com/kliment/Sprinter) on Github.
 - [ ] USB mount event.
 - [ ] Time indicate timer stoped when printing ( but it restart when resume ).
 
+# **Auto Resize Setup**
+---
+raspberry pi first boot auto resize
 
+add line "/boot/cmdline.txt"
+
+```
+$ sudo vim /boot/cmdline.txt
+```
+
+add `quiet init=/usr/lib/raspi-config/init_resize.sh` behine rootwait.
+
+`rootwait quiet init=/usr/lib/raspi-config/init_resize.sh`
+
+and follow this command lines. 
+
+```
+$ sudo wget -qO /etc/init.d/resize2fs_once https://github.com/RPi-Distro/pi-gen/raw/dev/stage2/01-sys-tweaks/files/resize2fs_once
+$ sudo chmod +x /etc/init.d/resize2fs_once
+$ sudo systemctl enable resize2fs_once
+```
+
+and make image file or reboot.
