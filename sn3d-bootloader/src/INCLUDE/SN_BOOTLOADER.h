@@ -26,7 +26,10 @@
 
 /* System */
 #include <sys/stat.h>
+#include <sys/mman.h>
 #include <sys/reboot.h>
+
+#include <openssl/md5.h>
 
 /* File System */
 #include <dirent.h>

@@ -21,6 +21,10 @@ const char* sBootloader_FW_FileSearching(void);
 static void sBootloader_Terminate(bool isNeedReboot);
 static bool sBootloader_Start(const char* firmwareFile);
 
+void print_md5_sum(const unsigned char* md, const unsigned char* path);
+
+const unsigned char* sHashChecking(char* path);
+
 /**
 *  @brief main
 */
@@ -43,7 +47,61 @@ int main(void)
         // Start SN3D.service.
     }
 
+    sHashChecking(FIRMWARE_BINARY_PATH);
+
     return 0;
+}
+
+void print_md5_sum(const unsigned char* md, const unsigned char* path)
+{
+    int i;
+
+    for(i = 0; i < MD5_DIGEST_LENGTH; i++)
+    {
+            printf("%02x", md[i]);
+    }
+
+    printf(" %s\n", path);
+}
+
+unsigned long get_size_by_fd(int fd)
+{
+    struct stat statbuf;
+
+    if(fstat(fd, &statbuf) < 0)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "file can't open.");
+    }
+
+    return statbuf.st_size;
+}
+
+const unsigned char* sHashChecking(char* path)
+{
+    unsigned char* hash = NULL;
+    int file_descript = 0;
+    unsigned long file_size = 0;
+    char* file_buffer = NULL;
+
+    hash = (unsigned char*)malloc(sizeof(unsigned char) * MD5_DIGEST_LENGTH);
+    if(hash == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "hash memory allocate falid.");
+    }
+
+    file_descript = open(path, O_RDONLY);
+    if(file_descript < 0) exit(-1);
+
+    file_size = get_size_by_fd(file_descript);
+    printf("file size:\t%lu\n", file_size);
+
+    file_buffer = mmap(0, file_size, PROT_READ, MAP_SHARED, file_descript, 0);
+    MD5((unsigned char*) file_buffer, file_size, hash);
+    munmap(file_buffer, file_size);
+
+    print_md5_sum(hash, (const unsigned char*)path);
+
+    return hash;
 }
 
 const char* sBootloader_FW_FileSearching(void)

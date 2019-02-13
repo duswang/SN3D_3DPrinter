@@ -94,6 +94,11 @@ set(
 	# ptrhead #
 	pthread
 
+	# openssl #
+	ssl 
+	
+	crypto
+	
 	# libusb #
 	usb-1.0
 
@@ -117,6 +122,7 @@ set(
 	
 	# Warning #
 	-Wall
+	
 )
 
 # Mode #

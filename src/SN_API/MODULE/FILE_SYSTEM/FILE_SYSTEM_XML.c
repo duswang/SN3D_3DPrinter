@@ -183,7 +183,7 @@ SN_STATUS FileSystem_deviceInfoXMLUpdate(const char *srcPath, const deviceInfo_t
     doc = xmlParseFile(docname);
     if(doc == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+        return SN_STATUS_NOT_OK;
     }
 
     cur = xmlDocGetRootElement(doc);
@@ -234,7 +234,7 @@ deviceInfo_t* FileSystem_deviceInfoXMLLoad(const char *srcPath)
     doc = xmlParseFile(docname);
     if(doc == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+        return NULL;
     }
 
     cur = xmlDocGetRootElement(doc);

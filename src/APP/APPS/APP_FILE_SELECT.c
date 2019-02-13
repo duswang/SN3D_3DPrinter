@@ -83,9 +83,6 @@ SN_STATUS APP_STATE_EnterStateFileSelect(void)
 
     retStatus = SN_MODULE_DISPLAY_FileSelectOptionUpdate(optionIndex);
 
-    retStatus = SN_MODULE_DISPLAY_FileSelectPageUpdate(pageIndex);
-
-
     return retStatus;
 }
 

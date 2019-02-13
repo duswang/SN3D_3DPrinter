@@ -233,7 +233,16 @@ const versionInfo_t* SN_MODULE_FILE_SYSTEM_VersionInfoGet(void)
 
 const deviceInfo_t* SN_MODULE_FILE_SYSTEM_DeviceInfoGet(void)
 {
-    sDeviceInfoLoad();
+    int i = 0;
+
+    while(i < 5)
+    {
+        if(SN_STATUS_OK == sDeviceInfoLoad())
+        {
+            break;
+        }
+        SN_SYS_Delay(30);
+    }
 
     if(moduleFileSystem.deviceInfo == NULL)
     {
@@ -906,6 +915,10 @@ static SN_STATUS sDeviceInfoLoad(void)
 
     sprintf(path,"%s/%s.%s", DEVICE_FILE_PATH, DEVICE_FILE_NAME, DEVICE_FILE_EXT);
     moduleFileSystem.deviceInfo = FileSystem_deviceInfoXMLLoad(path);
+    if(moduleFileSystem.deviceInfo == NULL)
+    {
+        retStatus = SN_STATUS_NOT_OK;
+    }
 
     return retStatus;
 }
