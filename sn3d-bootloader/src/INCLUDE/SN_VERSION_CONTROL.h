@@ -16,6 +16,8 @@
 #ifndef SN_VERSION_CONTROL
 #define SN_VERSION_CONTROL
 
+#define HASH_MAGIC_NUMBER
+
 /*************************************************************
  * @name Version Control
  *  Description of 3D Printr Module Init and Uninit funtions.
