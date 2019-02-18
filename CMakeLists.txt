@@ -237,11 +237,11 @@ add_custom_target(stop
 )
 
 add_custom_target(doxygen
-    doxygen ${PRJ_ROOT_PATH}/sn3d_doxygen
+    doxygen ${PRJ_ROOT_PATH}/lib/sn3d_doxygen
 )
 
 add_custom_target(all_clean 
-    rm -rf ${PRJ_ROOT_PATH}/CMakeFiles ${PRJ_ROOT_PATH}/cmake_install.cmake ${PRJ_ROOT_PATH}/CMakeCache.txt
+    rm -rf ${PRJ_ROOT_PATH}/CMakeFiles ${PRJ_ROOT_PATH}/cmake_install.cmake ${PRJ_ROOT_PATH}/CMakeCache.txt ${PRJ_ROOT_PATH}/res ${PRJ_ROOT_PATH}/bin ${PRJ_ROOT_PATH}/Makefile ${PRJ_ROOT_PATH}/cmake_install.cmake 
 )
 
 add_custom_target(sn3d_service_install 

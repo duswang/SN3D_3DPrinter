@@ -150,14 +150,24 @@ set(
 )
 
 # Command #
-add_custom_target(gdb gdb ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PRJ_BINARY_NAME})
-add_custom_target(run ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PRJ_BINARY_NAME})
+add_custom_target(gdb
+	gdb ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PRJ_BINARY_NAME}
+)
+add_custom_target(run 
+	${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PRJ_BINARY_NAME}
+)
 
-add_custom_target(start sudo systemctl restart SN3D_Bootloader.service)
-add_custom_target(stop sudo systemctl stop SN3D_Bootloader.service)
-add_custom_target(status sudo systemctl status SN3D_Bootloader.service)
+add_custom_target(start 
+	sudo systemctl restart SN3D_Bootloader.service
+)
+add_custom_target(stop 
+	sudo systemctl stop SN3D_Bootloader.service
+)
 
-add_custom_target(all_clean rm -rf ${BOOTLOADER_ROOT_PATH}/CMakeFiles ${BOOTLOADER_ROOT_PATH}/cmake_install.cmake ${BOOTLOADER_ROOT_PATH}/CMakeCache.txt)
+add_custom_target(all_clean 
+    rm -rf ${BOOTLOADER_ROOT_PATH}/CMakeFiles ${BOOTLOADER_ROOT_PATH}/cmake_install.cmake ${BOOTLOADER_ROOT_PATH}/CMakeCache.txt ${BOOTLOADER_ROOT_PATH}/res ${BOOTLOADER_ROOT_PATH}/bin ${BOOTLOADER_ROOT_PATH}/Makefile ${BOOTLOADER_ROOT_PATH}/cmake_install.cmake 
+)
+
 
 ################### Target Setting ###################
 # Install exe file #
