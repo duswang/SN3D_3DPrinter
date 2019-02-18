@@ -61,6 +61,12 @@
 #define VERSION_FILE_PATH              "/SN3D/sn3d-project/sn3d-bootloader/res/firmware"
 #endif
 
+#ifdef __APPLE__
+#define BINARY_FILE_PATH              "../bin/build/sn3d"
+#endif
+#ifdef linux
+#define BINARY_FILE_PATH              "/SN3D/sn3d-project/bin/build/sn3d"
+#endif
 ///@}
 
 /*************************************************************@}*/
@@ -218,7 +224,7 @@ typedef struct version_information {
     long                         minorNumber;  /**< num */
     char      timestamp[MAX_FILENAME_LENGTH];  /**< str */
     char     binaryName[MAX_FILENAME_LENGTH];  /**< str */
-    long                                hash;
+    char             hash[(MD5_DIGEST_LENGTH * 2) + 1];
 } versionInfo_t;
 /*************************************************************@}*/
 

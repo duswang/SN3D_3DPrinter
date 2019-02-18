@@ -85,7 +85,7 @@ static SN_STATUS sMachineInfoLoad(uint32_t machineInfoIndex);
 
 /* *** VERSION *** */
 static SN_STATUS sVersionInfoLoad(void);
-
+static bool      sVersionHashCheck(void);
 /* *** DEVICE *** */
 static SN_STATUS sDeviceInfoLoad(void);
 
@@ -136,6 +136,26 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void)
     SN_SYS_Delay(250);
 
     sVersionInfoLoad();
+
+    /* Default Machine Info Setup */
+    SN_MODULE_DISPLAY_BootProgressUpdate(45, "Version Info Check...");
+    SN_SYS_Delay(250);
+
+    sVersionInfoLoad();
+
+    SN_MODULE_DISPLAY_BootProgressUpdate(50, "binary File Check...");
+    if(sVersionHashCheck())
+    {
+        SN_MODULE_DISPLAY_BootProgressUpdate(52, "binary ok...");
+    }
+    else
+    {
+        SN_MODULE_DISPLAY_BootProgressUpdate(52, "bad binary detected !!");
+        SN_SYS_Delay(3000);
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "binary is changed not normaly !!");
+    }
+
+    SN_SYS_Delay(250);
 
     /* Load Option */
     SN_MODULE_DISPLAY_BootProgressUpdate(50, "Mahcine Info Read...");
@@ -901,6 +921,46 @@ static SN_STATUS sVersionInfoLoad(void)
     moduleFileSystem.versionInfo = FileSystem_versionInfoXMLLoad(path);
 
     return retStatus;
+}
+
+static bool sVersionHashCheck(void)
+{
+    bool hashMatched = false;
+
+    unsigned char* hash = NULL;
+    unsigned char* hashStr = NULL;
+
+    hash = FileSysetm_MD5_Hash_WithFile(BINARY_FILE_PATH, "DEADBEEF");
+    if(hash == NULL)
+    {
+        return false;
+    }
+
+    hashStr = FileSystem_MD5_HashToString(hash);
+    if(hashStr == NULL)
+    {
+        return false;
+    }
+
+    printf(" CALCULATED   HASH :: %s \n", hashStr);
+    printf(" VERSION INFO HASH :: %s \n", moduleFileSystem.versionInfo->hash);
+
+    if(!strcmp((const char*)hashStr, (const char*)moduleFileSystem.versionInfo->hash) || \
+       !strcmp((const char*)HASH_MAGIC_NUMBER, (const char*)moduleFileSystem.versionInfo->hash))
+    {
+        printf("\n\n Hash is matching!! \n\n");
+        hashMatched = true;
+    }
+    else
+    {
+        printf("\n\n Hash is not matching!! \n\n");
+        hashMatched = false;
+    }
+
+    free(hash);
+    free(hashStr);
+
+    return hashMatched;
 }
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *

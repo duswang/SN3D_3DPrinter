@@ -3,7 +3,8 @@
     <project>SN3D Project</project>
     <releaseNumber>1</releaseNumber>
     <majorNumber>0</majorNumber>
-    <minorNumber>8</minorNumber>
+    <minorNumber>9</minorNumber>
     <timestamp>2019.01.22</timestamp>
-    <binraryName>exe</binraryName>
+    <binraryName>sn3d</binraryName>
+    <hash>0xDEADBEEF</hash>
 </version>

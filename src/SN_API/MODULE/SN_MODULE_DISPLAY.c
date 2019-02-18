@@ -923,7 +923,7 @@ static SN_STATUS sDisplay_NextionInit(void)
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
     SN_SYS_Delay(3);
 
-    sprintf(buffer,"Info.Hash.txt=\"%ld\"", versionInfo->hash);
+    sprintf(buffer,"Info.Hash.txt=\"%s\"", versionInfo->hash);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
     SN_SYS_Delay(3);

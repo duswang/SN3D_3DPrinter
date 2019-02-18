@@ -78,4 +78,33 @@ extern versionInfo_t* FileSystem_versionInfoXMLLoad(const char *srcPath);
 
 /*************************************************************@}*/
 
+/*************************************************************
+ * @name File System MD5 Hash
+ * @brief
+ * @{
+ */
+
+#define HASH_MAGIC_NUMBER "0xDEADBEEF"
+
+/** @brief
+ *
+ *  @param
+ *  @return MD5 hash
+ *
+ *  @note
+ */
+extern unsigned char* FileSysetm_MD5_Hash_WithFile(char* path, char* salt);
+
+/** @brief MD5 Hash to String Data
+ *
+ *  @param
+ *  @return MD5 hash with a String
+ *
+ *  @note
+ */
+extern unsigned char* FileSystem_MD5_HashToString(unsigned char* hash);
+
+/*************************************************************@}*/
+
+
 #endif /* SN_MODULE_FILE_SYSTEM_XML_H_ */

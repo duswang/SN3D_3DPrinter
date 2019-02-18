@@ -96,7 +96,7 @@ typedef enum device_axis {
     DEVICE_AXIS_Y,
     DEVICE_AXIS_Z,
     DEVICE_AXIS_CNT,
-    DEVICE_AXIS_MARGIN = 10
+    DEVICE_AXIS_MARGIN = 1
 } deviceAxis_t;
 
 typedef struct moduel_3d_printer {

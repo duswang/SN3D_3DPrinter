@@ -29,9 +29,11 @@
 #include <sys/time.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
+#include <sys/reboot.h>
 
 #include <errno.h>
 
+#include <openssl/md5.h>
 
 /* SN SYSTEM */
 #include "SN_SYS_ERROR.h"

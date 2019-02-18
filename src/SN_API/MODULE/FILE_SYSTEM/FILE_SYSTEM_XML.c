@@ -74,11 +74,80 @@ static SN_STATUS sParseXML_optionFile(printOption_t* printOption, xmlDocPtr doc,
 /* VERSION XML */
 static SN_STATUS sParseXML_VersionFile(versionInfo_t* versionInfo, xmlDocPtr doc, xmlNodePtr cur);
 
+/* Hash File */
+static unsigned long sGet_size_by_fd(int fd);
+
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
  *  Extern Functions
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+
+unsigned char* FileSysetm_MD5_Hash_WithFile(char* path, char* salt)
+{
+    unsigned char* hash = NULL;
+
+    int file_descript = 0;
+    unsigned long file_size = 0;
+    char* file_buffer = NULL;
+    MD5_CTX mdContext;
+
+    hash = (unsigned char*)malloc(sizeof(unsigned char) * MD5_DIGEST_LENGTH);
+    if(hash == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "hash memory allocate falid.");
+    }
+
+    file_descript = open(path, O_RDONLY);
+    if(file_descript < 0) exit(-1);
+
+    file_size = sGet_size_by_fd(file_descript);
+    printf("file size:\t%lu\n", file_size);
+
+    file_buffer = mmap(0, file_size, PROT_READ, MAP_SHARED, file_descript, 0);
+
+    MD5_Init (&mdContext);
+
+    MD5_Update(&mdContext, (unsigned char*) file_buffer, file_size);
+
+    if(salt != NULL)
+    {
+        MD5_Update(&mdContext, (unsigned char*)salt, strlen(salt));
+    }
+
+    munmap(file_buffer, file_size);
+    MD5_Final(hash, &mdContext);
+
+    munmap(file_buffer, file_size);
+
+    return hash;
+}
+
+unsigned char* FileSystem_MD5_HashToString(unsigned char* hash)
+{
+    int i = 0;
+    unsigned char* hashStr = NULL;
+
+    if(hash == NULL)
+    {
+        return NULL;
+    }
+
+    hashStr = (unsigned char*)malloc(sizeof(unsigned char) * ((MD5_DIGEST_LENGTH * 2) + 1));
+    if(hashStr == NULL)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "hash memory allocate falid.");
+    }
+
+    for(i = 0; i < MD5_DIGEST_LENGTH; ++i)
+    {
+        sprintf((char*)&hashStr[i * 2], "%02x", (unsigned int)hash[i]);
+    }
+
+    printf("\n\n HASH STR :: %s \n\n", hashStr);
+
+    return hashStr;
+}
 
 printTarget_t* FileSystem_targetXMLLoad(const char *srcPath)
 {
@@ -597,6 +666,12 @@ static SN_STATUS sParseXML_VersionFile(versionInfo_t* versionInfo, xmlDocPtr doc
             strcpy(versionInfo->binaryName, (const char *)key);
             xmlFree(key);
         }
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"hash")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            strcpy(versionInfo->hash, (const char *)key);
+            xmlFree(key);
+        }
         cur = cur->next;
     }
 
@@ -608,4 +683,16 @@ static SN_STATUS sParseXML_targetFile(printTarget_t* printTarget, xmlDocPtr doc,
     SN_STATUS retStatus = SN_STATUS_OK;
 
     return retStatus;
+}
+
+static unsigned long sGet_size_by_fd(int fd)
+{
+    struct stat statbuf;
+
+    if(fstat(fd, &statbuf) < 0)
+    {
+        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "file can't open.");
+    }
+
+    return statbuf.st_size;
 }

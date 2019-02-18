@@ -18,12 +18,7 @@
 
 /* ******* STATIC FUNCTIONS ******* */
 static bool sFirmwareFileCompare(void);
-
 static void sFirmwareFileLoad(const char* path);
-
-
-static unsigned char* sGenerateHash(char* path, char* salt);
-static void print_md5_sum(const unsigned char* md, const unsigned char* path);
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
@@ -32,18 +27,7 @@ static void print_md5_sum(const unsigned char* md, const unsigned char* path);
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 bool SN_VERSION_CONTROL_VersionUpdate(const char* fileName)
 {
-    unsigned char* hash = NULL;
     char path[MAX_PATH_LENGTH];
-
-    hash = sGenerateHash(FIRMWARE_BINARY_PATH, "test");
-    if(hash == NULL)
-    {
-
-    }
-    else
-    {
-        free((void*)hash);
-    }
 
     printf("%s", fileName);
     sprintf(path, "%s/%s", USB_PATH, fileName); fflush(stdout);
@@ -76,6 +60,8 @@ static bool sFirmwareFileCompare(void)
 {
     bool isNeedUpdate = false;
     char path[MAX_PATH_LENGTH];
+    unsigned char* hash = NULL;
+    unsigned char* hashStr = NULL;
 
     versionInfo_t* currentVersion = NULL;
     versionInfo_t* newVersion = NULL;
@@ -84,17 +70,31 @@ static bool sFirmwareFileCompare(void)
 
     newVersion = FileSystem_versionInfoXMLLoad(TEMP_FIRMWARE_VERSION_PATH);
 
+    //hash = sGenerateHash(FIRMWARE_BINARY_PATH, NULL);
+    hash = FileSysetm_MD5_Hash_WithFile(SN3D_BINARY_PATH, "DEADBEEF");
+    if(hash == NULL)
+    {
+        return true;
+    }
+    hashStr = FileSystem_MD5_HashToString(hash);
+    if(hashStr == NULL)
+    {
+        return true;
+    }
+
     printf("\n\n * Current Version * \n");
     printf(" Project   : [ %s ] \n", currentVersion->name);
     printf(" Version   : [ v%ld.%ld.%ld ] \n", currentVersion->releaseNumber, currentVersion->majorNumber, currentVersion->minorNumber);
     printf(" Timestamp : [ %s ] \n", currentVersion->timestamp);
-    printf(" binray    : [ %s ] \n\n", currentVersion->binaryName);
+    printf(" binray    : [ %s ] \n", currentVersion->binaryName);
+    printf(" hash      : %s \n\n", hashStr);
 
     printf("\n\n * New Version * \n");
     printf(" Project   : [ %s ] \n", newVersion->name);
     printf(" Version   : [ v%ld.%ld.%ld ] \n", newVersion->releaseNumber, newVersion->majorNumber, newVersion->minorNumber);
     printf(" Timestamp : [ %s ] \n", newVersion->timestamp);
-    printf(" binray    : [ %s ] \n\n", newVersion->binaryName);
+    printf(" binray    : [ %s ] \n", newVersion->binaryName);
+    printf(" hash      : %s \n\n", newVersion->hash);
 
     if(newVersion->releaseNumber > currentVersion->releaseNumber)
     {
@@ -107,6 +107,18 @@ static bool sFirmwareFileCompare(void)
     else if(newVersion->minorNumber > currentVersion->minorNumber)
     {
         isNeedUpdate = true;
+    }
+
+    printf(" NOW VERSION HASH :: %s \n", hashStr);
+    printf(" NEW VERSION HASH :: %s \n", newVersion->hash);
+
+    if(!strcmp((const char*)hashStr, (const char*)newVersion->hash))
+    {
+        printf("\n\n Hash is matching!! \n\n");
+    }
+    else
+    {
+        printf("\n\n Hash is not matching!! \n\n");
     }
 
     if(isNeedUpdate)
@@ -133,77 +145,8 @@ static bool sFirmwareFileCompare(void)
         printf("\n => Current firmware version is newest version. <= \n\n\n");
     }
 
+    free(hash);
+    free(hashStr);
+
     return isNeedUpdate;
-}
-
-static void print_md5_sum(const unsigned char* md, const unsigned char* path)
-{
-    int i;
-
-    printf("\n\n * HASH *\nHASH : ");
-
-    for(i = 0; i < MD5_DIGEST_LENGTH; i++)
-    {
-            printf("%02x", md[i]);
-    }
-
-    printf("\n\nPATH : %s\n\n", path);
-}
-
-static unsigned long get_size_by_fd(int fd)
-{
-    struct stat statbuf;
-
-    if(fstat(fd, &statbuf) < 0)
-    {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "file can't open.");
-    }
-
-    return statbuf.st_size;
-}
-
-char* concat(const char *s1, const char *s2)
-{
-    char *result = malloc(strlen(s1) + strlen(s2) + 1); // +1 for the null-terminator
-    // in real code you would check for errors in malloc here
-    strcpy(result, s1);
-    strcat(result, s2);
-    return result;
-}
-
-static unsigned char* sGenerateHash(char* path, char* salt)
-{
-    unsigned char* hash = NULL;
-    int file_descript = 0;
-    unsigned long file_size = 0;
-    char* file_buffer = NULL;
-    char* temp_buffer = NULL;
-
-    hash = (unsigned char*)malloc(sizeof(unsigned char) * MD5_DIGEST_LENGTH);
-    if(hash == NULL)
-    {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "hash memory allocate falid.");
-    }
-
-    file_descript = open(path, O_RDONLY);
-    if(file_descript < 0) exit(-1);
-
-    file_size = get_size_by_fd(file_descript);
-    printf("file size:\t%lu\n", file_size);
-
-    file_buffer = mmap(0, file_size, PROT_READ, MAP_SHARED, file_descript, 0);
-
-    if(salt != NULL)
-    {
-        MD5((unsigned char*)concat(file_buffer, salt), file_size + strlen(salt), hash);
-    }
-    else
-    {
-        MD5((unsigned char*) file_buffer, file_size, hash);
-    }
-    munmap(file_buffer, file_size);
-
-    print_md5_sum(hash, (const unsigned char*)path);
-
-    return hash;
 }

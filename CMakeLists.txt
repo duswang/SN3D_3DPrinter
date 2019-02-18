@@ -144,6 +144,10 @@ set(
 	# ptrhead #
 	pthread
 
+	# openssl #
+	ssl 
+	crypto
+	
 	# libusb #
 	usb-1.0
 
