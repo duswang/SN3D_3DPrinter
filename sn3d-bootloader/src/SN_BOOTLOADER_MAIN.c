@@ -36,7 +36,7 @@ int main(void)
     {
         isNeedReboot = sBootloader_Start(firmwareFile);
 
-        //sBootloader_Terminate(isNeedReboot);
+        sBootloader_Terminate(isNeedReboot);
     }
     else
     {
