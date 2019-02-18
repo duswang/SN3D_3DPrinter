@@ -277,7 +277,7 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_DeviceInfoUpdate(const deviceInfo_t deviceInfo)
     SN_STATUS retStatus = SN_STATUS_OK;
     char path[MAX_PATH_LENGTH];
 
-    sprintf(path,"%s/%s.%s", DEVICE_FILE_PATH, DEVICE_FILE_NAME, DEVICE_FILE_EXT);
+    sprintf(path,"%s/%s.%s", DEVICE_FOLDER_PATH, DEVICE_FILE_NAME, DEVICE_FILE_EXT);
 
     FileSystem_deviceInfoXMLUpdate(path, deviceInfo);
 
@@ -567,10 +567,19 @@ static SN_STATUS sMachineInfoPageLoad(fileSystem_t* fileSystem)
     }
     currentPage = pageHeader->firstPage;
 
-    numberOfnameList = scandir(MACHINE_FILE_PATH, &nameList, 0, alphasort);
-    if(numberOfnameList < 0)
+    numberOfnameList = scandir(MACHINE_FOLDER_PATH, &nameList, 0, alphasort);
+    if(numberOfnameList <= 2)
     {
         perror("scandir");
+        retStatus = FileSystem_fctl_CreateDircetoryTree(MACHINE_FOLDER_PATH);
+        SN_SYS_ERROR_CHECK(retStatus, "Directory Create Failed.");
+
+        sprintf(path,"%s/%s.%s", MACHINE_FOLDER_PATH, MACHINE_FILE_NAME, MACHINE_FILE_EXT);
+        printf("\n\n %s \n\n", path);
+
+        FileSystem_fctl_CopyFile(DEFAULT_MACHINE_FILE_PATH, path);
+
+        return sMachineInfoPageLoad(fileSystem);
     }
     else
     {
@@ -589,7 +598,7 @@ static SN_STATUS sMachineInfoPageLoad(fileSystem_t* fileSystem)
                 free(nameBuffer);
                 nameBuffer = NULL;
 
-                sprintf(path,"%s/%s.%s", MACHINE_FILE_PATH, currentPage->item[currentPage->itemCnt].name, MACHINE_FILE_EXT);
+                sprintf(path,"%s/%s.%s", MACHINE_FOLDER_PATH, currentPage->item[currentPage->itemCnt].name, MACHINE_FILE_EXT);
                 currentPage->item[currentPage->itemCnt].contents = FileSystem_machineInfoXMLLoad(path);
 
                 currentPage->itemCnt++;
@@ -653,10 +662,19 @@ static SN_STATUS sOptionPageLoad(fileSystem_t* fileSystem)
     }
     currentPage = pageHeader->firstPage;
 
-    numberOfnameList = scandir(OPTION_FILE_PATH, &nameList, 0, alphasort);
-    if(numberOfnameList < 0)
+    numberOfnameList = scandir(OPTION_FOLDER_PATH, &nameList, 0, alphasort);
+    if(numberOfnameList <= 2)
     {
         perror("scandir");
+        retStatus = FileSystem_fctl_CreateDircetoryTree(OPTION_FOLDER_PATH);
+        SN_SYS_ERROR_CHECK(retStatus, "Directory Create Failed.");
+
+        sprintf(path,"%s/%s.%s", OPTION_FOLDER_PATH, OPTION_FILE_NAME, OPTION_FILE_EXT);
+        printf("\n\n %s \n\n", path);
+
+        FileSystem_fctl_CopyFile(DEFAULT_OPTION_FILE_PATH, path);
+
+        return sOptionPageLoad(fileSystem);
     }
     else
     {
@@ -675,7 +693,7 @@ static SN_STATUS sOptionPageLoad(fileSystem_t* fileSystem)
                 free(nameBuffer);
                 nameBuffer = NULL;
 
-                sprintf(path,"%s/%s.%s", OPTION_FILE_PATH, currentPage->item[currentPage->itemCnt].name, OPTION_FILE_EXT);
+                sprintf(path,"%s/%s.%s", OPTION_FOLDER_PATH, currentPage->item[currentPage->itemCnt].name, OPTION_FILE_EXT);
                 currentPage->item[currentPage->itemCnt].contents = (printOption_t *)FileSystem_optionXMLLoad(path);
 
                 currentPage->itemCnt++;
@@ -736,14 +754,14 @@ static SN_STATUS sFilePageLoad(fileSystem_t* fileSystem)
     }
     currentPage = pageHeader->firstPage;
 
-    numberOfnameList = scandir(USB_PATH, &nameList, 0, alphasort);
+    numberOfnameList = scandir(USB_FOLDER_PATH, &nameList, 0, alphasort);
     if(numberOfnameList < 0)
     {
         while(scandirErrorChecker <= 5)
         {
             SN_SYS_Delay(300);
             scandirErrorChecker++;
-            numberOfnameList = scandir(USB_PATH, &nameList, 0, alphasort);
+            numberOfnameList = scandir(USB_FOLDER_PATH, &nameList, 0, alphasort);
 
             if(numberOfnameList >= 0) break;
         }
@@ -916,7 +934,7 @@ static SN_STATUS sVersionInfoLoad(void)
     SN_STATUS retStatus = SN_STATUS_OK;
     char path[MAX_PATH_LENGTH];
 
-    sprintf(path, "%s/%s.%s", VERSION_FILE_PATH, SN3D_VERSION_STR, SN3D_VERSION_EXTENTION);
+    sprintf(path, "%s/%s.%s", VERSION_FOLDER_PATH, SN3D_VERSION_STR, SN3D_VERSION_EXTENTION);
 
     moduleFileSystem.versionInfo = FileSystem_versionInfoXMLLoad(path);
 
@@ -930,7 +948,7 @@ static bool sVersionHashCheck(void)
     unsigned char* hash = NULL;
     unsigned char* hashStr = NULL;
 
-    hash = FileSysetm_MD5_Hash_WithFile(BINARY_FILE_PATH, "DEADBEEF");
+    hash = FileSysetm_MD5_Hash_WithFile(BINARY_FOLDER_PATH, "0xDEADBEEF");
     if(hash == NULL)
     {
         return false;
@@ -973,7 +991,7 @@ static SN_STATUS sDeviceInfoLoad(void)
     SN_STATUS retStatus = SN_STATUS_OK;
     char path[MAX_PATH_LENGTH];
 
-    sprintf(path,"%s/%s.%s", DEVICE_FILE_PATH, DEVICE_FILE_NAME, DEVICE_FILE_EXT);
+    sprintf(path,"%s/%s.%s", DEVICE_FOLDER_PATH, DEVICE_FILE_NAME, DEVICE_FILE_EXT);
     moduleFileSystem.deviceInfo = FileSystem_deviceInfoXMLLoad(path);
     if(moduleFileSystem.deviceInfo == NULL)
     {
@@ -1004,7 +1022,7 @@ static SN_STATUS sTargetLoad(uint32_t pageIndex, uint32_t itemIndex)
     }
 
     /* Target Info Setting. */
-    strcpy(printTarget->targetPath, TARGET_PATH);
+    strcpy(printTarget->targetPath, TARGET_FOLDER_PATH);
     strcpy(printTarget->targetName, TargetFile.name);
 
     nameBuffer = FileSystem_fctl_Extarct_FileName(TargetFile.name);
@@ -1015,17 +1033,17 @@ static SN_STATUS sTargetLoad(uint32_t pageIndex, uint32_t itemIndex)
     retStatus = sTargetFileCreate(printTarget->projectName, FileSystem_fctl_ExtractFileExtention(TargetFile.name));
     SN_SYS_ERROR_CHECK(retStatus, "Faild Create Target Files.");
 
-    if(FileSystem_CountFileWithStr(TARGET_PATH, CWS_CONDITION_STR))
+    if(FileSystem_CountFileWithStr(TARGET_FOLDER_PATH, CWS_CONDITION_STR))
     {
         printTarget->targetType = CWS;
     }
-    else if(FileSystem_CountFileWithStr(TARGET_PATH, NETFABB_CONDITION_STR))
+    else if(FileSystem_CountFileWithStr(TARGET_FOLDER_PATH, NETFABB_CONDITION_STR))
     {
         printTarget->targetType = NETFABB;
         strcpy(printTarget->projectName, printTarget->targetName);
     }
     /*
-    else if(FileSystem_CountFileWithStr(TARGET_PATH, B9_CONDITION_STR))
+    else if(FileSystem_CountFileWithStr(TARGET_FOLDER_PATH, B9_CONDITION_STR))
     {
         //B9 Not Support yet.
     }
@@ -1043,7 +1061,7 @@ static SN_STATUS sTargetLoad(uint32_t pageIndex, uint32_t itemIndex)
         strcpy(printTarget->projectName, printTarget->targetName);
     }
 
-    printTarget->slice                      = FileSystem_CountFileWithStr(TARGET_PATH, TARGET_IMAGE_EXT);
+    printTarget->slice                      = FileSystem_CountFileWithStr(TARGET_FOLDER_PATH, TARGET_IMAGE_EXT);
 
     moduleFileSystem.printTarget = printTarget;
 
@@ -1063,7 +1081,7 @@ static SN_STATUS sTargetDestroy(void)
     moduleFileSystem.printTarget = NULL;
 
     /* Clean Folder */
-    retStatus = FileSystem_fctl_RemoveFiles(TARGET_PATH);
+    retStatus = FileSystem_fctl_RemoveFiles(TARGET_FOLDER_PATH);
 
     return retStatus;
 }
@@ -1074,18 +1092,18 @@ static SN_STATUS sTargetFileCreate(const char* fileName, const char* fileExtenti
     char srcTargetPath[MAX_PATH_LENGTH], desTargetPath[MAX_PATH_LENGTH];
 
     /* Folder Check */
-    retStatus = FileSystem_fctl_MakeDirectory(TARGET_PATH);
+    retStatus = FileSystem_fctl_CreateDircetoryTree(TARGET_FOLDER_PATH);
 
     /* Clean Folder */
-    retStatus = FileSystem_fctl_RemoveFiles(TARGET_PATH);
+    retStatus = FileSystem_fctl_RemoveFiles(TARGET_FOLDER_PATH);
 
     /* Get Source Path */
-    sprintf(srcTargetPath,"%s/%s.%s", USB_PATH, fileName, fileExtention);
-    sprintf(desTargetPath,"%s/%s.%s", TARGET_PATH, fileName, fileExtention);
+    sprintf(srcTargetPath,"%s/%s.%s", USB_FOLDER_PATH, fileName, fileExtention);
+    sprintf(desTargetPath,"%s/%s.%s", TARGET_FOLDER_PATH, fileName, fileExtention);
 
     /* Create Target Files */
     retStatus = FileSystem_fctl_CopyFile(srcTargetPath, desTargetPath);
-    retStatus = FileSystem_fctl_ExtractFile(desTargetPath, TARGET_PATH);
+    retStatus = FileSystem_fctl_ExtractFile(desTargetPath, TARGET_FOLDER_PATH);
 
     return retStatus;
 }

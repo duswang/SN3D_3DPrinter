@@ -18,21 +18,59 @@
 
 /*************************************************************
  * @name File System File Control
- * @brief
+ * @brief Copy File.
  * @{
  */
 
+/** @brief Copy File
+ *
+ *  @param srcPath - Source path
+ *  @param desPath - Destination path
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
 extern SN_STATUS FileSystem_fctl_CopyFile(const char* srcPath, const char* desPath);
 
 
+/** @brief Remove All File in Directory.
+ *
+ *  @param dir - Directory path.
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
 extern SN_STATUS FileSystem_fctl_RemoveFiles(const char* dir);
 
 
+/** @brief Extract '.zip' file.
+ *
+ *  @param srcPath - Source path
+ *  @param desPath - Destination path
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
 extern SN_STATUS FileSystem_fctl_ExtractFile(const char* srcPath, const char* desPath);
 
 
+/** @brief Make directory.
+ *
+ *  @param dir - Directory path.
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
 extern SN_STATUS FileSystem_fctl_MakeDirectory(const char* dir);
 
+/** @brief Create directorys by Path.
+ *
+ *  @param dir - Directory path.
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
+extern SN_STATUS FileSystem_fctl_CreateDircetoryTree(const char* path);
 
 /*************************************************************@}*/
 
@@ -42,10 +80,34 @@ extern SN_STATUS FileSystem_fctl_MakeDirectory(const char* dir);
  * @{
  */
 
+/** @brief Extarct filename from filename with extention name.
+ *
+ *  @param filename - file name with extention [ ex) test.txt ]
+ *  @return It return only filename [ ex) test ]
+ *
+ *  @note
+ */
 extern char* FileSystem_fctl_Extarct_FileName(const char* filename);
 
+
+/** @brief Extarct file extention from filename with extention name.
+ *
+ *  @param filename - file name with extention [ ex) test.txt ]
+ *  @return It return only extention name [ ex) .txt ]
+ *
+ *  @note
+ */
 extern const char* FileSystem_fctl_ExtractFileExtention(const char* filename);
 
+/** @brief Count File by condition string
+ *
+ *  @param srcPath - Source path
+ *  @param condStr - Condtition string
+ *
+ *  @return Counted number
+ *
+ *  @note
+ */
 uint32_t FileSystem_CountFileWithStr(const char* srcPath, const char* condStr);
 
 

@@ -245,8 +245,8 @@ add_custom_target(all_clean
 )
 
 add_custom_target(sn3d_service_install 
-    sudo cp ${PRJ_ROOT_PATH}/res/service/SN3D.service /etc/systemd/system/SN3D.service &&
-    sudo cp ${PRJ_ROOT_PATH}/res/service/SN3D_Bootloader.service /etc/systemd/system/SN3D_Bootloader.service &&
+    sudo cp ${PRJ_ROOT_PATH}/lib/service/SN3D.service /etc/systemd/system/SN3D.service &&
+    sudo cp ${PRJ_ROOT_PATH}/lib/service/SN3D_Bootloader.service /etc/systemd/system/SN3D_Bootloader.service &&
     sudo systemctl daemon-reload && 
     sudo systemctl enable SN3D.service &&
     sudo systemctl enable SN3D_Bootloader.service

@@ -9,40 +9,46 @@
 #define SN_PATH_H_
 
 #ifdef __APPLE__
-#define USB_PATH                      "/Volumes/USB_0"
+#define USB_FOLDER_PATH                         "/Volumes/USB_0"
 #endif
 #ifdef linux
-#define USB_PATH                      "/mnt/volume"
+#define USB_FOLDER_PATH                         "/mnt/volume"
 #endif
 
 #define MAX_FILENAME_LENGTH        256
 #define MAX_PATH_LENGTH            256
 
-#define FIRMWARE_PATH                    "/SN3D/sn3d-project/sn3d-bootloader/res/firmware"
-#define TEMP_FIRMWARE_PATH               "/SN3D/sn3d-project/sn3d-bootloader/res/tempFirmware"
+#define FIRMWARE_FOLDER_PATH                    "/SN3D/sn3d-project/sn3d-bootloader/res/firmware"
+#define TEMP_FIRMWARE_FOLDER_PATH               "/SN3D/sn3d-project/sn3d-bootloader/res/tempFirmware"
 
-#define FIRMWARE_VERSION_PATH            "/SN3D/sn3d-project/sn3d-bootloader/res/firmware/version.xml"
-#define TEMP_FIRMWARE_VERSION_PATH       "/SN3D/sn3d-project/sn3d-bootloader/res/tempFirmware/version.xml"
+#define VERSION_FILE_PATH                       "/SN3D/sn3d-project/sn3d-bootloader/res/firmware/version.xml"
+#define TEMP_VERSION_FILE_PATH                  "/SN3D/sn3d-project/sn3d-bootloader/res/tempFirmware/version.xml"
 
-#define FIRMWARE_MACHINE_INFO_PATH       "/SN3D/sn3d-project/sn3d-bootloader/res/firmware/machineInfo.xml"
-#define TEMP_FIRMWARE_MACHINE_INFO_PATH  "/SN3D/sn3d-project/sn3d-bootloader/res/tempFirmware/machineInfo.xml"
+#define MACHINE_FILE_PATH                            "/SN3D/sn3d-project/sn3d-bootloader/res/firmware/machineInfo.xml"
+#define TEMP_MACHINE_FILE_PATH                       "/SN3D/sn3d-project/sn3d-bootloader/res/tempFirmware/machineInfo.xml"
 
-#define FIRMWARE_BINARY_PATH             "/SN3D/sn3d-project/sn3d-bootloader/res/firmware/sn3d"
+#define BINARY_FILE_PATH                             "/SN3D/sn3d-project/sn3d-bootloader/res/firmware/sn3d"
 
-#define SN3D_BINARY_FOLDER_PATH          "/SN3D/sn3d-project/bin/build"
-#define SN3D_BINARY_PATH                 "/SN3D/sn3d-project/bin/build/sn3d"
+#define SN3D_BINARY_FOLDER_PATH                 "/SN3D/sn3d-project/bin/build"
+#define SN3D_BINARY_FILE_PATH                   "/SN3D/sn3d-project/bin/build/sn3d"
 
-#define SN3D_OPTION_FOLDER_PATH          "/SN3D/sn3d-project/res/optionConfig"
+#define SN3D_OPTION_FOLDER_PATH                 "/SN3D/sn3d-project/res/optionConfig"
 
-#define SN3D_MACHINE_CONFIG_FOLDER_PATH  "/SN3D/sn3d-project/res/machineConfig"
-#define SN3D_MACHINE_CONFIG_PATH         "/SN3D/sn3d-project/res/machineConfig/machineInfo.xml"
+#define SN3D_MACHINE_FOLDER_PATH                "/SN3D/sn3d-project/res/machineConfig"
+#define SN3D_MACHINE_FILE_PATH                  "/SN3D/sn3d-project/res/machineConfig/machineInfo.xml"
 
-#define MACHINE_5_5_INCH_PATH            "/SN3D/sn3d-project/sn3d-bootloader/res/bootConfig/5_5.txt"
-#define MACHINE_8_9_INCH_PATH            "/SN3D/sn3d-project/sn3d-bootloader/res/bootConfig/8_9.txt"
-#define MACHINE_15_6_INCH_PATH           "/SN3D/sn3d-project/sn3d-bootloader/res/bootConfig/4k.txt"
-#define MACHINE_23_8_INCH_PATH           MACHINE_15_6_INCH_PATH
-#define MACHINE_DEFAULT_INCH_PATH        MACHINE_5_5_INCH_PATH
-#define MACHINE_BOOTCONFIG_PATH          "/boot/config.txt"
+#define MACHINE_5_5_INCH_PATH                   "/SN3D/sn3d-project/sn3d-bootloader/lib/bootConfig/5_5.txt"
+#define MACHINE_8_9_INCH_PATH                   "/SN3D/sn3d-project/sn3d-bootloader/lib/bootConfig/8_9.txt"
+#define MACHINE_15_6_INCH_PATH                  "/SN3D/sn3d-project/sn3d-bootloader/lib/bootConfig/4k.txt"
+#define MACHINE_23_8_INCH_PATH                  MACHINE_15_6_INCH_PATH
+#define MACHINE_DEFAULT_INCH_PATH               MACHINE_5_5_INCH_PATH
+
+#define MACHINE_BOOTCONFIG_PATH                 "/boot/config.txt"
+
+#define DEFAULT_VERSION_PATH                    "/SN3D/sn3d-project/sn3d-bootloader/lib/default/version.xml"
+#define DEFAULT_MACHINE_PATH                    "/SN3D/sn3d-project/sn3d-bootloader/lib/default/machineInfo.xml"
+#define DEFAULT_BINARY_PATH                    "/SN3D/sn3d-project/sn3d-bootloader/lib/default/sn3d"
+
 
 #define SN3D_FW_STR         "sn3d_fw"
 #define SN3D_FW_EXTENTION   "zip"

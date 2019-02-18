@@ -55,12 +55,13 @@ bool SN_VERSION_CONTROL_MachineInfoUpdate(const char* fileName)
 {
     /* Always Update Machine Info File. */
     SN_SYS_Log(" * Machiine Info XML File Loading *\n");
-    FileSystem_fctl_CopyFile(TEMP_FIRMWARE_MACHINE_INFO_PATH, FIRMWARE_MACHINE_INFO_PATH);
+    FileSystem_fctl_CopyFile(TEMP_MACHINE_FILE_PATH, MACHINE_FILE_PATH);
 
     SN_SYS_Log("\n * Machiine Info XML File Copy to SN3D Service *\n");
     /* Update to SN3D Service */
-    FileSystem_fctl_RemoveFiles(SN3D_MACHINE_CONFIG_FOLDER_PATH);
-    FileSystem_fctl_CopyFile(FIRMWARE_MACHINE_INFO_PATH, SN3D_MACHINE_CONFIG_PATH);
+    FileSystem_fctl_CreateDircetoryTree(SN3D_MACHINE_FOLDER_PATH);
+    FileSystem_fctl_RemoveFiles(SN3D_MACHINE_FOLDER_PATH);
+    FileSystem_fctl_CopyFile(MACHINE_FILE_PATH, SN3D_MACHINE_FILE_PATH);
 
 
     return sMachineInfoCompare();
@@ -121,7 +122,7 @@ static bool sMachineInfoCompare(void)
 
     FB_Window_t* currentDisplay = NULL;
 
-    currentMachineInfo = FileSystem_machineInfoXMLLoad(FIRMWARE_MACHINE_INFO_PATH);
+    currentMachineInfo = FileSystem_machineInfoXMLLoad(MACHINE_FILE_PATH);
 
     currentDisplay = sScreenSizeCheck();
 
@@ -135,7 +136,7 @@ static bool sMachineInfoCompare(void)
     {
         isNeedUpdate = true;
         sUpdateBootConfig(currentMachineInfo->displayScreenSize);
-        FileSystem_fctl_CopyFile(TEMP_FIRMWARE_MACHINE_INFO_PATH, FIRMWARE_MACHINE_INFO_PATH);
+        FileSystem_fctl_CopyFile(TEMP_MACHINE_FILE_PATH, MACHINE_FILE_PATH);
     }
     else
     {

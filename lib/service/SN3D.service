@@ -1,0 +1,19 @@
+[Unit]
+Description=[ SN3D Application ] Service.
+
+# When systemd stops or restarts the SN3D_Bootloader.service, the action is propagated to this unit.
+PartOf=SN3D_Bootloader.service
+
+# Start his unit after the SN3D_Bootloader.service start.
+After=SN3D_Bootloader.service
+
+[Service]
+User=root
+Type=idle
+WorkingDirectory=/SN3D/sn3d-project
+ExecStart=/SN3D/sn3d-project/bin/build/sn3d
+Restart=on-failure
+
+[Install]
+# This unit should  start when SN3D_Bootloader.service is staring.
+WantedBy=SN3D_Bootloader.service

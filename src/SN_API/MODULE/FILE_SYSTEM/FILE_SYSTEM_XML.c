@@ -204,13 +204,23 @@ printOption_t* FileSystem_optionXMLLoad(const char *srcPath)
     doc = xmlParseFile(docname);
     if(doc == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+        retStatus = SN_STATUS_NOT_INITIALIZED;
     }
 
     cur = xmlDocGetRootElement(doc);
     if(cur == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+        retStatus = SN_STATUS_NOT_INITIALIZED;
+    }
+
+    if(retStatus != SN_STATUS_OK)
+    {
+        retStatus = FileSystem_fctl_CreateDircetoryTree(OPTION_FOLDER_PATH);
+        SN_SYS_ERROR_CHECK(retStatus, "Directory Create Failed.");
+
+        FileSystem_fctl_CopyFile(DEFAULT_OPTION_FILE_PATH, srcPath);
+
+        return FileSystem_optionXMLLoad(srcPath);
     }
 
     if (xmlStrcmp(cur->name, (const xmlChar *)"option"))
@@ -252,13 +262,23 @@ SN_STATUS FileSystem_deviceInfoXMLUpdate(const char *srcPath, const deviceInfo_t
     doc = xmlParseFile(docname);
     if(doc == NULL)
     {
-        return SN_STATUS_NOT_OK;
+        retStatus = SN_STATUS_NOT_INITIALIZED;
     }
 
     cur = xmlDocGetRootElement(doc);
     if(cur == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+        retStatus = SN_STATUS_NOT_INITIALIZED;
+    }
+
+    if(retStatus != SN_STATUS_OK)
+    {
+        retStatus = FileSystem_fctl_CreateDircetoryTree(DEVICE_FOLDER_PATH);
+        SN_SYS_ERROR_CHECK(retStatus, "Directory Create Failed.");
+
+        FileSystem_fctl_CopyFile(DEFAULT_DEVICE_FILE_PATH, srcPath);
+
+        return FileSystem_deviceInfoXMLUpdate(srcPath, deviceInfo);
     }
 
     if (xmlStrcmp(cur->name, (const xmlChar *)"device"))
@@ -303,13 +323,23 @@ deviceInfo_t* FileSystem_deviceInfoXMLLoad(const char *srcPath)
     doc = xmlParseFile(docname);
     if(doc == NULL)
     {
-        return NULL;
+        retStatus = SN_STATUS_NOT_INITIALIZED;
     }
 
     cur = xmlDocGetRootElement(doc);
     if(cur == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+        retStatus = SN_STATUS_NOT_INITIALIZED;
+    }
+
+    if(retStatus != SN_STATUS_OK)
+    {
+        retStatus = FileSystem_fctl_CreateDircetoryTree(DEVICE_FOLDER_PATH);
+        SN_SYS_ERROR_CHECK(retStatus, "Directory Create Failed.");
+
+        FileSystem_fctl_CopyFile(DEFAULT_DEVICE_FILE_PATH, srcPath);
+
+        return FileSystem_deviceInfoXMLLoad(srcPath);
     }
 
     if (xmlStrcmp(cur->name, (const xmlChar *)"device"))
@@ -350,13 +380,23 @@ machineInfo_t* FileSystem_machineInfoXMLLoad(const char *srcPath)
     doc = xmlParseFile(docname);
     if(doc == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+        retStatus = SN_STATUS_NOT_INITIALIZED;
     }
 
     cur = xmlDocGetRootElement(doc);
     if(cur == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+        retStatus = SN_STATUS_NOT_INITIALIZED;
+    }
+
+    if(retStatus != SN_STATUS_OK)
+    {
+        retStatus = FileSystem_fctl_CreateDircetoryTree(MACHINE_FOLDER_PATH);
+        SN_SYS_ERROR_CHECK(retStatus, "Directory Create Failed.");
+
+        FileSystem_fctl_CopyFile(DEFAULT_MACHINE_FILE_PATH, srcPath);
+
+        return FileSystem_machineInfoXMLLoad(srcPath);
     }
 
     if(xmlStrcmp(cur->name, (const xmlChar *)"machine"))

@@ -28,12 +28,50 @@
 /* ******* GLOBAL VARIABLE ******* */
 
 /* ******* STATIC FUNCTIONS ******* */
+static int do_mkdir(const char *path, mode_t mode);
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
  *  Extern Functions
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+SN_STATUS FileSystem_fctl_CreateDircetoryTree(const char* path)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    int   status = 0;
+    char* pathPointer = NULL;
+    char *directoryPointer = NULL;
+    char  pathBuffer[MAX_PATH_LENGTH];
+
+    strcpy(pathBuffer, path);
+    printf("DIRECTORY TREE :: %s \n\n", pathBuffer);
+
+    pathPointer = pathBuffer;
+    while (status == 0 && (directoryPointer = strchr(pathPointer, '/')) != 0)
+    {
+        if (directoryPointer != pathPointer)
+        {
+            *directoryPointer = '\0';
+            status = do_mkdir(pathBuffer, 0755);
+            printf("CREATE DIRECTORY :: %s \n\n", pathBuffer);
+            *directoryPointer = '/';
+        }
+        pathPointer = directoryPointer + 1;
+    }
+
+    if(status == 0)
+    {
+        do_mkdir(path, 0755);
+        printf("CREATE DIRECTORY :: %s \n\n", pathBuffer);
+    }
+    else
+    {
+        retStatus = SN_STATUS_NOT_OK;
+    }
+
+    return retStatus;
+}
 
 SN_STATUS FileSystem_fctl_CopyFile(const char* srcPath, const char* desPath)
 {
@@ -311,4 +349,24 @@ char* FileSystem_fctl_Extarct_FileName(const char *filename)
         *lastDot = '\0';
 
     return retStr;
+}
+
+static int do_mkdir(const char *path, mode_t mode)
+{
+    struct stat            st;
+    int             status = 0;
+
+    if (stat(path, &st) != 0)
+    {
+        /* Directory does not exist. EEXIST for race condition */
+        if (mkdir(path, mode) != 0 && errno != EEXIST)
+            status = -1;
+    }
+    else if (!S_ISDIR(st.st_mode))
+    {
+        errno = ENOTDIR;
+        status = -1;
+    }
+
+    return(status);
 }

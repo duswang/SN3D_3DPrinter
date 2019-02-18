@@ -27,46 +27,67 @@
 
 /** @name USB Driver Config *////@{
 #ifdef __APPLE__
-#define USB_PATH                      "/Volumes/USB_0"
+#define USB_FOLDER_PATH                      "/Volumes/USB_0"
 #endif
 #ifdef linux
-#define USB_PATH                      "/mnt/volume"
+#define USB_FOLDER_PATH                      "/mnt/volume"
 #endif
 
 #ifdef __APPLE__
-#define TARGET_PATH                   "../res/target"
+#define TARGET_FOLDER_PATH                   "../res/target"
 #endif
 #ifdef linux
-#define TARGET_PATH                   "/SN3D/sn3d-project/res/target"
+#define TARGET_FOLDER_PATH                   "/SN3D/sn3d-project/res/target"
 #endif
 
 #ifdef __APPLE__
-#define OPTION_FILE_PATH               "../res/optionConfig"
+#define OPTION_FOLDER_PATH               "../res/optionConfig"
 #endif
 #ifdef linux
-#define OPTION_FILE_PATH               "/SN3D/sn3d-project/res/optionConfig"
+#define OPTION_FOLDER_PATH               "/SN3D/sn3d-project/res/optionConfig"
 #endif
 
 #ifdef __APPLE__
-#define MACHINE_FILE_PATH              "../res/machineConfig"
+#define MACHINE_FOLDER_PATH              "../res/machineConfig"
 #endif
 #ifdef linux
-#define MACHINE_FILE_PATH              "/SN3D/sn3d-project/res/machineConfig"
+#define MACHINE_FOLDER_PATH              "/SN3D/sn3d-project/res/machineConfig"
 #endif
 
 #ifdef __APPLE__
-#define VERSION_FILE_PATH              "../sn3d-bootloader/res/firmware"
+#define VERSION_FOLDER_PATH              "../sn3d-bootloader/res/firmware"
 #endif
 #ifdef linux
-#define VERSION_FILE_PATH              "/SN3D/sn3d-project/sn3d-bootloader/res/firmware"
+#define VERSION_FOLDER_PATH              "/SN3D/sn3d-project/sn3d-bootloader/res/firmware"
 #endif
 
 #ifdef __APPLE__
-#define BINARY_FILE_PATH              "../bin/build/sn3d"
+#define BINARY_FOLDER_PATH              "../bin/build/sn3d"
 #endif
 #ifdef linux
-#define BINARY_FILE_PATH              "/SN3D/sn3d-project/bin/build/sn3d"
+#define BINARY_FOLDER_PATH              "/SN3D/sn3d-project/bin/build/sn3d"
 #endif
+
+#ifdef __APPLE__
+#define DEVICE_FOLDER_PATH              "../res/deviceConfig"
+#endif
+#ifdef linux
+#define DEVICE_FOLDER_PATH              "/SN3D/sn3d-project/res/deviceConfig"
+#endif
+
+#ifdef __APPLE__
+#define DEFAULT_MACHINE_FILE_PATH      "../lib/machineConfig/machineConfig.xml"
+#define DEFAULT_VERSION_FILE_PATH      "../sn3d-bootloader/lib/default/version.xml"
+#define DEFAULT_OPTION_FILE_PATH       "../lib/optionConfig/default_option.xml"
+#define DEFAULT_DEVICE_FILE_PATH       "../lib/default/deviceInfo.xml"
+#endif
+#ifdef linux
+#define DEFAULT_VERSION_FILE_PATH      "/SN3D/sn3d-project/sn3d-bootloader/lib/default/version.xml"
+#define DEFAULT_MACHINE_FILE_PATH      "/SN3D/sn3d-project/sn3d-bootloader/lib/default/machineInfo.xml"
+#define DEFAULT_OPTION_FILE_PATH       "/SN3D/sn3d-project/lib/default/option_default.xml"
+#define DEFAULT_DEVICE_FILE_PATH       "/SN3D/sn3d-project/lib/default/deviceInfo.xml"
+#endif
+
 ///@}
 
 /*************************************************************@}*/
@@ -78,12 +99,13 @@
 #define MANIFEST_FILE_NAME      "manifest"
 #define MANIFEST_FILE_EXT       "xml"
 
+#define MACHINE_FILE_NAME       "machineInfo"
 #define MACHINE_FILE_EXT        "xml"
 
-#define DEVICE_FILE_PATH        "/SN3D/sn3d-project/res/deviceConfig"
 #define DEVICE_FILE_NAME        "deviceInfo"
 #define DEVICE_FILE_EXT         "xml"
 
+#define OPTION_FILE_NAME        "option"
 #define OPTION_FILE_EXT         "xml"
 
 #define TARGET_CWS_FILE_EXT     "cws"
@@ -93,11 +115,11 @@
 #define SN3D_FW_STR             "sn3d_fw"
 #define SN3D_FW_EXTENTION       "zip"
 
-#define SN3D_OPTION_STR             "sn3d_option"
-#define SN3D_OPTION_EXTENTION       "zip"
+#define SN3D_OPTION_STR         "sn3d_option"
+#define SN3D_OPTION_EXTENTION   "zip"
 
 #define SN3D_VERSION_STR        "version"
-#define SN3D_VERSION_EXTENTION "xml"
+#define SN3D_VERSION_EXTENTION  "xml"
 
 #define NETFABB_CONDITION_STR   "index.xml"
 #define MANGO_CONDITION_STR     ""

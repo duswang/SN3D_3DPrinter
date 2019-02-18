@@ -63,6 +63,14 @@ extern SN_STATUS FileSystem_fctl_ExtractFile(const char* srcPath, const char* de
  */
 extern SN_STATUS FileSystem_fctl_MakeDirectory(const char* dir);
 
+/** @brief Create directorys by Path.
+ *
+ *  @param dir - Directory path.
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
+extern SN_STATUS FileSystem_fctl_CreateDircetoryTree(const char* path);
 
 /*************************************************************@}*/
 

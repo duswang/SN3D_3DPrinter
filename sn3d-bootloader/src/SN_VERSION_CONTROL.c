@@ -29,8 +29,7 @@ bool SN_VERSION_CONTROL_VersionUpdate(const char* fileName)
 {
     char path[MAX_PATH_LENGTH];
 
-    printf("%s", fileName);
-    sprintf(path, "%s/%s", USB_PATH, fileName); fflush(stdout);
+    sprintf(path, "%s/%s", USB_FOLDER_PATH, fileName); fflush(stdout);
     printf("Firmware File Path : [ %s ]\n", path); fflush(stdout);
 
     sFirmwareFileLoad(path);
@@ -46,13 +45,13 @@ bool SN_VERSION_CONTROL_VersionUpdate(const char* fileName)
 void sFirmwareFileLoad(const char* newFirmwarPath)
 {
     /* Make Temp Directory */
-    FileSystem_fctl_MakeDirectory(TEMP_FIRMWARE_PATH);
+    FileSystem_fctl_CreateDircetoryTree(TEMP_FIRMWARE_FOLDER_PATH);
 
     /* Remove Old Firmware Temp File */
-    FileSystem_fctl_RemoveFiles(TEMP_FIRMWARE_PATH);
+    FileSystem_fctl_RemoveFiles(TEMP_FIRMWARE_FOLDER_PATH);
 
     /* Copy to new Firmware File */
-    FileSystem_fctl_ExtractFile(newFirmwarPath, TEMP_FIRMWARE_PATH);
+    FileSystem_fctl_ExtractFile(newFirmwarPath, TEMP_FIRMWARE_FOLDER_PATH);
 
 }
 
@@ -66,12 +65,12 @@ static bool sFirmwareFileCompare(void)
     versionInfo_t* currentVersion = NULL;
     versionInfo_t* newVersion = NULL;
 
-    currentVersion = FileSystem_versionInfoXMLLoad(FIRMWARE_VERSION_PATH);
+    currentVersion = FileSystem_versionInfoXMLLoad(VERSION_FILE_PATH);
 
-    newVersion = FileSystem_versionInfoXMLLoad(TEMP_FIRMWARE_VERSION_PATH);
+    newVersion = FileSystem_versionInfoXMLLoad(TEMP_VERSION_FILE_PATH);
 
     //hash = sGenerateHash(FIRMWARE_BINARY_PATH, NULL);
-    hash = FileSysetm_MD5_Hash_WithFile(SN3D_BINARY_PATH, "DEADBEEF");
+    hash = FileSysetm_MD5_Hash_WithFile(SN3D_BINARY_FILE_PATH, "0xDEADBEEF");
     if(hash == NULL)
     {
         return true;
@@ -125,18 +124,19 @@ static bool sFirmwareFileCompare(void)
     {
         printf("\n\n * Remove Old Firmware Verision... * \n");
         /* Remove Old Firmware Temp File */
-        FileSystem_fctl_RemoveFiles(FIRMWARE_PATH);
+        FileSystem_fctl_RemoveFiles(FIRMWARE_FOLDER_PATH);
         printf("\n\n * Updateing... * \n");
 
-        sprintf(path, "%s/%s", TEMP_FIRMWARE_PATH, newVersion->binaryName);
+        sprintf(path, "%s/%s", TEMP_FIRMWARE_FOLDER_PATH, newVersion->binaryName);
 
-        FileSystem_fctl_CopyFile(TEMP_FIRMWARE_VERSION_PATH, FIRMWARE_VERSION_PATH);
-        FileSystem_fctl_CopyFile(path, FIRMWARE_BINARY_PATH);
+        FileSystem_fctl_CopyFile(TEMP_VERSION_FILE_PATH, VERSION_FILE_PATH);
+        FileSystem_fctl_CopyFile(path, BINARY_FILE_PATH);
 
         /* Replace Old Firmware Binary File */
         printf("\n\n * Update Binary to SN3D Service... * \n");
+
         FileSystem_fctl_RemoveFiles(SN3D_BINARY_FOLDER_PATH);
-        FileSystem_fctl_CopyFile(FIRMWARE_BINARY_PATH, SN3D_BINARY_PATH);
+        FileSystem_fctl_CopyFile(BINARY_FILE_PATH, SN3D_BINARY_FILE_PATH);
 
         printf("\n * Update Completed. * \n");
     }
