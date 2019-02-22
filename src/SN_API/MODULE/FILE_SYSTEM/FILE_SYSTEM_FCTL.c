@@ -78,7 +78,7 @@ SN_STATUS FileSystem_fctl_CopyFile(const char* srcPath, const char* desPath)
     FILE* src = fopen(srcPath, "rb");
     FILE* des = fopen(desPath, "wb");
     char buf[1000];
-    int readCnt = 0;
+    size_t readCnt = 0;
 
     if(src == NULL)
     {
@@ -200,19 +200,17 @@ SN_STATUS FileSystem_fctl_ExtractFile(const char* srcPath, const char* desPath)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    struct zip *za;
-    struct zip_file *zf;
+    struct zip *za = NULL;
+    struct zip_file *zf = NULL;
     struct zip_stat sb;
 
-
-    printf("%s\n", desPath);
+    zip_uint64_t sum = 0;
 
     char buf[1000];
 
-    int err;
-    int i, len;
-    int fd;
-    long long sum;
+    int err = 0;
+    int i = 0, len = 0;
+    int fd = 0;
     char fullFilePath[MAX_PATH_LENGTH];
 
     if ((za = zip_open(srcPath, 0, &err)) == NULL)

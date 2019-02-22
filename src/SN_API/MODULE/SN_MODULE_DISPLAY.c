@@ -139,7 +139,7 @@ SN_STATUS SN_MODULE_DISPLAY_Init(void)
     SN_SYS_Log("MODULE INIT => NEXTION DISPLAY.");
 
     /* MESSAGE Q INIT */
-    retStatus = SN_SYS_MessageQInit(&msgQIdDisplay);
+    msgQIdDisplay = SN_SYS_MessageQInit();
     SN_SYS_ERROR_CHECK(retStatus, "Display Module Message Q Init Failed.");
 
     /* SERIAL INIT */
@@ -588,7 +588,7 @@ static void* sDisplayThread()
 
     while(true)
     {
-        evt = SN_SYS_MessageGet(&msgQIdDisplay);
+        evt = SN_SYS_MessageGet(msgQIdDisplay);
 
         switch(evt.evt_id)
         {
@@ -993,8 +993,9 @@ static char* UTF8toEUC_KR(char* utf8String)
     size_t out_buf_left = out_size;
 
     size_t result = iconv(ic, &in_ptr, &in_size, &out_ptr, &out_buf_left);
-    if(result == -1)
+    if(result == (size_t)-1)
     {
+        perror("Convert to EUC-KR from UTF-8 Failed.");
         //SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Convert to EUC-KR from UTF-8 failed");
     }
 
@@ -1011,7 +1012,7 @@ static char* UTF8toEUC_KR(char* utf8String)
 
 static SN_STATUS sDisplayMessagePut(evtDisplay_t evtId, event_msg_t evtMessage)
 {
-    return SN_SYS_MessagePut(&msgQIdDisplay, evtId, evtMessage);
+    return SN_SYS_MessagePut(msgQIdDisplay, evtId, evtMessage);
 }
 
 

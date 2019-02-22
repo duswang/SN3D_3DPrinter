@@ -116,7 +116,7 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void)
     SN_SYS_USBDriverInit(USBEvent_Callback);
 
     /* MESSAGE Q INIT */
-    retStatus = SN_SYS_MessageQInit(&msgQIdFileSystem);
+    msgQIdFileSystem = SN_SYS_MessageQInit();
     SN_SYS_ERROR_CHECK(retStatus, "File System Module Message Q Init Failed.");
 
     /* MUTEX INIT */
@@ -196,7 +196,7 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Uninit(void)
     moduleFileSystem.machineInfo = NULL;
     SN_MODULE_FILE_SYSTEM_TargetDestroy();
 
-    SN_SYS_MessageQRemove(&msgQIdFileSystem);
+    SN_SYS_MessageQRemove(msgQIdFileSystem);
 
     return SN_STATUS_OK;
 }
@@ -211,7 +211,7 @@ bool SN_MODULE_FILE_SYSTEM_isPrintFileExist(void)
     return moduleFileSystem.fileSystem.filePageHeader->itemCnt;
 }
 
-int SN_MODULE_FILE_SYSTEM_GetFilePageCnt(void)
+uint32_t SN_MODULE_FILE_SYSTEM_GetFilePageCnt(void)
 {
     if(moduleFileSystem.fileSystem.filePageHeader == NULL)
     {
@@ -314,7 +314,7 @@ bool SN_MODULE_FILE_SYSTEM_isOptionExist(void)
     return moduleFileSystem.fileSystem.optionPageHeader->itemCnt;
 }
 
-int SN_MODULE_FILE_SYSTEM_GetOptionCnt(void)
+uint32_t SN_MODULE_FILE_SYSTEM_GetOptionCnt(void)
 {
     if(moduleFileSystem.fileSystem.filePageHeader == NULL)
     {
@@ -440,7 +440,7 @@ static void* sFileSystemThread()
 
     while(true)
     {
-        evt = SN_SYS_MessageGet(&msgQIdFileSystem);
+        evt = SN_SYS_MessageGet(msgQIdFileSystem);
 
         switch(evt.evt_id)
         {
@@ -818,8 +818,8 @@ static SN_STATUS sFileSystemPrint(const fileSystem_t* fileSystem)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    int pageIndex = 0;
-    int itemIndex = 0;
+    uint32_t pageIndex = 0;
+    uint32_t itemIndex = 0;
 
     fsPage_t* currentPage = NULL;
 
@@ -1115,6 +1115,6 @@ static SN_STATUS sTargetFileCreate(const char* fileName, const char* fileExtenti
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 static SN_STATUS sFileSystemMessagePut(evtFileSystem_t evtId, event_msg_t evtMessage)
 {
-    return SN_SYS_MessagePut(&msgQIdFileSystem, evtId, evtMessage);
+    return SN_SYS_MessagePut(msgQIdFileSystem, evtId, evtMessage);
 }
 

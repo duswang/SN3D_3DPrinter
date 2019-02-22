@@ -18,6 +18,7 @@
 
 typedef uint32_t    event_id_t;
 typedef uint32_t    event_msg_t;
+typedef int         sysMessageQId;
 
 typedef struct general_event_header {
     event_id_t evt_id;
@@ -29,11 +30,10 @@ typedef struct general_event {
     event_msg_t evt_msg;
 } general_evt_t;
 
-typedef struct sys_message_queue {
+typedef struct sys_message_buffer {
     long mtype;
     general_evt_t mevt;
-    key_t keyId;
-} sysMessageQId;
+} sysMessageBuffer;
 
 /*************************************************************
  * @name System Message Queue
@@ -49,7 +49,7 @@ typedef struct sys_message_queue {
  *  @bug First message Q Init is not Working.
  *  @note
  */
-extern SN_STATUS     SN_SYS_MessageQInit(sysMessageQId *msgQId);
+extern sysMessageQId SN_SYS_MessageQInit(void);
 
 /** @brief
  *
@@ -57,7 +57,7 @@ extern SN_STATUS     SN_SYS_MessageQInit(sysMessageQId *msgQId);
  *
  *  @note
  */
-extern SN_STATUS     SN_SYS_MessageQRemove(sysMessageQId *msgQId);
+extern SN_STATUS     SN_SYS_MessageQRemove(sysMessageQId msgQId);
 
 /*************************************************************@}*/
 
@@ -76,7 +76,7 @@ extern SN_STATUS     SN_SYS_MessageQRemove(sysMessageQId *msgQId);
  *
  *  @note
  */
-extern SN_STATUS     SN_SYS_MessagePut(sysMessageQId *msgQId, event_id_t evtId, event_msg_t evtMessage);
+extern SN_STATUS     SN_SYS_MessagePut(sysMessageQId msgQId, event_id_t evtId, event_msg_t evtMessage);
 
 /** @brief
  *
@@ -86,7 +86,7 @@ extern SN_STATUS     SN_SYS_MessagePut(sysMessageQId *msgQId, event_id_t evtId, 
  *
  *  @note
  */
-extern general_evt_t SN_SYS_MessageGet(sysMessageQId *msgQId);
+extern general_evt_t SN_SYS_MessageGet(sysMessageQId msgQId);
 
 /*************************************************************@}*/
 

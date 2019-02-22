@@ -22,41 +22,31 @@
  *  Extern Functions
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-SN_STATUS SN_SYS_MessageQInit(sysMessageQId *msgQId)
+sysMessageQId SN_SYS_MessageQInit(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    msgQId->keyId = msgget(IPC_PRIVATE, IPC_CREAT | 0666);
-    msgQId->mtype = msgQId->keyId;
-
-    if(msgQId->keyId == -1)
-    {
-        retStatus = SN_STATUS_NOT_INITIALIZED;
-    }
-
-    return retStatus;
+    return msgget(IPC_PRIVATE, IPC_CREAT | 0666);
 }
 
-SN_STATUS SN_SYS_MessageQRemove(sysMessageQId *msgQId)
+SN_STATUS SN_SYS_MessageQRemove(sysMessageQId msgQId)
 {
-    msgctl(msgQId->keyId, IPC_RMID, 0);
+    msgQId = msgctl(msgQId, IPC_RMID, 0);
 
+    /* @TODO */
     return SN_STATUS_OK;
 }
 
-SN_STATUS SN_SYS_MessagePut(sysMessageQId *msgQId, event_id_t evtId, event_msg_t evtMessage)
+SN_STATUS SN_SYS_MessagePut(sysMessageQId msgQId, event_id_t evtId, event_msg_t evtMessage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+    sysMessageBuffer msgBuffer;
 
-    if(msgQId == NULL)
-    {
-        return SN_STATUS_INVALID_PARAM;
-    }
+    msgBuffer.mtype = msgQId;
+    msgBuffer.mevt.evt_id   = evtId;
+    msgBuffer.mevt.evt_msg  = evtMessage;
 
-    msgQId->mevt.evt_id   = evtId;
-    msgQId->mevt.evt_msg  = evtMessage;
-
-    if((msgsnd(msgQId->keyId, (void *)msgQId, sizeof(sysMessageQId), IPC_NOWAIT) == -1))
+    if((msgsnd(msgQId, (void *)&msgBuffer, sizeof(msgBuffer) - sizeof(long), IPC_NOWAIT) == -1))
     {
         perror("msgsnd error : ");
         return SN_STATUS_NOT_OK;
@@ -66,18 +56,15 @@ SN_STATUS SN_SYS_MessagePut(sysMessageQId *msgQId, event_id_t evtId, event_msg_t
 }
 
 
-general_evt_t SN_SYS_MessageGet(sysMessageQId *msgQId)
+general_evt_t SN_SYS_MessageGet(sysMessageQId msgQId)
 {
-    if(msgQId == NULL)
-    {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "Message Q id is not Initialized.");
-    }
+    sysMessageBuffer msgBuffer;
 
-    if((msgrcv(msgQId->keyId, (void *)msgQId, sizeof(sysMessageQId), msgQId->mtype, 0) == -1))
+    if((msgrcv(msgQId, (void *)&msgBuffer, sizeof(msgBuffer) - sizeof(long), msgQId, 0) == -1))
     {
             perror("msgrcv error : ");
     }
 
-    return msgQId->mevt;
+    return msgBuffer.mevt;
 }
 

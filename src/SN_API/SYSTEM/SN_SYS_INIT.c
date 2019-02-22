@@ -70,7 +70,7 @@ int main(void)
     /* APP main() */
     while(true)
     {
-        evt = SN_SYS_MessageGet(&msgQIdApp);
+        evt = SN_SYS_MessageGet(msgQIdApp);
 
         switch(evt.evt_id)
         {
@@ -98,13 +98,9 @@ static SN_STATUS sSN_SYSTEM_Init(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    /** @DEBUG **/
-    sysMessageQId msgTest;
-    SN_SYS_MessageQInit(&msgTest);
-
     /** APP Message Q Init **/
     SN_SYS_Log("SYSTEM INIT => MESSAGE QUEUE.");
-    SN_SYS_MessageQInit(&msgQIdApp);
+    msgQIdApp = SN_SYS_MessageQInit();
 
     /** Timer Init **/
     SN_SYS_Log("SYSTEM INIT => TIMER.");
@@ -121,7 +117,7 @@ SN_STATUS SN_SYSTEM_SendAppMessage(event_id_t evtId, event_msg_t evtMessage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    retStatus = SN_SYS_MessagePut(&msgQIdApp, evtId, evtMessage);
+    retStatus = SN_SYS_MessagePut(msgQIdApp, evtId, evtMessage);
 
     return retStatus;
 }

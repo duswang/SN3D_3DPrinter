@@ -177,7 +177,15 @@ set(
 	-g
 	
 	# Warning #
-	-Wall
+	-W
+	
+
+)
+
+set(CMAKE_SHARED_LINKER_FLAGS
+	# Map #
+	-Wl
+	 -Xlinker -map=output.map
 )
 
 # Mode #
@@ -222,7 +230,8 @@ set(
 
 # Command #
 add_custom_target(gdb
-    gdb ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PRJ_BINARY_NAME}
+    make all &&
+    sudo gdb ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PRJ_BINARY_NAME}
 )
 add_custom_target(run
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PRJ_BINARY_NAME}

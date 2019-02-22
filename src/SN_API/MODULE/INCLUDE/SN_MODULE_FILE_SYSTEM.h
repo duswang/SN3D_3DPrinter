@@ -214,9 +214,8 @@ typedef struct print_target {
 #define DEVICE_LANGUAGE_DEFAULT DEVICE_LANGUAGE_KOR
 
 typedef struct device_information {
-    char                     language[MAX_FILENAME_LENGTH];  /**< px */
-    long                 totalTime;  /**< px */
-    float              motorZPosition;  /**< mm */
+    char  language[MAX_FILENAME_LENGTH];  /**< px */
+    long                      totalTime;  /**< px */
 } deviceInfo_t;
 
 
@@ -302,7 +301,7 @@ extern const fsPage_t* SN_MODULE_FILE_SYSTEM_GetFilePage(int pageIndex);
  *
  *  @note
  */
-extern int SN_MODULE_FILE_SYSTEM_GetFilePageCnt(void);
+extern uint32_t SN_MODULE_FILE_SYSTEM_GetFilePageCnt(void);
 
 /** @brief Is any print file exist there?
  *
@@ -383,7 +382,7 @@ extern const versionInfo_t* SN_MODULE_FILE_SYSTEM_VersionInfoGet(void);
  *  @return SN_STATUS
  *  @note
  */
-extern int SN_MODULE_FILE_SYSTEM_GetOptionCnt(void);
+extern uint32_t SN_MODULE_FILE_SYSTEM_GetOptionCnt(void);
 
 /** @brief Is any option file exist there?
  *

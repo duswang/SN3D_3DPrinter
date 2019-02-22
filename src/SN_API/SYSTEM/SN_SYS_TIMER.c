@@ -17,7 +17,7 @@
 
 /* ******* SYSTEM DEFINE ******* */
 /* *** SYSTEM THREAD *** */
-pthread_mutex_t ptmTimer;
+pthread_mutex_t ptmTimer = PTHREAD_MUTEX_INITIALIZER;
 pthread_t       ptTimer;
 
 /* ******* GLOBAL VARIABLE ******* */
@@ -50,7 +50,7 @@ SN_STATUS SN_SYS_TimerInit(void)
         aTSR[idxTSR].tickRequested.tv_nsec = 0;
         aTSR[idxTSR].msDuration = 0;
         aTSR[idxTSR].pfTSRCallBack = NULL;
-        aTSR[idxTSR].uniqueCode = 0;
+        aTSR[idxTSR].uniqueCode = UNALLOCATED_TSR_ID;
     }
 
     if (pthread_mutex_init(&ptmTimer, NULL) != 0)
@@ -88,16 +88,14 @@ SN_STATUS SN_SYS_TimerCreate(sysTimerId_t* pIdTSR, uint32_t msDuration, void* pf
 
     for(idxTSR = 0; idxTSR < MAX_NUM_OF_TSR; idxTSR++)
     {
-        if (!aTSR[idxTSR].isOccupied)
+        if(!aTSR[idxTSR].isOccupied)
         {
-            aTSR[idxTSR].isOccupied    = true;
             clock_gettime(CLOCK_REALTIME, &aTSR[idxTSR].tickRequested);
+
+            aTSR[idxTSR].isOccupied    = true;
             aTSR[idxTSR].msDuration    = msDuration;
             aTSR[idxTSR].pfTSRCallBack = pfTSR;
-
-            srand(aTSR[idxTSR].tickRequested.tv_nsec + idxTSR);
-
-            aTSR[idxTSR].uniqueCode = (uint32_t)rand();
+            aTSR[idxTSR].uniqueCode    = (uint32_t)aTSR[idxTSR].tickRequested.tv_nsec;
 
             *pIdTSR = aTSR[idxTSR].uniqueCode;
             guiNumTSR++;
@@ -110,7 +108,7 @@ SN_STATUS SN_SYS_TimerCreate(sysTimerId_t* pIdTSR, uint32_t msDuration, void* pf
 
     if(idxTSR >= MAX_NUM_OF_TSR)
     {
-        *pIdTSR = 0xFF;
+        *pIdTSR = UNALLOCATED_TSR_ID;
         retStatus = SN_STATUS_RESOURCE_NOT_AVAILABLE;
     }
 
@@ -120,7 +118,7 @@ SN_STATUS SN_SYS_TimerCreate(sysTimerId_t* pIdTSR, uint32_t msDuration, void* pf
 SN_STATUS SN_SYS_TimerCancle(sysTimerId_t* pIdTSR)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-    uint8_t i = 0;
+    uint8_t idxTSR = 0;
 
     if(pIdTSR == NULL)
     {
@@ -131,16 +129,17 @@ SN_STATUS SN_SYS_TimerCancle(sysTimerId_t* pIdTSR)
 
     if(*pIdTSR != UNALLOCATED_TSR_ID)
     {
-        for(i = 0; i < MAX_NUM_OF_TSR; i++)
+        for(idxTSR = 0; idxTSR < MAX_NUM_OF_TSR; idxTSR++)
         {
-            if (aTSR[i].isOccupied && aTSR[i].uniqueCode == *pIdTSR)
+            if (aTSR[idxTSR].isOccupied && aTSR[idxTSR].uniqueCode == *pIdTSR)
             {
-                aTSR[i].isOccupied = false;
-                aTSR[i].tickRequested.tv_sec = 0;
-                aTSR[i].tickRequested.tv_nsec = 0;
-                aTSR[i].msDuration = 0;
-                aTSR[i].pfTSRCallBack = NULL;
-                aTSR[i].uniqueCode = 0;
+
+                aTSR[idxTSR].isOccupied = false;
+                aTSR[idxTSR].tickRequested.tv_sec = 0;
+                aTSR[idxTSR].tickRequested.tv_nsec = 0;
+                aTSR[idxTSR].msDuration = 0;
+                aTSR[idxTSR].pfTSRCallBack = NULL;
+                aTSR[idxTSR].uniqueCode = UNALLOCATED_TSR_ID;
 
                 if(guiNumTSR != 0)
                 {
@@ -168,6 +167,9 @@ SN_STATUS SN_SYS_Delay(uint32_t msec)
     return retStatus;
 }
 
+
+
+
 static void* sTimerThread()
 {
     uint8_t idxTSR;
@@ -175,31 +177,32 @@ static void* sTimerThread()
 
     while(true)
     {
-        pthread_mutex_lock(&ptmTimer);
-
         for (idxTSR = 0; idxTSR < MAX_NUM_OF_TSR; idxTSR++)
         {
+            pthread_mutex_lock(&ptmTimer);
+
             clock_gettime(CLOCK_REALTIME, &tickNow);
+
             if ((aTSR[idxTSR].isOccupied) && (aTSR[idxTSR].pfTSRCallBack != NULL) &&
-                (sDiffTick(aTSR[idxTSR].tickRequested, tickNow) >= ((aTSR[idxTSR].msDuration))))
+                (sDiffTick(aTSR[idxTSR].tickRequested, tickNow) >= (aTSR[idxTSR].msDuration)))
             {
-
-                (void)(aTSR[idxTSR].pfTSRCallBack)();
-
                 aTSR[idxTSR].isOccupied = false;
                 aTSR[idxTSR].tickRequested.tv_sec = 0;
                 aTSR[idxTSR].tickRequested.tv_nsec = 0;
                 aTSR[idxTSR].msDuration = 0;
-                aTSR[idxTSR].uniqueCode = 0;
+                aTSR[idxTSR].uniqueCode = UNALLOCATED_TSR_ID;
                 if(guiNumTSR != 0)
                 {
                     guiNumTSR--;
                 }
+
+                (void)(aTSR[idxTSR].pfTSRCallBack)();
+
                 aTSR[idxTSR].pfTSRCallBack = NULL;
             }
-        }
 
-        pthread_mutex_unlock(&ptmTimer);
+            pthread_mutex_unlock(&ptmTimer);
+        }
 
         SN_SYS_Delay(10);
     }

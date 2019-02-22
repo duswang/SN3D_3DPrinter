@@ -2,7 +2,7 @@
 <option>
   <option_name>default</option_name>
   <layerThickness>0.02500</layerThickness>
-  <bottomLayerExposureTime>30000</bottomLayerExposureTime>
+  <bottomLayerExposureTime>5000</bottomLayerExposureTime>
   <bottomLayerNumber>10</bottomLayerNumber>
   <bottomLiftFeedRate>150.0</bottomLiftFeedRate>
   <layerExposureTime>3000</layerExposureTime>

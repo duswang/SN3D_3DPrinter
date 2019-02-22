@@ -44,9 +44,9 @@
 #define INPUT_CHAIN_CONDITION        3  /**< multiple touch condition */
 ///@}
 
-/** @def ESTIMATED_BUILD_TIME_SEC_CAL(z_delay, uv_delay, uv_bottom_deleay, num_of_layer, num_of_bottom_layer)
+/** @def estimatedBuildTimeSecCal(z_delay, uv_delay, uv_bottom_deleay, num_of_layer, num_of_bottom_layer)
  *  @brief estimated build time calculator
- *  ESTIMATED_BUILD_TIME_SEC_CAL - Def. funtion
+ *  estimatedBuildTimeSecCal - inline. funtion
  *
  *  @param z_delay
  *  @param uv_delay
@@ -57,12 +57,18 @@
  *  @return estimated build time (sec)
  *  @note
  */
-#define ESTIMATED_BUILD_TIME_SEC_CAL(z_delay, uv_delay, uv_bottom_deleay, num_of_layer, num_of_bottom_layer) \
-((((z_delay) + (uv_delay)) / 1000) * ((num_of_layer) - (num_of_bottom_layer)) + (((uv_bottom_deleay + z_delay) / 1000) * (num_of_bottom_layer)))
+static inline uint32_t estimatedBuildTimeSecCal(uint32_t z_delay, uint32_t uv_delay, uint32_t uv_bottom_deleay, uint32_t num_of_layer, uint32_t num_of_bottom_layer)
+{
+    uint32_t retValue = 0;
 
-/** @def ESTIMATED_BUILD_TIME_SEC_CAL(z_delay, uv_delay, uv_bottom_deleay, num_of_layer, num_of_bottom_layer)
- *  @brief estimated build time calculator
- *  ESTIMATED_BUILD_TIME_SEC_CAL - Def. funtion
+    retValue = ((((z_delay) + (uv_delay)) / 1000) * ((num_of_layer) - (num_of_bottom_layer)) + (((uv_bottom_deleay + z_delay) / 1000) * (num_of_bottom_layer)));
+
+    return retValue;
+}
+
+/** @def currentTimeSyncByLayer(z_delay, uv_delay, uv_bottom_deleay, num_of_layer, num_of_bottom_layer)
+ *  @brief current time sync
+ *  currentTimeSyncByLayer - inline. funtion
  *
  *  @param z_delay
  *  @param uv_delay
@@ -73,9 +79,14 @@
  *  @return estimated build time (sec)
  *  @note
  */
-#define CURRENT_TIME_SEC_CAL(z_delay, uv_delay, uv_bottom_deleay, current_num_of_layer, num_of_bottom_layer) \
-(((((z_delay) + (uv_delay)) / 1000) * ((current_num_of_layer > num_of_bottom_layer) ? ((current_num_of_layer) - (num_of_bottom_layer)) : (0))) + \
-(((uv_bottom_deleay + z_delay) / 1000) * ((current_num_of_layer > num_of_bottom_layer) ? (num_of_bottom_layer) : (current_num_of_layer))))
+static inline uint32_t currentTimeSyncByLayer(uint32_t z_delay, uint32_t uv_delay, uint32_t uv_bottom_deleay, uint32_t current_num_of_layer, uint32_t num_of_bottom_layer)
+{
+    uint32_t retValue = 0;
+
+    retValue = (((((z_delay) + (uv_delay)) / 1000) * ((current_num_of_layer > num_of_bottom_layer) ? ((current_num_of_layer) - (num_of_bottom_layer)) : (0))) + (((uv_bottom_deleay + z_delay) / 1000) * ((current_num_of_layer > num_of_bottom_layer) ? (num_of_bottom_layer) : (current_num_of_layer))));
+
+    return retValue;
+}
 
 /* *** MODULE *** */
 typedef enum device_state {
@@ -179,7 +190,6 @@ static SN_STATUS s3DPrinter_PrintUninit(void);
 
 /* *** UTIL *** */
 static SN_STATUS sGcodeZMove(float liftDistance, float liftFeedRate);
-static SN_STATUS sLoadCoordinates(void);
 static SN_STATUS sGetCoordinates(float x, float y, float z);
 static SN_STATUS sResetPrevCoordinates(void);
 static SN_STATUS sSetPrevCoordinates(void);
@@ -199,7 +209,7 @@ SN_STATUS SN_MODULE_3D_PRINTER_Init(void)
     SN_SYS_Delay(500);
 
     /* MESSAGE INIT */
-    retStatus = SN_SYS_MessageQInit(&msgQId3DPrinter);
+    msgQId3DPrinter = SN_SYS_MessageQInit();
     SN_SYS_ERROR_CHECK(retStatus, "3D Printer Module Message Q Init Failed.");
 
     /* SERIAL INIT */
@@ -223,9 +233,6 @@ SN_STATUS SN_MODULE_3D_PRINTER_Init(void)
 
     SN_MODULE_DISPLAY_BootProgressUpdate(60, "Serial Checking...");
     SN_SYS_Delay(3000);
-
-    /* Motor Position Load & Init */
-    sLoadCoordinates();
 
     /* MODULE INIT */
     s3DPrinterEnterState(DEVICE_STANDBY);
@@ -380,7 +387,7 @@ static void* s3DPrinterThread()
 
     while(true)
     {
-        evt = SN_SYS_MessageGet(&msgQId3DPrinter);
+        evt = SN_SYS_MessageGet(msgQId3DPrinter);
 
         switch(evt.evt_id)
         {
@@ -624,7 +631,7 @@ static SN_STATUS s3DPrinter_PrintInit(void)
         sprintf(module3DPrinter.gcodeUVLampOn, "M106 S%ld", printOption->bright);
 
 
-        estimatedBuildTime = ESTIMATED_BUILD_TIME_SEC_CAL( \
+        estimatedBuildTime = estimatedBuildTimeSecCal( \
                 printOption->liftTime, \
                 printOption->layerExposureTime, \
                 printOption->bottomLayerExposureTime, \
@@ -700,7 +707,10 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
         }
 
         /* Slice Sequence */
-        printf("\n\n===============> SLICE %04d >===============================>\n\n", (module3DPrinter.sliceIndex + 1)); fflush(stdout);
+        printf("\n\n===============> PRINT SLICE %04d >=========================>\n\n", (module3DPrinter.sliceIndex + 1)); fflush(stdout);
+
+
+        printf("\n    CURRENT MOTOR Z POSITION[ %.4f mm ].\n\n", module3DPrinter.current_position[DEVICE_AXIS_Z]);
 
         /* IMAGE VIEWER UPDATE */
         SN_SYS_Log("    SCREEN & NEXTION THUMBNAIL UPDATE.\n");
@@ -715,7 +725,7 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
 
         /* Exposure Timer Call */
-        if(module3DPrinter.sliceIndex < printOption->bottomLayerNumber)
+        if((long)module3DPrinter.sliceIndex < printOption->bottomLayerNumber)
         {
             printf("    WAIT UV EXPOSURE TIME[ %ld msec ].\n", printOption->bottomLayerExposureTime);
             exposureTime = printOption->bottomLayerExposureTime;
@@ -773,7 +783,7 @@ static SN_STATUS s3DPrinter_PrintLift(void)
 
         /* Lift Sequence */
         /* UV OFF */
-        SN_SYS_Log("    UV LAMP OFF.\n");
+        SN_SYS_Log("\n    UV LAMP OFF.\n");
         retStatus = SN_SYS_SerialTx(serialId3DPrinter,GCODE_LCD_OFF, sizeof(GCODE_LCD_OFF));
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
 
@@ -793,7 +803,7 @@ static SN_STATUS s3DPrinter_PrintLift(void)
         retStatus = sSendGCode(module3DPrinter.gcodeLiftUp, sizeof(module3DPrinter.gcodeLiftUp));
         SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
 
-        printf("    WAIT LIFT TIME[    %ld msec ].\n", printOption->liftTime);
+        printf("    WAIT LIFT TIME[ %ld msec ].\n\n", printOption->liftTime);
 
         SN_SYS_Log("    CALL 'Z LIFT DOWN' function.\n");
         retStatus = sSendGCode(module3DPrinter.gcodeLiftDown, sizeof(module3DPrinter.gcodeLiftDown));
@@ -806,13 +816,14 @@ static SN_STATUS s3DPrinter_PrintLift(void)
             printf("\n=========================================> FINISH. ========>\n\n\n\n");
 
             retStatus = SN_SYS_TimerCreate(&timerPrint, printOption->liftTime, sTMR_FinishDevice_Callback);
+            SN_SYS_ERROR_CHECK(retStatus, "Timer Create Failed.");
         }
         else
         {
             printf("\n=========================================> DONE. ==========>\n\n\n\n");
 
             /* Time Sync */
-            currentTime = CURRENT_TIME_SEC_CAL( \
+            currentTime = currentTimeSyncByLayer( \
                     printOption->liftTime, \
                     printOption->layerExposureTime, \
                     printOption->bottomLayerExposureTime, \
@@ -1066,61 +1077,31 @@ static SN_STATUS s3DPrinter_MotorUninit(void)
  *  Util
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-
-static SN_STATUS sLoadCoordinates(void)
-{
-    SN_STATUS retStatus = SN_STATUS_OK;
-    char gcodeBuffer[GCODE_BUFFER_SIZE];
-    deviceInfo_t deviceInfo = *SN_MODULE_FILE_SYSTEM_DeviceInfoGet();
-
-    module3DPrinter.current_position[DEVICE_AXIS_Z] = deviceInfo.motorZPosition;
-
-    sprintf(gcodeBuffer, "G92 X0 Y0 Z%f", deviceInfo.motorZPosition);
-    retStatus = sSendGCode(gcodeBuffer, sizeof(gcodeBuffer));
-    SN_SYS_ERROR_CHECK(retStatus, "Send GCode Failed.");
-
-    printf("\n%s\n\n", gcodeBuffer);
-
-    SN_MODULE_DISPLAY_ControlZPosition(module3DPrinter.current_position[DEVICE_AXIS_Z]);
-
-    return retStatus;
-}
-
 static SN_STATUS sGetCoordinates(float x, float y, float z)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-    deviceInfo_t deviceInfo = *SN_MODULE_FILE_SYSTEM_DeviceInfoGet();
 
     module3DPrinter.current_position[DEVICE_AXIS_X] = x;
     module3DPrinter.current_position[DEVICE_AXIS_Y] = y;
     module3DPrinter.current_position[DEVICE_AXIS_Z] = z;
 
     /* PRINT POSITION */
-    printf("\n    X POSITION : %.2f mm",   module3DPrinter.current_position[DEVICE_AXIS_X]);
-    printf(", Y POSITION : %.2f mm",   module3DPrinter.current_position[DEVICE_AXIS_Y]);
-    printf(", Z POSITION : %.2f mm\n", module3DPrinter.current_position[DEVICE_AXIS_Z]);
+    //printf("\n    X POSITION : %.2f mm",   module3DPrinter.current_position[DEVICE_AXIS_X]);
+    //printf(", Y POSITION : %.2f mm",   module3DPrinter.current_position[DEVICE_AXIS_Y]);
+    //printf(", Z POSITION : %.2f mm\n", module3DPrinter.current_position[DEVICE_AXIS_Z]);
 
     SN_MODULE_DISPLAY_ControlZPosition(module3DPrinter.current_position[DEVICE_AXIS_Z]);
-
-    deviceInfo.motorZPosition = module3DPrinter.current_position[DEVICE_AXIS_Z];
-    SN_MODULE_FILE_SYSTEM_DeviceInfoUpdate(deviceInfo);
 
     return retStatus;
 }
 
 static SN_STATUS sResetPrevCoordinates(void)
 {
-    deviceInfo_t deviceInfo = *SN_MODULE_FILE_SYSTEM_DeviceInfoGet();
-
     module3DPrinter.prev_position[DEVICE_AXIS_X] = 0;
     module3DPrinter.prev_position[DEVICE_AXIS_Y] = 0;
     module3DPrinter.prev_position[DEVICE_AXIS_Z] = 0;
 
-    deviceInfo.motorZPosition = module3DPrinter.current_position[DEVICE_AXIS_Z];
-    SN_MODULE_FILE_SYSTEM_DeviceInfoUpdate(deviceInfo);
-
     return SN_STATUS_OK;
-
 }
 static SN_STATUS sSetPrevCoordinates(void)
 {
@@ -1214,7 +1195,7 @@ static SN_STATUS sSendGCode(char* command, size_t bufferSize)
 
 static SN_STATUS s3DPrinterMessagePut(evt3DPrinter_t evtId, event_msg_t evtMessage)
 {
-    return SN_SYS_MessagePut(&msgQId3DPrinter, evtId, evtMessage);
+    return SN_SYS_MessagePut(msgQId3DPrinter, evtId, evtMessage);
 }
 
 static void s3DPrinterEnterState(deviceState_t state)
