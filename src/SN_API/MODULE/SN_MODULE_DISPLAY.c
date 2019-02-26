@@ -136,34 +136,34 @@ SN_STATUS SN_MODULE_DISPLAY_Init(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    SN_SYS_Log("MODULE INIT => NEXTION DISPLAY.");
+    SN_SYS_ERROR_SystemLog("MODULE INIT => NEXTION DISPLAY.");
 
     /* MESSAGE Q INIT */
-    msgQIdDisplay = SN_SYS_MessageQInit();
-    SN_SYS_ERROR_CHECK(retStatus, "Display Module Message Q Init Failed.");
+    msgQIdDisplay = SN_SYS_MESSAGE_Q_Init();
+    SN_SYS_ERROR_StatusCheck(retStatus, "Display Module Message Q Init Failed.");
 
     /* SERIAL INIT */
-    serialIdDisplay = SN_SYS_SerialCreate(sysSerial(DisplaySerial), sSerialRx_Callback);
+    serialIdDisplay = SN_SYS_SERIAL_Create(sysSerial(DisplaySerial), sSerialRx_Callback);
     if(serialIdDisplay == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Display Serial Init Failed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "Display Serial Init Failed.");
     }
 
     /* MUTEX INIT */
     if (pthread_mutex_init(&ptmDisplay, NULL) != 0)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Display Mutex Init Failed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "Display Mutex Init Failed.");
     }
 
     /* THREAD INIT */
     if((retStatus = pthread_create(&ptDisplay, NULL, sDisplayThread, NULL)))
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Display Thread Init Failed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "Display Thread Init Failed.");
     }
 
     /* Nextion Display LCD Reset */
     retStatus = sSendCommand(NX_COMMAND_RESET, sizeof(NX_COMMAND_RESET));
-    SN_SYS_Delay(NEXTION_INIT_PAGE_DELAY);
+    SN_SYS_TIMER_Delay(NEXTION_INIT_PAGE_DELAY);
 
     SN_MODULE_DISPLAY_EnterState(NX_PAGE_SETUP);
 
@@ -202,7 +202,7 @@ SN_STATUS SN_MODULE_DISPLAY_EnterState(nx_page_t state)
         break;
     case NX_PAGE_SETUP:
         retStatus = sSendCommand(NX_PAGE_BOOT_COMMAND, sizeof(NX_PAGE_BOOT_COMMAND));
-        SN_SYS_Delay(NEXTION_INIT_PAGE_DELAY);
+        SN_SYS_TIMER_Delay(NEXTION_INIT_PAGE_DELAY);
         break;
     case NX_PAGE_INIT:
         sDisplay_NextionInit();
@@ -221,7 +221,7 @@ SN_STATUS SN_MODULE_DISPLAY_EnterState(nx_page_t state)
         break;
     }
 
-    SN_SYS_ERROR_CHECK(retStatus, "ERROR IN DISPLAY PAGE UPDATE.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "ERROR IN DISPLAY PAGE UPDATE.");
 
     return retStatus;
 }
@@ -239,12 +239,12 @@ SN_STATUS SN_MODULE_DISPLAY_BootProgressUpdate(uint32_t progressValue, const cha
     sprintf(buffer,"Boot.CurrentStatus.val=%d", progressValue);
 
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display File System Update Failed.");
 
     sprintf(buffer,"Boot.ProgressText.txt=\"%s\"", progressStr);
 
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display File System Update Failed.");
 
     return retStatus;
 }
@@ -278,14 +278,14 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingInfoInit(const char* fileName, const char* o
     korBuffer = UTF8toEUC_KR(buffer);
 
     retStatus = sSendCommand(korBuffer, strlen(korBuffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display File System Update Failed.");
     free(korBuffer);
 
     sprintf(buffer,"Print.Option.txt=\"%s\"", optionName);
     korBuffer = UTF8toEUC_KR(buffer);
 
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display File System Update Failed.");
     free(korBuffer);
 
 
@@ -301,7 +301,7 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingInfoUpdate(uint32_t slice, uint32_t targetSl
     sprintf(buffer,"Print.Slice.txt=\"%3d / %3d\"", slice, targetSlice);
 
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display File System Update Failed.");
 
     return retStatus;
 }
@@ -326,11 +326,11 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerInit(uint32_t sec)
             moduleDisplay.estimatedBuildTime.sec);
 
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display Timer Update Failed.");
 
 
     retStatus = sDisplayMessagePut(MSG_DISPLAY_TIME_INFO_TIMER_UPDATE, 0);
-    SN_SYS_ERROR_CHECK(retStatus, "Display Send Message Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Display Send Message Failed.");
 
     return retStatus;
 }
@@ -352,8 +352,8 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerPause(void)
 
     if(moduleDisplay.IsTimerInfoInit)
     {
-        retStatus = SN_SYS_TimerCancle(&timerTimeIndicate);
-        SN_SYS_ERROR_CHECK(retStatus, "Timer Cancle Failed.");
+        retStatus = SN_SYS_TIMER_Cancel(&timerTimeIndicate);
+        SN_SYS_ERROR_StatusCheck(retStatus, "Timer Cancle Failed.");
     }
     else
     {
@@ -370,7 +370,7 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerResume(void)
     if(moduleDisplay.IsTimerInfoInit)
     {
         retStatus = sDisplayMessagePut(MSG_DISPLAY_TIME_INFO_TIMER_UPDATE, 0);
-        SN_SYS_ERROR_CHECK(retStatus, "Display Send Message Failed.");
+        SN_SYS_ERROR_StatusCheck(retStatus, "Display Send Message Failed.");
     }
     else
     {
@@ -391,8 +391,8 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerStop(void)
         moduleDisplay.secNowTime         = 0;
         moduleDisplay.IsTimerInfoInit    = false;
 
-        retStatus = SN_SYS_TimerCancle(&timerTimeIndicate);
-        SN_SYS_ERROR_CHECK(retStatus, "Timer Cancle Failed.");
+        retStatus = SN_SYS_TIMER_Cancel(&timerTimeIndicate);
+        SN_SYS_ERROR_StatusCheck(retStatus, "Timer Cancle Failed.");
     }
 
     return retStatus;
@@ -412,7 +412,7 @@ SN_STATUS SN_MODULE_DISPLAY_TotalTimeInit(void)
     moduleDisplay.secTotalTime         = deviceInfo.totalTime;
 
     retStatus = sDisplayMessagePut(MSG_DISPLAY_TOTAL_TIME_UPDATE, 0);
-    SN_SYS_ERROR_CHECK(retStatus, "Display Send Message Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Display Send Message Failed.");
 
     return retStatus;
 }
@@ -427,7 +427,7 @@ SN_STATUS SN_MODULE_DISPLAY_ControlZPosition(float mm)
     sprintf(buffer,"Control.ZPosition.txt=\"%0.2f mm\"", mm);
 
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display ZPosition Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display ZPosition Failed.");
 
     return retStatus;
 }
@@ -454,7 +454,7 @@ SN_STATUS SN_MODULE_DISPLAY_FileSelectOptionUpdate(uint32_t optionIndex)
     korBuffer = UTF8toEUC_KR(buffer);
 
     retStatus = sSendCommand(korBuffer, strlen(korBuffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display File System Update Failed.");
     free(korBuffer);
 
     return retStatus;
@@ -473,7 +473,7 @@ SN_STATUS SN_MODULE_DISPLAY_FileSelectPageUpdate(uint32_t pageIndex)
     currentPage = SN_MODULE_FILE_SYSTEM_GetFilePage(pageIndex);
     if(currentPage == NULL)
     {
-        SN_SYS_ERROR_CHECK(retStatus, "page not initialzied.");
+        SN_SYS_ERROR_StatusCheck(retStatus, "page not initialzied.");
     }
 
     if(SN_MODULE_FILE_SYSTEM_isPrintFileExist())
@@ -494,7 +494,7 @@ SN_STATUS SN_MODULE_DISPLAY_FileSelectPageUpdate(uint32_t pageIndex)
                 korBuffer = UTF8toEUC_KR(buffer);
 
                 retStatus = sSendCommand(korBuffer, strlen(korBuffer) + 1);
-                SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+                SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display File System Update Failed.");
                 free(korBuffer);
             }
         }
@@ -506,7 +506,7 @@ SN_STATUS SN_MODULE_DISPLAY_FileSelectPageUpdate(uint32_t pageIndex)
                 sprintf(buffer,"Index_%d.txt=\"\"", itemIndex);
 
                 retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-                SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+                SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display File System Update Failed.");
         }
     }
 
@@ -514,7 +514,7 @@ SN_STATUS SN_MODULE_DISPLAY_FileSelectPageUpdate(uint32_t pageIndex)
     sprintf(buffer,"Item_Cnt.val=%d", currentPage->itemCnt);
 
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display File System Update Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display File System Update Failed.");
 
     return retStatus;
 }
@@ -536,7 +536,7 @@ SN_STATUS SN_MODULE_DISPLAY_NextionDrawLine(int startX, int startY, int endX, in
     {
         sprintf(buffer,"line %d,%d,%d,%d,%d", startX, startY, endX, endY, color);
         retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-        SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Draw Vertical Line Failed.");
+        SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display Draw Vertical Line Failed.");
     }
     return retStatus;
 }
@@ -552,7 +552,7 @@ SN_STATUS SN_MODULE_DISPLAY_NextionDrawDot(int coorX, int coorY, int color)
     {
         sprintf(buffer,"draw %d,%d,%d,%d,%d", coorX, coorY, coorX, coorY, color);
         retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-        SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Draw Dot Failed.");
+        SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display Draw Dot Failed.");
     }
 
     return retStatus;
@@ -569,7 +569,7 @@ SN_STATUS SN_MODULE_DISPLAY_NextionDrawFill(int startX, int startY, int width, i
     {
         sprintf(buffer,"fill %d,%d,%d,%d,%d", startX, startY, width, height, color);
         retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-        SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Draw Fill Failed.");
+        SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display Draw Fill Failed.");
     }
 
     return retStatus;
@@ -588,13 +588,13 @@ static void* sDisplayThread()
 
     while(true)
     {
-        evt = SN_SYS_MessageGet(msgQIdDisplay);
+        evt = SN_SYS_MESSAGE_Q_Get(msgQIdDisplay);
 
         switch(evt.evt_id)
         {
             case MSG_DISPLAY_EVENT_GET:
                 retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_DISPLAY, evt.evt_msg);
-                SN_SYS_ERROR_CHECK(retStatus, "APP Send Message Failed.");
+                SN_SYS_ERROR_StatusCheck(retStatus, "APP Send Message Failed.");
                 break;
             case MSG_DISPLAY_UPDATE_IMAGE:
                 break;
@@ -605,10 +605,10 @@ static void* sDisplayThread()
                 sDisplay_TotalTimeUpdate();
                 break;
             default:
-                SN_SYS_ERROR_CHECK(SN_STATUS_UNKNOWN_MESSAGE, "Display Get Unknown Message.");
+                SN_SYS_ERROR_StatusCheck(SN_STATUS_UNKNOWN_MESSAGE, "Display Get Unknown Message.");
                 break;
         }
-        SN_SYS_ERROR_CHECK(retStatus, "Display Module Get Error.");
+        SN_SYS_ERROR_StatusCheck(retStatus, "Display Module Get Error.");
     }
 
     return NULL;
@@ -669,22 +669,22 @@ static void* sSerialRx_Callback(char * rxBuffer)
         }
 
         retStatus = sDisplayMessagePut(MSG_DISPLAY_EVENT_GET, msgNXId.NXmessage[0]);
-        SN_SYS_ERROR_CHECK(retStatus, "Display Send Message Failed.");
+        SN_SYS_ERROR_StatusCheck(retStatus, "Display Send Message Failed.");
         break;
     case NX_COMMAND_INVALID_CMD:
 #if(DISPLAY_RX_DEBUG)
-        SN_SYS_Log("Module => Display => Nextion RX : NEXTION INVALID COMMAND.");
+        SN_SYS_ERROR_SystemLog("Module => Display => Nextion RX : NEXTION INVALID COMMAND.");
     case NX_COMMAND_FINISHED:
-        SN_SYS_Log("Module => Display => Nextion RX : NEXTION RESPONSE OK.");
+        SN_SYS_ERROR_SystemLog("Module => Display => Nextion RX : NEXTION RESPONSE OK.");
         break;
     case NX_COMMAND_EVT_LAUNCHED:
-        SN_SYS_Log("Module => Display => Nextion RX : NEXTION DISPLAY LAUNCHED.");
+        SN_SYS_ERROR_SystemLog("Module => Display => Nextion RX : NEXTION DISPLAY LAUNCHED.");
         break;
     case NX_COMMAND_INVALID_BAUD:
-        SN_SYS_Log("Module => Display => Nextion RX : NEXTION BAUD RATE NOT MATCHING.");
+        SN_SYS_ERROR_SystemLog("Module => Display => Nextion RX : NEXTION BAUD RATE NOT MATCHING.");
         break;
     case NX_COMMAND_INVALID_VARIABLE:
-        SN_SYS_Log("Module => Display => Nextion RX : NEXTION INVALID VARIABLE.");
+        SN_SYS_ERROR_SystemLog("Module => Display => Nextion RX : NEXTION INVALID VARIABLE.");
         break;
     default:
         printf("Module => Display => Nextion RX : 0x%02x\n", rxBuffer[0]);
@@ -711,7 +711,7 @@ static void sTMR_Timer_UpdateCallback(void)
     moduleDisplay.secNowTime++;
 
     retStatus = sDisplayMessagePut(MSG_DISPLAY_TIME_INFO_TIMER_UPDATE, 0);
-    SN_SYS_ERROR_CHECK(retStatus, "Time Info Timer Stop Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Time Info Timer Stop Failed.");
 }
 
 static void sTMR_TotalTime_UpdateCallback(void)
@@ -722,7 +722,7 @@ static void sTMR_TotalTime_UpdateCallback(void)
     moduleDisplay.secTotalTime++;
 
     retStatus = sDisplayMessagePut(MSG_DISPLAY_TOTAL_TIME_UPDATE, 0);
-    SN_SYS_ERROR_CHECK(retStatus, "Time Info Timer Stop Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Time Info Timer Stop Failed.");
 }
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
@@ -745,14 +745,14 @@ static SN_STATUS sDisplay_TimerInfoUpdate(void)
                 moduleDisplay.nowTime.sec);
 
         retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-        SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
+        SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display Timer Update Failed.");
 
-        retStatus = SN_SYS_TimerCreate(&timerTimeIndicate, TIMER_INDICATE_INTERVAL, sTMR_Timer_UpdateCallback);
-        SN_SYS_ERROR_CHECK(retStatus, "Timer Cretae Failed.");
+        retStatus = SN_SYS_TIMER_Create(&timerTimeIndicate, TIMER_INDICATE_INTERVAL, sTMR_Timer_UpdateCallback);
+        SN_SYS_ERROR_StatusCheck(retStatus, "Timer Cretae Failed.");
     }
     else
     {
-        SN_SYS_Log("BAD WAY ACCESS Timer Info Update.");
+        SN_SYS_ERROR_SystemLog("BAD WAY ACCESS Timer Info Update.");
     }
 
     return retStatus;
@@ -778,10 +778,10 @@ static SN_STATUS sDisplay_TotalTimeUpdate(void)
             moduleDisplay.totalTime.min);
 
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display Timer Update Failed.");
 
-    retStatus = SN_SYS_TimerCreate(&timerTotalTime, TIMER_INDICATE_INTERVAL, sTMR_TotalTime_UpdateCallback);
-    SN_SYS_ERROR_CHECK(retStatus, "Timer Cretae Failed.");
+    retStatus = SN_SYS_TIMER_Create(&timerTotalTime, TIMER_INDICATE_INTERVAL, sTMR_TotalTime_UpdateCallback);
+    SN_SYS_ERROR_StatusCheck(retStatus, "Timer Cretae Failed.");
 
     return retStatus;
 }
@@ -834,19 +834,19 @@ static SN_STATUS sDisplay_NextionInit(void)
     int thumbnail_width    = 0;
     int thumbnail_height   = 0;
 
-    SN_SYS_Delay(3);
+    SN_SYS_TIMER_Delay(3);
 
     /* Get Mahcine Info */
     machineInfo = SN_MODULE_FILE_SYSTEM_MachineInfoGet();
     if(machineInfo == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "machineInfo not initialized.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "machineInfo not initialized.");
     }
 
     versionInfo = SN_MODULE_FILE_SYSTEM_VersionInfoGet();
     if(versionInfo == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "machineInfo not initialized.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "machineInfo not initialized.");
     }
 
     if(!strcmp(machineInfo->touchScreenSize, NEXTION_DISPLAY_TYPE_3_2_INCH))
@@ -900,50 +900,50 @@ static SN_STATUS sDisplay_NextionInit(void)
 
     sprintf(buffer,"Boot.DeviceName.txt=\"%s\"", machineInfo->name);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
-    SN_SYS_Delay(3);
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_TIMER_Delay(3);
 
     sprintf(buffer,"Boot.thumbnail_W.val=%d", thumbnail_width);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
-    SN_SYS_Delay(3);
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_TIMER_Delay(3);
 
     sprintf(buffer,"Boot.thumbnail_H.val=%d", thumbnail_height);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
-    SN_SYS_Delay(3);
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_TIMER_Delay(3);
 
     sprintf(buffer,"Boot.thumbnail_X.val=%d", thumbnail_offset_x);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
-    SN_SYS_Delay(3);
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_TIMER_Delay(3);
 
     sprintf(buffer,"Boot.thumbnail_Y.val=%d", thumbnail_offset_y);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
-    SN_SYS_Delay(3);
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_TIMER_Delay(3);
 
     sprintf(buffer,"Info.Hash.txt=\"%s\"", versionInfo->hash);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
-    SN_SYS_Delay(3);
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_TIMER_Delay(3);
 
     sprintf(buffer,"Info.Inch.txt=\"%s Inch\"", machineInfo->displayScreenSize);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
-    SN_SYS_Delay(3);
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_TIMER_Delay(3);
 
     sprintf(buffer,"Info.Version.txt=\"%ld.%ld.%ldv\"", versionInfo->releaseNumber, versionInfo->majorNumber, versionInfo->minorNumber);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
-    SN_SYS_Delay(3);
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_TIMER_Delay(3);
 
     sprintf(buffer,"Waiting.Lang.val=%d", languageCode);
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Display Timer Update Failed.");
-    SN_SYS_Delay(3);
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display Timer Update Failed.");
+    SN_SYS_TIMER_Delay(3);
 
-    SN_SYS_Delay(6);
+    SN_SYS_TIMER_Delay(6);
 
     SN_MODULE_DISPLAY_TotalTimeInit();
 
@@ -976,7 +976,7 @@ static char* UTF8toEUC_KR(char* utf8String)
     char* out_buf = malloc(out_size);
     if(out_buf == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "memory allocate failed");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "memory allocate failed");
     }
 
     memset(out_buf, 0x00, out_size);
@@ -984,7 +984,7 @@ static char* UTF8toEUC_KR(char* utf8String)
     iconv_t ic = iconv_open("EUC-KR" /*tocode*/, "UTF-8" /*fromcode*/ );
     if(ic == (iconv_t)-1)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "iconv init failed");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "iconv init failed");
     }
 
     char* in_ptr = utf8String;
@@ -996,7 +996,7 @@ static char* UTF8toEUC_KR(char* utf8String)
     if(result == (size_t)-1)
     {
         perror("Convert to EUC-KR from UTF-8 Failed.");
-        //SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Convert to EUC-KR from UTF-8 failed");
+        //SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "Convert to EUC-KR from UTF-8 failed");
     }
 
     iconv_close(ic);
@@ -1012,7 +1012,7 @@ static char* UTF8toEUC_KR(char* utf8String)
 
 static SN_STATUS sDisplayMessagePut(evtDisplay_t evtId, event_msg_t evtMessage)
 {
-    return SN_SYS_MessagePut(msgQIdDisplay, evtId, evtMessage);
+    return SN_SYS_MESSAGE_Q_Put(msgQIdDisplay, evtId, evtMessage);
 }
 
 
@@ -1036,7 +1036,7 @@ static SN_STATUS sSendCommand(char* command, size_t bufferSize)
 #endif
 
     pthread_mutex_lock(&ptmDisplay);
-    retStatus = SN_SYS_SerialTx(serialIdDisplay, command, bufferSize);
+    retStatus = SN_SYS_SERIAL_Tx(serialIdDisplay, command, bufferSize);
     pthread_mutex_unlock(&ptmDisplay);
 
     return retStatus;

@@ -46,11 +46,11 @@ SN_STATUS APP_Main(general_evt_t evt)
             retStatus = APP_INFO_EvtHdlr(evt);
             break;
         default:
-            SN_SYS_ERROR_CHECK(SN_STATUS_UNKNOWN_MESSAGE, "Unknown State.");
+            SN_SYS_ERROR_StatusCheck(SN_STATUS_UNKNOWN_MESSAGE, "Unknown State.");
             break;
     }
 
-    SN_SYS_ERROR_CHECK(retStatus, "Untrackted Error.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Untrackted Error.");
 
     return retStatus;
 }

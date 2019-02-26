@@ -170,12 +170,12 @@ fsPage_t* FileSystem_GetPage(fsPageHeader_t* pageHeader, uint32_t pageIndex)
 
     if(pageHeader == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "pageHeader is invalid");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_INVALID_PARAM, "pageHeader is invalid");
     }
 
     if(pageHeader->pageCnt <= pageIndex)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "pageIndex pointing over page.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_INVALID_PARAM, "pageIndex pointing over page.");
     }
 
     currentPage = pageHeader->firstPage;

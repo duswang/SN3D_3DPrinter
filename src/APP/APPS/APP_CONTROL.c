@@ -45,7 +45,7 @@ SN_STATUS APP_CONTROL_EvtHdlr(general_evt_t evt)
             break;
     }
 
-    SN_SYS_ERROR_CHECK(retStatus, "ERROR IN [ CONTROL ]");
+    SN_SYS_ERROR_StatusCheck(retStatus, "ERROR IN [ CONTROL ]");
 
     return retStatus;
 }
@@ -54,7 +54,7 @@ SN_STATUS APP_STATE_EnterStateControl(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    SN_SYS_Log("APP STATE => [ CONTROL ]\n");
+    SN_SYS_ERROR_SystemLog("APP STATE => [ CONTROL ]\n");
 
     APP_SetAppState(APP_STATE_CONTROL);
     SN_MODULE_DISPLAY_EnterState(APP_STATE_CONTROL);

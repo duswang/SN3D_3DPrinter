@@ -7,8 +7,8 @@
  * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
- * @defgroup SYSTEM_ERROR Error Handler
- * @ingroup SYSTEM
+ * @defgroup BOOTLOADER_SYSTEM_ERROR Bootloader Error Handler
+ * @ingroup BOOTLOADER_SYSTEM
  * @brief System Error Functions.
  * @{
  */
@@ -53,8 +53,11 @@ typedef int        ERROR_T;
  *  @return SN_STATUS
  *  @note
  */
-extern void SN_SYS_ErrorCheck(SN_STATUS errorStatus, const char* errorMessage, const char* _file, const char* _func, const int _line);
+extern void SN_SYS_ERROR_StatusCheck_Inline(SN_STATUS errorStatus, const char* errorMessage, const char* _file, const char* _func, const int _line);
 
+
+#define SN_SYS_ERROR_StatusCheck(errorStatus, errorMessage) \
+{SN_SYS_ERROR_StatusCheck_Inline(errorStatus, errorMessage, __FILE__, __FUNCTION__, __LINE__);}
 
 /** @brief
  *
@@ -63,22 +66,7 @@ extern void SN_SYS_ErrorCheck(SN_STATUS errorStatus, const char* errorMessage, c
  *  @return SN_STATUS
  *  @note
  */
-extern void SN_SYS_Log(const char* log);
-
-/*************************************************************@}*/
-
-/*************************************************************
- * @def SN_SYS_ERROR_CHECK(error, msg)
- *  @brief
- *
- *  @param error
- *  @param msg
- *
- *  @return SN_STATUS
- *  @note
- */
-#define SN_SYS_ERROR_CHECK(error, msg) \
-SN_SYS_ErrorCheck((error), (msg), __FILE__, __FUNCTION__, __LINE__)
+extern void SN_SYS_ERROR_SystemLog(const char* log);
 
 /*************************************************************@}*/
 

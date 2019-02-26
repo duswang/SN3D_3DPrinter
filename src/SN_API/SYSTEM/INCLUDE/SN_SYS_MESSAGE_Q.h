@@ -49,7 +49,7 @@ typedef struct sys_message_buffer {
  *  @bug First message Q Init is not Working.
  *  @note
  */
-extern sysMessageQId SN_SYS_MessageQInit(void);
+extern sysMessageQId SN_SYS_MESSAGE_Q_Init(void);
 
 /** @brief
  *
@@ -57,7 +57,7 @@ extern sysMessageQId SN_SYS_MessageQInit(void);
  *
  *  @note
  */
-extern SN_STATUS     SN_SYS_MessageQRemove(sysMessageQId msgQId);
+extern SN_STATUS     SN_SYS_MESSAGE_Q_Remove(sysMessageQId msgQId);
 
 /*************************************************************@}*/
 
@@ -76,7 +76,7 @@ extern SN_STATUS     SN_SYS_MessageQRemove(sysMessageQId msgQId);
  *
  *  @note
  */
-extern SN_STATUS     SN_SYS_MessagePut(sysMessageQId msgQId, event_id_t evtId, event_msg_t evtMessage);
+extern SN_STATUS     SN_SYS_MESSAGE_Q_Put(sysMessageQId msgQId, event_id_t evtId, event_msg_t evtMessage);
 
 /** @brief
  *
@@ -86,7 +86,7 @@ extern SN_STATUS     SN_SYS_MessagePut(sysMessageQId msgQId, event_id_t evtId, e
  *
  *  @note
  */
-extern general_evt_t SN_SYS_MessageGet(sysMessageQId msgQId);
+extern general_evt_t SN_SYS_MESSAGE_Q_Get(sysMessageQId msgQId);
 
 /*************************************************************@}*/
 

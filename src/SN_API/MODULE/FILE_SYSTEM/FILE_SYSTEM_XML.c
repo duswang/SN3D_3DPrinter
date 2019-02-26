@@ -95,7 +95,7 @@ unsigned char* FileSysetm_MD5_Hash_WithFile(char* path, char* salt)
     hash = (unsigned char*)malloc(sizeof(unsigned char) * MD5_DIGEST_LENGTH);
     if(hash == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "hash memory allocate falid.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "hash memory allocate falid.");
     }
 
     file_descript = open(path, O_RDONLY);
@@ -136,7 +136,7 @@ unsigned char* FileSystem_MD5_HashToString(unsigned char* hash)
     hashStr = (unsigned char*)malloc(sizeof(unsigned char) * ((MD5_DIGEST_LENGTH * 2) + 1));
     if(hashStr == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "hash memory allocate falid.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "hash memory allocate falid.");
     }
 
     for(i = 0; i < MD5_DIGEST_LENGTH; ++i)
@@ -164,13 +164,13 @@ printTarget_t* FileSystem_targetXMLLoad(const char *srcPath)
     doc = xmlParseFile(docname);
     if(doc == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
     }
 
     cur = xmlDocGetRootElement(doc);
     if(cur == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
     }
 
     cur = cur->xmlChildrenNode;
@@ -180,7 +180,7 @@ printTarget_t* FileSystem_targetXMLLoad(const char *srcPath)
         if ((!xmlStrcmp(cur->name, (const xmlChar *)"GCode")))
         {
             retStatus = sParseXML_targetFile(printTarget, doc, cur);
-            SN_SYS_ERROR_CHECK(retStatus, "target XML File Load Failed.");
+            SN_SYS_ERROR_StatusCheck(retStatus, "target XML File Load Failed.");
         }
         cur = cur->next;
     }
@@ -216,7 +216,7 @@ printOption_t* FileSystem_optionXMLLoad(const char *srcPath)
     if(retStatus != SN_STATUS_OK)
     {
         retStatus = FileSystem_fctl_CreateDircetoryTree(OPTION_FOLDER_PATH);
-        SN_SYS_ERROR_CHECK(retStatus, "Directory Create Failed.");
+        SN_SYS_ERROR_StatusCheck(retStatus, "Directory Create Failed.");
 
         FileSystem_fctl_CopyFile(DEFAULT_OPTION_FILE_PATH, srcPath);
 
@@ -228,7 +228,7 @@ printOption_t* FileSystem_optionXMLLoad(const char *srcPath)
         cur = cur->xmlChildrenNode;
         xmlFreeDoc(doc);
 
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "XMl File is Invlaid.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "XMl File is Invlaid.");
 
         return NULL;
     }
@@ -236,11 +236,11 @@ printOption_t* FileSystem_optionXMLLoad(const char *srcPath)
     printOption = (printOption_t *)malloc(sizeof(printOption_t));
     if(printOption == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "printOption memory allocate failed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "printOption memory allocate failed.");
     }
 
     retStatus = sParseXML_optionFile(printOption, doc, cur);
-    SN_SYS_ERROR_CHECK(retStatus, "option XML File Load Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "option XML File Load Failed.");
 
     xmlFreeDoc(doc);
 
@@ -274,7 +274,7 @@ SN_STATUS FileSystem_deviceInfoXMLUpdate(const char *srcPath, const deviceInfo_t
     if(retStatus != SN_STATUS_OK)
     {
         retStatus = FileSystem_fctl_CreateDircetoryTree(DEVICE_FOLDER_PATH);
-        SN_SYS_ERROR_CHECK(retStatus, "Directory Create Failed.");
+        SN_SYS_ERROR_StatusCheck(retStatus, "Directory Create Failed.");
 
         FileSystem_fctl_CopyFile(DEFAULT_DEVICE_FILE_PATH, srcPath);
 
@@ -286,18 +286,18 @@ SN_STATUS FileSystem_deviceInfoXMLUpdate(const char *srcPath, const deviceInfo_t
         cur = cur->xmlChildrenNode;
         xmlFreeDoc(doc);
 
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "XMl File is Invlaid.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "XMl File is Invlaid.");
 
         return SN_STATUS_NOT_OK;
     }
 
     retStatus = sSetXML_deviceInfoFile(deviceInfo, doc, cur);
-    SN_SYS_ERROR_CHECK(retStatus, "device Info XML File Load Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "device Info XML File Load Failed.");
 
     xmlFile = fopen(srcPath, "wb");
     if(xmlFile == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "src path invalid.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_INVALID_PARAM, "src path invalid.");
     }
 
     xmlDocDump(xmlFile, doc);
@@ -335,7 +335,7 @@ deviceInfo_t* FileSystem_deviceInfoXMLLoad(const char *srcPath)
     if(retStatus != SN_STATUS_OK)
     {
         retStatus = FileSystem_fctl_CreateDircetoryTree(DEVICE_FOLDER_PATH);
-        SN_SYS_ERROR_CHECK(retStatus, "Directory Create Failed.");
+        SN_SYS_ERROR_StatusCheck(retStatus, "Directory Create Failed.");
 
         FileSystem_fctl_CopyFile(DEFAULT_DEVICE_FILE_PATH, srcPath);
 
@@ -347,7 +347,7 @@ deviceInfo_t* FileSystem_deviceInfoXMLLoad(const char *srcPath)
         cur = cur->xmlChildrenNode;
         xmlFreeDoc(doc);
 
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "XMl File is Invlaid.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "XMl File is Invlaid.");
 
         return NULL;
     }
@@ -355,11 +355,11 @@ deviceInfo_t* FileSystem_deviceInfoXMLLoad(const char *srcPath)
     deviceInfo = (deviceInfo_t *)malloc(sizeof(deviceInfo_t));
     if(deviceInfo == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "printOption memory allocate failed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "printOption memory allocate failed.");
     }
 
     retStatus = sParseXML_deviceInfoFile(deviceInfo, doc, cur);
-    SN_SYS_ERROR_CHECK(retStatus, "device Info XML File Load Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "device Info XML File Load Failed.");
 
     xmlFreeDoc(doc);
 
@@ -392,7 +392,7 @@ machineInfo_t* FileSystem_machineInfoXMLLoad(const char *srcPath)
     if(retStatus != SN_STATUS_OK)
     {
         retStatus = FileSystem_fctl_CreateDircetoryTree(MACHINE_FOLDER_PATH);
-        SN_SYS_ERROR_CHECK(retStatus, "Directory Create Failed.");
+        SN_SYS_ERROR_StatusCheck(retStatus, "Directory Create Failed.");
 
         FileSystem_fctl_CopyFile(DEFAULT_MACHINE_FILE_PATH, srcPath);
 
@@ -404,7 +404,7 @@ machineInfo_t* FileSystem_machineInfoXMLLoad(const char *srcPath)
         cur = cur->xmlChildrenNode;
         xmlFreeDoc(doc);
 
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "XMl File is Invlaid.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "XMl File is Invlaid.");
 
         return NULL;
     }
@@ -412,11 +412,11 @@ machineInfo_t* FileSystem_machineInfoXMLLoad(const char *srcPath)
     mahcineInfo = (machineInfo_t *)malloc(sizeof(machineInfo_t));
     if(mahcineInfo == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "printOption memory allocate failed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "printOption memory allocate failed.");
     }
 
     retStatus = sParseXML_machineInfoFile(mahcineInfo, doc, cur);
-    SN_SYS_ERROR_CHECK(retStatus, "machine Info XML File Load Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "machine Info XML File Load Failed.");
 
     xmlFreeDoc(doc);
 
@@ -437,13 +437,13 @@ versionInfo_t* FileSystem_versionInfoXMLLoad(const char *srcPath)
     doc = xmlParseFile(docname);
     if(doc == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
     }
 
     cur = xmlDocGetRootElement(doc);
     if(cur == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "XMl File Open Failed.");
     }
 
     if (xmlStrcmp(cur->name, (const xmlChar *)"version"))
@@ -451,7 +451,7 @@ versionInfo_t* FileSystem_versionInfoXMLLoad(const char *srcPath)
         cur = cur->xmlChildrenNode;
         xmlFreeDoc(doc);
 
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "XMl File is Invlaid.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "XMl File is Invlaid.");
 
         return NULL;
     }
@@ -459,11 +459,11 @@ versionInfo_t* FileSystem_versionInfoXMLLoad(const char *srcPath)
     versionInfo = (versionInfo_t *)malloc(sizeof(versionInfo_t));
     if(versionInfo == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "printOption memory allocate failed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "printOption memory allocate failed.");
     }
 
     retStatus = sParseXML_VersionFile(versionInfo, doc, cur);
-    SN_SYS_ERROR_CHECK(retStatus, "machine Info XML File Load Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "machine Info XML File Load Failed.");
 
     xmlFreeDoc(doc);
 
@@ -489,7 +489,7 @@ static SN_STATUS sParseXML_deviceInfoFile(deviceInfo_t* deviceInfo, xmlDocPtr do
         if((!xmlStrcmp(cur->name, (const xmlChar *)"totalTime")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &deviceInfo->totalTime);
+            sscanf((const char *)key, "%d", &deviceInfo->totalTime);
             xmlFree(key);
         }
         cur = cur->next;
@@ -513,7 +513,7 @@ static SN_STATUS sSetXML_deviceInfoFile(const deviceInfo_t deviceInfo, xmlDocPtr
         }
         if((!xmlStrcmp(cur->name, (const xmlChar *)"totalTime")))
         {
-            sprintf(buffer, "%ld", deviceInfo.totalTime);
+            sprintf(buffer, "%d", deviceInfo.totalTime);
             xmlNodeSetContent(cur, (const xmlChar*)buffer);
         }
         cur = cur->next;
@@ -541,13 +541,13 @@ static SN_STATUS sParseXML_machineInfoFile(machineInfo_t* machineInfo, xmlDocPtr
         if((!xmlStrcmp(cur->name, (const xmlChar *)"resolution_h")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &machineInfo->screenHeight);
+            sscanf((const char *)key, "%d", &machineInfo->screenHeight);
             xmlFree(key);
         }
         if((!xmlStrcmp(cur->name, (const xmlChar *)"resolution_w")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &machineInfo->screenWidth);
+            sscanf((const char *)key, "%d", &machineInfo->screenWidth);
             xmlFree(key);
         }
         if((!xmlStrcmp(cur->name, (const xmlChar *)"displayScreenSize")))
@@ -565,7 +565,7 @@ static SN_STATUS sParseXML_machineInfoFile(machineInfo_t* machineInfo, xmlDocPtr
         if((!xmlStrcmp(cur->name, (const xmlChar *)"machine_z_limit")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &machineInfo->machineHeight);
+            sscanf((const char *)key, "%d", &machineInfo->machineHeight);
             xmlFree(key);
         }
         cur = cur->next;
@@ -599,13 +599,13 @@ static SN_STATUS sParseXML_optionFile(printOption_t* printOption, xmlDocPtr doc,
         if((!xmlStrcmp(cur->name, (const xmlChar *)"bottomLayerExposureTime")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &printOption->bottomLayerExposureTime);
+            sscanf((const char *)key, "%d", &printOption->bottomLayerExposureTime);
             xmlFree(key);
         }
         if((!xmlStrcmp(cur->name, (const xmlChar *)"bottomLayerNumber")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &printOption->bottomLayerNumber);
+            sscanf((const char *)key, "%d", &printOption->bottomLayerNumber);
             xmlFree(key);
         }
         if((!xmlStrcmp(cur->name, (const xmlChar *)"bottomLiftFeedRate")))
@@ -617,13 +617,13 @@ static SN_STATUS sParseXML_optionFile(printOption_t* printOption, xmlDocPtr doc,
         if((!xmlStrcmp(cur->name, (const xmlChar *)"layerExposureTime")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &printOption->layerExposureTime);
+            sscanf((const char *)key, "%d", &printOption->layerExposureTime);
             xmlFree(key);
         }
         if((!xmlStrcmp(cur->name, (const xmlChar *)"liftDistance")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &printOption->liftDistance);
+            sscanf((const char *)key, "%d", &printOption->liftDistance);
             xmlFree(key);
         }
         if((!xmlStrcmp(cur->name, (const xmlChar *)"liftFeedRate")))
@@ -635,7 +635,7 @@ static SN_STATUS sParseXML_optionFile(printOption_t* printOption, xmlDocPtr doc,
         if((!xmlStrcmp(cur->name, (const xmlChar *)"bright")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &printOption->bright);
+            sscanf((const char *)key, "%d", &printOption->bright);
             xmlFree(key);
         }
         cur = cur->next;
@@ -668,19 +668,19 @@ static SN_STATUS sParseXML_VersionFile(versionInfo_t* versionInfo, xmlDocPtr doc
         if((!xmlStrcmp(cur->name, (const xmlChar *)"releaseNumber")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &versionInfo->releaseNumber);
+            sscanf((const char *)key, "%d", &versionInfo->releaseNumber);
             xmlFree(key);
         }
         if((!xmlStrcmp(cur->name, (const xmlChar *)"majorNumber")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &versionInfo->majorNumber);
+            sscanf((const char *)key, "%d", &versionInfo->majorNumber);
             xmlFree(key);
         }
         if((!xmlStrcmp(cur->name, (const xmlChar *)"minorNumber")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &versionInfo->minorNumber);
+            sscanf((const char *)key, "%d", &versionInfo->minorNumber);
             xmlFree(key);
         }
         if((!xmlStrcmp(cur->name, (const xmlChar *)"timestamp")))
@@ -720,7 +720,7 @@ static unsigned long sGet_size_by_fd(int fd)
 
     if(fstat(fd, &statbuf) < 0)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "file can't open.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "file can't open.");
     }
 
     return statbuf.st_size;

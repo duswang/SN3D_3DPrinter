@@ -41,7 +41,7 @@ SN_STATUS APP_PRINTING_EvtHdlr(general_evt_t evt)
             break;
     }
 
-    SN_SYS_ERROR_CHECK(retStatus, "ERROR IN [ PRINTING ]");
+    SN_SYS_ERROR_StatusCheck(retStatus, "ERROR IN [ PRINTING ]");
 
     return retStatus;
 }
@@ -50,7 +50,7 @@ SN_STATUS APP_STATE_EnterStatePrinting(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    SN_SYS_Log("APP STATE => [ PRINTING ]");
+    SN_SYS_ERROR_SystemLog("APP STATE => [ PRINTING ]");
 
     APP_SetAppState(APP_STATE_PRINTING);
     SN_MODULE_DISPLAY_EnterState(APP_STATE_PRINTING);

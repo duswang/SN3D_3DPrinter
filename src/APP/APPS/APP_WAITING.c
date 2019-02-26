@@ -43,7 +43,7 @@ SN_STATUS APP_WAITING_EvtHdlr(general_evt_t evt)
             break;
     }
 
-    SN_SYS_ERROR_CHECK(retStatus, "ERROR IN [ WAITING ]");
+    SN_SYS_ERROR_StatusCheck(retStatus, "ERROR IN [ WAITING ]");
 
     return retStatus;
 }
@@ -52,7 +52,7 @@ SN_STATUS APP_STATE_EnterStateWaiting(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    SN_SYS_Log("APP STATE => [ WAITING ]");
+    SN_SYS_ERROR_SystemLog("APP STATE => [ WAITING ]");
 
     APP_SetAppState(APP_STATE_WAITING);
     SN_MODULE_DISPLAY_EnterState(APP_STATE_WAITING);

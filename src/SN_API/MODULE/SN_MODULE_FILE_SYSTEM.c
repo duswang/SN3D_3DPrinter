@@ -104,42 +104,42 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    SN_SYS_Log("MODULE INIT => FILE SYSTEM.");
+    SN_SYS_ERROR_SystemLog("MODULE INIT => FILE SYSTEM.");
 
     SN_MODULE_DISPLAY_BootProgressUpdate(40, "FS Module Loading...");
-    SN_SYS_Delay(500);
+    SN_SYS_TIMER_Delay(500);
 
     SN_MODULE_DISPLAY_BootProgressUpdate(42, "USB Read...");
-    SN_SYS_Delay(500);
+    SN_SYS_TIMER_Delay(500);
 
     /* USB DRIVER INIT */
     SN_SYS_USBDriverInit(USBEvent_Callback);
 
     /* MESSAGE Q INIT */
-    msgQIdFileSystem = SN_SYS_MessageQInit();
-    SN_SYS_ERROR_CHECK(retStatus, "File System Module Message Q Init Failed.");
+    msgQIdFileSystem = SN_SYS_MESSAGE_Q_Init();
+    SN_SYS_ERROR_StatusCheck(retStatus, "File System Module Message Q Init Failed.");
 
     /* MUTEX INIT */
     if (pthread_mutex_init(&ptmFileSystem, NULL) != 0)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System Mutex Init Failed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "File System Mutex Init Failed.");
     }
 
     /* THREAD INIT */
     if((retStatus = pthread_create(&ptFileSystem, NULL, sFileSystemThread, NULL)))
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System Thread Init Failed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "File System Thread Init Failed.");
     }
 
     /* Default Machine Info Setup */
     SN_MODULE_DISPLAY_BootProgressUpdate(45, "Version Info Check...");
-    SN_SYS_Delay(250);
+    SN_SYS_TIMER_Delay(250);
 
     sVersionInfoLoad();
 
     /* Default Machine Info Setup */
     SN_MODULE_DISPLAY_BootProgressUpdate(45, "Version Info Check...");
-    SN_SYS_Delay(250);
+    SN_SYS_TIMER_Delay(250);
 
     sVersionInfoLoad();
 
@@ -151,28 +151,28 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void)
     else
     {
         SN_MODULE_DISPLAY_BootProgressUpdate(52, "bad binary detected !!");
-        SN_SYS_Delay(3000);
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "binary is changed not normaly !!");
+        SN_SYS_TIMER_Delay(3000);
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "binary is changed not normaly !!");
     }
 
-    SN_SYS_Delay(250);
+    SN_SYS_TIMER_Delay(250);
 
     /* Load Option */
     SN_MODULE_DISPLAY_BootProgressUpdate(50, "Mahcine Info Read...");
-    SN_SYS_Delay(250);
+    SN_SYS_TIMER_Delay(250);
 
     sMachineInfoPageLoad(&moduleFileSystem.fileSystem);
     sMachineInfoLoad(MACHINE_DEFAULT_INDEX);
 
     /* Machine File*/
     SN_MODULE_DISPLAY_BootProgressUpdate(55, "Option File Read...");
-    SN_SYS_Delay(250);
+    SN_SYS_TIMER_Delay(250);
     sOptionPageLoad(&moduleFileSystem.fileSystem);
     sOptionLoad(OPTION_DEFAULT_INDEX);
 
     /* Device File */
     SN_MODULE_DISPLAY_BootProgressUpdate(60, "Device File Read...");
-    SN_SYS_Delay(250);
+    SN_SYS_TIMER_Delay(250);
 
     sDeviceInfoLoad();
 
@@ -196,7 +196,7 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Uninit(void)
     moduleFileSystem.machineInfo = NULL;
     SN_MODULE_FILE_SYSTEM_TargetDestroy();
 
-    SN_SYS_MessageQRemove(msgQIdFileSystem);
+    SN_SYS_MESSAGE_Q_Remove(msgQIdFileSystem);
 
     return SN_STATUS_OK;
 }
@@ -205,7 +205,7 @@ bool SN_MODULE_FILE_SYSTEM_isPrintFileExist(void)
 {
     if(moduleFileSystem.fileSystem.filePageHeader == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System not initialized.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "File System not initialized.");
     }
 
     return moduleFileSystem.fileSystem.filePageHeader->itemCnt;
@@ -215,7 +215,7 @@ uint32_t SN_MODULE_FILE_SYSTEM_GetFilePageCnt(void)
 {
     if(moduleFileSystem.fileSystem.filePageHeader == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System not initialized.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "File System not initialized.");
     }
 
     return moduleFileSystem.fileSystem.filePageHeader->pageCnt;
@@ -225,7 +225,7 @@ const fsPage_t* SN_MODULE_FILE_SYSTEM_GetFilePage(int pageIndex)
 {
     if(moduleFileSystem.fileSystem.filePageHeader == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System not initialized.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "File System not initialized.");
     }
 
     return FileSystem_GetPage(moduleFileSystem.fileSystem.filePageHeader, pageIndex);
@@ -236,7 +236,7 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_FilePageUpdate(void)
     SN_STATUS retStatus = SN_STATUS_OK;
 
     retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_READ, 0);
-    SN_SYS_ERROR_CHECK(retStatus, "File System Send Message Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "File System Send Message Failed.");
 
     return retStatus;
 }
@@ -245,7 +245,7 @@ const versionInfo_t* SN_MODULE_FILE_SYSTEM_VersionInfoGet(void)
 {
     if(moduleFileSystem.versionInfo == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "VersionInfo not loaded.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "VersionInfo not loaded.");
     }
 
     return moduleFileSystem.versionInfo;
@@ -261,12 +261,12 @@ const deviceInfo_t* SN_MODULE_FILE_SYSTEM_DeviceInfoGet(void)
         {
             break;
         }
-        SN_SYS_Delay(30);
+        SN_SYS_TIMER_Delay(30);
     }
 
     if(moduleFileSystem.deviceInfo == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "deviceInfo not loaded.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "deviceInfo not loaded.");
     }
 
     return moduleFileSystem.deviceInfo;
@@ -288,7 +288,7 @@ const machineInfo_t* SN_MODULE_FILE_SYSTEM_MachineInfoGet(void)
 {
     if(moduleFileSystem.machineInfo == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "machineInfo not loaded.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "machineInfo not loaded.");
     }
 
     return moduleFileSystem.machineInfo;
@@ -298,7 +298,7 @@ const fsPage_t* SN_MODULE_FILE_SYSTEM_GetOptionPage(int pageIndex)
 {
     if(moduleFileSystem.fileSystem.filePageHeader == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System not initialized.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "File System not initialized.");
     }
 
     return FileSystem_GetPage(moduleFileSystem.fileSystem.filePageHeader, pageIndex);
@@ -308,7 +308,7 @@ bool SN_MODULE_FILE_SYSTEM_isOptionExist(void)
 {
     if(moduleFileSystem.fileSystem.optionPageHeader == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System not initialized.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "File System not initialized.");
     }
 
     return moduleFileSystem.fileSystem.optionPageHeader->itemCnt;
@@ -318,7 +318,7 @@ uint32_t SN_MODULE_FILE_SYSTEM_GetOptionCnt(void)
 {
     if(moduleFileSystem.fileSystem.filePageHeader == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "File System not initialized.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "File System not initialized.");
     }
 
     return moduleFileSystem.fileSystem.optionPageHeader->itemCnt;
@@ -329,7 +329,7 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_OptionLoad(uint32_t optionIndex)
     SN_STATUS retStatus = SN_STATUS_OK;
 
     retStatus = sOptionLoad(optionIndex);
-    SN_SYS_ERROR_CHECK(retStatus, "option is not loaded.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "option is not loaded.");
 
     return retStatus;
 }
@@ -338,7 +338,7 @@ const printOption_t* SN_MODULE_FILE_SYSTEM_OptionGet(void)
 {
     if(moduleFileSystem.printOption == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "option is not loaded.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "option is not loaded.");
     }
 
     return moduleFileSystem.printOption;
@@ -350,11 +350,11 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_TargetLoad(uint32_t pageIndex, uint32_t itemInde
 
     if(moduleFileSystem.printTarget != NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_ALREADY_INITIALIZED, "target is already initialized. plase destroy target.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_ALREADY_INITIALIZED, "target is already initialized. plase destroy target.");
     }
 
     retStatus = sTargetLoad(pageIndex, itemIndex);
-    SN_SYS_ERROR_CHECK(retStatus, "option is not loaded.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "option is not loaded.");
 
     return retStatus;
 }
@@ -368,7 +368,7 @@ char* SN_MODULE_FILE_SYSTEM_TargetSlicePathGet(uint32_t sliceIndex)
 
     if(moduleFileSystem.printTarget == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "target is not loaded.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "target is not loaded.");
     }
 
     for (sliceNumber = moduleFileSystem.printTarget->slice; sliceNumber > 0; sliceNumber /= 10, numberSpace++)
@@ -400,7 +400,7 @@ char* SN_MODULE_FILE_SYSTEM_TargetSlicePathGet(uint32_t sliceIndex)
         case B9:
             break;
         default:
-            SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "Invalid File Type.");
+            SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "Invalid File Type.");
             break;
     }
 
@@ -422,7 +422,7 @@ const printTarget_t* SN_MODULE_FILE_SYSTEM_TargetGet(void)
 {
     if(moduleFileSystem.printTarget == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Target not loaded.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "Target not loaded.");
     }
 
     return moduleFileSystem.printTarget;
@@ -440,28 +440,28 @@ static void* sFileSystemThread()
 
     while(true)
     {
-        evt = SN_SYS_MessageGet(msgQIdFileSystem);
+        evt = SN_SYS_MESSAGE_Q_Get(msgQIdFileSystem);
 
         switch(evt.evt_id)
         {
             case MSG_FILE_SYSTEM_USB_MOUNT:
-                SN_SYS_Log("File System => Module => USB Mount Event.");
+                SN_SYS_ERROR_SystemLog("File System => Module => USB Mount Event.");
 
                 retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_READ, 0);
-                SN_SYS_ERROR_CHECK(retStatus, "File System Message Send Failed.");
+                SN_SYS_ERROR_StatusCheck(retStatus, "File System Message Send Failed.");
 
                 retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_FILE_SYSTEM, APP_EVT_MSG_FILE_SYSTEM_USB_MOUNT);
-                SN_SYS_ERROR_CHECK(retStatus, "App Message Send Failed.");
+                SN_SYS_ERROR_StatusCheck(retStatus, "App Message Send Failed.");
 
                 break;
             case MSG_FILE_SYSTEM_USB_UNMOUNT:
-                SN_SYS_Log("File System => Module => USB Unmount Event.");
+                SN_SYS_ERROR_SystemLog("File System => Module => USB Unmount Event.");
 
                 retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_READ, 0);
-                SN_SYS_ERROR_CHECK(retStatus, "File System Message Send Failed.");
+                SN_SYS_ERROR_StatusCheck(retStatus, "File System Message Send Failed.");
 
                 retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_FILE_SYSTEM, APP_EVT_MSG_FILE_SYSTEM_USB_UNMOUNT);
-                SN_SYS_ERROR_CHECK(retStatus, "App Message Send Failed.");
+                SN_SYS_ERROR_StatusCheck(retStatus, "App Message Send Failed.");
 
                 break;
 
@@ -473,23 +473,23 @@ static void* sFileSystemThread()
                 sFileSystemPrint(&moduleFileSystem.fileSystem);
 
                 retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_UPDATE, 0);
-                SN_SYS_ERROR_CHECK(retStatus, "File System Message Send Failed.");
+                SN_SYS_ERROR_StatusCheck(retStatus, "File System Message Send Failed.");
 
                 retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_FILE_SYSTEM, APP_EVT_MSG_FILE_SYSTEM_READ_DONE);
-                SN_SYS_ERROR_CHECK(retStatus, "App Message Send Failed.");
+                SN_SYS_ERROR_StatusCheck(retStatus, "App Message Send Failed.");
                 break;
             case MSG_FILE_SYSTEM_UPDATE:
                 retStatus = SN_SYSTEM_SendAppMessage(APP_EVT_ID_FILE_SYSTEM, APP_EVT_MSG_FILE_SYSTEM_UPDATE);
-                SN_SYS_ERROR_CHECK(retStatus, "App Message Send Failed.");
+                SN_SYS_ERROR_StatusCheck(retStatus, "App Message Send Failed.");
                 break;
             case MSG_FILE_SYSTEM_WAITING:
                 break;
             default:
-                SN_SYS_ERROR_CHECK(SN_STATUS_UNKNOWN_MESSAGE, "File System Get Unknown Message.");
+                SN_SYS_ERROR_StatusCheck(SN_STATUS_UNKNOWN_MESSAGE, "File System Get Unknown Message.");
                 break;
         }
 
-        SN_SYS_ERROR_CHECK(retStatus, "File System Module Get Error.");
+        SN_SYS_ERROR_StatusCheck(retStatus, "File System Module Get Error.");
     }
 
     return NULL;
@@ -505,24 +505,24 @@ static void* USBEvent_Callback(int evt)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    SN_SYS_Log("Get USB Event");
+    SN_SYS_ERROR_SystemLog("Get USB Event");
 
     switch(evt)
     {
         case MSG_USB_EVT_MOUNT:
             retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_USB_MOUNT, 0);
-            SN_SYS_ERROR_CHECK(retStatus, "File System Send Message Fiailed.");
+            SN_SYS_ERROR_StatusCheck(retStatus, "File System Send Message Fiailed.");
             break;
         case MSG_USB_EVT_UNMOUNT:
             retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_USB_UNMOUNT, 0);
-            SN_SYS_ERROR_CHECK(retStatus, "File System Send Message Fiailed.");
+            SN_SYS_ERROR_StatusCheck(retStatus, "File System Send Message Fiailed.");
             break;
         case MSG_USB_EVT_WAITING:
             retStatus = sFileSystemMessagePut(MSG_FILE_SYSTEM_WAITING, 0);
-            SN_SYS_ERROR_CHECK(retStatus, "File System Send Message Fiailed.");
+            SN_SYS_ERROR_StatusCheck(retStatus, "File System Send Message Fiailed.");
             break;
         default:
-            SN_SYS_ERROR_CHECK(SN_STATUS_UNKNOWN_MESSAGE, "Unknown USB Event.");
+            SN_SYS_ERROR_StatusCheck(SN_STATUS_UNKNOWN_MESSAGE, "Unknown USB Event.");
             break;
     }
     return NULL;
@@ -549,21 +549,21 @@ static SN_STATUS sMachineInfoPageLoad(fileSystem_t* fileSystem)
 
     if(fileSystem == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "fileSysetm is NULL");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_INVALID_PARAM, "fileSysetm is NULL");
     }
 
     /* Page Init */
     pageHeader = FileSystem_PageInit();
     if(pageHeader == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "pageHeader init failed");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "pageHeader init failed");
     }
 
     /* Add First Page */
     FileSystem_AddPage(pageHeader);
     if(pageHeader->firstPage == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "first page is can't open.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "first page is can't open.");
     }
     currentPage = pageHeader->firstPage;
 
@@ -572,7 +572,7 @@ static SN_STATUS sMachineInfoPageLoad(fileSystem_t* fileSystem)
     {
         perror("scandir");
         retStatus = FileSystem_fctl_CreateDircetoryTree(MACHINE_FOLDER_PATH);
-        SN_SYS_ERROR_CHECK(retStatus, "Directory Create Failed.");
+        SN_SYS_ERROR_StatusCheck(retStatus, "Directory Create Failed.");
 
         sprintf(path,"%s/%s.%s", MACHINE_FOLDER_PATH, MACHINE_FILE_NAME, MACHINE_FILE_EXT);
         printf("\n\n %s \n\n", path);
@@ -644,21 +644,21 @@ static SN_STATUS sOptionPageLoad(fileSystem_t* fileSystem)
 
     if(fileSystem == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "fileSysetm is NULL");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_INVALID_PARAM, "fileSysetm is NULL");
     }
 
     /* Page Init */
     pageHeader = FileSystem_PageInit();
     if(pageHeader == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "pageHeader init failed");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "pageHeader init failed");
     }
 
     /* Add First Page */
     FileSystem_AddPage(pageHeader);
     if(pageHeader->firstPage == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "first page is can't open.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "first page is can't open.");
     }
     currentPage = pageHeader->firstPage;
 
@@ -667,7 +667,7 @@ static SN_STATUS sOptionPageLoad(fileSystem_t* fileSystem)
     {
         perror("scandir");
         retStatus = FileSystem_fctl_CreateDircetoryTree(OPTION_FOLDER_PATH);
-        SN_SYS_ERROR_CHECK(retStatus, "Directory Create Failed.");
+        SN_SYS_ERROR_StatusCheck(retStatus, "Directory Create Failed.");
 
         sprintf(path,"%s/%s.%s", OPTION_FOLDER_PATH, OPTION_FILE_NAME, OPTION_FILE_EXT);
         printf("\n\n %s \n\n", path);
@@ -736,21 +736,21 @@ static SN_STATUS sFilePageLoad(fileSystem_t* fileSystem)
 
     if(fileSystem == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "fileSysetm is NULL");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_INVALID_PARAM, "fileSysetm is NULL");
     }
 
     /* Page Init */
     pageHeader = FileSystem_PageInit();
     if(pageHeader == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "pageHeader init failed");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "pageHeader init failed");
     }
 
     /* Add First Page */
     FileSystem_AddPage(pageHeader);
     if(pageHeader->firstPage == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "first page is can't open.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "first page is can't open.");
     }
     currentPage = pageHeader->firstPage;
 
@@ -759,7 +759,7 @@ static SN_STATUS sFilePageLoad(fileSystem_t* fileSystem)
     {
         while(scandirErrorChecker <= 5)
         {
-            SN_SYS_Delay(300);
+            SN_SYS_TIMER_Delay(300);
             scandirErrorChecker++;
             numberOfnameList = scandir(USB_FOLDER_PATH, &nameList, 0, alphasort);
 
@@ -1018,7 +1018,7 @@ static SN_STATUS sTargetLoad(uint32_t pageIndex, uint32_t itemIndex)
     printTarget = (printTarget_t *)malloc(sizeof(printTarget_t));
     if(printTarget == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "printTarget memroy allocate failed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "printTarget memroy allocate failed.");
     }
 
     /* Target Info Setting. */
@@ -1031,7 +1031,7 @@ static SN_STATUS sTargetLoad(uint32_t pageIndex, uint32_t itemIndex)
     nameBuffer = NULL;
 
     retStatus = sTargetFileCreate(printTarget->projectName, FileSystem_fctl_ExtractFileExtention(TargetFile.name));
-    SN_SYS_ERROR_CHECK(retStatus, "Faild Create Target Files.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Faild Create Target Files.");
 
     if(FileSystem_CountFileWithStr(TARGET_FOLDER_PATH, CWS_CONDITION_STR))
     {
@@ -1115,6 +1115,6 @@ static SN_STATUS sTargetFileCreate(const char* fileName, const char* fileExtenti
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 static SN_STATUS sFileSystemMessagePut(evtFileSystem_t evtId, event_msg_t evtMessage)
 {
-    return SN_SYS_MessagePut(msgQIdFileSystem, evtId, evtMessage);
+    return SN_SYS_MESSAGE_Q_Put(msgQIdFileSystem, evtId, evtMessage);
 }
 

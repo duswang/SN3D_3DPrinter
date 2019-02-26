@@ -62,7 +62,7 @@ SN_STATUS APP_FILE_SELECT_EvtHdlr(general_evt_t evt)
             break;
     }
 
-    SN_SYS_ERROR_CHECK(retStatus, "ERROR IN [ FILE SELECT ]");
+    SN_SYS_ERROR_StatusCheck(retStatus, "ERROR IN [ FILE SELECT ]");
 
     return retStatus;
 }
@@ -72,7 +72,7 @@ SN_STATUS APP_STATE_EnterStateFileSelect(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    SN_SYS_Log("APP STATE => [ FILE SELECT ]");
+    SN_SYS_ERROR_SystemLog("APP STATE => [ FILE SELECT ]");
 
     APP_SetAppState(APP_STATE_FILE_SELECT);
     SN_MODULE_DISPLAY_EnterState(APP_STATE_FILE_SELECT);

@@ -108,21 +108,21 @@ SN_STATUS ImageViewer_WindowUpdate(moduleImageViewer_t* moduleImageViewer, uint3
     path = SN_MODULE_FILE_SYSTEM_TargetSlicePathGet(sliceIndex);
 
     retStatus = sLoadImage(path, &moduleImageViewer->image);
-    SN_SYS_ERROR_CHECK(retStatus, "Load Image Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Load Image Failed.");
 
     retStatus = sUpdateWindow(moduleImageViewer->window, moduleImageViewer->image);
-    SN_SYS_ERROR_CHECK(retStatus, "Window Update Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Window Update Failed.");
 
     /* Load and Update Thumbnail Nextion Display */
     retStatus = sLoadThumbnail(&moduleImageViewer->image, &moduleImageViewer->thumbnail, sCalculateWidthNextionThumbnail(moduleImageViewer->image, moduleImageViewer->thumbnailInfo));
-    SN_SYS_ERROR_CHECK(retStatus, "Load thumbnail Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Load thumbnail Failed.");
 
     retStatus = sUpdateNextionThumbnail(moduleImageViewer->thumbnail, moduleImageViewer->thumbnailInfo);
-    SN_SYS_ERROR_CHECK(retStatus, "Thumbnail Update Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Thumbnail Update Failed.");
 
     /* Distroy Image */
     retStatus = sDistroyImage(&moduleImageViewer->image);
-    SN_SYS_ERROR_CHECK(retStatus, "Image Distroy Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Image Distroy Failed.");
 
     free(path);
     path = NULL;
@@ -135,7 +135,7 @@ SN_STATUS ImageViewer_WindowClean(moduleImageViewer_t* moduleImageViewer)
     SN_STATUS retStatus = SN_STATUS_OK;
 
     retStatus= sCleanWindow(moduleImageViewer->window);
-    SN_SYS_ERROR_CHECK(retStatus, "Image Clean Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Image Clean Failed.");
 
     return retStatus;
 }
@@ -164,7 +164,7 @@ SN_STATUS ImageViewer_ThumbnailClean(moduleImageViewer_t* moduleImageViewer)
     }
 
     retStatus= sCleanNextionThumbnail(moduleImageViewer->thumbnailInfo);
-    SN_SYS_ERROR_CHECK(retStatus, "Thumbnail Clean Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Thumbnail Clean Failed.");
 
     return retStatus;
 }
@@ -195,44 +195,44 @@ static SN_STATUS sLoadImage(const char* filename, FB_Image_t* pImage)
 
     if(filename == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "filename is NULL.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_INVALID_PARAM, "filename is NULL.");
     }
 
     if(pImage == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "image structure is NULL.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_INVALID_PARAM, "image structure is NULL.");
     }
 
     FILE *fp = fopen(filename, "rb");
     if (!fp)
     {
         printf("PATH => %s \n", filename);
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "load image faild. check image path.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_INVALID_PARAM, "load image faild. check image path.");
     }
 
     /* HEDER CHECK */
     fread(header, 1, 8, fp);
     if (png_sig_cmp(header, 0, 8))
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_SUPPORTED, "is not png file.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_SUPPORTED, "is not png file.");
     }
 
     /* INIT PNG STRUCTURE */
     png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     if (!png_ptr)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "create png struct faild.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "create png struct faild.");
     }
 
     info_ptr = png_create_info_struct(png_ptr);
     if (!info_ptr)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "create png info struct faild.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "create png info struct faild.");
     }
 
     if (setjmp(png_jmpbuf(png_ptr)))
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Error during init_io.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "Error during init_io.");
     }
 
     png_init_io(png_ptr, fp);
@@ -249,7 +249,7 @@ static SN_STATUS sLoadImage(const char* filename, FB_Image_t* pImage)
     pImage->rgb = (unsigned char*)malloc((pImage->w) * (pImage->h) * 3); //RGB 888
     if (pImage->rgb == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_OUT_OF_MEM, " failed to allocate image rgb buffer");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_OUT_OF_MEM, " failed to allocate image rgb buffer");
     }
 
     if (pImage->colorType == PNG_COLOR_TYPE_PALETTE) png_set_expand(png_ptr);
@@ -337,18 +337,18 @@ static SN_STATUS sRotateImage(FB_Image_t* image)
 
     if(image == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "image is NULL");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_INVALID_PARAM, "image is NULL");
     }
 
     if(image->rgb == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "image rgb is NULL");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_INVALID_PARAM, "image rgb is NULL");
     }
 
     rotatedImage.rgb = (unsigned char*)malloc(((image->w * image->h) * sizeof(unsigned char)));
     if (rotatedImage.rgb == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "thumbnail rgb failed memory allocate.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "thumbnail rgb failed memory allocate.");
     }
 
     rotatedImage.bpp       = image->bpp;
@@ -393,12 +393,12 @@ static SN_STATUS sLoadThumbnail(FB_Image_t* image, FB_Image_t* thumbnail, int th
 
     if(image == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "image is NULL");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_INVALID_PARAM, "image is NULL");
     }
 
     if(thumbnail == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "thumbnail is NULL");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_INVALID_PARAM, "thumbnail is NULL");
     }
 
     thumbnailHeight = image->h * thumbnailWidth / image->w;
@@ -406,7 +406,7 @@ static SN_STATUS sLoadThumbnail(FB_Image_t* image, FB_Image_t* thumbnail, int th
     thumbnail->rgb = (unsigned char*)malloc(((thumbnailWidth * thumbnailHeight) * sizeof(unsigned char)));
     if (thumbnail->rgb == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "thumbnail rgb failed memory allocate.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "thumbnail rgb failed memory allocate.");
     }
 
     thumbnail->alpha = NULL;
@@ -517,31 +517,31 @@ static SN_STATUS sLoadWindow(const char* devicename, FB_Window_t* window)
 
     if(devicename == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "devicename param is NULL.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_INVALID_PARAM, "devicename param is NULL.");
     }
 
     if(window == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_INVALID_PARAM, "window param is NULL.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_INVALID_PARAM, "window param is NULL.");
     }
 
     fbfd = open(devicename, O_RDWR);
     if (fbfd == -1)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "cannot open framebuffer device.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "cannot open framebuffer device.");
     }
     window->name = devicename;
 
     /* GET FIX SCREEN INFO */
     if (ioctl(fbfd, FBIOGET_FSCREENINFO, &finfo) == -1)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Error reading fixed information.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "Error reading fixed information.");
     }
 
     /* GET VARIABLE SCREEN INFO */
     if (ioctl(fbfd, FBIOGET_VSCREENINFO, &vinfo) == -1)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Error reading variable information.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "Error reading variable information.");
     }
 
     window->h   = vinfo.yres;
@@ -573,13 +573,13 @@ static SN_STATUS sUpdateWindow(const FB_Window_t window, const FB_Image_t image)
 
     if(window.name == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "window not initialzed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "window not initialzed.");
     }
 
     fbfd = open(window.name, O_RDWR);
     if (fbfd == -1)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "cannot open framebuffer device.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "cannot open framebuffer device.");
     }
 
     fbbuff = convertRGB2FB(fbfd, image.rgb, image.w * image.h, window.bpp, &bp);
@@ -588,7 +588,7 @@ static SN_STATUS sUpdateWindow(const FB_Window_t window, const FB_Image_t image)
     fbp = (char *)mmap(0, window.screenSize, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
     if ((int)fbp == -1)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "failed to map framebuffer device to memory.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "failed to map framebuffer device to memory.");
     }
 
     fbptr = (unsigned char *)fbp;
@@ -621,20 +621,20 @@ static SN_STATUS sCleanWindow(const FB_Window_t window)
 
     if(window.name == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "window not initialzed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "window not initialzed.");
     }
 
     fbfd = open(window.name, O_RDWR);
     if (fbfd == -1)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "cannot open framebuffer device.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "cannot open framebuffer device.");
     }
 
     /* Map the device to memory */
     fbp = (char *)mmap(0, window.screenSize, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
     if ((int)fbp == -1)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "failed to map framebuffer device to memory.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "failed to map framebuffer device to memory.");
     }
 
     /* Figure out where in memory to put the pixel */
@@ -760,7 +760,7 @@ static SN_STATUS sUpdateNextionThumbnail(const FB_Image_t thumbnail, const FB_Th
 
     if(thumbnail.rgb == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "thumbnail image is not initialized.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "thumbnail image is not initialized.");
     }
 
     for (i = 0; i < thumbnail.h; i++)
@@ -787,7 +787,7 @@ static SN_STATUS sUpdateNextionThumbnail(const FB_Image_t thumbnail, const FB_Th
                                                   thumbnaileInfo.thumbnail_offset_x + lineEnd, \
                                                   thumbnaileInfo.thumbnail_offset_y + lineOffset + i, \
                                                   DEFAULT_NEXTION_THUMBNAIL_ON_PIXEL_COLOR);
-                SN_SYS_Delay(3);
+                SN_SYS_TIMER_Delay(3);
             }
             else
             {
@@ -817,7 +817,7 @@ static uint32_t sCalculateWidthNextionThumbnail(const FB_Image_t image, const FB
 
     if(image.rgb == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "thumbnail image is not initialized.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "thumbnail image is not initialized.");
     }
 
     if(image.w < image.h) /* Vertical Image */

@@ -62,17 +62,17 @@ SN_STATUS SN_SYS_USBDriverInit(void* (pfCallBack)(int evt))
     if (LIBUSB_SUCCESS != error)
     {
         libusb_exit(NULL);
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "libusb init failed");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "libusb init failed");
     }
 
     if (pthread_mutex_init(&ptmUSBDriver, NULL) != 0)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "USB Driver Mutext Init Failed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "USB Driver Mutext Init Failed.");
     }
 
     if(pthread_create(&ptUSBDriverl, NULL, sUSBDriverThread, NULL))
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "USB Driver Thread Init Failed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "USB Driver Thread Init Failed.");
     }
 
     error = libusb_hotplug_register_callback(NULL, \
@@ -98,7 +98,7 @@ SN_STATUS SN_SYS_USBDriverInit(void* (pfCallBack)(int evt))
     if (LIBUSB_SUCCESS != error)
     {
         libusb_exit(NULL);
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Error creating a hotplug callback");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "Error creating a hotplug callback");
     }
 
     return retStatus;
@@ -140,7 +140,7 @@ static ERROR_T LIBUSB_CALL hotplug_callback(struct libusb_context *ctx, struct l
     }
     else
     {
-        SN_SYS_Log("USB Driver => System => Unhandled event.");
+        SN_SYS_ERROR_SystemLog("USB Driver => System => Unhandled event.");
     }
 
     return rc = LIBUSB_SUCCESS;
@@ -151,7 +151,7 @@ static void* sUSBDriverThread()
     while (true)
     {
         libusb_handle_events_completed(NULL, NULL);
-        SN_SYS_Delay(100);
+        SN_SYS_TIMER_Delay(100);
     }
     return NULL;
 }

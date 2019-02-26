@@ -47,7 +47,7 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_Init(void)
     SN_STATUS retStatus = SN_STATUS_OK;
 
     retStatus = ImageViewer_Init(&moduleImageViewer);
-    SN_SYS_ERROR_CHECK(retStatus, "Image Viewer Init Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Image Viewer Init Failed.");
 
     return retStatus;
 }
@@ -57,7 +57,7 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowUpdate(uint32_t sliceIndex)
     SN_STATUS retStatus = SN_STATUS_OK;
 
     retStatus = ImageViewer_WindowUpdate(&moduleImageViewer, sliceIndex);
-    SN_SYS_ERROR_CHECK(retStatus, "Window Update Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Window Update Failed.");
 
     return retStatus;
 }
@@ -67,7 +67,7 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowClean(void)
     SN_STATUS retStatus = SN_STATUS_OK;
 
     retStatus = ImageViewer_WindowClean(&moduleImageViewer);
-    SN_SYS_ERROR_CHECK(retStatus, "Window Clean Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Window Clean Failed.");
 
     return retStatus;
 }
@@ -78,7 +78,7 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_WindowDestroy(void)
     SN_STATUS retStatus = SN_STATUS_OK;
 
     retStatus = ImageViewer_WindowDestroy(&moduleImageViewer);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Thumbnail Clean Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Thumbnail Clean Failed.");
 
     return retStatus;
 }
@@ -95,7 +95,7 @@ SN_STATUS SN_MODULE_IMAGE_VIEWER_ThumbnailClean(void)
     SN_STATUS retStatus = SN_STATUS_OK;
 
     retStatus = ImageViewer_ThumbnailClean(&moduleImageViewer);
-    SN_SYS_ERROR_CHECK(retStatus, "Nextion Thumbnail Clean Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Thumbnail Clean Failed.");
 
     return retStatus;
 }

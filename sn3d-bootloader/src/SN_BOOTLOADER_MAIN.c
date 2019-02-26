@@ -100,7 +100,8 @@ const char* sBootloader_FW_FileSearching(void)
 
                 FileSystem_fctl_CreateDircetoryTree(SN3D_OPTION_FOLDER_PATH);
                 FileSystem_fctl_RemoveFiles(SN3D_OPTION_FOLDER_PATH);
-                FileSystem_fctl_ExtractFile(path, SN3D_OPTION_FOLDER_PATH);
+                //FileSystem_fctl_ExtractFile(path, SN3D_OPTION_FOLDER_PATH);
+                FileSystem_optionBinaryToXML("/SN3D/sn3d-project/res/optionConfig/writedOption.xml","/SN3D/sn3d-project/res/optionConfig/writedOption.xml");
             }
 
 
@@ -135,9 +136,11 @@ static void sBootloader_Terminate(bool isNeedReboot)
 
     if(isNeedReboot == true)
     {
-        SN_SYS_Log("System Reboot. \n\n");
+        /*
+        SN_SYS_ERROR_SystemLog("System Reboot. \n\n");
 
         sync();
         reboot(RB_AUTOBOOT);
+        */
     }
 }

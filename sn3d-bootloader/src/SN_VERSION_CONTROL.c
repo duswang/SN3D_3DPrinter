@@ -83,14 +83,14 @@ static bool sFirmwareFileCompare(void)
 
     printf("\n\n * Current Version * \n");
     printf(" Project   : [ %s ] \n", currentVersion->name);
-    printf(" Version   : [ v%ld.%ld.%ld ] \n", currentVersion->releaseNumber, currentVersion->majorNumber, currentVersion->minorNumber);
+    printf(" Version   : [ v%d.%d.%d ] \n", currentVersion->releaseNumber, currentVersion->majorNumber, currentVersion->minorNumber);
     printf(" Timestamp : [ %s ] \n", currentVersion->timestamp);
     printf(" binray    : [ %s ] \n", currentVersion->binaryName);
     printf(" hash      : %s \n\n", hashStr);
 
     printf("\n\n * New Version * \n");
     printf(" Project   : [ %s ] \n", newVersion->name);
-    printf(" Version   : [ v%ld.%ld.%ld ] \n", newVersion->releaseNumber, newVersion->majorNumber, newVersion->minorNumber);
+    printf(" Version   : [ v%d.%d.%d ] \n", newVersion->releaseNumber, newVersion->majorNumber, newVersion->minorNumber);
     printf(" Timestamp : [ %s ] \n", newVersion->timestamp);
     printf(" binray    : [ %s ] \n", newVersion->binaryName);
     printf(" hash      : %s \n\n", newVersion->hash);

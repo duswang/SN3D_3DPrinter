@@ -55,14 +55,14 @@ void* (*pfSerialThreadFunc[MAX_NUM_OF_SERIAL])()     = { \
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 
-SN_STATUS SN_SYS_SerialInit(void)
+SN_STATUS SN_SYS_SERIAL_Init(void)
 {
     SN_STATUS retStauts = SN_STATUS_OK;
     int i = 0;
 
     if (pthread_mutex_init(&ptmSerialArray, NULL) != 0)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "Serial System Mutex Init Failed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "Serial System Mutex Init Failed.");
     }
 
     for(i = 0; i < MAX_NUM_OF_SERIAL; i++)
@@ -74,14 +74,14 @@ SN_STATUS SN_SYS_SerialInit(void)
     return retStauts;
 }
 
-SN_STATUS SN_SYS_SerialUninit(void)
+SN_STATUS SN_SYS_SERIAL_Uninit(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
     return retStatus;
 }
 
-sysSerialId SN_SYS_SerialCreate(const sysSerialDef_t* serialDef, void* (*pfCallBack)(char*))
+sysSerialId SN_SYS_SERIAL_Create(const sysSerialDef_t* serialDef, void* (*pfCallBack)(char*))
 {
     uint32_t idxSerial = 0;
     SN_STATUS retStatus = SN_STATUS_OK;
@@ -137,7 +137,7 @@ sysSerialId SN_SYS_SerialCreate(const sysSerialDef_t* serialDef, void* (*pfCallB
     return serialId;
 }
 
-SN_STATUS SN_SYS_SerialRemove(sysSerialId serialId)
+SN_STATUS SN_SYS_SERIAL_Remove(sysSerialId serialId)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     int i = 0;
@@ -170,7 +170,7 @@ SN_STATUS SN_SYS_SerialRemove(sysSerialId serialId)
     return retStatus;
 }
 
-SN_STATUS SN_SYS_SerialTx(sysSerialId serialId, char* buffer, size_t bufferSize)
+SN_STATUS SN_SYS_SERIAL_Tx(sysSerialId serialId, char* buffer, size_t bufferSize)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     int error = 0;
@@ -446,7 +446,7 @@ static SN_STATUS sSerial_RX_Hdlr_r(sysSerialId serialId)
                 break;
             }
 
-            SN_SYS_Delay(100);
+            SN_SYS_TIMER_Delay(100);
         }
     }
     else

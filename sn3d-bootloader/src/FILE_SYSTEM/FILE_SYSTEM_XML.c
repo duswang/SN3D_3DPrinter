@@ -16,10 +16,12 @@
 #endif
 
 #ifdef linux
+#include <libxml/xmlwriter.h>
 #include <libxml/xmlreader.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+#include <libxml/encoding.h>
 #endif
 
 #include "SN_BOOTLOADER.h"
@@ -40,6 +42,10 @@ static SN_STATUS sParseXML_VersionFile(versionInfo_t* versionInfo, xmlDocPtr doc
 /* Hash File */
 static unsigned long sGet_size_by_fd(int fd);
 
+/* Binary Option Config */
+static printOption_t* sReadOptionBinary(const char* srcPath);
+static SN_STATUS      sCreateOptionFile(const char* srcPath, const printOption_t optionParam);
+
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
  *  Extern Functions
@@ -58,7 +64,7 @@ unsigned char* FileSysetm_MD5_Hash_WithFile(char* path, char* salt)
     hash = (unsigned char*)malloc(sizeof(unsigned char) * MD5_DIGEST_LENGTH);
     if(hash == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "hash memory allocate falid.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "hash memory allocate falid.");
     }
 
     file_descript = open(path, O_RDONLY);
@@ -99,7 +105,7 @@ unsigned char* FileSystem_MD5_HashToString(unsigned char* hash)
     hashStr = (unsigned char*)malloc(sizeof(unsigned char) * ((MD5_DIGEST_LENGTH * 2) + 1));
     if(hashStr == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "hash memory allocate falid.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "hash memory allocate falid.");
     }
 
     for(i = 0; i < MD5_DIGEST_LENGTH; ++i)
@@ -112,6 +118,31 @@ unsigned char* FileSystem_MD5_HashToString(unsigned char* hash)
     return hashStr;
 }
 
+
+SN_STATUS FileSystem_optionBinaryToXML(const char *srcPath, const char*desPath)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    printOption_t* binaryOptionConfig = NULL;
+
+
+    if(srcPath == NULL || desPath == NULL)
+    {
+        return SN_STATUS_INVALID_PARAM;
+    }
+
+    binaryOptionConfig = sReadOptionBinary(srcPath);
+    if(binaryOptionConfig == NULL)
+    {
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "Read Binary Option Config Failed.");
+    }
+
+    retStatus = sCreateOptionFile(desPath , *binaryOptionConfig);
+
+    SN_SYS_ERROR_StatusCheck(retStatus, "Create SN3d Option Config File Faield.");
+
+
+    return retStatus;
+}
 
 versionInfo_t* FileSystem_versionInfoXMLLoad(const char *srcPath)
 {
@@ -139,7 +170,7 @@ versionInfo_t* FileSystem_versionInfoXMLLoad(const char *srcPath)
     if(retStatus != SN_STATUS_OK)
     {
         retStatus = FileSystem_fctl_CreateDircetoryTree(FIRMWARE_FOLDER_PATH);
-        SN_SYS_ERROR_CHECK(retStatus, "Directory Create Failed.");
+        SN_SYS_ERROR_StatusCheck(retStatus, "Directory Create Failed.");
 
         FileSystem_fctl_CopyFile(DEFAULT_VERSION_PATH, srcPath);
 
@@ -151,7 +182,7 @@ versionInfo_t* FileSystem_versionInfoXMLLoad(const char *srcPath)
         cur = cur->xmlChildrenNode;
         xmlFreeDoc(doc);
 
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "XMl File is Invlaid.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "XMl File is Invlaid.");
 
         return NULL;
     }
@@ -159,11 +190,11 @@ versionInfo_t* FileSystem_versionInfoXMLLoad(const char *srcPath)
     versionInfo = (versionInfo_t *)malloc(sizeof(versionInfo_t));
     if(versionInfo == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "printOption memory allocate failed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "printOption memory allocate failed.");
     }
 
     retStatus = sParseXML_VersionFile(versionInfo, doc, cur);
-    SN_SYS_ERROR_CHECK(retStatus, "machine Info XML File Load Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "machine Info XML File Load Failed.");
 
     xmlFreeDoc(doc);
 
@@ -197,7 +228,7 @@ machineInfo_t* FileSystem_machineInfoXMLLoad(const char *srcPath)
     if(retStatus != SN_STATUS_OK)
     {
         retStatus = FileSystem_fctl_CreateDircetoryTree(FIRMWARE_FOLDER_PATH);
-        SN_SYS_ERROR_CHECK(retStatus, "Directory Create Failed.");
+        SN_SYS_ERROR_StatusCheck(retStatus, "Directory Create Failed.");
 
         FileSystem_fctl_CopyFile(DEFAULT_MACHINE_PATH, srcPath);
 
@@ -210,7 +241,7 @@ machineInfo_t* FileSystem_machineInfoXMLLoad(const char *srcPath)
         cur = cur->xmlChildrenNode;
         xmlFreeDoc(doc);
 
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "XMl File is Invlaid.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "XMl File is Invlaid.");
 
         return NULL;
     }
@@ -218,11 +249,11 @@ machineInfo_t* FileSystem_machineInfoXMLLoad(const char *srcPath)
     mahcineInfo = (machineInfo_t *)malloc(sizeof(machineInfo_t));
     if(mahcineInfo == NULL)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_INITIALIZED, "printOption memory allocate failed.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "printOption memory allocate failed.");
     }
 
     retStatus = sParseXML_machineInfoFile(mahcineInfo, doc, cur);
-    SN_SYS_ERROR_CHECK(retStatus, "machine Info XML File Load Failed.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "machine Info XML File Load Failed.");
 
     xmlFreeDoc(doc);
 
@@ -248,13 +279,13 @@ static SN_STATUS sParseXML_machineInfoFile(machineInfo_t* machineInfo, xmlDocPtr
         if((!xmlStrcmp(cur->name, (const xmlChar *)"resolution_h")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &machineInfo->screenHeight);
+            sscanf((const char *)key, "%d", &machineInfo->screenHeight);
             xmlFree(key);
         }
         if((!xmlStrcmp(cur->name, (const xmlChar *)"resolution_w")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &machineInfo->screenWidth);
+            sscanf((const char *)key, "%d", &machineInfo->screenWidth);
             xmlFree(key);
         }
         if((!xmlStrcmp(cur->name, (const xmlChar *)"displayScreenSize")))
@@ -272,7 +303,7 @@ static SN_STATUS sParseXML_machineInfoFile(machineInfo_t* machineInfo, xmlDocPtr
         if((!xmlStrcmp(cur->name, (const xmlChar *)"machine_z_limit")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &machineInfo->machineHeight);
+            sscanf((const char *)key, "%d", &machineInfo->machineHeight);
             xmlFree(key);
         }
         cur = cur->next;
@@ -300,19 +331,19 @@ static SN_STATUS sParseXML_VersionFile(versionInfo_t* versionInfo, xmlDocPtr doc
         if((!xmlStrcmp(cur->name, (const xmlChar *)"releaseNumber")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &versionInfo->releaseNumber);
+            sscanf((const char *)key, "%d", &versionInfo->releaseNumber);
             xmlFree(key);
         }
         if((!xmlStrcmp(cur->name, (const xmlChar *)"majorNumber")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &versionInfo->majorNumber);
+            sscanf((const char *)key, "%d", &versionInfo->majorNumber);
             xmlFree(key);
         }
         if((!xmlStrcmp(cur->name, (const xmlChar *)"minorNumber")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            sscanf((const char *)key, "%ld", &versionInfo->minorNumber);
+            sscanf((const char *)key, "%d", &versionInfo->minorNumber);
             xmlFree(key);
         }
         if((!xmlStrcmp(cur->name, (const xmlChar *)"timestamp")))
@@ -339,13 +370,69 @@ static SN_STATUS sParseXML_VersionFile(versionInfo_t* versionInfo, xmlDocPtr doc
     return retStatus;
 }
 
+static SN_STATUS sCreateOptionFile(const char* srcPath, const printOption_t optionParam)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    xmlTextWriterPtr writer = NULL;
+    char buffer[MAX_FILENAME_LENGTH];
+
+    if(srcPath == NULL)
+    {
+        return SN_STATUS_INVALID_PARAM;
+    }
+
+    writer = xmlNewTextWriterFilename(srcPath, 0755);
+    if(writer == NULL)
+    {
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "Option Config XML Write initialized failed.");
+    }
+
+    xmlTextWriterStartDocument(writer, NULL, "UTF-8", NULL);
+    xmlTextWriterStartElement(writer, (const xmlChar *)"option");
+
+    sprintf(buffer, "%s",optionParam.name);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"option_name",                (const xmlChar *)buffer); xmlTextWriterEndElement(writer);
+    sprintf(buffer, "%f",optionParam.layerThickness);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"layerThickness",             (const xmlChar *)"0.02500"); xmlTextWriterEndElement(writer);
+
+    sprintf(buffer, "%d",optionParam.bottomLayerExposureTime);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"bottomLayerExposureTime",   (const xmlChar *)"5000"); xmlTextWriterEndElement(writer);
+    sprintf(buffer, "%d",optionParam.bottomLayerNumber);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"bottomLayerNumber",          (const xmlChar *)"10"); xmlTextWriterEndElement(writer);
+
+    sprintf(buffer, "%f",optionParam.bottomLiftFeedRate);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"bottomLiftFeedRate",         (const xmlChar *)"150.0"); xmlTextWriterEndElement(writer);
+    sprintf(buffer, "%d",optionParam.layerExposureTime);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"layerExposureTime",          (const xmlChar *)"3000"); xmlTextWriterEndElement(writer);
+    sprintf(buffer, "%d",optionParam.liftDistance);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"liftDistance",               (const xmlChar *)"7"); xmlTextWriterEndElement(writer);
+    sprintf(buffer, "%f",optionParam.liftFeedRate);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"liftFeedRate",               (const xmlChar *)"250.00"); xmlTextWriterEndElement(writer);
+
+    sprintf(buffer, "%d",optionParam.bright);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"bright",                     (const xmlChar *)"255"); xmlTextWriterEndElement(writer);
+
+    xmlTextWriterEndElement(writer);
+    xmlTextWriterEndDocument(writer);
+    xmlFreeTextWriter(writer);
+
+    return retStatus;
+}
+
+static printOption_t* sReadOptionBinary(const char* srcPath)
+{
+    printOption_t* binaryOption = NULL;
+
+    return binaryOption;
+}
+
 static unsigned long sGet_size_by_fd(int fd)
 {
     struct stat statbuf;
 
     if(fstat(fd, &statbuf) < 0)
     {
-        SN_SYS_ERROR_CHECK(SN_STATUS_NOT_OK, "file can't open.");
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "file can't open.");
     }
 
     return statbuf.st_size;

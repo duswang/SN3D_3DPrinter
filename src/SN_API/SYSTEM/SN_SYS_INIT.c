@@ -37,40 +37,40 @@ int main(void)
 
 
     /* SYSTEM INIT */
-    SN_SYS_Log("==>SYSTEM INIT");
+    SN_SYS_ERROR_SystemLog("==>SYSTEM INIT");
 
     retStatus = sSN_SYSTEM_Init();
-    SN_SYS_ERROR_CHECK(retStatus, "SYSTEM INIT FAILD.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "SYSTEM INIT FAILD.");
 
     /* MODULE INIT */
-    SN_SYS_Log("==>MODULE INIT");
+    SN_SYS_ERROR_SystemLog("==>MODULE INIT");
 
     /* NEXTION DISPLAY INIT */
     retStatus = SN_MODULE_DISPLAY_Init();
-    SN_SYS_ERROR_CHECK(retStatus, "NEXTION DISPLAY INIT FAILD.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "NEXTION DISPLAY INIT FAILD.");
 
     /* FILE SYSTEM INIT */
     retStatus = SN_MODULE_FILE_SYSTEM_Init();
-    SN_SYS_ERROR_CHECK(retStatus, "FILE SYSTEM INIT FAILD.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "FILE SYSTEM INIT FAILD.");
 
     /* 3D PRINTER INIT ( IMAGE VIEWER INIT ) */
     retStatus = SN_MODULE_3D_PRINTER_Init();
-    SN_SYS_ERROR_CHECK(retStatus, "3D PRINTER INIT FAILD.");
+    SN_SYS_ERROR_StatusCheck(retStatus, "3D PRINTER INIT FAILD.");
     
     SN_MODULE_DISPLAY_BootProgressUpdate(70, "Module Loading Done...");
-    SN_SYS_Delay(1000);
+    SN_SYS_TIMER_Delay(1000);
 
     SN_MODULE_DISPLAY_BootProgressUpdate(100, "Start System Service...");
-    SN_SYS_Delay(1000);
+    SN_SYS_TIMER_Delay(1000);
 
     /* APP INIT */
     retStatus = APP_Init();
-    SN_SYS_ERROR_CHECK(retStatus,"APP INIT FAILD.");
+    SN_SYS_ERROR_StatusCheck(retStatus,"APP INIT FAILD.");
 
     /* APP main() */
     while(true)
     {
-        evt = SN_SYS_MessageGet(msgQIdApp);
+        evt = SN_SYS_MESSAGE_Q_Get(msgQIdApp);
 
         switch(evt.evt_id)
         {
@@ -82,7 +82,7 @@ int main(void)
                 break;
 
             default:
-                SN_SYS_ERROR_CHECK(SN_STATUS_UNKNOWN_MESSAGE, "UNKNOWN APP MESSAGE_ID.");
+                SN_SYS_ERROR_StatusCheck(SN_STATUS_UNKNOWN_MESSAGE, "UNKNOWN APP MESSAGE_ID.");
                 break;
         }
     }
@@ -99,16 +99,16 @@ static SN_STATUS sSN_SYSTEM_Init(void)
     SN_STATUS retStatus = SN_STATUS_OK;
 
     /** APP Message Q Init **/
-    SN_SYS_Log("SYSTEM INIT => MESSAGE QUEUE.");
-    msgQIdApp = SN_SYS_MessageQInit();
+    SN_SYS_ERROR_SystemLog("SYSTEM INIT => MESSAGE QUEUE.");
+    msgQIdApp = SN_SYS_MESSAGE_Q_Init();
 
     /** Timer Init **/
-    SN_SYS_Log("SYSTEM INIT => TIMER.");
-    SN_SYS_TimerInit();
+    SN_SYS_ERROR_SystemLog("SYSTEM INIT => TIMER.");
+    SN_SYS_TIMER_Init();
 
     /** Serial Init **/
-    SN_SYS_Log("SYSTEM INIT => SERIAL.");
-    SN_SYS_SerialInit();
+    SN_SYS_ERROR_SystemLog("SYSTEM INIT => SERIAL.");
+    SN_SYS_SERIAL_Init();
 
     return retStatus;
 }
@@ -117,7 +117,7 @@ SN_STATUS SN_SYSTEM_SendAppMessage(event_id_t evtId, event_msg_t evtMessage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    retStatus = SN_SYS_MessagePut(msgQIdApp, evtId, evtMessage);
+    retStatus = SN_SYS_MESSAGE_Q_Put(msgQIdApp, evtId, evtMessage);
 
     return retStatus;
 }

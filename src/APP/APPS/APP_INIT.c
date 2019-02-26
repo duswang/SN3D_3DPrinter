@@ -44,7 +44,7 @@ SN_STATUS APP_INIT_EvtHdlr(general_evt_t evt)
             break;
     }
 
-    SN_SYS_ERROR_CHECK(retStatus, "ERROR IN [ INIT ]");
+    SN_SYS_ERROR_StatusCheck(retStatus, "ERROR IN [ INIT ]");
 
     return retStatus;
 }
@@ -53,7 +53,7 @@ SN_STATUS APP_STATE_EnterStateInit(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    SN_SYS_Log("APP STATE => [ INIT ]\n");
+    SN_SYS_ERROR_SystemLog("APP STATE => [ INIT ]\n");
 
     APP_SetAppState(APP_STATE_INIT);
     SN_MODULE_DISPLAY_EnterState(APP_STATE_INIT);

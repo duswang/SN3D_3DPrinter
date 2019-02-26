@@ -36,7 +36,7 @@ static long long sDiffTick(const struct timespec startTick, const struct timespe
  *  Extern Functions
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-SN_STATUS SN_SYS_TimerInit(void)
+SN_STATUS SN_SYS_TIMER_Init(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     int idxTSR = 0;
@@ -67,14 +67,14 @@ SN_STATUS SN_SYS_TimerInit(void)
     return retStatus;
 }
 
-SN_STATUS SN_SYS_TimerUninit(void)
+SN_STATUS SN_SYS_TIMER_Uninit(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
     return retStatus;
 }
 
-SN_STATUS SN_SYS_TimerCreate(sysTimerId_t* pIdTSR, uint32_t msDuration, void* pfTSR)
+SN_STATUS SN_SYS_TIMER_Create(sysTimerId_t* pIdTSR, uint32_t msDuration, void* pfTSR)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     uint8_t idxTSR = 0;
@@ -115,7 +115,7 @@ SN_STATUS SN_SYS_TimerCreate(sysTimerId_t* pIdTSR, uint32_t msDuration, void* pf
     return retStatus;
 }
 
-SN_STATUS SN_SYS_TimerCancle(sysTimerId_t* pIdTSR)
+SN_STATUS SN_SYS_TIMER_Cancel(sysTimerId_t* pIdTSR)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     uint8_t idxTSR = 0;
@@ -154,7 +154,7 @@ SN_STATUS SN_SYS_TimerCancle(sysTimerId_t* pIdTSR)
 
     return retStatus;
 }
-SN_STATUS SN_SYS_Delay(uint32_t msec)
+SN_STATUS SN_SYS_TIMER_Delay(uint32_t msec)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
@@ -167,8 +167,26 @@ SN_STATUS SN_SYS_Delay(uint32_t msec)
     return retStatus;
 }
 
+struct timespec SN_SYS_TIMER_GetTick(void)
+{
+    struct timespec tickNow;
 
+    clock_gettime(CLOCK_REALTIME, &tickNow);
 
+    return tickNow;
+}
+
+long long SN_SYS_TIMER_DiffTick(struct timespec prevTick, struct timespec currentTick)
+{
+    const long long NANOS = 1000000000LL;
+    long long retDiff = 0;
+
+    retDiff = (NANOS * (currentTick.tv_sec - prevTick.tv_sec)) + (currentTick.tv_nsec - prevTick.tv_nsec);
+
+    retDiff /= 1000000;
+
+    return retDiff;
+}
 
 static void* sTimerThread()
 {
@@ -184,7 +202,7 @@ static void* sTimerThread()
             clock_gettime(CLOCK_REALTIME, &tickNow);
 
             if ((aTSR[idxTSR].isOccupied) && (aTSR[idxTSR].pfTSRCallBack != NULL) &&
-                (sDiffTick(aTSR[idxTSR].tickRequested, tickNow) >= (aTSR[idxTSR].msDuration)))
+                (SN_SYS_TIMER_DiffTick(aTSR[idxTSR].tickRequested, tickNow) >= (aTSR[idxTSR].msDuration)))
             {
                 aTSR[idxTSR].isOccupied = false;
                 aTSR[idxTSR].tickRequested.tv_sec = 0;
@@ -204,19 +222,7 @@ static void* sTimerThread()
             pthread_mutex_unlock(&ptmTimer);
         }
 
-        SN_SYS_Delay(10);
+        SN_SYS_TIMER_Delay(10);
     }
     return NULL;
-}
-
-static long long sDiffTick(const struct timespec startTick, const struct timespec endTick)
-{
-    const long long NANOS = 1000000000LL;
-    long long retDiff = 0;
-
-    retDiff = (NANOS * (endTick.tv_sec - startTick.tv_sec)) + (endTick.tv_nsec - startTick.tv_nsec);
-
-    retDiff /= 1000000;
-
-    return retDiff;
 }

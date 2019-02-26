@@ -43,7 +43,7 @@ SN_STATUS APP_PAUSE_EvtHdlr(general_evt_t evt)
             break;
     }
 
-    SN_SYS_ERROR_CHECK(retStatus, "ERROR IN [ PAUSE ]");
+    SN_SYS_ERROR_StatusCheck(retStatus, "ERROR IN [ PAUSE ]");
 
     return retStatus;
 }
@@ -52,7 +52,7 @@ SN_STATUS APP_STATE_EnterStatePause(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    SN_SYS_Log("APP STATE => [ PAUSE ]\n");
+    SN_SYS_ERROR_SystemLog("APP STATE => [ PAUSE ]\n");
 
     APP_SetAppState(APP_STATE_PAUSE);
     SN_MODULE_DISPLAY_EnterState(APP_STATE_PAUSE);

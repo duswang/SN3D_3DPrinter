@@ -21,9 +21,9 @@
  *////@{
 typedef struct machine_information {
     char    name[MAX_FILENAME_LENGTH];  /**< str */
-    long                  screenWidth;  /**< px */
-    long                 screenHeight;  /**< px */
-    long                machineHeight;  /**< mm */
+    uint32_t                  screenWidth;  /**< px */
+    uint32_t                 screenHeight;  /**< px */
+    uint32_t                machineHeight;  /**< mm */
     char    displayScreenSize[MAX_FILENAME_LENGTH];  /** inch **/
     char    touchScreenSize[MAX_FILENAME_LENGTH];/** inch **/
 } machineInfo_t;
@@ -34,14 +34,39 @@ typedef struct machine_information {
  *////@{
 typedef struct version_information {
     char           name[MAX_FILENAME_LENGTH];  /**< str */
-    long                       releaseNumber;  /**< num */
-    long                         majorNumber;  /**< num */
-    long                         minorNumber;  /**< num */
+    uint32_t                   releaseNumber;  /**< num */
+    uint32_t                     majorNumber;  /**< num */
+    uint32_t                     minorNumber;  /**< num */
     char      timestamp[MAX_FILENAME_LENGTH];  /**< str */
     char     binaryName[MAX_FILENAME_LENGTH];  /**< str */
     char             hash[(MD5_DIGEST_LENGTH * 2) + 1];
 } versionInfo_t;
 /*************************************************************@}*/
+
+
+/*************************************************************
+ * @struct Print Option Structure
+ *////@{
+typedef struct print_option_prameter {
+    char     name[MAX_OPTION_FILENAME];
+
+    float    layerThickness;                /**< mm */
+
+    /* Bottom Layer Parameter */
+    uint32_t     bottomLayerExposureTime;   /**< ms */
+    uint32_t     bottomLayerNumber;         /**< Layer */
+    float        bottomLiftFeedRate;        /**< mm / s */
+
+    /* Normal Layer Paramter */
+    uint32_t     layerExposureTime;         /**< ms */
+    float        liftFeedRate;              /**< mm / s */
+    uint32_t     liftTime;                  /**< ms */
+    uint32_t     liftDistance;              /**< mm */
+
+    uint32_t     bright;                    /**< 0 ~ 255 **/
+} printOption_t;
+/*************************************************************@}*/
+
 
 /*************************************************************
  * @name File System XML
@@ -66,6 +91,16 @@ extern machineInfo_t* FileSystem_machineInfoXMLLoad(const char *srcPath);
  *  @note
  */
 extern versionInfo_t* FileSystem_versionInfoXMLLoad(const char *srcPath);
+
+/*************************************************************@}*/
+
+/*************************************************************
+ * @name File System Option Config XML
+ * @brief
+ * @{
+ */
+
+SN_STATUS FileSystem_optionBinaryToXML(const char *srcPath, const char*desPath);
 
 /*************************************************************@}*/
 

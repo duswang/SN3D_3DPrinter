@@ -52,7 +52,7 @@ typedef uint32_t sysTimerId_t;
  *
  *  @note
  */
-extern SN_STATUS SN_SYS_TimerInit(void);
+extern SN_STATUS SN_SYS_TIMER_Init(void);
 
 /** @brief
  *
@@ -60,7 +60,7 @@ extern SN_STATUS SN_SYS_TimerInit(void);
  *
  *  @note
  */
-extern SN_STATUS SN_SYS_TimerUninit(void);
+extern SN_STATUS SN_SYS_TIMER_Uninit(void);
 
 /*************************************************************@}*/
 
@@ -78,7 +78,7 @@ extern SN_STATUS SN_SYS_TimerUninit(void);
  *  @return SN_STATUS
  *  @note
  */
-extern SN_STATUS SN_SYS_TimerCreate(sysTimerId_t* pIdTSR, uint32_t msDuration, void* pfTSR);
+extern SN_STATUS SN_SYS_TIMER_Create(sysTimerId_t* pIdTSR, uint32_t msDuration, void* pfTSR);
 
 
 /** @brief
@@ -88,24 +88,42 @@ extern SN_STATUS SN_SYS_TimerCreate(sysTimerId_t* pIdTSR, uint32_t msDuration, v
  *  @return SN_STATUS
  *  @note
  */
-extern SN_STATUS SN_SYS_TimerCancle(sysTimerId_t* pIdTSR);
+extern SN_STATUS SN_SYS_TIMER_Cancel(sysTimerId_t* pIdTSR);
 
 /*************************************************************@}*/
 
 /*************************************************************
- * @name Serial System :: Delay
+ * @name Serial System :: Util
  *  @brief
- *  @note Now use SDL_Delay()
+ *  @note
  *////@{
 
-/** @brief
+/** @brief Delays
  *
  *  @param msec
  *
  *  @return SN_STATUS
  *  @note
  */
-extern SN_STATUS SN_SYS_Delay(uint32_t msec);
+extern SN_STATUS SN_SYS_TIMER_Delay(uint32_t msec);
+
+/** @brief
+ *
+ *  @param
+ *
+ *  @return SN_STATUS
+ *  @note
+ */
+extern struct timespec SN_SYS_TIMER_GetTick(void);
+
+/** @brief
+ *
+ *  @param prevTick currentTick
+ *
+ *  @return SN_STATUS
+ *  @note
+ */
+extern long long SN_SYS_TIMER_DiffTick(struct timespec prevTick, struct timespec currentTick);
 
 /*************************************************************@}*/
 

@@ -22,14 +22,14 @@
  *  Extern Functions
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-sysMessageQId SN_SYS_MessageQInit(void)
+sysMessageQId SN_SYS_MESSAGE_Q_Init(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
     return msgget(IPC_PRIVATE, IPC_CREAT | 0666);
 }
 
-SN_STATUS SN_SYS_MessageQRemove(sysMessageQId msgQId)
+SN_STATUS SN_SYS_MESSAGE_Q_Remove(sysMessageQId msgQId)
 {
     msgQId = msgctl(msgQId, IPC_RMID, 0);
 
@@ -37,7 +37,7 @@ SN_STATUS SN_SYS_MessageQRemove(sysMessageQId msgQId)
     return SN_STATUS_OK;
 }
 
-SN_STATUS SN_SYS_MessagePut(sysMessageQId msgQId, event_id_t evtId, event_msg_t evtMessage)
+SN_STATUS SN_SYS_MESSAGE_Q_Put(sysMessageQId msgQId, event_id_t evtId, event_msg_t evtMessage)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
     sysMessageBuffer msgBuffer;
@@ -56,7 +56,7 @@ SN_STATUS SN_SYS_MessagePut(sysMessageQId msgQId, event_id_t evtId, event_msg_t 
 }
 
 
-general_evt_t SN_SYS_MessageGet(sysMessageQId msgQId)
+general_evt_t SN_SYS_MESSAGE_Q_Get(sysMessageQId msgQId)
 {
     sysMessageBuffer msgBuffer;
 

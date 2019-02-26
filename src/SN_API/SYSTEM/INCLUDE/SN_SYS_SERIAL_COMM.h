@@ -159,7 +159,7 @@ typedef struct sys_serial_q {
  *  @return SN_STATUS
  *  @note
  */
-extern SN_STATUS   SN_SYS_SerialInit (void);
+extern SN_STATUS   SN_SYS_SERIAL_Init (void);
 
 
 /** @brief
@@ -168,7 +168,7 @@ extern SN_STATUS   SN_SYS_SerialInit (void);
  *  @return SN_STATUS
  *  @note
  */
-extern SN_STATUS SN_SYS_SerialUninit(void);
+extern SN_STATUS SN_SYS_SERIAL_Uninit(void);
 
 /*************************************************************@}*/
 
@@ -185,7 +185,7 @@ extern SN_STATUS SN_SYS_SerialUninit(void);
  *  @return SN_STATUS
  *  @note
  */
-extern sysSerialId SN_SYS_SerialCreate(const sysSerialDef_t* serialDef, void* (*pfCallBack)(char*));
+extern sysSerialId SN_SYS_SERIAL_Create(const sysSerialDef_t* serialDef, void* (*pfCallBack)(char*));
 
 
 /** @brief
@@ -195,7 +195,7 @@ extern sysSerialId SN_SYS_SerialCreate(const sysSerialDef_t* serialDef, void* (*
  *  @return SN_STATUS
  *  @note
  */
-extern SN_STATUS   SN_SYS_SerialRemove(sysSerialId serialId);
+extern SN_STATUS   SN_SYS_SERIAL_Remove(sysSerialId serialId);
 
 /*************************************************************@}*/
 
@@ -214,7 +214,7 @@ extern SN_STATUS   SN_SYS_SerialRemove(sysSerialId serialId);
  *  @return SN_STATUS
  *  @note
  */
-extern SN_STATUS  SN_SYS_SerialTx(sysSerialId serialId, char* buffer, size_t bufferSize);
+extern SN_STATUS  SN_SYS_SERIAL_Tx(sysSerialId serialId, char* buffer, size_t bufferSize);
 
 /*************************************************************@}*/
 

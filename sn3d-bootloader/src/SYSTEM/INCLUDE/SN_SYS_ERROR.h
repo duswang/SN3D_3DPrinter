@@ -42,17 +42,31 @@ typedef int        ERROR_T;
  *  Description of Message Queue Init and Uninit funtions.
  *////@{
 
-extern void SN_SYS_ErrorCheck(SN_STATUS errorStatus, const char* errorMessage, const char* _file, const char* _func, const int _line);
-
-extern void SN_SYS_Log(const char* log);
-
-/*************************************************************@}*/
-
-/*************************************************************
- * @def SN_SYS_ERROR_CHECK(error, msg)
+/** @brief
+ *
+ *  @param errorStatus
+ *  @param errorMeesage
+ *  @param _file
+ *  @param _func
+ *  @param _line
+ *
+ *  @return SN_STATUS
+ *  @note
  */
-#define SN_SYS_ERROR_CHECK(error, msg) \
-SN_SYS_ErrorCheck((error), (msg), __FILE__, __FUNCTION__, __LINE__)
+extern void SN_SYS_ERROR_StatusCheck_Inline(SN_STATUS errorStatus, const char* errorMessage, const char* _file, const char* _func, const int _line);
+
+
+#define SN_SYS_ERROR_StatusCheck(errorStatus, errorMessage) \
+{SN_SYS_ERROR_StatusCheck_Inline(errorStatus, errorMessage, __FILE__, __FUNCTION__, __LINE__);}
+
+/** @brief
+ *
+ *  @param log
+ *
+ *  @return SN_STATUS
+ *  @note
+ */
+extern void SN_SYS_ERROR_SystemLog(const char* log);
 
 /*************************************************************@}*/
 

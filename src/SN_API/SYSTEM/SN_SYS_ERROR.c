@@ -18,10 +18,16 @@
 /* ******* GLOBAL VARIABLE ******* */
 
 /* ******* STATIC FUNCTIONS ******* */
-void sReboot(void);
-void sExit(void);
+static void sDebugging(void);
+static void sReboot(void);
+static void sExit(void);
 
-void SN_SYS_ErrorCheck(SN_STATUS errorStatus, const char* errorMessage, const char* _file, const char* _func, const int _line)
+void SN_SYS_ERROR_SystemLog(const char* message)
+{
+    printf("%s\n", message); fflush(stdout);
+}
+
+inline void SN_SYS_ERROR_StatusCheck_Inline(SN_STATUS errorStatus, const char* errorMessage, const char* _file, const char* _func, const int _line)
 {
     if(errorStatus != SN_STATUS_OK)
     {
@@ -31,18 +37,20 @@ void SN_SYS_ErrorCheck(SN_STATUS errorStatus, const char* errorMessage, const ch
     }
 }
 
-void SN_SYS_Log(const char* message)
+static void sDebugging(void)
 {
-    printf("%s\n", message); fflush(stdout);
+    while(true);
 }
 
-void sReboot(void)
+static void sReboot(void)
 {
-    exit(-1);
+    SN_SYS_ERROR_SystemLog("System Reboot. \n\n");
+
+    sync();
+    reboot(RB_AUTOBOOT);
 }
 
-void sExit(void)
+static void sExit(void)
 {
-    //while(true);
     exit(-1);
 }

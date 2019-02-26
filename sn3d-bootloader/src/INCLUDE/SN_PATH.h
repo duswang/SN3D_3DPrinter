@@ -17,6 +17,7 @@
 
 #define MAX_FILENAME_LENGTH        256
 #define MAX_PATH_LENGTH            256
+#define MAX_OPTION_FILENAME        8
 
 #define FIRMWARE_FOLDER_PATH                    "/SN3D/sn3d-project/sn3d-bootloader/res/firmware"
 #define TEMP_FIRMWARE_FOLDER_PATH               "/SN3D/sn3d-project/sn3d-bootloader/res/tempFirmware"

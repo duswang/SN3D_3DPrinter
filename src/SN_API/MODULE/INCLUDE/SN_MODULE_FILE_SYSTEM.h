@@ -24,6 +24,7 @@
 
 #define MAX_FILENAME_LENGTH        256
 #define MAX_PATH_LENGTH            256
+#define MAX_OPTION_FILENAME          8
 
 /** @name USB Driver Config *////@{
 #ifdef __APPLE__
@@ -176,22 +177,22 @@ typedef struct file_system {
  *////@{
 
 typedef struct print_option_prameter {
-    char     name[MAX_FILENAME_LENGTH];
+    char     name[MAX_OPTION_FILENAME];
 
-    float    layerThickness;            /**< mm */
+    float    layerThickness;                /**< mm */
 
     /* Bottom Layer Parameter */
-    long     bottomLayerExposureTime;   /**< ms */
-    long     bottomLayerNumber;         /**< Layer */
-    float    bottomLiftFeedRate;        /**< mm / s */
+    uint32_t     bottomLayerExposureTime;   /**< ms */
+    uint32_t     bottomLayerNumber;         /**< Layer */
+    float        bottomLiftFeedRate;        /**< mm / s */
 
     /* Normal Layer Paramter */
-    long     layerExposureTime;         /**< ms */
-    float    liftFeedRate;              /**< mm / s */
-    long     liftTime;                  /**< ms */
-    long     liftDistance;              /**< mm */
+    uint32_t     layerExposureTime;         /**< ms */
+    float        liftFeedRate;              /**< mm / s */
+    uint32_t     liftTime;                  /**< ms */
+    uint32_t     liftDistance;              /**< mm */
 
-    long     bright;                    /**< 0 ~ 255 **/
+    uint32_t     bright;                    /**< 0 ~ 255 **/
 } printOption_t;
 
 typedef struct print_target {
@@ -215,7 +216,7 @@ typedef struct print_target {
 
 typedef struct device_information {
     char  language[MAX_FILENAME_LENGTH];  /**< px */
-    long                      totalTime;  /**< px */
+    uint32_t                  totalTime;  /**< px */
 } deviceInfo_t;
 
 
@@ -227,9 +228,9 @@ typedef struct device_information {
  *////@{
 typedef struct machine_information {
     char    name[MAX_FILENAME_LENGTH];  /**< str */
-    long                  screenWidth;  /**< px */
-    long                 screenHeight;  /**< px */
-    long                machineHeight;  /**< mm */
+    uint32_t              screenWidth;  /**< px */
+    uint32_t             screenHeight;  /**< px */
+    uint32_t            machineHeight;  /**< mm */
     char    displayScreenSize[MAX_FILENAME_LENGTH];  /** inch **/
     char    touchScreenSize[MAX_FILENAME_LENGTH];/** inch **/
 } machineInfo_t;
@@ -240,9 +241,9 @@ typedef struct machine_information {
  *////@{
 typedef struct version_information {
     char           name[MAX_FILENAME_LENGTH];  /**< str */
-    long                       releaseNumber;  /**< num */
-    long                         majorNumber;  /**< num */
-    long                         minorNumber;  /**< num */
+    uint32_t                   releaseNumber;  /**< num */
+    uint32_t                     majorNumber;  /**< num */
+    uint32_t                     minorNumber;  /**< num */
     char      timestamp[MAX_FILENAME_LENGTH];  /**< str */
     char     binaryName[MAX_FILENAME_LENGTH];  /**< str */
     char             hash[(MD5_DIGEST_LENGTH * 2) + 1];
