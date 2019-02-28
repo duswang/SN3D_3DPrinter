@@ -568,7 +568,7 @@ static SN_STATUS sMachineInfoPageLoad(fileSystem_t* fileSystem)
     currentPage = pageHeader->firstPage;
 
     numberOfnameList = scandir(MACHINE_FOLDER_PATH, &nameList, 0, alphasort);
-    if(numberOfnameList <= 2)
+    if(numberOfnameList <= 1)
     {
         perror("scandir");
         retStatus = FileSystem_fctl_CreateDircetoryTree(MACHINE_FOLDER_PATH);
@@ -663,7 +663,7 @@ static SN_STATUS sOptionPageLoad(fileSystem_t* fileSystem)
     currentPage = pageHeader->firstPage;
 
     numberOfnameList = scandir(OPTION_FOLDER_PATH, &nameList, 0, alphasort);
-    if(numberOfnameList <= 2)
+    if(numberOfnameList <= 1)
     {
         perror("scandir");
         retStatus = FileSystem_fctl_CreateDircetoryTree(OPTION_FOLDER_PATH);

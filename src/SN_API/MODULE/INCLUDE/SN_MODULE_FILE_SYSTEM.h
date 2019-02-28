@@ -85,7 +85,7 @@
 #ifdef linux
 #define DEFAULT_VERSION_FILE_PATH      "/SN3D/sn3d-project/sn3d-bootloader/lib/default/version.xml"
 #define DEFAULT_MACHINE_FILE_PATH      "/SN3D/sn3d-project/sn3d-bootloader/lib/default/machineInfo.xml"
-#define DEFAULT_OPTION_FILE_PATH       "/SN3D/sn3d-project/lib/default/option_default.xml"
+#define DEFAULT_OPTION_FILE_PATH       "/SN3D/sn3d-project/lib/default/option_default.s3c"
 #define DEFAULT_DEVICE_FILE_PATH       "/SN3D/sn3d-project/lib/default/deviceInfo.xml"
 #endif
 
@@ -107,7 +107,7 @@
 #define DEVICE_FILE_EXT         "xml"
 
 #define OPTION_FILE_NAME        "option"
-#define OPTION_FILE_EXT         "xml"
+#define OPTION_FILE_EXT         "s3c"
 
 #define TARGET_CWS_FILE_EXT     "cws"
 #define TARGET_ZIP_FILE_EXT     "zip"

@@ -17,9 +17,10 @@
 /* ******* GLOBAL VARIABLE ******* */
 
 /* ******* STATIC FUNCTIONS ******* */
-const char* sBootloader_FW_FileSearching(void);
-static void sBootloader_Terminate(bool isNeedReboot);
-static bool sBootloader_Start(const char* firmwareFile);
+static const char* sBootloader_FW_FileSearching(void);
+static void        sBootloader_FW_OptionFileUpdate(void);
+static void        sBootloader_Terminate(bool isNeedReboot);
+static bool        sBootloader_Start(const char* firmwareFile);
 
 /**
 *  @brief main
@@ -98,13 +99,12 @@ const char* sBootloader_FW_FileSearching(void)
 
                 printf("Option   File Path : [ %s ]\n", path);
 
-                FileSystem_fctl_CreateDircetoryTree(SN3D_OPTION_FOLDER_PATH);
+                FileSystem_fctl_CreateDircetoryTree(TEMP_OPTION_BINARY_FOLDER_PATH);
+                FileSystem_fctl_RemoveFiles(TEMP_OPTION_BINARY_FOLDER_PATH);
+                FileSystem_fctl_ExtractFile(path, TEMP_OPTION_BINARY_FOLDER_PATH);
+
                 FileSystem_fctl_RemoveFiles(SN3D_OPTION_FOLDER_PATH);
-                //FileSystem_fctl_ExtractFile(path, SN3D_OPTION_FOLDER_PATH);
-                FileSystem_optionBinaryToXML("/SN3D/sn3d-project/res/optionConfig/writedOption.xml","/SN3D/sn3d-project/res/optionConfig/writedOption.xml");
             }
-
-
             free(nameList[i]);
             nameList[i] = NULL;
         }
@@ -117,8 +117,54 @@ const char* sBootloader_FW_FileSearching(void)
         printf(" Can't not found Firmware Update File...\n");
     }
 
+
+    /* Option File Update */
+    sBootloader_FW_OptionFileUpdate();
+
     return firmwareFilename;
 }
+
+static void sBootloader_FW_OptionFileUpdate(void)
+{
+    struct dirent **nameList;
+    int numberOfnameList = 0;
+    int i = 0;
+
+    char nameBuffer[MAX_PATH_LENGTH];
+    char srcPath[MAX_PATH_LENGTH];
+    char destPath[MAX_PATH_LENGTH];
+
+    numberOfnameList = scandir(TEMP_OPTION_BINARY_FOLDER_PATH, &nameList, 0, alphasort);
+    if(numberOfnameList < 0)
+    {
+        perror("scandir");
+    }
+    else
+    {
+        for(i = 0; i < numberOfnameList; i++)
+        {
+            sprintf(nameBuffer, "%s", nameList[i]->d_name);
+
+            if(strstr(nameBuffer, SN3D_OPTION_BINARY_EXTENTION) && !strstr(nameBuffer, HIDDEN_FILE_STR))
+            {
+                printf("Option Binary File Name : [ %s ]\n", nameBuffer);
+
+                sprintf(srcPath, "%s/%s", TEMP_OPTION_BINARY_FOLDER_PATH, nameBuffer);
+                sprintf(destPath, "%s/%s", SN3D_OPTION_FOLDER_PATH, nameBuffer);
+
+                printf("Option Binary File Path : [ %s ]\n", srcPath);
+                printf("Option XML    File Path : [ %s ]\n", destPath);
+
+                FileSystem_optionBinaryToXML(srcPath, destPath);
+            }
+            free(nameList[i]);
+            nameList[i] = NULL;
+        }
+        free(nameList);
+        nameList = NULL;
+    }
+}
+
 static bool sBootloader_Start(const char* firmwareFile)
 {
     bool isNeedReboot = false;

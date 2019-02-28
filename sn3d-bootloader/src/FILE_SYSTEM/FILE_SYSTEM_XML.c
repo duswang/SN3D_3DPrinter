@@ -28,6 +28,15 @@
 
 #include "FILE_SYSTEM_XML.h"
 
+#if LITTLE_ENDIAN
+#    define Swap32LE(x) (x)
+#    define Swap32BE(x) ((((x) & 0xff000000) >> 24) | (((x) & 0xff0000) >> 8) | (((x) & 0xff00) << 8) | (((x) & 0xff) << 24))
+     static float sReverseFloat( const float inFloat );
+#else
+#    define Swap32LE(x) ((((x) & 0xff000000) >> 24) | (((x) & 0xff0000) >> 8) | (((x) & 0xff00) << 8) | (((x) & 0xff) << 24))
+#    define Swap32BE(x) (x)
+#endif
+
 /* ******* STATIC DEFINE ******* */
 
 /* ******* GLOBAL VARIABLE ******* */
@@ -393,24 +402,24 @@ static SN_STATUS sCreateOptionFile(const char* srcPath, const printOption_t opti
     sprintf(buffer, "%s",optionParam.name);
     xmlTextWriterWriteElement(writer, (const xmlChar *)"option_name",                (const xmlChar *)buffer); xmlTextWriterEndElement(writer);
     sprintf(buffer, "%f",optionParam.layerThickness);
-    xmlTextWriterWriteElement(writer, (const xmlChar *)"layerThickness",             (const xmlChar *)"0.02500"); xmlTextWriterEndElement(writer);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"layerThickness",             (const xmlChar *)buffer); xmlTextWriterEndElement(writer);
 
     sprintf(buffer, "%d",optionParam.bottomLayerExposureTime);
-    xmlTextWriterWriteElement(writer, (const xmlChar *)"bottomLayerExposureTime",   (const xmlChar *)"5000"); xmlTextWriterEndElement(writer);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"bottomLayerExposureTime",   (const xmlChar *)buffer); xmlTextWriterEndElement(writer);
     sprintf(buffer, "%d",optionParam.bottomLayerNumber);
-    xmlTextWriterWriteElement(writer, (const xmlChar *)"bottomLayerNumber",          (const xmlChar *)"10"); xmlTextWriterEndElement(writer);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"bottomLayerNumber",          (const xmlChar *)buffer); xmlTextWriterEndElement(writer);
 
     sprintf(buffer, "%f",optionParam.bottomLiftFeedRate);
-    xmlTextWriterWriteElement(writer, (const xmlChar *)"bottomLiftFeedRate",         (const xmlChar *)"150.0"); xmlTextWriterEndElement(writer);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"bottomLiftFeedRate",         (const xmlChar *)buffer); xmlTextWriterEndElement(writer);
     sprintf(buffer, "%d",optionParam.layerExposureTime);
-    xmlTextWriterWriteElement(writer, (const xmlChar *)"layerExposureTime",          (const xmlChar *)"3000"); xmlTextWriterEndElement(writer);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"layerExposureTime",          (const xmlChar *)buffer); xmlTextWriterEndElement(writer);
     sprintf(buffer, "%d",optionParam.liftDistance);
-    xmlTextWriterWriteElement(writer, (const xmlChar *)"liftDistance",               (const xmlChar *)"7"); xmlTextWriterEndElement(writer);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"liftDistance",               (const xmlChar *)buffer); xmlTextWriterEndElement(writer);
     sprintf(buffer, "%f",optionParam.liftFeedRate);
-    xmlTextWriterWriteElement(writer, (const xmlChar *)"liftFeedRate",               (const xmlChar *)"250.00"); xmlTextWriterEndElement(writer);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"liftFeedRate",               (const xmlChar *)buffer); xmlTextWriterEndElement(writer);
 
     sprintf(buffer, "%d",optionParam.bright);
-    xmlTextWriterWriteElement(writer, (const xmlChar *)"bright",                     (const xmlChar *)"255"); xmlTextWriterEndElement(writer);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"bright",                     (const xmlChar *)buffer); xmlTextWriterEndElement(writer);
 
     xmlTextWriterEndElement(writer);
     xmlTextWriterEndDocument(writer);
@@ -422,10 +431,80 @@ static SN_STATUS sCreateOptionFile(const char* srcPath, const printOption_t opti
 static printOption_t* sReadOptionBinary(const char* srcPath)
 {
     printOption_t* binaryOption = NULL;
+    FILE *binaryFile = NULL;
 
+    binaryFile = fopen(srcPath,"rb");
+    if(binaryFile == NULL)
+    {
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "Option Binary File Open Failed.");
+    }
+
+    binaryOption = (printOption_t*)malloc(sizeof(printOption_t));
+    if(binaryOption == NULL)
+    {
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "Memory Allocate Failed.");
+    }
+
+    fread(&binaryOption->name, sizeof(uint32_t), 2, binaryFile);
+
+    fread(&binaryOption->layerThickness, sizeof(uint32_t), 1, binaryFile);
+    binaryOption->layerThickness = sReverseFloat(binaryOption->layerThickness);
+
+    fread(&binaryOption->bottomLayerExposureTime, sizeof(uint32_t), 1, binaryFile);
+    binaryOption->bottomLayerExposureTime = Swap32BE(binaryOption->bottomLayerExposureTime);
+
+    fread(&binaryOption->bottomLayerNumber, sizeof(uint32_t), 1, binaryFile);
+    binaryOption->bottomLayerNumber = Swap32BE(binaryOption->bottomLayerNumber);
+
+    fread(&binaryOption->bottomLiftFeedRate, sizeof(uint32_t), 1, binaryFile);
+    binaryOption->bottomLiftFeedRate = sReverseFloat(binaryOption->bottomLiftFeedRate);
+
+    fread(&binaryOption->layerExposureTime, sizeof(uint32_t), 1, binaryFile);
+    binaryOption->layerExposureTime = Swap32BE(binaryOption->layerExposureTime);
+
+    fread(&binaryOption->liftFeedRate, sizeof(uint32_t), 1, binaryFile);
+    binaryOption->liftFeedRate = sReverseFloat(binaryOption->liftFeedRate);
+
+    fread(&binaryOption->liftDistance, sizeof(uint32_t), 1, binaryFile);
+    binaryOption->liftDistance = Swap32BE(binaryOption->liftDistance);
+
+    fread(&binaryOption->bright, sizeof(uint32_t), 1, binaryFile);
+    binaryOption->bright = Swap32BE(binaryOption->bright);
+
+    fclose(binaryFile);
+
+    printf("\n\n%s %f %d %d %f %d %f %d %d\n\n", binaryOption->name, \
+                                   binaryOption->layerThickness, \
+                                   binaryOption->bottomLayerExposureTime, \
+                                   binaryOption->bottomLayerNumber, \
+                                   binaryOption->bottomLiftFeedRate, \
+                                   binaryOption->layerExposureTime, \
+                                   binaryOption->liftFeedRate, \
+                                   binaryOption->liftDistance, \
+                                   binaryOption->bright
+    );
     return binaryOption;
 }
 
+static float sReverseFloat( const float inFloat )
+{
+#if LITTLE_ENDIAN
+    float retVal;
+    char *floatToConvert = ( char* ) & inFloat;
+    char *returnFloat = ( char* ) & retVal;
+
+    // swap the bytes into a temporary buffer
+    returnFloat[0] = floatToConvert[3];
+    returnFloat[1] = floatToConvert[2];
+    returnFloat[2] = floatToConvert[1];
+    returnFloat[3] = floatToConvert[0];
+
+    return retVal;
+#else
+    return inFloat;
+#endif
+
+}
 static unsigned long sGet_size_by_fd(int fd)
 {
     struct stat statbuf;

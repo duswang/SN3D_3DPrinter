@@ -25,10 +25,12 @@
 #define VERSION_FILE_PATH                       "/SN3D/sn3d-project/sn3d-bootloader/res/firmware/version.xml"
 #define TEMP_VERSION_FILE_PATH                  "/SN3D/sn3d-project/sn3d-bootloader/res/tempFirmware/version.xml"
 
-#define MACHINE_FILE_PATH                            "/SN3D/sn3d-project/sn3d-bootloader/res/firmware/machineInfo.xml"
-#define TEMP_MACHINE_FILE_PATH                       "/SN3D/sn3d-project/sn3d-bootloader/res/tempFirmware/machineInfo.xml"
+#define MACHINE_FILE_PATH                       "/SN3D/sn3d-project/sn3d-bootloader/res/firmware/machineInfo.xml"
+#define TEMP_MACHINE_FILE_PATH                  "/SN3D/sn3d-project/sn3d-bootloader/res/tempFirmware/machineInfo.xml"
 
-#define BINARY_FILE_PATH                             "/SN3D/sn3d-project/sn3d-bootloader/res/firmware/sn3d"
+#define TEMP_OPTION_BINARY_FOLDER_PATH          "/SN3D/sn3d-project/sn3d-bootloader/res/tempFirmware/optionBinary"
+
+#define BINARY_FILE_PATH                        "/SN3D/sn3d-project/sn3d-bootloader/res/firmware/sn3d"
 
 #define SN3D_BINARY_FOLDER_PATH                 "/SN3D/sn3d-project/bin/build"
 #define SN3D_BINARY_FILE_PATH                   "/SN3D/sn3d-project/bin/build/sn3d"
@@ -56,6 +58,8 @@
 
 #define SN3D_OPTION_STR         "sn3d_option"
 #define SN3D_OPTION_EXTENTION   "zip"
+
+#define SN3D_OPTION_BINARY_EXTENTION   "s3c"
 
 #define HIDDEN_FILE_STR         "._"
 
