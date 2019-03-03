@@ -151,15 +151,16 @@ set(
 
 # Command #
 add_custom_target(gdb
-	gdb ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PRJ_BINARY_NAME}
+	sudo gdb ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PRJ_BINARY_NAME}
 )
 add_custom_target(run 
-	${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PRJ_BINARY_NAME}
+	sudo ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PRJ_BINARY_NAME}
 )
 
 add_custom_target(start 
 	sudo systemctl restart SN3D_Bootloader.service
 )
+
 add_custom_target(stop 
 	sudo systemctl stop SN3D_Bootloader.service
 )
