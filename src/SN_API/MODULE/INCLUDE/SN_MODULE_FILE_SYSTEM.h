@@ -126,6 +126,7 @@
 #define MANGO_CONDITION_STR     ""
 #define B9_CONDITION_STR        ""
 #define CWS_CONDITION_STR       "cws"
+#define SN3D_CONDITION_STR      "s3c"
 
 typedef enum {
     SN3D,                    //!< SN3D
@@ -351,6 +352,15 @@ extern const deviceInfo_t* SN_MODULE_FILE_SYSTEM_DeviceInfoGet(void);
  *  @note
  */
 extern SN_STATUS SN_MODULE_FILE_SYSTEM_DeviceInfoUpdate(const deviceInfo_t deviceInfo);
+
+/** @brief Device Info Reset
+ *
+ *  @param deviceInfo_t
+ *
+ *  @return SN_STATUS
+ *  @note
+ */
+extern SN_STATUS SN_MODULE_FILE_SYSTEM_DeviceInfoReset(void);
 
 /*************************************************************@}*/
 

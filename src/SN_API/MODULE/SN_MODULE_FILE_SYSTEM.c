@@ -272,6 +272,30 @@ const deviceInfo_t* SN_MODULE_FILE_SYSTEM_DeviceInfoGet(void)
     return moduleFileSystem.deviceInfo;
 }
 
+SN_STATUS SN_MODULE_FILE_SYSTEM_DeviceInfoReset(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    deviceInfo_t deviceInfo;
+    char path[MAX_PATH_LENGTH];
+
+    if(moduleFileSystem.deviceInfo == NULL)
+    {
+        strcpy(deviceInfo.language,DEVICE_LANGUAGE_ENG);
+    }
+    else
+    {
+        strcpy(deviceInfo.language,moduleFileSystem.deviceInfo->language);
+    }
+
+    deviceInfo.totalTime = 0;
+
+    sprintf(path,"%s/%s.%s", DEVICE_FOLDER_PATH, DEVICE_FILE_NAME, DEVICE_FILE_EXT);
+
+    FileSystem_deviceInfoXMLUpdate(path, deviceInfo);
+
+    return retStatus;
+}
+
 SN_STATUS SN_MODULE_FILE_SYSTEM_DeviceInfoUpdate(const deviceInfo_t deviceInfo)
 {
     SN_STATUS retStatus = SN_STATUS_OK;

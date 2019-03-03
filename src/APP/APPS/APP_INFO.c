@@ -87,6 +87,10 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
             case NX_ID_BUTTON_PRINT:
                 /* NOT USED */
                 break;
+            case NX_ID_INFO_BUTTON_TOTAL_TIME_RESET:
+                SN_MODULE_FILE_SYSTEM_DeviceInfoReset();
+                APP_STATE_EnterStateInfo();
+                break;
             default:
                 break;
         }

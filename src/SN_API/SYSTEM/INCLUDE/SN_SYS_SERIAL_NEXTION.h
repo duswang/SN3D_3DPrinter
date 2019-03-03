@@ -216,7 +216,6 @@ typedef enum
 } nx_value_t;
 
 /*** ID :: PAGE ***/
-
 typedef enum
 {
     NX_ID_WAITING_BUTTON_PRINT   = 0x01,
@@ -225,6 +224,11 @@ typedef enum
     NX_ID_WAITING_BUTTON_LANGUAGE_ENG,
     NX_ID_WAITING_BUTTON_LANGUAGE_KOR,
 } nx_waiting_id_t;
+
+typedef enum
+{
+    NX_ID_INFO_BUTTON_TOTAL_TIME_RESET = 0x01
+} nx_info_id_t;
 
 typedef enum
 {
