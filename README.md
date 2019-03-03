@@ -142,6 +142,9 @@ See [Sprinter](https://github.com/kliment/Sprinter) on Github.
 - [ ] USB mount event.
 - [ ] Time indicate timer stoped when printing ( but it restart when resume ).
 
+# **SN3D Option Config Setup ** #
+---
+
 # **Auto Resize Setup**
 ---
 raspberry pi first boot auto resize
