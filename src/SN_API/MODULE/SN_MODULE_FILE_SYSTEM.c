@@ -972,7 +972,8 @@ static bool sVersionHashCheck(void)
     unsigned char* hash = NULL;
     unsigned char* hashStr = NULL;
 
-    hash = FileSysetm_MD5_Hash_WithFile(BINARY_FOLDER_PATH, "0xDEADBEEF");
+    //hash = FileSysetm_MD5_Hash_WithFile(BINARY_FOLDER_PATH, moduleFileSystem.versionInfo->timestamp);
+    hash = FileSysetm_MD5_Hash_WithFile(BINARY_FOLDER_PATH, NULL);
     if(hash == NULL)
     {
         return false;
