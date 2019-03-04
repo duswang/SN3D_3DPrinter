@@ -139,8 +139,18 @@ See [Sprinter](https://github.com/kliment/Sprinter) on Github.
 - [X] 8.9 Inch Display Test
 
 #### BUG List
-- [ ] USB mount event.
-- [ ] Time indicate timer stoped when printing ( but it restart when resume ).
+- [X] USB mount event.
+- [X] Time indicate timer stoped when printing ( but it restart when resume ).
+
+# **SN3D Option Config Setup ** 
+---
+##### **_Step 1._** Install [Python 3](https://www.python.org/downloads/)
+
+##### **_Step 2._** Install [pip3](https://linuxize.com/post/how-to-install-pip-on-ubuntu-18.04/) or pip with a python 3
+
+##### **_Step 3._** Install [pyinstaller](https://www.pyinstaller.org/)
+
+##### **_Step 4._** Pacakge Option Config Python Code with a pyinstaller
 
 # **Auto Resize Setup**
 ---
