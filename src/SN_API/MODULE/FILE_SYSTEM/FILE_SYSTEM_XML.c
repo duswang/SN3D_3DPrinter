@@ -689,7 +689,7 @@ static SN_STATUS sParseXML_VersionFile(versionInfo_t* versionInfo, xmlDocPtr doc
             strcpy(versionInfo->timestamp, (const char *)key);
             xmlFree(key);
         }
-        if((!xmlStrcmp(cur->name, (const xmlChar *)"binraryName")))
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"binaryName")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             strcpy(versionInfo->binaryName, (const char *)key);
