@@ -395,31 +395,30 @@ static SN_STATUS sCreateOptionFile(const char* srcPath, const printOption_t opti
     {
         SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "Option Config XML Write initialized failed.");
     }
-
     xmlTextWriterStartDocument(writer, NULL, "UTF-8", NULL);
     xmlTextWriterStartElement(writer, (const xmlChar *)"option");
 
+
     sprintf(buffer, "%s",optionParam.name);
-    xmlTextWriterWriteElement(writer, (const xmlChar *)"option_name",                (const xmlChar *)buffer); xmlTextWriterEndElement(writer);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"option_name",                (const xmlChar *)buffer);
+
     sprintf(buffer, "%f",optionParam.layerThickness);
-    xmlTextWriterWriteElement(writer, (const xmlChar *)"layerThickness",             (const xmlChar *)buffer); xmlTextWriterEndElement(writer);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"layerThickness",             (const xmlChar *)buffer);
 
     sprintf(buffer, "%d",optionParam.bottomLayerExposureTime);
-    xmlTextWriterWriteElement(writer, (const xmlChar *)"bottomLayerExposureTime",   (const xmlChar *)buffer); xmlTextWriterEndElement(writer);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"bottomLayerExposureTime",   (const xmlChar *)buffer);
     sprintf(buffer, "%d",optionParam.bottomLayerNumber);
-    xmlTextWriterWriteElement(writer, (const xmlChar *)"bottomLayerNumber",          (const xmlChar *)buffer); xmlTextWriterEndElement(writer);
-
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"bottomLayerNumber",          (const xmlChar *)buffer);
     sprintf(buffer, "%f",optionParam.bottomLiftFeedRate);
-    xmlTextWriterWriteElement(writer, (const xmlChar *)"bottomLiftFeedRate",         (const xmlChar *)buffer); xmlTextWriterEndElement(writer);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"bottomLiftFeedRate",         (const xmlChar *)buffer);
     sprintf(buffer, "%d",optionParam.layerExposureTime);
-    xmlTextWriterWriteElement(writer, (const xmlChar *)"layerExposureTime",          (const xmlChar *)buffer); xmlTextWriterEndElement(writer);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"layerExposureTime",          (const xmlChar *)buffer);
     sprintf(buffer, "%d",optionParam.liftDistance);
-    xmlTextWriterWriteElement(writer, (const xmlChar *)"liftDistance",               (const xmlChar *)buffer); xmlTextWriterEndElement(writer);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"liftDistance",               (const xmlChar *)buffer);
     sprintf(buffer, "%f",optionParam.liftFeedRate);
-    xmlTextWriterWriteElement(writer, (const xmlChar *)"liftFeedRate",               (const xmlChar *)buffer); xmlTextWriterEndElement(writer);
-
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"liftFeedRate",               (const xmlChar *)buffer);
     sprintf(buffer, "%d",optionParam.bright);
-    xmlTextWriterWriteElement(writer, (const xmlChar *)"bright",                     (const xmlChar *)buffer); xmlTextWriterEndElement(writer);
+    xmlTextWriterWriteElement(writer, (const xmlChar *)"bright",                     (const xmlChar *)buffer);
 
     xmlTextWriterEndElement(writer);
     xmlTextWriterEndDocument(writer);

@@ -1,6 +1,6 @@
 [Unit]
 Description=[ SN3D Bootloader ] Service
-After=multi-user.target
+After=ssh.service
 
 [Service]
 # The dummy program will exit
@@ -15,4 +15,4 @@ User=root
 RemainAfterExit=yes
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=ssh.service
