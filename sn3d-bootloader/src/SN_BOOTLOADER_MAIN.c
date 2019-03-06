@@ -103,6 +103,7 @@ const char* sBootloader_FW_FileSearching(void)
                 FileSystem_fctl_RemoveFiles(TEMP_OPTION_BINARY_FOLDER_PATH);
                 FileSystem_fctl_ExtractFile(path, TEMP_OPTION_BINARY_FOLDER_PATH);
 
+                FileSystem_fctl_CreateDircetoryTree(SN3D_OPTION_FOLDER_PATH);
                 FileSystem_fctl_RemoveFiles(SN3D_OPTION_FOLDER_PATH);
             }
             free(nameList[i]);
