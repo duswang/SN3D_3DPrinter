@@ -358,14 +358,18 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_OptionLoad(uint32_t optionIndex)
     return retStatus;
 }
 
-const printOption_t* SN_MODULE_FILE_SYSTEM_OptionGet(void)
+printOption_t SN_MODULE_FILE_SYSTEM_OptionGet(void)
 {
+    printOption_t loadedOption;
+
     if(moduleFileSystem.printOption == NULL)
     {
         SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "option is not loaded.");
     }
 
-    return moduleFileSystem.printOption;
+    loadedOption = *moduleFileSystem.printOption;
+
+    return loadedOption;
 }
 
 SN_STATUS SN_MODULE_FILE_SYSTEM_TargetLoad(uint32_t pageIndex, uint32_t itemIndex)
@@ -972,7 +976,6 @@ static bool sVersionHashCheck(void)
     unsigned char* hash = NULL;
     unsigned char* hashStr = NULL;
 
-    //hash = FileSysetm_MD5_Hash_WithFile(BINARY_FOLDER_PATH, moduleFileSystem.versionInfo->timestamp);
     hash = FileSysetm_MD5_Hash_WithFile(BINARY_FOLDER_PATH, NULL);
     if(hash == NULL)
     {
@@ -1031,6 +1034,46 @@ static SN_STATUS sDeviceInfoLoad(void)
  *  TARGET
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+float  GetTargetLayerThickness(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+    FILE *fp;
+    int line_num = 1;
+    int find_result = 0;
+    char temp[512];
+
+    float layerThickness = 0.0;
+
+
+    if((fp = fopen(fname, "r")) == NULL)
+    {
+       return 0.0;
+    }
+
+    while(fgets(temp, 512, fp) != NULL)
+    {
+        if((strstr(temp, str)) != NULL)
+        {
+            printf("A match found on line: %d\n", line_num);
+            printf("\n%s\n", temp);
+            find_result++;
+        }
+        line_num++;
+    }
+
+    if(find_result == 0)
+    {
+        printf("\nSorry, couldn't find a match.\n");
+    }
+
+    //Close the file if still open.
+    if(fp) {
+        fclose(fp);
+    }
+
+    return layerThickness;
+}
+
 static SN_STATUS sTargetLoad(uint32_t pageIndex, uint32_t itemIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
@@ -1084,6 +1127,8 @@ static SN_STATUS sTargetLoad(uint32_t pageIndex, uint32_t itemIndex)
     {
         printTarget->targetType = SN3D;
         strcpy(printTarget->projectName, printTarget->targetName);
+
+        printTarget->layerThickness = GetTargetLayerThickness();
     }
 
     printTarget->slice                      = FileSystem_CountFileWithStr(TARGET_FOLDER_PATH, TARGET_IMAGE_EXT);

@@ -67,26 +67,15 @@ static bool sFirmwareFileCompare(void)
 
     currentVersion = FileSystem_versionInfoXMLLoad(VERSION_FILE_PATH);
 
-    newVersion = FileSystem_versionInfoXMLLoad(TEMP_VERSION_FILE_PATH);
+    newVersion     = FileSystem_versionInfoXMLLoad(TEMP_VERSION_FILE_PATH);
 
-    //hash = sGenerateHash(FIRMWARE_BINARY_PATH, NULL);
-    hash = FileSysetm_MD5_Hash_WithFile(SN3D_BINARY_FILE_PATH, "0xDEADBEEF");
-    if(hash == NULL)
-    {
-        return true;
-    }
-    hashStr = FileSystem_MD5_HashToString(hash);
-    if(hashStr == NULL)
-    {
-        return true;
-    }
 
     printf("\n\n * Current Version * \n");
     printf(" Project   : [ %s ] \n", currentVersion->name);
     printf(" Version   : [ v%d.%d.%d ] \n", currentVersion->releaseNumber, currentVersion->majorNumber, currentVersion->minorNumber);
     printf(" Timestamp : [ %s ] \n", currentVersion->timestamp);
     printf(" binray    : [ %s ] \n", currentVersion->binaryName);
-    printf(" hash      : %s \n\n", hashStr);
+    printf(" hash      : %s \n\n", currentVersion->hash);
 
     printf("\n\n * New Version * \n");
     printf(" Project   : [ %s ] \n", newVersion->name);
@@ -108,17 +97,8 @@ static bool sFirmwareFileCompare(void)
         isNeedUpdate = true;
     }
 
-    printf(" NOW VERSION HASH :: %s \n", hashStr);
+    printf(" NOW VERSION HASH :: %s \n", currentVersion->hash);
     printf(" NEW VERSION HASH :: %s \n", newVersion->hash);
-
-    if(!strcmp((const char*)hashStr, (const char*)newVersion->hash))
-    {
-        printf("\n\n Hash is matching!! \n\n");
-    }
-    else
-    {
-        printf("\n\n Hash is not matching!! \n\n");
-    }
 
     if(isNeedUpdate)
     {

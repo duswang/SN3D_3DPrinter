@@ -2,13 +2,11 @@
 # ============================================================================
 # Name        : sn3d_bootloader
 # Author      : bato
-# Copyright   :
-# Description :
 # ============================================================================
 #
 ######################## Base Info Setting ########################
 # Header #
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.7)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
@@ -166,7 +164,13 @@ add_custom_target(stop
 )
 
 add_custom_target(all_clean 
-    rm -rf ${BOOTLOADER_ROOT_PATH}/CMakeFiles ${BOOTLOADER_ROOT_PATH}/cmake_install.cmake ${BOOTLOADER_ROOT_PATH}/CMakeCache.txt ${BOOTLOADER_ROOT_PATH}/res ${BOOTLOADER_ROOT_PATH}/bin ${BOOTLOADER_ROOT_PATH}/Makefile ${BOOTLOADER_ROOT_PATH}/cmake_install.cmake 
+    sudo rm -rf
+    ${BOOTLOADER_ROOT_PATH}/CMakeFiles
+    ${BOOTLOADER_ROOT_PATH}/CMakeCache.tx 
+    ${BOOTLOADER_ROOT_PATH}/cmake_install.cmake
+    ${BOOTLOADER_ROOT_PATH}/Makefile  
+    ${BOOTLOADER_ROOT_PATH}/res
+    ${BOOTLOADER_ROOT_PATH}/bin  
 )
 
 

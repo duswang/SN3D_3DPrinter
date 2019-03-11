@@ -2,8 +2,6 @@
 # ============================================================================
 # Name        : sn3d_project
 # Author      : bato
-# Copyright   :
-# Description :
 # ============================================================================
 #
 ######################## Base Info Setting ########################
@@ -13,6 +11,9 @@ cmake_minimum_required(VERSION 3.7)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_CXX_EXTENSIONS FALSE)
+
+set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_VERBOSE_MAKEFILE false)
 
 # Project Info  #
 project(sn3d_project)
@@ -250,7 +251,14 @@ add_custom_target(doxygen
 )
 
 add_custom_target(all_clean 
-    rm -rf ${PRJ_ROOT_PATH}/CMakeFiles ${PRJ_ROOT_PATH}/cmake_install.cmake ${PRJ_ROOT_PATH}/CMakeCache.txt ${PRJ_ROOT_PATH}/res ${PRJ_ROOT_PATH}/bin ${PRJ_ROOT_PATH}/Makefile ${PRJ_ROOT_PATH}/cmake_install.cmake 
+    sudo rm -rf 
+    ${PRJ_ROOT_PATH}/CMakeFiles 
+    ${PRJ_ROOT_PATH}/CMakeCache.txt 
+    ${PRJ_ROOT_PATH}/cmake_install.cmake 
+    ${PRJ_ROOT_PATH}/Makefile 
+    ${PRJ_ROOT_PATH}/res 
+    ${PRJ_ROOT_PATH}/bin 
+    ${PRJ_ROOT_PATH}/FirmwareFiles 
 )
 
 add_custom_target(sn3d_service_install 

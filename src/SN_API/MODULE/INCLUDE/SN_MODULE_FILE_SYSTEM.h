@@ -113,6 +113,9 @@
 #define TARGET_ZIP_FILE_EXT     "zip"
 #define TARGET_IMAGE_EXT        "png"
 
+#define TARGET_CONFIG_FILE_NAME "SN3D_File_Info"
+#define TARGET_CONFIG_EXT       ".txt"
+
 #define SN3D_FW_STR             "sn3d_fw"
 #define SN3D_FW_EXTENTION       "zip"
 
@@ -203,6 +206,7 @@ typedef struct print_target {
     char  projectName[MAX_FILENAME_LENGTH];
 
     uint32_t slice;
+    float    layerThickness;                /**< mm */
     targetType_t targetType;
 } printTarget_t;
 
@@ -418,7 +422,7 @@ extern SN_STATUS SN_MODULE_FILE_SYSTEM_OptionLoad(uint32_t optionIndex);
  *
  *  @note
  */
-extern const printOption_t* SN_MODULE_FILE_SYSTEM_OptionGet(void);
+extern printOption_t SN_MODULE_FILE_SYSTEM_OptionGet(void);
 
 
 /*************************************************************@}*/

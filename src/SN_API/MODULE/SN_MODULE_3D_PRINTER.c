@@ -593,9 +593,9 @@ static SN_STATUS s3DPrinter_PrintInit(void)
     SN_STATUS retStatus = SN_STATUS_OK;
     uint32_t estimatedBuildTime = 0;
 
-    const printOption_t* printOption = NULL;
     const printTarget_t* printTarget = NULL;
     const machineInfo_t* machineInfo = NULL;
+    printOption_t printOption;
 
     if(module3DPrinter.state != DEVICE_BUSY || module3DPrinter.state != DEVICE_INIT)
     {
@@ -610,10 +610,6 @@ static SN_STATUS s3DPrinter_PrintInit(void)
 
         /* Get Option */
         printOption = SN_MODULE_FILE_SYSTEM_OptionGet();
-        if(printOption == NULL)
-        {
-            SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "Option not initialized.");
-        }
 
         /* Get Target */
         printTarget = SN_MODULE_FILE_SYSTEM_TargetGet();
@@ -623,27 +619,27 @@ static SN_STATUS s3DPrinter_PrintInit(void)
         }
 
         /* Get Lift GCode */
-        sprintf(module3DPrinter.gcodeLiftUp,"G1 Z%.3f F%.3f", (float)printOption->liftDistance, printOption->liftFeedRate);
+        sprintf(module3DPrinter.gcodeLiftUp,"G1 Z%.3f F%.3f", printOption.liftDistance, printOption.liftFeedRate);
 
-        sprintf(module3DPrinter.gcodeLiftDown,"G1 Z-%.3f F%.3f", (printOption->liftDistance - printOption->layerThickness), printOption->liftFeedRate);
+        sprintf(module3DPrinter.gcodeLiftDown,"G1 Z-%.3f F%.3f", (printOption.liftDistance - printOption.layerThickness), printOption.liftFeedRate);
 
         /* Get UV Lamp GCode */
-        sprintf(module3DPrinter.gcodeUVLampOn, "M106 S%ld", printOption->bright);
+        sprintf(module3DPrinter.gcodeUVLampOn, "M106 S%ld", printOption.bright);
 
 
         estimatedBuildTime = estimatedBuildTimeSecCal( \
-                printOption->liftTime, \
-                printOption->layerExposureTime, \
-                printOption->bottomLayerExposureTime, \
+                printOption.liftTime, \
+                printOption.layerExposureTime, \
+                printOption.bottomLayerExposureTime, \
                 printTarget->slice, \
-                printOption->bottomLayerNumber);
+                printOption.bottomLayerNumber);
 
         /* NEXTION TIMER INFO INIT */
         retStatus = SN_MODULE_DISPLAY_PrintingTimerInit(estimatedBuildTime);
         SN_SYS_ERROR_StatusCheck(retStatus, "Display Timer Info Update Failed.");
 
         /* NEXTION PAGE INFO INIT */
-        retStatus = SN_MODULE_DISPLAY_PrintingInfoInit(printTarget->targetName, printOption->name);
+        retStatus = SN_MODULE_DISPLAY_PrintingInfoInit(printTarget->targetName, printOption.name);
         SN_SYS_ERROR_StatusCheck(retStatus, "Display Base Info Update Failed.");
 
         retStatus = SN_MODULE_DISPLAY_PrintingInfoUpdate((module3DPrinter.sliceIndex + 1), printTarget->slice);
@@ -662,7 +658,7 @@ static SN_STATUS s3DPrinter_PrintInit(void)
 
         printf("Module => 3D Printer  => TARGET NAME  [ %s ]\n", printTarget->targetName);
         printf("Module => 3D Printer  => TARGET SLICE [ %04d ]\n", printTarget->slice);
-        printf("Module => 3D Printer  => OPTION NAME  [ %s ]\n", printOption->name);
+        printf("Module => 3D Printer  => OPTION NAME  [ %s ]\n", printOption.name);
 
         retStatus = SN_SYS_TIMER_Create(&timerPrint, FIRST_SLICE_DELAY_TIME, sTMR_NextCycle_Callback);
         SN_SYS_ERROR_StatusCheck(retStatus, "Timer Cretae Failed.");
@@ -681,9 +677,11 @@ static SN_STATUS s3DPrinter_PrintInit(void)
 static SN_STATUS s3DPrinter_PrintCycle(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+
     uint32_t exposureTime = 0;
+
     const printTarget_t* printTarget = NULL;
-    const printOption_t* printOption = NULL;
+    printOption_t printOption;
 
     /* One Cylce Start */
     if((module3DPrinter.state == DEVICE_INIT)     || \
@@ -694,10 +692,6 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
 
         /* Get Option */
         printOption = SN_MODULE_FILE_SYSTEM_OptionGet();
-        if(printOption == NULL)
-        {
-            SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "Option not initialized.");
-        }
 
         /* Get Target */
         printTarget = SN_MODULE_FILE_SYSTEM_TargetGet();
@@ -725,15 +719,15 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
         SN_SYS_ERROR_StatusCheck(retStatus, "Send GCode Failed.");
 
         /* Exposure Timer Call */
-        if(module3DPrinter.sliceIndex < printOption->bottomLayerNumber)
+        if(module3DPrinter.sliceIndex < printOption.bottomLayerNumber)
         {
-            printf("    WAIT UV EXPOSURE TIME[ %ld msec ].\n", printOption->bottomLayerExposureTime);
-            exposureTime = printOption->bottomLayerExposureTime;
+            printf("    WAIT UV EXPOSURE TIME[ %ld msec ].\n", printOption.bottomLayerExposureTime);
+            exposureTime = printOption.bottomLayerExposureTime;
         }
         else
         {
-            printf("    WAIT UV EXPOSURE TIME[ %ld msec ].\n", printOption->layerExposureTime);
-            exposureTime = printOption->layerExposureTime;
+            printf("    WAIT UV EXPOSURE TIME[ %ld msec ].\n", printOption.layerExposureTime);
+            exposureTime = printOption.layerExposureTime;
         }
 
         retStatus = SN_SYS_TIMER_Create(&timerPrint , exposureTime, sTMR_Lift_Callback);
@@ -760,8 +754,10 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
 static SN_STATUS s3DPrinter_PrintLift(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+
     const printTarget_t* printTarget = NULL;
-    const printOption_t* printOption = NULL;
+    printOption_t printOption;
+
     uint32_t currentTime = 0;
 
     if((module3DPrinter.state == DEVICE_PRINTING) || \
@@ -769,10 +765,6 @@ static SN_STATUS s3DPrinter_PrintLift(void)
     {
         /* Get Option */
         printOption = SN_MODULE_FILE_SYSTEM_OptionGet();
-        if(printOption == NULL)
-        {
-            SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "Option not initialized.");
-        }
 
         /* Get Target */
         printTarget = SN_MODULE_FILE_SYSTEM_TargetGet();
@@ -803,7 +795,7 @@ static SN_STATUS s3DPrinter_PrintLift(void)
         retStatus = sSendGCode(module3DPrinter.gcodeLiftUp, sizeof(module3DPrinter.gcodeLiftUp));
         SN_SYS_ERROR_StatusCheck(retStatus, "Send GCode Failed.");
 
-        printf("    WAIT LIFT TIME[ %ld msec ].\n\n", printOption->liftTime);
+        printf("    WAIT LIFT TIME[ %ld msec ].\n\n", printOption.liftTime);
 
         SN_SYS_ERROR_SystemLog("    CALL 'Z LIFT DOWN' function.\n");
         retStatus = sSendGCode(module3DPrinter.gcodeLiftDown, sizeof(module3DPrinter.gcodeLiftDown));
@@ -815,7 +807,7 @@ static SN_STATUS s3DPrinter_PrintLift(void)
         {
             printf("\n=========================================> FINISH. ========>\n\n\n\n");
 
-            retStatus = SN_SYS_TIMER_Create(&timerPrint, printOption->liftTime, sTMR_FinishDevice_Callback);
+            retStatus = SN_SYS_TIMER_Create(&timerPrint, printOption.liftTime, sTMR_FinishDevice_Callback);
             SN_SYS_ERROR_StatusCheck(retStatus, "Timer Create Failed.");
         }
         else
@@ -824,11 +816,11 @@ static SN_STATUS s3DPrinter_PrintLift(void)
 
             /* Time Sync */
             currentTime = currentTimeSyncByLayer( \
-                    printOption->liftTime, \
-                    printOption->layerExposureTime, \
-                    printOption->bottomLayerExposureTime, \
+                    printOption.liftTime, \
+                    printOption.layerExposureTime, \
+                    printOption.bottomLayerExposureTime, \
                     module3DPrinter.sliceIndex + 1, \
-                    printOption->bottomLayerNumber);
+                    printOption.bottomLayerNumber);
 
             SN_MODULE_DISPLAY_PrintingTimerSync(currentTime);
 
@@ -840,7 +832,7 @@ static SN_STATUS s3DPrinter_PrintLift(void)
             retStatus = SN_SYS_TIMER_Create(&timerPrint, 50, sTMR_NextCycle_Callback);
             SN_SYS_ERROR_StatusCheck(retStatus, "Timer Create Failed.");
 #else
-            retStatus = SN_SYS_TIMER_Create(&timerPrint, printOption->liftTime, sTMR_NextCycle_Callback);
+            retStatus = SN_SYS_TIMER_Create(&timerPrint, printOption.liftTime, sTMR_NextCycle_Callback);
             SN_SYS_ERROR_StatusCheck(retStatus, "Timer Create Failed.");
 #endif
         }

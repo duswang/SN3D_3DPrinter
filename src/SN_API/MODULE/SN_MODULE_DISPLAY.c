@@ -435,7 +435,9 @@ SN_STATUS SN_MODULE_DISPLAY_ControlZPosition(float mm)
 SN_STATUS SN_MODULE_DISPLAY_FileSelectOptionUpdate(uint32_t optionIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-    const printOption_t* printOption = NULL;
+
+    printOption_t printOption;
+
     char buffer[NEXTION_COMMAND_BUFFER_SIZE];
     char* korBuffer = NULL;
 
@@ -444,7 +446,7 @@ SN_STATUS SN_MODULE_DISPLAY_FileSelectOptionUpdate(uint32_t optionIndex)
 
     if(SN_MODULE_FILE_SYSTEM_isOptionExist())
     {
-        sprintf(buffer,"Option.txt=\"%s\"", printOption->name);
+        sprintf(buffer,"Option.txt=\"%s\"", printOption.name);
     }
     else
     {

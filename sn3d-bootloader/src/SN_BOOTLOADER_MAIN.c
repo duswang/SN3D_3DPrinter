@@ -183,11 +183,11 @@ static void sBootloader_Terminate(bool isNeedReboot)
 
     if(isNeedReboot == true)
     {
-        /*
+
         SN_SYS_ERROR_SystemLog("System Reboot. \n\n");
 
         sync();
-        reboot(RB_AUTOBOOT);
-        */
+        //reboot(RB_AUTOBOOT);
+
     }
 }

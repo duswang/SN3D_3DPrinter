@@ -67,7 +67,12 @@ res/target/*.xml
 res/target/*.slice
 
 #ETC 
+._.DS_STore
+._DS_Store
 .DS_Store
+
+._.AppleDouble
+._AppleDouble
 .AppleDouble
 
 .cproject
