@@ -1034,31 +1034,45 @@ static SN_STATUS sDeviceInfoLoad(void)
  *  TARGET
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-float  GetTargetLayerThickness(void)
+float GetTargetLayerThickness(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+
+
     FILE *fp;
+
     int line_num = 1;
     int find_result = 0;
-    char temp[512];
+
+    char path[MAX_PATH_LENGTH];
+    char lineBuff[MAX_BUFFER_SIZE];
+    char* linePointer = NULL;
 
     float layerThickness = 0.0;
 
 
-    if((fp = fopen(fname, "r")) == NULL)
+    sprintf(path,"%s/%s.%s", TARGET_FOLDER_PATH, TARGET_CONFIG_FILE_NAME, TARGET_CONFIG_EXT);
+
+    fp = fopen(path, "r");
+    if(fp == NULL)
     {
-       return 0.0;
+        printf("\n%s\n", path);
+        printf("\nCAN'T SEARCHING TARGET THINCKNESS CONFIG FILE, SO USE DEFAULT VALUE.\n");
+
+        return 0.0;
     }
 
-    while(fgets(temp, 512, fp) != NULL)
+    while(fgets(lineBuff, MAX_BUFFER_SIZE, fp) != NULL)
     {
-        if((strstr(temp, str)) != NULL)
+        linePointer = strstr(lineBuff, TARGET_CONFIG_STRING);
+
+        if(linePointer != NULL)
         {
-            printf("A match found on line: %d\n", line_num);
-            printf("\n%s\n", temp);
-            find_result++;
+            sscanf((const char *)linePointer + strlen(TARGET_CONFIG_STRING), "%f", &layerThickness);
+            printf("\nFOUND TARGET THICKNESS CONFIG FILE-! SO USE NEW VALUE IS [ %f ].\n", layerThickness);
+
+            break;
         }
-        line_num++;
     }
 
     if(find_result == 0)

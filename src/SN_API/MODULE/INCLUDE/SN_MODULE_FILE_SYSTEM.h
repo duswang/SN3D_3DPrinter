@@ -22,6 +22,7 @@
  *////@{
 #define MAX_ITEM_SIZE                5
 
+#define MAX_BUFFER_SIZE            256
 #define MAX_FILENAME_LENGTH        256
 #define MAX_PATH_LENGTH            256
 #define MAX_OPTION_FILENAME          8
@@ -113,8 +114,9 @@
 #define TARGET_ZIP_FILE_EXT     "zip"
 #define TARGET_IMAGE_EXT        "png"
 
+#define TARGET_CONFIG_STRING    "#Thickness"
 #define TARGET_CONFIG_FILE_NAME "SN3D_File_Info"
-#define TARGET_CONFIG_EXT       ".txt"
+#define TARGET_CONFIG_EXT       "txt"
 
 #define SN3D_FW_STR             "sn3d_fw"
 #define SN3D_FW_EXTENTION       "zip"

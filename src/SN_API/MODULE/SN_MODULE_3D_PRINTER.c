@@ -618,6 +618,8 @@ static SN_STATUS s3DPrinter_PrintInit(void)
             SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "Target not initialized.");
         }
 
+        printOption.layerThickness = printTarget->layerThickness;
+
         /* Get Lift GCode */
         sprintf(module3DPrinter.gcodeLiftUp,"G1 Z%.3f F%.3f", printOption.liftDistance, printOption.liftFeedRate);
 
