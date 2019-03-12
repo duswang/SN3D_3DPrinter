@@ -404,19 +404,6 @@ char* SN_MODULE_FILE_SYSTEM_TargetSlicePathGet(uint32_t sliceIndex)
 
     switch(moduleFileSystem.printTarget->targetType)
     {
-        case NETFABB:
-            sliceIndex_Offset = 0;
-
-            sprintf(path,"%s/layer_%0*d.png", moduleFileSystem.printTarget->targetPath, \
-                                            (int)numberSpace, sliceIndex_Offset + sliceIndex);
-            break;
-        case MANGO:
-        case SN3D:
-            sliceIndex_Offset = 1;
-            sprintf(path,"%s/%0*d.png", moduleFileSystem.printTarget->targetPath, \
-                                      (int)0,
-                                      sliceIndex_Offset + sliceIndex);
-            break;
         case CWS:
             sliceIndex_Offset = 0;
 
@@ -425,7 +412,19 @@ char* SN_MODULE_FILE_SYSTEM_TargetSlicePathGet(uint32_t sliceIndex)
                                           (int)4,
                                           sliceIndex_Offset + sliceIndex);
             break;
+        case NETFABB:
+            sliceIndex_Offset = 0;
+
+            sprintf(path,"%s/layer_%0*d.png", moduleFileSystem.printTarget->targetPath, \
+                                            (int)numberSpace, sliceIndex_Offset + sliceIndex);
+            break;
         case B9:
+            break;
+        case SN3D:
+            sliceIndex_Offset = 1;
+            sprintf(path,"%s/%0*d.png", moduleFileSystem.printTarget->targetPath, \
+                                      (int)0,
+                                      sliceIndex_Offset + sliceIndex);
             break;
         default:
             SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "Invalid File Type.");
@@ -1048,10 +1047,14 @@ float GetTargetLayerThickness(void)
     char lineBuff[MAX_BUFFER_SIZE];
     char* linePointer = NULL;
 
+    int valueIndex = 0;
+
     float layerThickness = 0.0;
 
 
     sprintf(path,"%s/%s.%s", TARGET_FOLDER_PATH, TARGET_CONFIG_FILE_NAME, TARGET_CONFIG_EXT);
+
+    printf("\n%s\n", path);
 
     fp = fopen(path, "r");
     if(fp == NULL)
@@ -1066,22 +1069,30 @@ float GetTargetLayerThickness(void)
     {
         linePointer = strstr(lineBuff, TARGET_CONFIG_STRING);
 
-        if(linePointer != NULL)
+        while(linePointer != NULL)
         {
-            sscanf((const char *)linePointer + strlen(TARGET_CONFIG_STRING), "%f", &layerThickness);
-            printf("\nFOUND TARGET THICKNESS CONFIG FILE-! SO USE NEW VALUE IS [ %f ].\n", layerThickness);
+            printf("\n%s\n", linePointer);
+            valueIndex++;
 
-            break;
+            if(valueIndex >= TARGET_THICKNESS)
+            {
+                sscanf((const char *)linePointer + strlen(TARGET_CONFIG_STRING), "%f", &layerThickness);
+
+                /* mm to um */
+                layerThickness /= 1000;
+                printf("\nFOUND TARGET THICKNESS CONFIG FILE-! SO USE NEW VALUE IS [ %f ].\n", layerThickness);
+
+                break;
+            }
+            else
+            {
+                linePointer = strstr(linePointer + 1, TARGET_CONFIG_STRING);
+            }
         }
     }
 
-    if(find_result == 0)
+    if(fp)
     {
-        printf("\nSorry, couldn't find a match.\n");
-    }
-
-    //Close the file if still open.
-    if(fp) {
         fclose(fp);
     }
 
@@ -1128,13 +1139,6 @@ static SN_STATUS sTargetLoad(uint32_t pageIndex, uint32_t itemIndex)
     else if(FileSystem_CountFileWithStr(TARGET_FOLDER_PATH, B9_CONDITION_STR))
     {
         //B9 Not Support yet.
-    }
-    */
-    /*
-    else
-    {
-        printTarget->targetType = MANGO;
-        strcpy(printTarget->projectName, printTarget->targetName);
     }
     */
     else

@@ -34,8 +34,6 @@ int main(void)
     SN_STATUS retStatus = SN_STATUS_OK;
     general_evt_t evt;
 
-
-
     /* SYSTEM INIT */
     SN_SYS_ERROR_SystemLog("==>SYSTEM INIT");
 

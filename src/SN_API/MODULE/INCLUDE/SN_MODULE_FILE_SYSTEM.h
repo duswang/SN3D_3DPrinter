@@ -114,10 +114,6 @@
 #define TARGET_ZIP_FILE_EXT     "zip"
 #define TARGET_IMAGE_EXT        "png"
 
-#define TARGET_CONFIG_STRING    "#Thickness"
-#define TARGET_CONFIG_FILE_NAME "SN3D_File_Info"
-#define TARGET_CONFIG_EXT       "txt"
-
 #define SN3D_FW_STR             "sn3d_fw"
 #define SN3D_FW_EXTENTION       "zip"
 
@@ -136,11 +132,20 @@
 typedef enum {
     SN3D,                    //!< SN3D
     NETFABB,                 //!< NETFABB
-    MANGO,                   //!< MANGO
     B9,                      //!< B9
     CWS,                     //!< CWS
     TARGET_DEFAULT_TYPE = SN3D//!< SN3D
 } targetType_t;
+
+typedef enum {
+    TARGET_NONE         = 0,//!< TARGET_NONE
+    TARGET_MODEL_NAME   = 1,//!< TARGET_MODEL_NAME
+    TARGET_THICKNESS    = 2 //!< TARGET_THICKNESS
+} targetConfig_t;
+
+#define TARGET_CONFIG_STRING    "#"
+#define TARGET_CONFIG_FILE_NAME "SN3D_File_Info"
+#define TARGET_CONFIG_EXT       "txt"
 
 /*************************************************************@}*/
 

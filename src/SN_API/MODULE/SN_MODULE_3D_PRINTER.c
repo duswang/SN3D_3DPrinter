@@ -194,6 +194,10 @@ static SN_STATUS sGetCoordinates(float x, float y, float z);
 static SN_STATUS sResetPrevCoordinates(void);
 static SN_STATUS sSetPrevCoordinates(void);
 
+/* *** CONSOLE *** */
+static void clrscr(void);
+static void sPrintProgressPrinting(size_t count, size_t max);
+
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
  *  Extern Functions
@@ -685,6 +689,9 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
     const printTarget_t* printTarget = NULL;
     printOption_t printOption;
 
+    /* Console Clear */
+    clrscr();
+
     /* One Cylce Start */
     if((module3DPrinter.state == DEVICE_INIT)     || \
        (module3DPrinter.state == DEVICE_PRINTING) || \
@@ -703,32 +710,23 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
         }
 
         /* Slice Sequence */
-        printf("\n\n===============> PRINT SLICE %04d >=========================>\n\n", (module3DPrinter.sliceIndex + 1)); fflush(stdout);
-
-
-        printf("\n    CURRENT MOTOR Z POSITION[ %.4f mm ].\n\n", module3DPrinter.current_position[DEVICE_AXIS_Z]);
-
         /* IMAGE VIEWER UPDATE */
-        SN_SYS_ERROR_SystemLog("    SCREEN & NEXTION THUMBNAIL UPDATE.\n");
         retStatus = SN_MODULE_IMAGE_VIEWER_WindowUpdate(module3DPrinter.sliceIndex);
         SN_SYS_ERROR_StatusCheck(retStatus, "Image Viewer Update Failed.");
 
-        SN_MODULE_DISPLAY_PrintingInfoUpdate((module3DPrinter.sliceIndex + 1), printTarget->slice);
-
         /* UV Turn On */
-        SN_SYS_ERROR_SystemLog("    UV LAMP ON.\n");
         retStatus = SN_SYS_SERIAL_Tx(serialId3DPrinter, module3DPrinter.gcodeUVLampOn, sizeof(module3DPrinter.gcodeUVLampOn));
         SN_SYS_ERROR_StatusCheck(retStatus, "Send GCode Failed.");
+
+        SN_MODULE_DISPLAY_PrintingInfoUpdate((module3DPrinter.sliceIndex + 1), printTarget->slice);
 
         /* Exposure Timer Call */
         if(module3DPrinter.sliceIndex < printOption.bottomLayerNumber)
         {
-            printf("    WAIT UV EXPOSURE TIME[ %ld msec ].\n", printOption.bottomLayerExposureTime);
             exposureTime = printOption.bottomLayerExposureTime;
         }
         else
         {
-            printf("    WAIT UV EXPOSURE TIME[ %ld msec ].\n", printOption.layerExposureTime);
             exposureTime = printOption.layerExposureTime;
         }
 
@@ -777,7 +775,6 @@ static SN_STATUS s3DPrinter_PrintLift(void)
 
         /* Lift Sequence */
         /* UV OFF */
-        SN_SYS_ERROR_SystemLog("\n    UV LAMP OFF.\n");
         retStatus = SN_SYS_SERIAL_Tx(serialId3DPrinter,GCODE_LCD_OFF, sizeof(GCODE_LCD_OFF));
         SN_SYS_ERROR_StatusCheck(retStatus, "Send GCode Failed.");
 
@@ -785,7 +782,6 @@ static SN_STATUS s3DPrinter_PrintLift(void)
 
 #else
         /* IMAGE VIEWER CLEAER */
-        SN_SYS_ERROR_SystemLog("    SCREEN & NEXTION THUMBNAIL CLEAR.\n");
         retStatus = SN_MODULE_IMAGE_VIEWER_WindowClean();
         SN_SYS_ERROR_StatusCheck(retStatus, "Image Viewer Window Clear Failed.");
 
@@ -793,29 +789,22 @@ static SN_STATUS s3DPrinter_PrintLift(void)
         SN_SYS_ERROR_StatusCheck(retStatus, "Image Viewer Update Failed.");
 
         /* Z LIFT */
-        SN_SYS_ERROR_SystemLog("    CALL 'Z LIFT UP' function.\n");
         retStatus = sSendGCode(module3DPrinter.gcodeLiftUp, sizeof(module3DPrinter.gcodeLiftUp));
         SN_SYS_ERROR_StatusCheck(retStatus, "Send GCode Failed.");
 
-        printf("    WAIT LIFT TIME[ %ld msec ].\n\n", printOption.liftTime);
-
-        SN_SYS_ERROR_SystemLog("    CALL 'Z LIFT DOWN' function.\n");
         retStatus = sSendGCode(module3DPrinter.gcodeLiftDown, sizeof(module3DPrinter.gcodeLiftDown));
         SN_SYS_ERROR_StatusCheck(retStatus, "Send GCode Failed.");
+
 
 #endif
         /* One Cycle Done */
         if((module3DPrinter.sliceIndex + 1) >= printTarget->slice)
         {
-            printf("\n=========================================> FINISH. ========>\n\n\n\n");
-
             retStatus = SN_SYS_TIMER_Create(&timerPrint, printOption.liftTime, sTMR_FinishDevice_Callback);
             SN_SYS_ERROR_StatusCheck(retStatus, "Timer Create Failed.");
         }
         else
         {
-            printf("\n=========================================> DONE. ==========>\n\n\n\n");
-
             /* Time Sync */
             currentTime = currentTimeSyncByLayer( \
                     printOption.liftTime, \
@@ -1073,20 +1062,13 @@ static SN_STATUS s3DPrinter_MotorUninit(void)
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 static SN_STATUS sGetCoordinates(float x, float y, float z)
 {
-    SN_STATUS retStatus = SN_STATUS_OK;
-
     module3DPrinter.current_position[DEVICE_AXIS_X] = x;
     module3DPrinter.current_position[DEVICE_AXIS_Y] = y;
     module3DPrinter.current_position[DEVICE_AXIS_Z] = z;
 
-    /* PRINT POSITION */
-    //printf("\n    X POSITION : %.2f mm",   module3DPrinter.current_position[DEVICE_AXIS_X]);
-    //printf(", Y POSITION : %.2f mm",   module3DPrinter.current_position[DEVICE_AXIS_Y]);
-    //printf(", Z POSITION : %.2f mm\n", module3DPrinter.current_position[DEVICE_AXIS_Z]);
-
     SN_MODULE_DISPLAY_ControlZPosition(module3DPrinter.current_position[DEVICE_AXIS_Z]);
 
-    return retStatus;
+    return SN_STATUS_OK;
 }
 
 static SN_STATUS sResetPrevCoordinates(void)
@@ -1099,7 +1081,6 @@ static SN_STATUS sResetPrevCoordinates(void)
 }
 static SN_STATUS sSetPrevCoordinates(void)
 {
-
     module3DPrinter.prev_position[DEVICE_AXIS_X] = module3DPrinter.current_position[DEVICE_AXIS_X];
     module3DPrinter.prev_position[DEVICE_AXIS_Y] = module3DPrinter.current_position[DEVICE_AXIS_Y];
     module3DPrinter.prev_position[DEVICE_AXIS_Z] = module3DPrinter.current_position[DEVICE_AXIS_Z];
@@ -1110,6 +1091,7 @@ static SN_STATUS sSetPrevCoordinates(void)
 static SN_STATUS sGcodeZMove(float liftDistance, float liftFeedRate)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+
     char gcodeBuffer[GCODE_BUFFER_SIZE];
     const machineInfo_t* machineInfo = NULL;
 
@@ -1151,6 +1133,7 @@ static SN_STATUS sGcodeZMove(float liftDistance, float liftFeedRate)
     }
 
     retStatus = SN_SYS_TIMER_Create(&timerPrint, liftDistance / ((DEFAULT_FEEDRATE) / (60 * 1000)), sTMR_Z_Busy_Callback);
+    SN_SYS_ERROR_StatusCheck(retStatus, "Timer Cretae Failed.");
 
     return retStatus;
 }
@@ -1179,6 +1162,37 @@ static SN_STATUS sSendGCode(char* command, size_t bufferSize)
     pthread_mutex_unlock(&ptm3DPrinter);
 
     return retStatus;
+}
+/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+ *
+ *  Console
+ *
+ * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+
+static void clrscr(void)
+{
+    system("clear");
+}
+
+static void sPrintProgressPrinting(size_t count, size_t max)
+{
+    const char prefix[] = "Progress: [";
+    const char suffix[] = "]";
+    const size_t prefix_length = sizeof(prefix) - 1;
+    const size_t suffix_length = sizeof(suffix) - 1;
+    char *buffer = calloc(max + prefix_length + suffix_length + 1, 1); // +1 for \0
+    size_t i = 0;
+
+    strcpy(buffer, prefix);
+    for (; i < max; ++i)
+    {
+        buffer[prefix_length + i] = i < count ? '@' : ' ';
+    }
+
+    strcpy(&buffer[prefix_length + i], suffix);
+    printf("\b%c[2K\r%s\n", 27, buffer);
+    fflush(stdout);
+    free(buffer);
 }
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *

@@ -11,7 +11,6 @@
 
 #include "SN_BOOTLOADER.h"
 
-
 /* ******* STATIC DEFINE ******* */
 
 /* ******* GLOBAL VARIABLE ******* */
@@ -187,7 +186,7 @@ static void sBootloader_Terminate(bool isNeedReboot)
         SN_SYS_ERROR_SystemLog("System Reboot. \n\n");
 
         sync();
-        //reboot(RB_AUTOBOOT);
+        reboot(RB_AUTOBOOT);
 
     }
 }

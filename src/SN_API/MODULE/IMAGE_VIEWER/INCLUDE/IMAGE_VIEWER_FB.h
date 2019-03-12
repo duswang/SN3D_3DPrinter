@@ -21,9 +21,6 @@
  * @{
  */
 
-#define DEFAULT_WINDOW_WIDTH  1440
-#define DEFAULT_WINDOW_HEIGHT 2560
-
 #define WINDOW_NAME "/dev/fb0"
 
 /*************************************************************@}*/

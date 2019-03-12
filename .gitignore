@@ -61,10 +61,12 @@ install_sn3d_install_manifest.txt
 #Doxygen Untrack Files
 doc/doxygen/
 
-#resource Untrack Files
-res/target/*.png
-res/target/*.xml
-res/target/*.slice
+#Resoure Files
+res
+sn3d_bootloader/res
+
+#Firmware files
+FirmwareFiles
 
 #ETC 
 ._.DS_STore

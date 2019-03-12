@@ -357,7 +357,7 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerPause(void)
     }
     else
     {
-
+        retStatus = SN_STATUS_NOT_INITIALIZED;
     }
 
     return retStatus;
@@ -374,7 +374,7 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerResume(void)
     }
     else
     {
-
+        retStatus = SN_STATUS_NOT_INITIALIZED;
     }
 
     return retStatus;
