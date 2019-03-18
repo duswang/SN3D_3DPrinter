@@ -195,8 +195,8 @@ static SN_STATUS sResetPrevCoordinates(void);
 static SN_STATUS sSetPrevCoordinates(void);
 
 /* *** CONSOLE *** */
-static void clrscr(void);
-static void sPrintProgressPrinting(size_t count, size_t max);
+static void sClrscr(void);
+static void sPrintProgressPrinting(uint32_t progressed, uint32_t goal, const printOption_t printOption, const printTarget_t printTarget);
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
@@ -622,16 +622,17 @@ static SN_STATUS s3DPrinter_PrintInit(void)
             SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "Target not initialized.");
         }
 
-        printOption.layerThickness = printTarget->layerThickness;
+		if(printTarget->layerThickness > 0)
+		{
+	        printOption.layerThickness = printTarget->layerThickness;
+		}
 
         /* Get Lift GCode */
-        sprintf(module3DPrinter.gcodeLiftUp,"G1 Z%.3f F%.3f", printOption.liftDistance, printOption.liftFeedRate);
-
-        sprintf(module3DPrinter.gcodeLiftDown,"G1 Z-%.3f F%.3f", (printOption.liftDistance - printOption.layerThickness), printOption.liftFeedRate);
+        sprintf(module3DPrinter.gcodeLiftUp,"G1 Z%.3f F%.3f", (float)printOption.liftDistance, printOption.liftFeedRate);
+        sprintf(module3DPrinter.gcodeLiftDown,"G1 Z-%.3f F%.3f", ((float)printOption.liftDistance - printOption.layerThickness), printOption.liftFeedRate);
 
         /* Get UV Lamp GCode */
         sprintf(module3DPrinter.gcodeUVLampOn, "M106 S%ld", printOption.bright);
-
 
         estimatedBuildTime = estimatedBuildTimeSecCal( \
                 printOption.liftTime, \
@@ -689,9 +690,6 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
     const printTarget_t* printTarget = NULL;
     printOption_t printOption;
 
-    /* Console Clear */
-    clrscr();
-
     /* One Cylce Start */
     if((module3DPrinter.state == DEVICE_INIT)     || \
        (module3DPrinter.state == DEVICE_PRINTING) || \
@@ -708,6 +706,17 @@ static SN_STATUS s3DPrinter_PrintCycle(void)
         {
             SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "Target not initialized.");
         }
+
+		if(printTarget->layerThickness > 0)
+		{
+	        printOption.layerThickness = printTarget->layerThickness;
+		}
+
+        /* Console Clear */
+        sClrscr();
+
+        /* Console Display */
+        sPrintProgressPrinting(module3DPrinter.sliceIndex + 1 ,printTarget->slice, printOption, *printTarget);
 
         /* Slice Sequence */
         /* IMAGE VIEWER UPDATE */
@@ -772,6 +781,11 @@ static SN_STATUS s3DPrinter_PrintLift(void)
         {
             SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "Target not initialized.");
         }
+
+		if(printTarget->layerThickness > 0)
+		{
+	        printOption.layerThickness = printTarget->layerThickness;
+		}
 
         /* Lift Sequence */
         /* UV OFF */
@@ -1169,30 +1183,55 @@ static SN_STATUS sSendGCode(char* command, size_t bufferSize)
  *
  * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
 
-static void clrscr(void)
+static void sClrscr(void)
 {
     system("clear");
 }
 
-static void sPrintProgressPrinting(size_t count, size_t max)
+static void sPrintProgressPrinting(uint32_t progressed, uint32_t goal, const printOption_t printOption, const printTarget_t printTarget)
 {
     const char prefix[] = "Progress: [";
     const char suffix[] = "]";
     const size_t prefix_length = sizeof(prefix) - 1;
     const size_t suffix_length = sizeof(suffix) - 1;
+
+    uint32_t max = 100;
+    float count = 0;
+
+
+    if(progressed > goal)
+    {
+    	progressed = goal;
+    }
+    count = ((float)progressed / (float)goal) * max;
+
     char *buffer = calloc(max + prefix_length + suffix_length + 1, 1); // +1 for \0
     size_t i = 0;
 
     strcpy(buffer, prefix);
-    for (; i < max; ++i)
+    for (i = 0; i < max; ++i)
     {
         buffer[prefix_length + i] = i < count ? '@' : ' ';
     }
 
     strcpy(&buffer[prefix_length + i], suffix);
-    printf("\b%c[2K\r%s\n", 27, buffer);
+    printf("\n\b%c[2K\r%s[%.2f%](%d/%d slice)\n", 27, buffer, count, progressed, goal);
     fflush(stdout);
     free(buffer);
+
+    printf("\n\n\n[ Option : %s ]\n\n",printOption.name);
+    printf("Bottom Layer Exposure Time : %ld\n",printOption.bottomLayerExposureTime);
+    printf("Bottom Layer Number : %ld\n",printOption.bottomLayerNumber);
+    printf("Bottom Layer FeedRate : %f\n",printOption.bottomLiftFeedRate);
+    printf("Layer Exposure Time : %ld\n",printOption.layerExposureTime);
+    printf("Layer Thickness: %f \n",printOption.layerThickness);
+    printf("Lift Distance : %ld \n",printOption.liftDistance);
+    printf("Lift TIme : %ld \n",printOption.liftTime);
+    printf("Lift Feed Rate : %f \n",printOption.liftFeedRate);
+    printf("Bright : %ld \n",printOption.bright);
+
+    printf("\n\n[ Target : %s ]\n\n", printTarget.projectName);
+    printf("Layer Thickness: %f \n",printTarget.layerThickness);
 }
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *

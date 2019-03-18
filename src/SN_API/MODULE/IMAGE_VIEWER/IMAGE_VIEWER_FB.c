@@ -41,12 +41,11 @@ static SN_STATUS sCleanWindow(const FB_Window_t window);
 static SN_STATUS sDistroyWindow(FB_Window_t* window);
 
 /* *** THUMBNAIL *** */
-static SN_STATUS sLoadThumbnail(FB_Image_t* image, FB_Image_t* thumbnail, int thumbnailWidth);
+static SN_STATUS sLoadThumbnail(FB_Image_t* image, FB_Image_t* thumbnail, const FB_ThumbnailInfo_t thumbnailWidth);
 static SN_STATUS sLoadThumbnailInfo(FB_ThumbnailInfo_t* thumbnailInfo);
 static SN_STATUS sUpdateNextionThumbnail(const FB_Image_t thumbnail, const FB_ThumbnailInfo_t thumbnaileInfo);
 static SN_STATUS sCleanNextionThumbnail(const FB_ThumbnailInfo_t thumbnailInfo);
 
-static uint32_t sCalculateWidthNextionThumbnail(const FB_Image_t image, const FB_ThumbnailInfo_t thumbnailInfo);
 
 /* *** RGB CONTROL *** */
 inline static unsigned char  make8color(unsigned char r, unsigned char g, unsigned char b);
@@ -55,6 +54,7 @@ inline static unsigned short make16color(unsigned char r, unsigned char g, unsig
 static void* convertRGB2FB(int fh, unsigned char *rgbbuff, unsigned long count, int bpp, int *cpp);
 
 /* *** UTIL *** */
+static aspectRatio_t sAspectRatioCalculator(FB_Image_t* image);
 static SN_STATUS sRotateImage(FB_Image_t* image);
 
 
@@ -114,7 +114,7 @@ SN_STATUS ImageViewer_WindowUpdate(moduleImageViewer_t* moduleImageViewer, uint3
     SN_SYS_ERROR_StatusCheck(retStatus, "Window Update Failed.");
 
     /* Load and Update Thumbnail Nextion Display */
-    retStatus = sLoadThumbnail(&moduleImageViewer->image, &moduleImageViewer->thumbnail, sCalculateWidthNextionThumbnail(moduleImageViewer->image, moduleImageViewer->thumbnailInfo));
+    retStatus = sLoadThumbnail(&moduleImageViewer->image, &moduleImageViewer->thumbnail, moduleImageViewer->thumbnailInfo);
     SN_SYS_ERROR_StatusCheck(retStatus, "Load thumbnail Failed.");
 
     retStatus = sUpdateNextionThumbnail(moduleImageViewer->thumbnail, moduleImageViewer->thumbnailInfo);
@@ -378,18 +378,74 @@ static SN_STATUS sRotateImage(FB_Image_t* image)
     return retStatus;
 }
 
-static SN_STATUS sLoadThumbnail(FB_Image_t* image, FB_Image_t* thumbnail, int thumbnailWidth)
+static aspectRatio_t sAspectRatioCalculator(FB_Image_t* image)
+{
+	aspectRatio_t aspectRatio 		= ASPECT_RATIO_NONE;
+	float 		  aspectRatio_value = 0.0;
+
+	float height = 0;
+	float width  = 0;
+
+	if(image->h > image->w) /* Vertical Image */
+	{
+		height = image->w;
+		width  = image->h;
+	}
+	else
+	{
+		height = image->h;
+		width  = image->w;
+	}
+
+	aspectRatio_value = height * width;
+
+	if(ASPECT_RATIO_16_9_CONDITION <= aspectRatio_value)
+	{
+		aspectRatio = ASPECT_RATIO_16_9;
+	}
+	else if(ASPECT_RATIO_16_10_CONDITION <= aspectRatio_value)
+	{
+		aspectRatio = ASPECT_RATIO_16_10;
+	}
+	else	/* Default */
+	{
+		aspectRatio = ASPECT_RATIO_DEFAULT;
+	}
+
+	return aspectRatio;
+}
+
+static float sHeightCalculateByWidth(const int32_t width, const aspectRatio_t aspectRatio)
+{
+	float height = 0;
+
+	if(aspectRatio == ASPECT_RATIO_16_9)
+	{
+		height = width * ASPECT_RATIO_16_9_CONDITION_BY_WIDTH;
+	}
+	else /* ASPECT_RATIO_16_10 : ASPECT_RATIO_DEFAULT  */
+	{
+		height = width * ASPECT_RATIO_16_10_CONDITION_BY_WIDTH;
+	}
+
+	return height;
+}
+
+static SN_STATUS sLoadThumbnail(FB_Image_t* image, FB_Image_t* thumbnail, const FB_ThumbnailInfo_t thumbnailInfo)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    int thumbnailHeight = 0;
+    uint32_t thumbnailHeight = 0;
+    uint32_t thumbnailWidth  = 0;
 
-    int i = 0;
-    int j = 0;
+    uint32_t i = 0;
+    uint32_t j = 0;
 
     unsigned char *thumbnailPixel = NULL;
+
     int thumbnailPixel_offset = 0;
-    int ImagePixel_offset = 0;
+    int ImagePixel_offset 	  = 0;
+    int tobBottom_offset      = 0;
 
     if(image == NULL)
     {
@@ -401,20 +457,34 @@ static SN_STATUS sLoadThumbnail(FB_Image_t* image, FB_Image_t* thumbnail, int th
         SN_SYS_ERROR_StatusCheck(SN_STATUS_INVALID_PARAM, "thumbnail is NULL");
     }
 
-    thumbnailHeight = image->h * thumbnailWidth / image->w;
-
-    thumbnail->rgb = (unsigned char*)malloc(((thumbnailWidth * thumbnailHeight) * sizeof(unsigned char)));
+    thumbnail->rgb = (unsigned char*)malloc(((thumbnailInfo.thumbnail_width * thumbnailInfo.thumbnail_width) * sizeof(unsigned char)));
     if (thumbnail->rgb == NULL)
     {
         SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "thumbnail rgb failed memory allocate.");
+    }
+
+    if(image->h > image->w) /* Vertical Image */
+	{
+        thumbnailWidth  = thumbnailInfo.thumbnail_height;
+        thumbnailHeight = thumbnailInfo.thumbnail_width;
+	}
+    else
+    {
+        thumbnailWidth  = thumbnailInfo.thumbnail_width;
+        thumbnailHeight = thumbnailInfo.thumbnail_height;
     }
 
     thumbnail->alpha = NULL;
 
     thumbnail->bpp       = image->bpp;
     thumbnail->colorType = image->colorType;
-    thumbnail->h         = thumbnailHeight;
-    thumbnail->w         = thumbnailWidth;
+    thumbnail->h         = thumbnailInfo.thumbnail_height;
+    thumbnail->w         = thumbnailInfo.thumbnail_width;
+
+    if(sAspectRatioCalculator(image) != ASPECT_RATIO_DEFAULT)
+    {
+    	tobBottom_offset = sHeightCalculateByWidth();
+    }
 
     for(i = 0; i < thumbnailHeight; i++)
     {
@@ -437,35 +507,10 @@ static SN_STATUS sLoadThumbnail(FB_Image_t* image, FB_Image_t* thumbnail, int th
         }
     }
 
-    /*
-    printf("\nThumbnail Info : [ %d x %d], %dbpp %d\n",thumbnail->w, thumbnail->h, thumbnail->bpp, thumbnail->colorType);
-    for (i = 0; i < thumbnail->h; i++)
-    {
-        for (j = 0; j < thumbnail->w; j++)
-        {
-            printf("%d", !thumbnail->rgb[i * thumbnail->w + j]);
-        }
-        printf("\n");
-    }
-    printf("\n\n\n");
-    */
-    if(thumbnail->h > thumbnail->w)
+    if(image->h > image->w)
     {
         sRotateImage(thumbnail);
     }
-
-    /*
-    printf("\nThumbnail Info : [ %d x %d], %dbpp %d\n",thumbnail->w, thumbnail->h, thumbnail->bpp, thumbnail->colorType);
-    for (i = 0; i < thumbnail->h; i++)
-    {
-        for (j = 0; j < thumbnail->w; j++)
-        {
-            printf("%d", !thumbnail->rgb[i * thumbnail->w + j]);
-        }
-        printf("\n");
-    }
-    printf("\n\n\n");
-    */
 
     return retStatus;
 }
@@ -737,7 +782,7 @@ static SN_STATUS sLoadThumbnailInfo(FB_ThumbnailInfo_t* thumbnailInfo)
         thumbnailInfo->thumbnail_width    = NEXTION_THUMBNAIL_7_0_WIDTH;
         thumbnailInfo->thumbnail_height   = NEXTION_THUMBNAIL_7_0_HEIGHT;
     }
-    else
+    else /* Default Resolution */
     {
         thumbnailInfo->thumbnail_offset_x = NEXTION_THUMBNAIL_3_2_OFFSET_X;
         thumbnailInfo->thumbnail_offset_y = NEXTION_THUMBNAIL_3_2_OFFSET_Y;
@@ -755,8 +800,6 @@ static SN_STATUS sUpdateNextionThumbnail(const FB_Image_t thumbnail, const FB_Th
     int i = 0, j = 0;
     int lineStart = 0, lineEnd = 0;
     int lineOffset = 0;
-
-    //lineOffset = (DEFAULT_NEXTION_THUMBNAIL_HEIGHT - thumbnail.h) / 2;
 
     if(thumbnail.rgb == NULL)
     {
@@ -783,9 +826,9 @@ static SN_STATUS sUpdateNextionThumbnail(const FB_Image_t thumbnail, const FB_Th
                 lineEnd = j;
 
                 SN_MODULE_DISPLAY_NextionDrawLine(thumbnaileInfo.thumbnail_offset_x + lineStart, \
-                                                  thumbnaileInfo.thumbnail_offset_y + lineOffset + i, \
+                                                  thumbnaileInfo.thumbnail_offset_y + i, \
                                                   thumbnaileInfo.thumbnail_offset_x + lineEnd, \
-                                                  thumbnaileInfo.thumbnail_offset_y + lineOffset + i, \
+                                                  thumbnaileInfo.thumbnail_offset_y + i, \
                                                   DEFAULT_NEXTION_THUMBNAIL_ON_PIXEL_COLOR);
                 SN_SYS_TIMER_Delay(3);
             }
@@ -811,26 +854,6 @@ static SN_STATUS sCleanNextionThumbnail(const FB_ThumbnailInfo_t thumbnailInfo)
     return retStatus;
 }
 
-static uint32_t sCalculateWidthNextionThumbnail(const FB_Image_t image, const FB_ThumbnailInfo_t thumbnailInfo)
-{
-    int width = 0;
-
-    if(image.rgb == NULL)
-    {
-        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "thumbnail image is not initialized.");
-    }
-
-    if(image.w < image.h) /* Vertical Image */
-    {
-        width = thumbnailInfo.thumbnail_width * image.w / image.h;
-    }
-    else /* horizontal */
-    {
-        width = thumbnailInfo.thumbnail_width;
-    }
-
-    return width;
-}
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
  *  RGB CONTROL

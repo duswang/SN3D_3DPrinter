@@ -23,6 +23,20 @@
 
 #define WINDOW_NAME "/dev/fb0"
 
+
+#define ASPECT_RATIO_16_9_CONDITION  (1.778)
+#define ASPECT_RATIO_16_10_CONDITION (1.600)
+
+#define ASPECT_RATIO_16_9_CONDITION_BY_WIDTH  (0.5625)
+#define ASPECT_RATIO_16_10_CONDITION_BY_WIDTH (0.6250)
+
+typedef enum {
+	ASPECT_RATIO_16_10 = 0,
+	ASPECT_RATIO_16_9,
+	ASPECT_RATIO_NONE,
+	ASPECT_RATIO_DEFAULT = ASPECT_RATIO_16_10
+} aspectRatio_t;
+
 /*************************************************************@}*/
 
 /*************************************************************
