@@ -281,8 +281,22 @@ SN_STATUS SN_MODULE_3D_PRINTER_Z_Homing(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
 
-    retStatus = s3DPrinterMessagePut(MSG_3D_PRINTER_HOMMING, 0);
-    SN_SYS_ERROR_StatusCheck(retStatus, "3D Printer Message Send Failed.");
+    if((module3DPrinter.state != DEVICE_BUSY) && (module3DPrinter.state != DEVICE_HOMING))
+    {
+        retStatus = SN_MODULE_DISPLAY_EnterState(NX_PAGE_LOADING);
+
+    	/* HOMING */
+        retStatus = s3DPrinterMessagePut(MSG_3D_PRINTER_HOMMING, 0);
+        SN_SYS_ERROR_StatusCheck(retStatus, "3D Printer Message Send Failed.");
+    }
+    else if(module3DPrinter.state == DEVICE_HOMING)
+    {
+        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_OK, "BAD WAY ACCESS TO HOMING.");
+    }
+    else
+    {
+        SN_SYS_ERROR_SystemLog("Module => 3D Printer  => MOTOR ALREADY WORKING.");
+    }
 
     return retStatus;
 }

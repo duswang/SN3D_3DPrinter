@@ -107,11 +107,11 @@ static SN_STATUS sDisplayMessagePut(event_id_t evtDisplay_t, event_msg_t evtMess
 static void      sDisplayEnterState(nx_page_t state);
 
 /* *** TIMER *** */
-static void sTMR_Timer_UpdateCallback(void);
-static void sTMR_TotalTime_UpdateCallback(void);
+static void 	 sTMR_Timer_UpdateCallback(void);
+static void 	 sTMR_TotalTime_UpdateCallback(void);
 
 /* *** SERIAL *** */
-static void* sSerialRx_Callback(char *rxBuffer);
+static void* 	 sSerialRx_Callback(char *rxBuffer);
 static SN_STATUS sSendCommand(char* command, size_t bufferSize);
 
 /* *** NEXTION *** */
@@ -123,9 +123,12 @@ static SN_STATUS sDisplay_LanguageUpdate(uint32_t language_code);
 static SN_STATUS sDisplay_TimerInfoUpdate(void);
 static SN_STATUS sDisplay_TotalTimeUpdate(void);
 
+static SN_STATUS sDisplay_TotalTimeInit(void);
+static SN_STATUS sDisplay_TotalTimeLoad(void);
+
 /* *** UTIL *** */
 static timeInfo_t sSecToTimeInfo(uint32_t sec);
-static char* UTF8toEUC_KR(char* utf8String);
+static char* 	  UTF8toEUC_KR(char* utf8String);
 
 /* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
  *
@@ -168,6 +171,9 @@ SN_STATUS SN_MODULE_DISPLAY_Init(void)
     SN_MODULE_DISPLAY_EnterState(NX_PAGE_SETUP);
 
     SN_MODULE_DISPLAY_BootProgressUpdate(30, "Display Module Loading...");
+
+    /* Getting data and push nextion display */
+    SN_MODULE_DISPLAY_TotalTimeInit();
 
     return retStatus;
 }
@@ -332,6 +338,8 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerInit(uint32_t sec)
     retStatus = sDisplayMessagePut(MSG_DISPLAY_TIME_INFO_TIMER_UPDATE, 0);
     SN_SYS_ERROR_StatusCheck(retStatus, "Display Send Message Failed.");
 
+    retStatus = SN_MODULE_DISPLAY_TotalTimerStart();
+
     return retStatus;
 }
 
@@ -395,6 +403,10 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerStop(void)
         SN_SYS_ERROR_StatusCheck(retStatus, "Timer Cancle Failed.");
     }
 
+
+    retStatus = SN_MODULE_DISPLAY_TotalTimerStop();
+    SN_SYS_ERROR_StatusCheck(retStatus, "Timer Cancle Failed.");
+
     return retStatus;
 }
 
@@ -402,20 +414,36 @@ SN_STATUS SN_MODULE_DISPLAY_PrintingTimerStop(void)
 SN_STATUS SN_MODULE_DISPLAY_TotalTimeInit(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-    deviceInfo_t deviceInfo = *SN_MODULE_FILE_SYSTEM_DeviceInfoGet();
 
-    moduleDisplay.totalTime.day        = 0;
-    moduleDisplay.totalTime.hour       = 0;
-    moduleDisplay.totalTime.min        = 0;
-    moduleDisplay.totalTime.sec        = 0;
+    retStatus = sDisplay_TotalTimeInit();
+    retStatus = sDisplay_TotalTimeLoad();
 
-    moduleDisplay.secTotalTime         = deviceInfo.totalTime;
+    return retStatus;
+}
+
+SN_STATUS SN_MODULE_DISPLAY_TotalTimerStart(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
 
     retStatus = sDisplayMessagePut(MSG_DISPLAY_TOTAL_TIME_UPDATE, 0);
     SN_SYS_ERROR_StatusCheck(retStatus, "Display Send Message Failed.");
 
     return retStatus;
 }
+
+SN_STATUS SN_MODULE_DISPLAY_TotalTimerStop(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    if(moduleDisplay.IsTimerInfoInit)
+    {
+        retStatus = SN_SYS_TIMER_Cancel(&timerTotalTime);
+        SN_SYS_ERROR_StatusCheck(retStatus, "Timer Cancle Failed.");
+    }
+
+    return retStatus;
+}
+
 
 SN_STATUS SN_MODULE_DISPLAY_ControlZPosition(float mm)
 {
@@ -760,9 +788,25 @@ static SN_STATUS sDisplay_TimerInfoUpdate(void)
     return retStatus;
 }
 
-static SN_STATUS sDisplay_TotalTimeUpdate(void)
+static SN_STATUS sDisplay_TotalTimeInit(void)
+{
+	SN_STATUS retStatus = SN_STATUS_OK;
+
+    deviceInfo_t deviceInfo = *SN_MODULE_FILE_SYSTEM_DeviceInfoGet();
+
+    moduleDisplay.totalTime.day        = 0;
+    moduleDisplay.totalTime.hour       = 0;
+    moduleDisplay.totalTime.min        = 0;
+    moduleDisplay.totalTime.sec        = 0;
+
+    moduleDisplay.secTotalTime         = deviceInfo.totalTime;
+
+    return retStatus;
+}
+static SN_STATUS sDisplay_TotalTimeLoad(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+
     char buffer[DEFAULT_BUFFER_SIZE];
     deviceInfo_t deviceInfo = *SN_MODULE_FILE_SYSTEM_DeviceInfoGet();
 
@@ -781,6 +825,15 @@ static SN_STATUS sDisplay_TotalTimeUpdate(void)
 
     retStatus = sSendCommand(buffer, strlen(buffer) + 1);
     SN_SYS_ERROR_StatusCheck(retStatus, "Nextion Display Timer Update Failed.");
+
+    return retStatus;
+}
+
+static SN_STATUS sDisplay_TotalTimeUpdate(void)
+{
+    SN_STATUS retStatus = SN_STATUS_OK;
+
+    sDisplay_TotalTimeLoad();
 
     retStatus = SN_SYS_TIMER_Create(&timerTotalTime, TIMER_INDICATE_INTERVAL, sTMR_TotalTime_UpdateCallback);
     SN_SYS_ERROR_StatusCheck(retStatus, "Timer Cretae Failed.");
@@ -946,8 +999,6 @@ static SN_STATUS sDisplay_NextionInit(void)
     SN_SYS_TIMER_Delay(3);
 
     SN_SYS_TIMER_Delay(6);
-
-    SN_MODULE_DISPLAY_TotalTimeInit();
 
     return retStatus;
 }

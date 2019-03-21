@@ -17,6 +17,15 @@
 #define MODUEL_INCLUDE_SN_MODUEL_IMAGE_VIEWER_H_
 
 /*************************************************************
+ * @name
+ * @brief
+ * @{
+ */
+#define WINDOW_NAME "/dev/fb0"
+
+/*************************************************************@}*/
+
+/*************************************************************
  * @name Image Viewer Module
  *  @brief Description of Display Module Init and Uninit funtions.
  *////@{

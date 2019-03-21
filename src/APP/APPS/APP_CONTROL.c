@@ -137,7 +137,6 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                 case NX_ID_CONTROL_BUTTON_Z_HOMMING:
                     if(!SN_MODULE_3D_PRINTER_IsPrinting() && !SN_MODULE_3D_PRINTER_IsPause())
                     {
-                        retStatus = SN_MODULE_DISPLAY_EnterState(NX_PAGE_LOADING);
                         retStatus = SN_MODULE_3D_PRINTER_Z_Homing();
                     }
                     break;

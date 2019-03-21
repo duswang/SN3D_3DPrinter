@@ -135,6 +135,22 @@ extern SN_STATUS SN_MODULE_DISPLAY_PrintingInfoUpdate(uint32_t slice, uint32_t t
  */
 extern SN_STATUS SN_MODULE_DISPLAY_PrintingTimerInit(uint32_t sec);
 
+/** @brief Nextion Display Printing Page Timer Info Init
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
+extern SN_STATUS SN_MODULE_DISPLAY_TotalTimeInit(void);
+
+/** @brief
+ *
+ *  @return SN_STATUS
+ *
+ *  @note
+ */
+extern SN_STATUS SN_MODULE_DISPLAY_TotalTimerStart(void);
+
 /** @brief Nextion Display Printing Page Timer Info Sync by Current Slice Info
  *
  *  @param sec - Synced Time per sec
@@ -170,6 +186,14 @@ extern SN_STATUS SN_MODULE_DISPLAY_PrintingTimerResume(void);
  *  @note This function called when printing stop event
  */
 extern SN_STATUS SN_MODULE_DISPLAY_PrintingTimerStop(void);
+
+/** @brief Nextoin Display Info Page Total Timer Stop
+ *
+ *  @return SN_STATUS
+ *
+ *  @note This function called when printing stop event
+ */
+extern SN_STATUS SN_MODULE_DISPLAY_TotalTimerStop(void);
 
 /*************************************************************@}*/
 

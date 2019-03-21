@@ -54,7 +54,6 @@ inline static unsigned short make16color(unsigned char r, unsigned char g, unsig
 static void* convertRGB2FB(int fh, unsigned char *rgbbuff, unsigned long count, int bpp, int *cpp);
 
 /* *** UTIL *** */
-static aspectRatio_t sAspectRatioCalculator(FB_Image_t* image);
 static SN_STATUS sRotateImage(FB_Image_t* image);
 
 
@@ -169,11 +168,11 @@ SN_STATUS ImageViewer_ThumbnailClean(moduleImageViewer_t* moduleImageViewer)
     return retStatus;
 }
 
-/* * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * *
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  *  IMAGE
  *
- * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 static SN_STATUS sLoadImage(const char* filename, FB_Image_t* pImage)
 {
@@ -378,59 +377,6 @@ static SN_STATUS sRotateImage(FB_Image_t* image)
     return retStatus;
 }
 
-static aspectRatio_t sAspectRatioCalculator(FB_Image_t* image)
-{
-	aspectRatio_t aspectRatio 		= ASPECT_RATIO_NONE;
-	float 		  aspectRatio_value = 0.0;
-
-	float height = 0;
-	float width  = 0;
-
-	if(image->h > image->w) /* Vertical Image */
-	{
-		height = image->w;
-		width  = image->h;
-	}
-	else
-	{
-		height = image->h;
-		width  = image->w;
-	}
-
-	aspectRatio_value = height * width;
-
-	if(ASPECT_RATIO_16_9_CONDITION <= aspectRatio_value)
-	{
-		aspectRatio = ASPECT_RATIO_16_9;
-	}
-	else if(ASPECT_RATIO_16_10_CONDITION <= aspectRatio_value)
-	{
-		aspectRatio = ASPECT_RATIO_16_10;
-	}
-	else	/* Default */
-	{
-		aspectRatio = ASPECT_RATIO_DEFAULT;
-	}
-
-	return aspectRatio;
-}
-
-static float sHeightCalculateByWidth(const int32_t width, const aspectRatio_t aspectRatio)
-{
-	float height = 0;
-
-	if(aspectRatio == ASPECT_RATIO_16_9)
-	{
-		height = width * ASPECT_RATIO_16_9_CONDITION_BY_WIDTH;
-	}
-	else /* ASPECT_RATIO_16_10 : ASPECT_RATIO_DEFAULT  */
-	{
-		height = width * ASPECT_RATIO_16_10_CONDITION_BY_WIDTH;
-	}
-
-	return height;
-}
-
 static SN_STATUS sLoadThumbnail(FB_Image_t* image, FB_Image_t* thumbnail, const FB_ThumbnailInfo_t thumbnailInfo)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
@@ -445,7 +391,7 @@ static SN_STATUS sLoadThumbnail(FB_Image_t* image, FB_Image_t* thumbnail, const 
 
     int thumbnailPixel_offset = 0;
     int ImagePixel_offset 	  = 0;
-    int tobBottom_offset      = 0;
+
 
     if(image == NULL)
     {
@@ -457,34 +403,29 @@ static SN_STATUS sLoadThumbnail(FB_Image_t* image, FB_Image_t* thumbnail, const 
         SN_SYS_ERROR_StatusCheck(SN_STATUS_INVALID_PARAM, "thumbnail is NULL");
     }
 
-    thumbnail->rgb = (unsigned char*)malloc(((thumbnailInfo.thumbnail_width * thumbnailInfo.thumbnail_width) * sizeof(unsigned char)));
-    if (thumbnail->rgb == NULL)
-    {
-        SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "thumbnail rgb failed memory allocate.");
-    }
-
     if(image->h > image->w) /* Vertical Image */
 	{
-        thumbnailWidth  = thumbnailInfo.thumbnail_height;
+        thumbnailWidth  = image->w * thumbnailInfo.thumbnail_width / image->h;
         thumbnailHeight = thumbnailInfo.thumbnail_width;
 	}
     else
     {
         thumbnailWidth  = thumbnailInfo.thumbnail_width;
-        thumbnailHeight = thumbnailInfo.thumbnail_height;
+        thumbnailHeight = image->h * thumbnailInfo.thumbnail_width / image->w;
     }
 
     thumbnail->alpha = NULL;
 
     thumbnail->bpp       = image->bpp;
     thumbnail->colorType = image->colorType;
-    thumbnail->h         = thumbnailInfo.thumbnail_height;
-    thumbnail->w         = thumbnailInfo.thumbnail_width;
+    thumbnail->h         = thumbnailHeight;
+    thumbnail->w         = thumbnailWidth;
 
-    if(sAspectRatioCalculator(image) != ASPECT_RATIO_DEFAULT)
-    {
-    	tobBottom_offset = sHeightCalculateByWidth();
-    }
+    thumbnail->rgb = (unsigned char*)malloc(((thumbnailWidth * thumbnailHeight) * sizeof(unsigned char)));
+     if (thumbnail->rgb == NULL)
+     {
+         SN_SYS_ERROR_StatusCheck(SN_STATUS_NOT_INITIALIZED, "thumbnail rgb failed memory allocate.");
+     }
 
     for(i = 0; i < thumbnailHeight; i++)
     {
@@ -493,7 +434,7 @@ static SN_STATUS sLoadThumbnail(FB_Image_t* image, FB_Image_t* thumbnail, const 
             thumbnailPixel_offset = (i * thumbnailWidth) + j;
             thumbnailPixel = thumbnail->rgb + thumbnailPixel_offset;
 
-            ImagePixel_offset = ((i * image->w) * (image->w / thumbnailWidth) * 3) + (j * (image->w / thumbnailWidth) * 3); // * 3 for RGB
+            ImagePixel_offset = ((i * image->w) * (image->h / thumbnailHeight) * 3) + (j * (image->w / thumbnailWidth) * 3); // * 3 for RGB
 
             // get first color channel of the rgb image buffer
             if(image->rgb[ImagePixel_offset] > 127)
@@ -830,7 +771,7 @@ static SN_STATUS sUpdateNextionThumbnail(const FB_Image_t thumbnail, const FB_Th
                                                   thumbnaileInfo.thumbnail_offset_x + lineEnd, \
                                                   thumbnaileInfo.thumbnail_offset_y + i, \
                                                   DEFAULT_NEXTION_THUMBNAIL_ON_PIXEL_COLOR);
-                SN_SYS_TIMER_Delay(3);
+                SN_SYS_TIMER_Delay(4);
             }
             else
             {

@@ -280,11 +280,11 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_DeviceInfoReset(void)
 
     if(moduleFileSystem.deviceInfo == NULL)
     {
-        strcpy(deviceInfo.language,DEVICE_LANGUAGE_ENG);
+        strcpy(deviceInfo.language, DEVICE_LANGUAGE_ENG);
     }
     else
     {
-        strcpy(deviceInfo.language,moduleFileSystem.deviceInfo->language);
+        strcpy(deviceInfo.language, moduleFileSystem.deviceInfo->language);
     }
 
     deviceInfo.totalTime = 0;

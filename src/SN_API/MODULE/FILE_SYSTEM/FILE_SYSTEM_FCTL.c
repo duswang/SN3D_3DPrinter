@@ -53,7 +53,7 @@ SN_STATUS FileSystem_fctl_CreateDircetoryTree(const char* path)
         if (directoryPointer != pathPointer)
         {
             *directoryPointer = '\0';
-            status = do_mkdir(pathBuffer, 0755);
+            status = do_mkdir(pathBuffer, 0777);
             printf("CREATE DIRECTORY :: %s \n\n", pathBuffer);
             *directoryPointer = '/';
         }
@@ -62,7 +62,7 @@ SN_STATUS FileSystem_fctl_CreateDircetoryTree(const char* path)
 
     if(status == 0)
     {
-        do_mkdir(path, 0755);
+        do_mkdir(path, 0777);
         printf("CREATE DIRECTORY :: %s \n\n", pathBuffer);
     }
     else

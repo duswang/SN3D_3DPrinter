@@ -334,7 +334,7 @@ deviceInfo_t* FileSystem_deviceInfoXMLLoad(const char *srcPath)
 
     if(retStatus != SN_STATUS_OK)
     {
-        retStatus = FileSystem_fctl_CreateDircetoryTree(DEVICE_FOLDER_PATH);
+    	retStatus = FileSystem_fctl_CreateDircetoryTree(DEVICE_FOLDER_PATH);
         SN_SYS_ERROR_StatusCheck(retStatus, "Directory Create Failed.");
 
         FileSystem_fctl_CopyFile(DEFAULT_DEVICE_FILE_PATH, srcPath);

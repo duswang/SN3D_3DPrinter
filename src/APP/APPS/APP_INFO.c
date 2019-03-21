@@ -89,6 +89,7 @@ static SN_STATUS sDisplayHdlr(event_msg_t evtMessage)
                 break;
             case NX_ID_INFO_BUTTON_TOTAL_TIME_RESET:
                 SN_MODULE_FILE_SYSTEM_DeviceInfoReset();
+                SN_MODULE_DISPLAY_TotalTimeInit();
                 APP_STATE_EnterStateInfo();
                 break;
             default:
