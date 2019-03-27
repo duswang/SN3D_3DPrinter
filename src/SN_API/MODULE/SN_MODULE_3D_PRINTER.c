@@ -346,10 +346,15 @@ bool SN_MODULE_3D_PRINTER_IsMotorBusy(void)
 SN_STATUS SN_MODULE_3D_PRINTER_Start(uint32_t pageIndex, uint32_t itemIndex, uint32_t optionIndex)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+    deviceInfo_t deviceInfo = *SN_MODULE_FILE_SYSTEM_DeviceInfoGet();
 
     SN_MODULE_FILE_SYSTEM_TargetLoad(pageIndex, itemIndex);
 
     SN_MODULE_FILE_SYSTEM_OptionLoad(optionIndex);
+
+    deviceInfo.optionIndex = optionIndex;
+
+    SN_MODULE_FILE_SYSTEM_DeviceInfoUpdate(deviceInfo);
 
     retStatus = s3DPrinterMessagePut(MSG_3D_PRINTER_PRINTING_INIT, 0);
     SN_SYS_ERROR_StatusCheck(retStatus, "3D Printer Send Message Failed.");

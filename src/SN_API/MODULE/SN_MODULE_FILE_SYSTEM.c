@@ -157,19 +157,6 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void)
 
     SN_SYS_TIMER_Delay(250);
 
-    /* Load Option */
-    SN_MODULE_DISPLAY_BootProgressUpdate(50, "Mahcine Info Read...");
-    SN_SYS_TIMER_Delay(250);
-
-    sMachineInfoPageLoad(&moduleFileSystem.fileSystem);
-    sMachineInfoLoad(MACHINE_DEFAULT_INDEX);
-
-    /* Machine File*/
-    SN_MODULE_DISPLAY_BootProgressUpdate(55, "Option File Read...");
-    SN_SYS_TIMER_Delay(250);
-    sOptionPageLoad(&moduleFileSystem.fileSystem);
-    sOptionLoad(OPTION_DEFAULT_INDEX);
-
     /* Device File */
     SN_MODULE_DISPLAY_BootProgressUpdate(60, "Device File Read...");
     SN_SYS_TIMER_Delay(250);
@@ -178,6 +165,23 @@ SN_STATUS SN_MODULE_FILE_SYSTEM_Init(void)
 
     SN_MODULE_FILE_SYSTEM_DeviceInfoUpdate(*moduleFileSystem.deviceInfo);
 
+    /* Machine File*/
+    SN_MODULE_DISPLAY_BootProgressUpdate(50, "Mahcine Info Read...");
+    SN_SYS_TIMER_Delay(250);
+
+    sMachineInfoPageLoad(&moduleFileSystem.fileSystem);
+    sMachineInfoLoad(MACHINE_DEFAULT_INDEX);
+
+    /* Load Option */
+    SN_MODULE_DISPLAY_BootProgressUpdate(55, "Option File Read...");
+    SN_SYS_TIMER_Delay(250);
+
+
+    sOptionPageLoad(&moduleFileSystem.fileSystem);
+    sOptionLoad(OPTION_DEFAULT_INDEX);
+
+
+    /* Print Resoure List */
     sFileSystemPrint(&moduleFileSystem.fileSystem);
 
 
@@ -918,6 +922,8 @@ static SN_STATUS sOptionLoad(uint32_t optionIndex)
     SN_STATUS retStatus = SN_STATUS_OK;
 
     const fsItem_t optionFile = FileSystem_GetItem(moduleFileSystem.fileSystem.optionPageHeader, optionIndex / MAX_ITEM_SIZE, optionIndex % MAX_ITEM_SIZE);
+
+    printf("\n\n\n%d %d\n\n\n",optionIndex, moduleFileSystem.fileSystem.optionPageHeader->itemCnt);
 
     moduleFileSystem.printOption = optionFile.contents;
 

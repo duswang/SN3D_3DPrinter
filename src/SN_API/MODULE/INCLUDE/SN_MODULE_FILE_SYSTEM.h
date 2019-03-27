@@ -229,6 +229,7 @@ typedef struct print_target {
 typedef struct device_information {
     char  language[MAX_FILENAME_LENGTH];  /**< px */
     uint32_t                  totalTime;  /**< px */
+    uint32_t 			      optionIndex; /**< index */
 } deviceInfo_t;
 
 

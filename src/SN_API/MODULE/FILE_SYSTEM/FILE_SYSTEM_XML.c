@@ -492,6 +492,12 @@ static SN_STATUS sParseXML_deviceInfoFile(deviceInfo_t* deviceInfo, xmlDocPtr do
             sscanf((const char *)key, "%d", &deviceInfo->totalTime);
             xmlFree(key);
         }
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"optionIndex")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            sscanf((const char *)key, "%d", &deviceInfo->optionIndex);
+            xmlFree(key);
+        }
         cur = cur->next;
     }
 
@@ -514,6 +520,11 @@ static SN_STATUS sSetXML_deviceInfoFile(const deviceInfo_t deviceInfo, xmlDocPtr
         if((!xmlStrcmp(cur->name, (const xmlChar *)"totalTime")))
         {
             sprintf(buffer, "%d", deviceInfo.totalTime);
+            xmlNodeSetContent(cur, (const xmlChar*)buffer);
+        }
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"optionIndex")))
+        {
+            sprintf(buffer, "%d", deviceInfo.optionIndex);
             xmlNodeSetContent(cur, (const xmlChar*)buffer);
         }
         cur = cur->next;

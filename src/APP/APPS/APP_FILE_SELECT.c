@@ -71,6 +71,7 @@ SN_STATUS APP_FILE_SELECT_EvtHdlr(general_evt_t evt)
 SN_STATUS APP_STATE_EnterStateFileSelect(void)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
+    deviceInfo_t deviceInfo = *SN_MODULE_FILE_SYSTEM_DeviceInfoGet();
 
     SN_SYS_ERROR_SystemLog("APP STATE => [ FILE SELECT ]");
 
@@ -80,6 +81,13 @@ SN_STATUS APP_STATE_EnterStateFileSelect(void)
     sResetIndexs();
 
     SN_MODULE_FILE_SYSTEM_FilePageUpdate();
+
+    optionIndex = deviceInfo.optionIndex;
+
+    if(optionIndex > (SN_MODULE_FILE_SYSTEM_GetOptionCnt() - 1))
+    {
+    	optionIndex = 0;
+    }
 
     retStatus = SN_MODULE_DISPLAY_FileSelectOptionUpdate(optionIndex);
 
