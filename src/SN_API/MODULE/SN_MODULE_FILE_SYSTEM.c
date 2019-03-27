@@ -923,8 +923,6 @@ static SN_STATUS sOptionLoad(uint32_t optionIndex)
 
     const fsItem_t optionFile = FileSystem_GetItem(moduleFileSystem.fileSystem.optionPageHeader, optionIndex / MAX_ITEM_SIZE, optionIndex % MAX_ITEM_SIZE);
 
-    printf("\n\n\n%d %d\n\n\n",optionIndex, moduleFileSystem.fileSystem.optionPageHeader->itemCnt);
-
     moduleFileSystem.printOption = optionFile.contents;
 
     printf("\n\nOption Name : %s\n", moduleFileSystem.printOption->name);
