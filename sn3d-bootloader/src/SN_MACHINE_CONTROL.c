@@ -157,6 +157,11 @@ static void sUpdateBootConfig(const char* displayScreenSize)
         SN_SYS_ERROR_SystemLog("\n 5.5 Inch Updating...\n\n");
         FileSystem_fctl_CopyFile(MACHINE_5_5_INCH_PATH, MACHINE_BOOTCONFIG_PATH);
     }
+    if(!strcmp(displayScreenSize, "5.5_4K"))
+    {
+        SN_SYS_ERROR_SystemLog("\n 5.5 Inch 4K Updating...\n\n");
+        FileSystem_fctl_CopyFile(MACHINE_5_5_INCH_4K_PATH, MACHINE_BOOTCONFIG_PATH);
+    }
     else if(!strcmp(displayScreenSize, "8.9"))
     {
         SN_SYS_ERROR_SystemLog("\n 8.9 Inch Updating...\n\n");

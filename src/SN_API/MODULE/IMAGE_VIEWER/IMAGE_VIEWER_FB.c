@@ -4,7 +4,7 @@
  * @date 7 Nov 2018
  * @brief
  *
- * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://rw.stack.nl/~dimitri/doxygen/docblocks.html
  * @see http://www.stack.nl/~dimitri/doxygen/commands.html
  *
  */
@@ -87,18 +87,10 @@ SN_STATUS ImageViewer_WindowUpdate(moduleImageViewer_t* moduleImageViewer, uint3
     SN_STATUS retStatus = SN_STATUS_OK;
     char* path = NULL;
     const printTarget_t* printTarget = NULL;
-    const machineInfo_t* machineInfo = NULL;
 
     /* GET PRINT TARGET INFO */
     printTarget = SN_MODULE_FILE_SYSTEM_TargetGet();
     if(printTarget == NULL)
-    {
-         return SN_STATUS_NOT_INITIALIZED;
-    }
-
-    /* Get Mahcine Info */
-    machineInfo = SN_MODULE_FILE_SYSTEM_MachineInfoGet();
-    if(machineInfo == NULL)
     {
          return SN_STATUS_NOT_INITIALIZED;
     }
@@ -153,14 +145,6 @@ SN_STATUS ImageViewer_WindowDestroy(moduleImageViewer_t* moduleImageViewer)
 SN_STATUS ImageViewer_ThumbnailClean(moduleImageViewer_t* moduleImageViewer)
 {
     SN_STATUS retStatus = SN_STATUS_OK;
-    const machineInfo_t* machineInfo = NULL;
-
-    /* Get Mahcine Info */
-    machineInfo = SN_MODULE_FILE_SYSTEM_MachineInfoGet();
-    if(machineInfo == NULL)
-    {
-         return SN_STATUS_NOT_INITIALIZED;
-    }
 
     retStatus= sCleanNextionThumbnail(moduleImageViewer->thumbnailInfo);
     SN_SYS_ERROR_StatusCheck(retStatus, "Thumbnail Clean Failed.");
