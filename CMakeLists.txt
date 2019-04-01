@@ -257,7 +257,6 @@ add_custom_target(all_clean
     ${PRJ_ROOT_PATH}/cmake_install.cmake 
     ${PRJ_ROOT_PATH}/Makefile 
     ${PRJ_ROOT_PATH}/res 
-    ${PRJ_ROOT_PATH}/bin 
     ${PRJ_ROOT_PATH}/FirmwareFiles 
 )
 

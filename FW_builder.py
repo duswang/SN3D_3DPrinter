@@ -38,14 +38,14 @@ BIN_NAME    = "sn3d"
 # MACHINE CONFIG #
 MACHINE_INFO_PATH         = "sn3d-bootloader/lib/machineConfig"
 MACHINE_INFO_NAME_5_5     = "machineInfo_5_5.xml"
-MACHINE_INFO_NAME_5_5_4K  = "machineInfo_5_5_4k.xml"
+MACHINE_INFO_NAME_5_5_2K  = "machineInfo_5_5_2k.xml"
 MACHINE_INFO_NAME_8_9     = "machineInfo_8_9.xml"
 MACHINE_INFO_NAME_15_6    = "machineInfo_15_6.xml"
 MACHINE_INFO_NAME_23_8    = "machineInfo_23_8.xml"
 MACHINE_INFO_NAME_DEFAULT = MACHINE_INFO_NAME_5_5
 
 MACHINE_INFO_5_5     = 1
-MACHINE_INFO_5_5_4K  = 2
+MACHINE_INFO_5_5_2K  = 2
 MACHINE_INFO_8_9     = 3
 MACHINE_INFO_15_6    = 4
 MACHINE_INFO_23_8    = 5
@@ -159,8 +159,8 @@ def infoScreen():
     print(ANSI_GREEN + "Saved Machine Info" + ANSI_OFF)
     if machineInfo == MACHINE_INFO_5_5:
         print("Machine Inch   : " + " 5.5 Inch")
-    elif machineInfo == MACHINE_INFO_5_5_4K:
-        print("Machine Inch   : " + " 5.5 Inch 4K")
+    elif machineInfo == MACHINE_INFO_5_5_2K:
+        print("Machine Inch   : " + " 5.5 Inch 2K")
     elif machineInfo == MACHINE_INFO_8_9:
         print("Machine Inch   : " + " 8.9 Inch")
     elif machineInfo == MACHINE_INFO_15_6:
@@ -233,7 +233,7 @@ def machineInfoPage():
     
     # ref DEF_PAGE
     print(1, "5.5  Inch")
-    print(2, "5.5  Inch 4K")
+    print(2, "5.5  Inch 2K")
     print(3, "8.9  Inch")
     print(4, "15.6 Inch")
     print(5, "23.8 Inch")
@@ -252,8 +252,8 @@ def machineInfoPage():
 
     if machine_item == MACHINE_INFO_5_5:
         copyfile(MACHINE_INFO_PATH + "/" + MACHINE_INFO_NAME_5_5, FW_RESOURCE + "/" + "machineInfo.xml")
-    elif machine_item == MACHINE_INFO_5_5_4K:
-        copyfile(MACHINE_INFO_PATH + "/" + MACHINE_INFO_NAME_5_5_4K, FW_RESOURCE + "/" + "machineInfo.xml")
+    elif machine_item == MACHINE_INFO_5_5_2K:
+        copyfile(MACHINE_INFO_PATH + "/" + MACHINE_INFO_NAME_5_5_2K, FW_RESOURCE + "/" + "machineInfo.xml")
     elif machine_item == MACHINE_INFO_8_9:
         copyfile(MACHINE_INFO_PATH + "/" + MACHINE_INFO_NAME_8_9, FW_RESOURCE + "/" + "machineInfo.xml")
     elif machine_item == MACHINE_INFO_15_6:

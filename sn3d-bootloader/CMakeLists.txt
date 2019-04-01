@@ -170,7 +170,6 @@ add_custom_target(all_clean
     ${BOOTLOADER_ROOT_PATH}/cmake_install.cmake
     ${BOOTLOADER_ROOT_PATH}/Makefile  
     ${BOOTLOADER_ROOT_PATH}/res
-    ${BOOTLOADER_ROOT_PATH}/bin  
 )
 
 

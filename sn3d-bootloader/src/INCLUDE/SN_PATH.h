@@ -41,7 +41,7 @@
 #define SN3D_MACHINE_FILE_PATH                  "/SN3D/sn3d-project/res/machineConfig/machineInfo.xml"
 
 #define MACHINE_5_5_INCH_PATH                   "/SN3D/sn3d-project/sn3d-bootloader/lib/bootConfig/5_5.txt"
-#define MACHINE_5_5_INCH_4K_PATH                   "/SN3D/sn3d-project/sn3d-bootloader/lib/bootConfig/5_5_4k.txt"
+#define MACHINE_5_5_INCH_2K_PATH                "/SN3D/sn3d-project/sn3d-bootloader/lib/bootConfig/5_5_2k.txt"
 #define MACHINE_8_9_INCH_PATH                   "/SN3D/sn3d-project/sn3d-bootloader/lib/bootConfig/8_9.txt"
 #define MACHINE_15_6_INCH_PATH                  "/SN3D/sn3d-project/sn3d-bootloader/lib/bootConfig/4k.txt"
 #define MACHINE_23_8_INCH_PATH                  MACHINE_15_6_INCH_PATH
