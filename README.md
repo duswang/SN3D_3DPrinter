@@ -56,6 +56,8 @@ $ journalctl -u SN3D.service
 
 `$ make sn3d_service_install` - SN3D.service & SN3D_Bootloader.service install to systemd.
 
+`$ make sn3d_resize2fs_install` - SN3D root filesystem partion extend all partition.
+
 #### Systemd Service
 `$ make start ` - SN3D.service restart.
 
