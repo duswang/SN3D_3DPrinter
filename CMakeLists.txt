@@ -276,6 +276,18 @@ add_custom_target(sn3d_service_uninstall
     sudo systemctl daemon-reload
 )
 
+add_custom_target(sn3d_resize2fs_install
+    sudo cp ${PRJ_ROOT_PATH}/lib/service/resize2fs_once /etc/init.d/resize2fs_once &&
+    sudo chmod +x /etc/init.d/resize2fs_once &&
+    sudo systemctl enable resize2fs_once
+)
+
+add_custom_target(sn3d_resize2fs_uninstall
+    sudo systemctl disable resize2fs_once &&
+    sudo update-rc.d resize2fs_once remove &&
+    sudo rm -rf /etc/init.d/resize2fs_once
+)
+
 add_custom_target(sn3d_install
     sudo make install &&
     sudo make sn3d_service_install
