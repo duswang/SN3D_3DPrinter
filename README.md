@@ -136,8 +136,8 @@ See [Sprinter](https://github.com/kliment/Sprinter) on Github.
 
 #### TODO List
 - [X] Memory Test.
-- [ ] PNG image checker & notify to user.
-- [ ] Info screen design.
+- [X] PNG image checker & notify to user.
+- [X] Info screen design.
 - [X] 8.9 Inch Display Test
 
 #### BUG List
